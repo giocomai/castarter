@@ -1,0 +1,30 @@
+Package: castarter2
+Title: Explore Textual Datasets with Ease
+Version: 0.0.0.9001
+Authors@R: 
+    c(person(given = "Giorgio",
+             family = "Comai",
+             role = c("aut", "cre", "cph"),
+             email = "g@giorgiocomai.eu",
+             comment = c(ORCID = "0000-0002-0515-9542")))
+Description: Basic word frequency analysis of textual datasets made easy
+License: MIT + file LICENSE
+Encoding: UTF-8
+LazyData: true
+Roxygen: list(markdown = TRUE)
+RoxygenNote: 7.1.1
+Imports: 
+    magrittr,
+    dplyr,
+    tidyr,
+    purrr,
+    stringr,
+    slider,
+    tidytext,
+    rlang (>= 0.1.2)
+Suggests: 
+    testthat (>= 3.0.0),
+    roxygen2
+Config/testthat/edition: 3
+Depends: 
+    R (>= 2.10)
