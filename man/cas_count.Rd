@@ -12,8 +12,9 @@ cas_count(
   ignore_case = TRUE,
   fixed = FALSE,
   full_words_only = FALSE,
-  n_column_name = n,
+  date_column_name = date,
   word_column_name = word,
+  n_column_name = n,
   locale = "en",
   include_word = TRUE
 )
@@ -31,9 +32,9 @@ cas_count(
 
 \item{full_words_only}{Defaults to TRUE. If FALSE, string is counted even when the it is found in the middle of a word (e.g. if FALSE, "ratio" would be counted as match in the word "irrational").}
 
-\item{n_column_name}{Defaults to 'n'. The unquoted name of the column to be used for the count in the output.}
-
 \item{word_column_name}{Defaults to 'word'. The unquoted name of the column to be used for the word in the output (if \code{word_column} is set to TRUE, as per default).}
+
+\item{n_column_name}{Defaults to 'n'. The unquoted name of the column to be used for the count in the output.}
 
 \item{locale}{Locale to be used when ignore_case is set to TRUE. Passed to \code{stringr::str_to_lower}, defaults to "en".}
 

@@ -22,22 +22,22 @@ app_server <- function( input, output, session ) {
 
   tsGG <- shiny::eventReactive(input$go, {
     if (input$freq=="Absolute frequency") {
-      castarter::ShowAbsoluteTS(
-        terms = castarter2::cass_split(input$term),
-        dataset = corpus_df,
-        type = "graph",
-        rollingDays = input$rolling_days,
-        startDate = input$date_range[1],
-        endDate = input$date_range[2])
+      # castarter::ShowAbsoluteTS(
+      #   terms = castarter2::cass_split(input$term),
+      #   dataset = corpus_df,
+      #   type = "graph",
+      #   rollingDays = input$rolling_days,
+      #   startDate = input$date_range[1],
+      #   endDate = input$date_range[2])
 
     } else if (input$freq=="Relative frequency") {
-      castarter::ShowRelativeTS(
-        terms = castarter2::cass_split(input$term),
-        dataset = corpus_df,
-        type = "graph",
-        rollingDays = input$rolling_days,
-        startDate = input$date_range[1],
-        endDate = input$date_range[2])
+      # castarter::ShowRelativeTS(
+      #   terms = castarter2::cass_split(input$term),
+      #   dataset = corpus_df,
+      #   type = "graph",
+      #   rollingDays = input$rolling_days,
+      #   startDate = input$date_range[1],
+      #   endDate = input$date_range[2])
     }
   })
 
@@ -96,51 +96,52 @@ app_server <- function( input, output, session ) {
     count_df <- corpus_df %>%
       dplyr::rename(text = .data[[input$text_column]],
                     date = .data[[input$group_by_column]]) %>%
-      castarter2::cas_count(words = castarter2::cass_split(input$term))
+      castarter2::cas_count(words = castarter2:::cass_split(input$term))
     count_df
   })
 
-  word_count_summarised_df_r <-  shiny::eventReactive(list(input$go,
-                                                           input$moving_type_selector,
-                                                           input$moving_units_total,
-                                                           input$moving_units_before,
-                                                           input$moving_units_after),{
+  word_count_summarised_df_r <-  shiny::eventReactive(
+    list(input$go,
+         input$moving_type_selector,
+         input$moving_units_total,
+         input$moving_units_before,
+         input$moving_units_after),{
 
 
-                                                             if (is.null(input$summarise_by)==FALSE&input$summarise_by!="") {
-                                                               if (input$moving_type_selector=="average") {
-                                                                 foo <- mean
-                                                               } else if (input$moving_type_selector=="median") {
-                                                                 foo <- median
-                                                               } else if (input$moving_type_selector=="total") {
-                                                                 foo <- sum
-                                                               } else {
-                                                                 return(NULL)
-                                                               }
+           if (is.null(input$summarise_by)==FALSE&input$summarise_by!="") {
+             if (input$moving_type_selector=="average") {
+               foo <- mean
+             } else if (input$moving_type_selector=="median") {
+               foo <- median
+             } else if (input$moving_type_selector=="total") {
+               foo <- sum
+             } else {
+               return(NULL)
+             }
 
 
-                                                               if (input$moving_length_type_selector=="centred") {
-                                                                 units_before <- units_after <- round((input$moving_units_total-1)/2)
+             if (input$moving_length_type_selector=="centred") {
+               units_before <- units_after <- round((input$moving_units_total-1)/2)
 
-                                                               } else {
-                                                                 units_before <- input$moving_units_before
-                                                                 units_after <- input$moving_units_after
-                                                               }
+             } else {
+               units_before <- input$moving_units_before
+               units_after <- input$moving_units_after
+             }
 
 
-                                                               count_summarised_df <- word_count_df_r() %>%
-                                                                 castarter2::cas_summarise(period = input$summarise_by,
-                                                                                           before = units_before,
-                                                                                           after = units_after,
-                                                                                           f = foo,
-                                                                                           auto_convert = input$summarise_auto_convert_checkbox) %>%
-                                                                 dplyr::rename(!!input$group_by_column := date)
-                                                             } else {
-                                                               count_summarised_df <- count_df %>%
-                                                                 dplyr::rename(!!input$group_by_column := date)
-                                                             }
-                                                             count_summarised_df
-                                                           })
+             count_summarised_df <- word_count_df_r() %>%
+               castarter2::cas_summarise(period = input$summarise_by,
+                                         before = units_before,
+                                         after = units_after,
+                                         f = foo,
+                                         auto_convert = input$summarise_auto_convert_checkbox) %>%
+               dplyr::rename(!!input$group_by_column := date)
+           } else {
+             count_summarised_df <- count_df %>%
+               dplyr::rename(!!input$group_by_column := date)
+           }
+           count_summarised_df
+         }, ignoreNULL = TRUE)
 
 
   output$total_matches_DT_UI <- DT::renderDataTable({
@@ -331,6 +332,17 @@ app_server <- function( input, output, session ) {
                           start = min(corpus_df$date),
                           end = max(corpus_df$date),
                           weekstart = 1)}
+
   )
+
+  ##### modules #####
+
+  ##### graph modules #####
+  observeEvent(input$go,
+               {
+                 mod_cass_show_ts_dygraph_server(id = "cass_show_ts_dygraph_ui_1",
+                                                 count_df = word_count_summarised_df_r())
+               })
+
 
 }

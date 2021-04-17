@@ -5,7 +5,7 @@
 \title{Run the Shiny Application}
 \usage{
 run_app(
-  corpus = cas_demo_corpus,
+  corpus = castarter2::cas_demo_corpus,
   onStart = NULL,
   options = list(),
   enableBookmarking = NULL,

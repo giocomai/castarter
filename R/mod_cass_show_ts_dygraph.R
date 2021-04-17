@@ -1,0 +1,52 @@
+#' cass_show_ts_dygraph UI Function
+#'
+#' @description A shiny Module.
+#'
+#' @param id,input,output,session Internal parameters for {shiny}.
+#'
+#' @noRd
+#'
+#' @importFrom shiny NS tagList
+mod_cass_show_ts_dygraph_ui <- function(id){
+  ns <- NS(id)
+  tagList(
+    dygraphs::dygraphOutput(ns("dygraph"))
+  )
+}
+
+#' cass_show_ts_dygraph Server Functions
+#'
+#' @noRd
+mod_cass_show_ts_dygraph_server <- function(id, count_df){
+
+  moduleServer(id, function(input, output, session){
+    ns <- session$ns
+
+    output$dygraph <- dygraphs::renderDygraph({
+      cas_show_ts_dygraph(count_df = count_df)
+    })
+  })
+}
+
+## To be copied in the UI
+# mod_cass_show_ts_dygraph_ui("cass_show_ts_dygraph_ui_1")
+
+## To be copied in the server
+# mod_cass_show_ts_dygraph_server("cass_show_ts_dygraph_ui_1")
+
+#
+# count_df <- castarter2::cas_count(corpus = castarter2::cas_demo_corpus,
+#                       words = c("russia", "moscow")) %>%
+#   cas_summarise(before = 15, after = 15)
+# cass_show_ts_dygraph_app(count_df)
+
+cass_show_ts_dygraph_app <- function(count_df) {
+  ui <- fluidPage(
+    castarter2:::mod_cass_show_ts_dygraph_ui("cass_show_ts_dygraph_ui_1")
+  )
+  server <- function(input, output, session) {
+    castarter2:::mod_cass_show_ts_dygraph_server("cass_show_ts_dygraph_ui_1",
+                                    count_df = count_df)
+  }
+  shinyApp(ui, server)
+}

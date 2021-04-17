@@ -34,8 +34,9 @@ cas_count <- function(corpus,
                       ignore_case = TRUE,
                       fixed = FALSE,
                       full_words_only = FALSE,
-                      n_column_name = n,
+                      date_column_name = date,
                       word_column_name = word,
+                      n_column_name = n,
                       locale = "en",
                       include_word = TRUE) {
   if (isTRUE(full_words_only)) {
@@ -57,8 +58,9 @@ cas_count <- function(corpus,
                              group_by = {{ group_by }},
                              ignore_case = ignore_case,
                              full_words_only = full_words_only,
-                             n_column_name = {{ n_column_name }},
+                             date_column_name = {{ date_column_name }},
                              word_column_name = {{ word_column_name }},
+                             n_column_name = {{ n_column_name }},
                              locale = locale,
                              include_word = TRUE)
 
@@ -74,8 +76,9 @@ cas_count_single <- function(corpus,
                              ignore_case = TRUE,
                              fixed = FALSE,
                              full_words_only = FALSE,
-                             n_column_name = n,
+                             date_column_name = date,
                              word_column_name = word,
+                             n_column_name = n,
                              locale = "en",
                              include_word = TRUE) {
   pattern <- words
@@ -101,8 +104,10 @@ cas_count_single <- function(corpus,
 
   if (include_word == TRUE) {
     output_df %>%
-      dplyr::mutate({{ word_column_name }} := stringr::str_c(words,
-                                                             collapse = ", "))
+      dplyr::transmute({{ date_column_name }},
+                       {{ word_column_name }} := stringr::str_c(words,
+                                                             collapse = ", "),
+                       {{ n_column_name }})
   } else {
     output_df
   }

@@ -63,6 +63,8 @@ app_ui <- function(request) {
           ),
           column(8,
                  h3("Graph")
+                 ,
+                 mod_cass_show_ts_dygraph_ui("cass_show_ts_dygraph_ui_1")
           )
         ),
         shiny::plotOutput("word_frequency_gg"),
