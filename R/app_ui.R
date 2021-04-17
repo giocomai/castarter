@@ -1,0 +1,99 @@
+#' The application User-Interface
+#'
+#' @param request Internal parameter for `{shiny}`.
+#'     DO NOT REMOVE.
+#' @import shiny
+#' @noRd
+app_ui <- function(request) {
+  tagList(
+    # Leave this function for adding external resources
+    golem_add_external_resources(),
+    # Your application UI logic
+    fluidPage(
+      theme = bslib::bs_theme(version = 4,
+                              bootswatch = "journal",
+                              primary = "#3B9AB2"),
+      tags$head(tags$style(
+        ".red{background-color:#FFB8C3;}.blue{background-color:#6ECFEA;}.green{background-color:#a6ce39;}"
+      )),
+      tags$head(tags$script(HTML('$(document).keyup(function(e) {
+    if (e.key == "Enter") {
+    $("#go").click();
+}});'))),
+      marker::use_marker(), # include marker dependencies
+      sidebarLayout(sidebarPanel(
+        shiny::textInput(inputId = 'term',
+                         label = 'Terms to be analysed',
+                         value = ""),
+        shiny::uiOutput(outputId = "column_selector_UI"),
+
+        shiny::radioButtons(inputId = "freq",
+                            label = NULL,
+                            choices = c("Absolute frequency",
+                                        "Relative frequency")),
+
+        shiny::uiOutput(outputId = "moving_type_selector_UI"),
+
+
+        conditionalPanel(condition = "input.moving_type_selector != 'Keep as is'", {
+          shiny::uiOutput(outputId = "moving_selector_UI")}),
+
+
+
+        shiny::sliderInput(inputId = "rolling_days",
+                           label = "Apply rolling average for ... days",
+                           min = 1,
+                           max = 91,
+                           value = 91,
+                           round = TRUE),
+        shiny::uiOutput(outputId = "date_range_input_UI")
+        ,
+        shiny::uiOutput(outputId = "pre_submit_help_text_UI"),
+        shiny::actionButton("go", "Go!"),
+        shiny::uiOutput(outputId = "summary_tables_left_UI")
+      ),
+
+      mainPanel(
+        fluidRow(
+          column(4,
+                 h3("Select graph type"),
+                 inputPanel(shiny::radioButtons(inputId = "graph_type",
+                                                label = "Type of graph",
+                                                choices = c("Line chart", "Bar chart")))
+          ),
+          column(8,
+                 h3("Graph")
+          )
+        ),
+        shiny::plotOutput("word_frequency_gg"),
+        DT::dataTableOutput("kwic_DT")
+      ))
+    )
+  )
+}
+
+#' Add external Resources to the Application
+#'
+#' This function is internally used to add external
+#' resources inside the Shiny application.
+#'
+#' @import shiny
+#' @importFrom golem add_resource_path activate_js favicon bundle_resources
+#' @noRd
+golem_add_external_resources <- function(){
+
+  add_resource_path(
+    'www', app_sys('app/www')
+  )
+
+  tags$head(
+    favicon(),
+    bundle_resources(
+      path = app_sys('app/www'),
+      app_title = 'castarter2'
+    )
+    # Add here other external resources
+    # for example, you can add shinyalert::useShinyalert()
+  )
+}
+
