@@ -67,7 +67,7 @@ app_ui <- function(request) {
                  mod_cass_show_ts_dygraph_ui("cass_show_ts_dygraph_ui_1")
           )
         ),
-        shiny::plotOutput("word_frequency_gg"),
+       # shiny::plotOutput("word_frequency_gg"),
         DT::dataTableOutput("kwic_DT")
       ))
     )

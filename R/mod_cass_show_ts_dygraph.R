@@ -17,13 +17,14 @@ mod_cass_show_ts_dygraph_ui <- function(id){
 #' cass_show_ts_dygraph Server Functions
 #'
 #' @noRd
-mod_cass_show_ts_dygraph_server <- function(id, count_df){
+mod_cass_show_ts_dygraph_server <- function(id, count_df, strokeWidth = 2){
 
   moduleServer(id, function(input, output, session){
     ns <- session$ns
 
     output$dygraph <- dygraphs::renderDygraph({
-      cas_show_ts_dygraph(count_df = count_df)
+      cas_show_ts_dygraph(count_df = count_df) %>%
+        dygraphs::dyOptions(strokeWidth = strokeWidth)
     })
   })
 }
