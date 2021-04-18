@@ -50,9 +50,9 @@ cas_summarise <- function(
     summarised <- count_df %>%
       dplyr::mutate({{ date_column_name }} := lubridate::floor_date(x = {{ date_column_name }},
                                                        unit = period)) %>%
-      dplyr::group_by({{ date_column_name }}, {{ word_column_name }}, .drop = TRUE) %>%
+      dplyr::group_by({{ word_column_name }}, {{ date_column_name }}) %>%
       dplyr::summarise({{ n_column_name }} := sum({{ n_column_name }}),
-                       .groups = "keep") %>%
+                       .groups = "drop_last") %>%
       dplyr::mutate(n = slider::slide_period_dbl(.x = {{ n_column_name }},
                                                  .i = {{ date_column_name }},
                                                  .period = period,
