@@ -18,7 +18,7 @@
 #' \dontrun{
 #' # this assumes dates are provided in a column called date
 #' corpus_df %>%
-#'  cas_count(words = "example",
+#'  cas_count(string = "example",
 #'            group_by = date) %>%
 #'  cas_summarise(period = "year")
 #' }
@@ -27,7 +27,7 @@ cas_summarise <- function(
   count_df,
   date_column_name = date,
   n_column_name = n,
-  word_column_name = word,
+  string_column_name = string,
   period = NULL,
   f = mean,
   every = 1L,
@@ -38,7 +38,7 @@ cas_summarise <- function(
 
   if (is.null(period)) {
     summarised <- count_df %>%
-      dplyr::group_by({{ word_column_name }}, .drop = TRUE) %>%
+      dplyr::group_by({{ string_column_name }}, .drop = TRUE) %>%
       dplyr::mutate({{ n_column_name }} := slider::slide_index_dbl(.x = {{ n_column_name }},
                                                        .i = {{ date_column_name }},
                                                        .f = f,
@@ -50,7 +50,7 @@ cas_summarise <- function(
     summarised <- count_df %>%
       dplyr::mutate({{ date_column_name }} := lubridate::floor_date(x = {{ date_column_name }},
                                                        unit = period)) %>%
-      dplyr::group_by({{ word_column_name }}, {{ date_column_name }}) %>%
+      dplyr::group_by({{ string_column_name }}, {{ date_column_name }}) %>%
       dplyr::summarise({{ n_column_name }} := sum({{ n_column_name }}),
                        .groups = "drop_last") %>%
       dplyr::mutate(n = slider::slide_period_dbl(.x = {{ n_column_name }},
@@ -66,7 +66,7 @@ cas_summarise <- function(
     if (period=="year") {
       summarised %>%
         dplyr::transmute(year = lubridate::year({{ date_column_name }}),
-                         {{ word_column_name }},
+                         {{ string_column_name }},
                          {{ n_column_name }})
     } else if (period == "quarter") {
       summarised %>%
@@ -74,20 +74,20 @@ cas_summarise <- function(
           quarter = lubridate::quarter(x = {{ date_column_name }},
                                        with_year = TRUE) %>%
             as.character(),
-          {{ word_column_name }},
+          {{ string_column_name }},
           {{ n_column_name }})
     } else if (period == "month") {
       summarised %>%
         dplyr::transmute(
           month = stringr::str_extract(string = {{ date_column_name }},
                                        pattern = "[:digit:]{4}-[:digit:]{2}"),
-          {{ word_column_name }},
+          {{ string_column_name }},
           {{ n_column_name }})
     } else if (period == "day") {
       summarised %>%
         dplyr::transmute(
           date = as.Date({{ date_column_name }}),
-          {{ word_column_name }},
+          {{ string_column_name }},
           {{ n_column_name }} )
     } else {
       summarised

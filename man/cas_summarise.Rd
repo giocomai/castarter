@@ -8,7 +8,7 @@ cas_summarise(
   count_df,
   date_column_name = date,
   n_column_name = n,
-  word_column_name = word,
+  string_column_name = string,
   period = NULL,
   f = mean,
   every = 1L,
@@ -49,7 +49,7 @@ Summarise for a given time period word counts, typically calculatd with \code{ca
 \dontrun{
 # this assumes dates are provided in a column called date
 corpus_df \%>\%
- cas_count(words = "example",
+ cas_count(string = "example",
            group_by = date) \%>\%
  cas_summarise(period = "year")
 }

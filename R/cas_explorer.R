@@ -7,8 +7,9 @@
 #' @export
 #' @importFrom shiny shinyApp
 #' @importFrom golem with_golem_options
-run_app <- function(
+cas_explorer <- function(
   corpus = castarter2::cas_demo_corpus,
+  default_string = NULL,
   onStart = NULL,
   options = list(),
   enableBookmarking = NULL,
@@ -17,13 +18,14 @@ run_app <- function(
 ) {
   with_golem_options(
     app = shinyApp(
-      ui = app_ui,
-      server = app_server,
+      ui = cass_explorer_app_ui,
+      server = cass_explorer_app_server,
       onStart = onStart,
       options = options,
       enableBookmarking = enableBookmarking,
       uiPattern = uiPattern
     ),
-    golem_opts = list(corpus = corpus)
+    golem_opts = list(corpus = corpus,
+                      default_string = default_string)
   )
 }

@@ -3,8 +3,8 @@ library("testthat")
 test_that("cas_count with one word works", {
   expect_equal(object = {
     df <- cas_count(corpus = cas_demo_corpus,
-              words = c("Europe"))
-    list(n_words = length(unique(df$word)),
+                    string = c("Europe"))
+    list(n_words = length(unique(df$string)),
          total_n = sum(df$n)>0)
   },
   expected = list(n_words = 1,
@@ -14,11 +14,23 @@ test_that("cas_count with one word works", {
 test_that("cas_count with more than one word works", {
   expect_equal(object = {
     df <- cas_count(corpus = cas_demo_corpus,
-              words = c("Europe", "Asia"))
+                    string = c("Europe", "Asia"))
 
-    list(n_words = length(unique(df$word)),
+    list(n_words = length(unique(df$string)),
          total_n = sum(df$n)>0)
   },
                expected = list(n_words = 2,
                                total_n = TRUE))
+})
+
+test_that("cas_count sets custom column names as expected", {
+  expect_equal(object = {
+    df <- cas_count(corpus = cas_demo_corpus,
+                    string = c("Europe"),
+                    string_column_name = pattern,
+                    n_column_name = value)
+
+   colnames(df)
+  },
+  expected = c("date", "pattern", "value"))
 })

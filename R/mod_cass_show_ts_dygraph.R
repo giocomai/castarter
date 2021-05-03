@@ -36,11 +36,29 @@ mod_cass_show_ts_dygraph_server <- function(id, count_df, strokeWidth = 2){
 # mod_cass_show_ts_dygraph_server("cass_show_ts_dygraph_ui_1")
 
 #
-# count_df <- castarter2::cas_count(corpus = castarter2::cas_demo_corpus,
-#                       words = c("russia", "moscow")) %>%
-#   cas_summarise(before = 15, after = 15)
-# cass_show_ts_dygraph_app(count_df)
+#
+#
+#
+#
 
+#' A minimal shiny app that demonstrates the functioning of related modules
+#'
+#' @param count_df A dataframe with three columns (`date`, `word`, and `n`), typically created with `cas_count()` and possibly processed with `cas_summarise()`.
+#'
+#' @return A shiny app
+#' @export
+#'
+#' @examples
+#'
+#' count_df <- castarter2::cas_count(corpus = castarter2::cas_demo_corpus,
+#'                                   words = c("russia", "moscow")) %>%
+#'   cas_summarise(before = 15, after = 15)
+#'
+#' cass_show_ts_dygraph_app(count_df)
+#'
+#'
+#'
+#'
 cass_show_ts_dygraph_app <- function(count_df) {
   ui <- fluidPage(
     castarter2:::mod_cass_show_ts_dygraph_ui("cass_show_ts_dygraph_ui_1")

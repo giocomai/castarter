@@ -1,15 +1,15 @@
-#' Count words in a corpus
+#' Count strings in a corpus
 #'
 #' @param corpus A textual corpus as a data frame.
-#' @param words A character vector of one or more words to be counted.
+#' @param string A character vector of one or more words or strings to be counted.
 #' @param text Defaults to text. The unquoted name of the column of the corpus data frame to be used for matching.
 #' @param group_by Defaults to NULL. If given, the unquoted name of the column to be used for grouping (e.g. date, or doc_id, or source, etc.)
 #' @param ignore_case Defaults to TRUE.
-#' @param full_words_only Defaults to TRUE. If FALSE, string is counted even when the it is found in the middle of a word (e.g. if FALSE, "ratio" would be counted as match in the word "irrational").
+#' @param full_words_only Defaults to FALSE. If FALSE, string is counted even when the it is found in the middle of a word (e.g. if FALSE, "ratio" would be counted as match in the word "irrational").
 #' @param locale Locale to be used when ignore_case is set to TRUE. Passed to `stringr::str_to_lower`, defaults to "en".
 #' @param n_column_name Defaults to 'n'. The unquoted name of the column to be used for the count in the output.
-#' @param word_column_name Defaults to 'word'. The unquoted name of the column to be used for the word in the output (if `word_column` is set to TRUE, as per default).
-#' @param word_column Logical, defaults to TRUE. If true, includes a column with the given word as defined by the param `word_column_name`.
+#' @param string_column_name Defaults to 'word'. The unquoted name of the column to be used for the word in the output (if `include_string` is set to TRUE, as per default).
+#' @param include_string Logical, defaults to TRUE. If true, includes a column with the given word as defined by the param `string_column_name`.
 
 #'
 #' @return A data frame
@@ -20,7 +20,7 @@
 #' \dontrun{
 #' cas_count(
 #'   corpus = corpus,
-#'   words = c("dogs", "cats", "horses"),
+#'   string = c("dogs", "cats", "horses"),
 #'   text = text,
 #'   group_by = date,
 #'   n_column_name = n
@@ -28,19 +28,18 @@
 #' }
 #'
 cas_count <- function(corpus,
-                      words,
+                      string,
                       text = text,
                       group_by = date,
                       ignore_case = TRUE,
                       fixed = FALSE,
                       full_words_only = FALSE,
-                      date_column_name = date,
-                      word_column_name = word,
+                      string_column_name = string,
                       n_column_name = n,
                       locale = "en",
-                      include_word = TRUE) {
+                      include_string = TRUE) {
   if (isTRUE(full_words_only)) {
-    words <- purrr::map_chr(.x = words,
+    string <- purrr::map_chr(.x = string,
                             .f = function(x) {
                               stringr::str_c(
                                 "\\b",
@@ -50,19 +49,18 @@ cas_count <- function(corpus,
                             })
   }
 
-  purrr::map_dfr(.x = words,
+  purrr::map_dfr(.x = string,
                  .f = function(x) {
                    cas_count_single(corpus = corpus,
-                             words = x,
+                             string = x,
                              text = {{ text }},
                              group_by = {{ group_by }},
                              ignore_case = ignore_case,
                              full_words_only = full_words_only,
-                             date_column_name = {{ date_column_name }},
-                             word_column_name = {{ word_column_name }},
+                             string_column_name = {{ string_column_name }},
                              n_column_name = {{ n_column_name }},
                              locale = locale,
-                             include_word = TRUE)
+                             include_string = TRUE)
 
                  }
   )
@@ -70,18 +68,17 @@ cas_count <- function(corpus,
 
 # Actually does the counting, but accepts only vectors of length 1 as words
 cas_count_single <- function(corpus,
-                             words,
+                             string,
                              text = text,
                              group_by = date,
                              ignore_case = TRUE,
                              fixed = FALSE,
                              full_words_only = FALSE,
-                             date_column_name = date,
-                             word_column_name = word,
+                             string_column_name = word,
                              n_column_name = n,
                              locale = "en",
-                             include_word = TRUE) {
-  pattern <- words
+                             include_string = TRUE) {
+  pattern <- string
 
   if (ignore_case == TRUE) {
     corpus <- corpus %>%
@@ -102,10 +99,10 @@ cas_count_single <- function(corpus,
     .groups = "drop"
     )
 
-  if (include_word == TRUE) {
+  if (include_string == TRUE) {
     output_df %>%
-      dplyr::transmute({{ date_column_name }},
-                       {{ word_column_name }} := stringr::str_c(words,
+      dplyr::transmute({{ group_by }},
+                       {{ string_column_name }} := stringr::str_c(string,
                                                              collapse = ", "),
                        {{ n_column_name }})
   } else {

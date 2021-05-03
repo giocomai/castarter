@@ -4,7 +4,7 @@
 #'     DO NOT REMOVE.
 #' @import shiny
 #' @noRd
-app_ui <- function(request) {
+cass_explorer_app_ui <- function(request) {
   tagList(
     # Leave this function for adding external resources
     golem_add_external_resources(),
@@ -23,8 +23,11 @@ app_ui <- function(request) {
       marker::use_marker(), # include marker dependencies
       sidebarLayout(sidebarPanel(
         shiny::textInput(inputId = 'term',
-                         label = 'Terms to be analysed',
-                         value = ""),
+                         label = 'String to be matched',
+                         value = ifelse(test = is.null(golem::get_golem_options("default_string")),
+                                        yes = "",
+                                        no = golem::get_golem_options("default_string"))),
+
         shiny::uiOutput(outputId = "column_selector_UI"),
 
         shiny::radioButtons(inputId = "freq",
@@ -38,14 +41,6 @@ app_ui <- function(request) {
         conditionalPanel(condition = "input.moving_type_selector != 'Keep as is'", {
           shiny::uiOutput(outputId = "moving_selector_UI")}),
 
-
-
-        shiny::sliderInput(inputId = "rolling_days",
-                           label = "Apply rolling average for ... days",
-                           min = 1,
-                           max = 91,
-                           value = 91,
-                           round = TRUE),
         shiny::uiOutput(outputId = "date_range_input_UI")
         ,
         shiny::uiOutput(outputId = "pre_submit_help_text_UI"),

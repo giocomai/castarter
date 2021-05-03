@@ -2,27 +2,26 @@
 % Please edit documentation in R/cas_count.R
 \name{cas_count}
 \alias{cas_count}
-\title{Count words in a corpus}
+\title{Count strings in a corpus}
 \usage{
 cas_count(
   corpus,
-  words,
+  string,
   text = text,
   group_by = date,
   ignore_case = TRUE,
   fixed = FALSE,
   full_words_only = FALSE,
-  date_column_name = date,
-  word_column_name = word,
+  string_column_name = string,
   n_column_name = n,
   locale = "en",
-  include_word = TRUE
+  include_string = TRUE
 )
 }
 \arguments{
 \item{corpus}{A textual corpus as a data frame.}
 
-\item{words}{A character vector of one or more words to be counted.}
+\item{string}{A character vector of one or more words or strings to be counted.}
 
 \item{text}{Defaults to text. The unquoted name of the column of the corpus data frame to be used for matching.}
 
@@ -30,28 +29,28 @@ cas_count(
 
 \item{ignore_case}{Defaults to TRUE.}
 
-\item{full_words_only}{Defaults to TRUE. If FALSE, string is counted even when the it is found in the middle of a word (e.g. if FALSE, "ratio" would be counted as match in the word "irrational").}
+\item{full_words_only}{Defaults to FALSE. If FALSE, string is counted even when the it is found in the middle of a word (e.g. if FALSE, "ratio" would be counted as match in the word "irrational").}
 
-\item{word_column_name}{Defaults to 'word'. The unquoted name of the column to be used for the word in the output (if \code{word_column} is set to TRUE, as per default).}
+\item{string_column_name}{Defaults to 'word'. The unquoted name of the column to be used for the word in the output (if \code{include_string} is set to TRUE, as per default).}
 
 \item{n_column_name}{Defaults to 'n'. The unquoted name of the column to be used for the count in the output.}
 
 \item{locale}{Locale to be used when ignore_case is set to TRUE. Passed to \code{stringr::str_to_lower}, defaults to "en".}
 
-\item{word_column}{Logical, defaults to TRUE. If true, includes a column with the given word as defined by the param \code{word_column_name}.}
+\item{include_string}{Logical, defaults to TRUE. If true, includes a column with the given word as defined by the param \code{string_column_name}.}
 }
 \value{
 A data frame
 }
 \description{
-Count words in a corpus
+Count strings in a corpus
 }
 \examples{
 
 \dontrun{
 cas_count(
   corpus = corpus,
-  words = c("dogs", "cats", "horses"),
+  string = c("dogs", "cats", "horses"),
   text = text,
   group_by = date,
   n_column_name = n

@@ -4,7 +4,7 @@
 #'     DO NOT REMOVE.
 #' @import shiny
 #' @noRd
-app_server <- function( input, output, session ) {
+cass_explorer_app_server <- function( input, output, session ) {
   # Your application server logic
 
   corpus_df <- golem::get_golem_options("corpus")
@@ -22,22 +22,9 @@ app_server <- function( input, output, session ) {
 
   tsGG <- shiny::eventReactive(input$go, {
     if (input$freq=="Absolute frequency") {
-      # castarter::ShowAbsoluteTS(
-      #   terms = castarter2::cass_split(input$term),
-      #   dataset = corpus_df,
-      #   type = "graph",
-      #   rollingDays = input$rolling_days,
-      #   startDate = input$date_range[1],
-      #   endDate = input$date_range[2])
 
     } else if (input$freq=="Relative frequency") {
-      # castarter::ShowRelativeTS(
-      #   terms = castarter2::cass_split(input$term),
-      #   dataset = corpus_df,
-      #   type = "graph",
-      #   rollingDays = input$rolling_days,
-      #   startDate = input$date_range[1],
-      #   endDate = input$date_range[2])
+
     }
   })
 
@@ -96,7 +83,7 @@ app_server <- function( input, output, session ) {
     count_df <- corpus_df %>%
       dplyr::rename(text = .data[[input$text_column]],
                     date = .data[[input$group_by_column]]) %>%
-      castarter2::cas_count(words = castarter2:::cass_split(input$term))
+      castarter2::cas_count(string = castarter2:::cass_split(input$term))
     count_df
   })
 
@@ -113,7 +100,7 @@ app_server <- function( input, output, session ) {
                foo <- mean
              } else if (input$moving_type_selector=="median") {
                foo <- median
-             } else if (input$moving_type_selector=="total") {
+             } else if (input$moving_type_selector=="sum") {
                foo <- sum
              } else {
                return(NULL)
@@ -207,7 +194,7 @@ app_server <- function( input, output, session ) {
                         label = "Calculate moving...",
                         choices = c("average",
                                     "median",
-                                    "total",
+                                    "sum",
                                     "Keep as is"),
                         selected = dplyr::if_else(condition = input$summarise_by=="day",
                                                   true = "average",
