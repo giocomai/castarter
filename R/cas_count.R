@@ -9,8 +9,6 @@
 #' @param locale Locale to be used when ignore_case is set to TRUE. Passed to `stringr::str_to_lower`, defaults to "en".
 #' @param n_column_name Defaults to 'n'. The unquoted name of the column to be used for the count in the output.
 #' @param string_column_name Defaults to 'word'. The unquoted name of the column to be used for the word in the output (if `include_string` is set to TRUE, as per default).
-#' @param include_string Logical, defaults to TRUE. If true, includes a column with the given word as defined by the param `string_column_name`.
-
 #'
 #' @return A data frame
 #' @export
@@ -36,8 +34,7 @@ cas_count <- function(corpus,
                       full_words_only = FALSE,
                       string_column_name = string,
                       n_column_name = n,
-                      locale = "en",
-                      include_string = TRUE) {
+                      locale = "en") {
   if (isTRUE(full_words_only)) {
     string <- purrr::map_chr(.x = string,
                             .f = function(x) {
@@ -59,8 +56,7 @@ cas_count <- function(corpus,
                              full_words_only = full_words_only,
                              string_column_name = {{ string_column_name }},
                              n_column_name = {{ n_column_name }},
-                             locale = locale,
-                             include_string = TRUE)
+                             locale = locale)
 
                  }
   )
@@ -76,8 +72,8 @@ cas_count_single <- function(corpus,
                              full_words_only = FALSE,
                              string_column_name = word,
                              n_column_name = n,
-                             locale = "en",
-                             include_string = TRUE) {
+                             locale = "en"
+                             ) {
   pattern <- string
 
   if (ignore_case == TRUE) {
@@ -99,13 +95,32 @@ cas_count_single <- function(corpus,
     .groups = "drop"
     )
 
-  if (include_string == TRUE) {
     output_df %>%
       dplyr::transmute({{ group_by }},
                        {{ string_column_name }} := stringr::str_c(string,
                                                              collapse = ", "),
                        {{ n_column_name }})
-  } else {
-    output_df
-  }
+
+}
+
+
+cas_count_total_words <-  function(corpus,
+                                   string = "[\\w\']+",
+                                   text = text,
+                                   group_by = date,
+                                   ignore_case = TRUE,
+                                   n_column_name = n,
+                                   locale = "en") {
+  cas_count_single(corpus = corpus,
+                   string = string,
+                   text ={{ text }},
+                   group_by = {{ group_by }},
+                   ignore_case = FALSE,
+                   fixed = FALSE,
+                   full_words_only = FALSE,
+                   string_column_name = cas_string,
+                   n_column_name = {{ n_column_name }},
+                   locale = locale) %>%
+    dplyr::select(-cas_string)
+
 }
