@@ -7,7 +7,7 @@
 cas_show_barchart_ggiraph(ggobj, data_id = NULL, tooltip = NULL)
 }
 \arguments{
-\item{ggobj}{A ggplot2 object, typically generated with \code{cas_show_barchart_gg_base()}}
+\item{ggobj}{A ggplot2 object, typically generated with \code{cas_show_gg_base()}}
 
 \item{data_id}{Defaults to NULL. If given, unquoted name of column, passed to ggiraph.}
 

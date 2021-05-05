@@ -3,18 +3,18 @@
 #' @param count_df
 #' @param group_by Defaults to NULL. If given, the unquoted name of the column to be used for grouping (e.g. date, or doc_id, or source, etc.)
 #' @param n_column_name Defaults to 'n'. The unquoted name of the column to be used for the count in the output.
-#' @param word_column_name Defaults to 'word'. The unquoted name of the column to be used for the word in the output (if `word_column` is set to TRUE, as per default).
-#' @param group_as_factor Defaults to FALSE. If TRUE, the grouping column is forced into a vector, otherwise it is kept in its current format (e.g. date, or numeric).
+#' @param string_column_name Defaults to 'string'. The unquoted name of the column to be used for the word in the output.
+#' @param group_as_factor Defaults to FALSE. If TRUE, the grouping column is forced into a factor, otherwise it is kept in its current format (e.g. date, or numeric).
 #'
 #' @return A ggplot2 object with aesthetics set, but no geometry.
 #' @export
 #'
 #' @examples
-cas_show_barchart_gg_base <- function(count_df,
-                                      group_by = date,
-                                      n_column_name = n,
-                                      word_column_name = word,
-                                      group_as_factor = FALSE) {
+cas_show_gg_base <- function(count_df,
+                             group_by = date,
+                             n_column_name = n,
+                             string_column_name = string,
+                             group_as_factor = FALSE) {
   if (isTRUE(group_as_factor)) {
     count_df <- count_df %>%
       dplyr::mutate({{ group_by }} := factor({{ group_by }}))
@@ -22,7 +22,10 @@ cas_show_barchart_gg_base <- function(count_df,
   count_df %>%
     ggplot2::ggplot(mapping = ggplot2::aes(x = {{ group_by }},
                                            y = {{ n_column_name }},
-                                           fill = {{ word_column_name }}))
+                                           fill = {{ string_column_name }})) +
+    ggplot2::scale_y_continuous(name = "", labels = scales::number) +
+    ggplot2::theme_minimal() +
+    ggplot2::theme(legend.title = ggplot2::element_blank())
 }
 
 
@@ -30,9 +33,10 @@ cas_show_barchart_gg_base <- function(count_df,
 #'
 #' For detail on parameters, see https://davidgohel.github.io/ggiraph/articles/offcran/using_ggiraph.html
 #'
-#' @param ggobj A ggplot2 object, typically generated with `cas_show_barchart_gg_base()`
+#' @param ggobj A ggplot2 object, typically generated with `cas_show_gg_base()`
 #' @param data_id Defaults to NULL. If given, unquoted name of column, passed to ggiraph.
 #' @param tooltip Defaults to NULL. If given, unquoted name of column, passed to ggiraph.
+#' @param position Defaults to "stack". Available values include "dodge".
 #'
 #' @return A girage/htmlwidget object
 #' @export
@@ -40,8 +44,18 @@ cas_show_barchart_gg_base <- function(count_df,
 #' @examples
 cas_show_barchart_ggiraph <- function(ggobj,
                                       data_id = NULL,
-                                      tooltip = NULL) {
-  ggiraph::girafe(ggobj = ggobj +
-                    ggiraph::geom_col_interactive(mapping = ggplot2::aes(data_id = data_id,
-                                                                         tooltip = tooltip)))
+                                      tooltip = NULL,
+                                      position = "stack") {
+  if (position == "stack") {
+    ggiraph::girafe(ggobj = ggobj +
+                      ggiraph::geom_col_interactive(mapping = ggplot2::aes(data_id = data_id,
+                                                                           tooltip = tooltip),
+                                                    position = ggplot2::position_stack()))
+  } else if (position == "dodge") {
+    ggiraph::girafe(ggobj = ggobj +
+                      ggiraph::geom_col_interactive(mapping = ggplot2::aes(data_id = data_id,
+                                                                           tooltip = tooltip),
+                                                    position = ggplot2::position_dodge()))
+  }
+
 }

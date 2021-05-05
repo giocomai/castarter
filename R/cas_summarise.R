@@ -65,13 +65,13 @@ cas_summarise <- function(
   if (auto_convert == TRUE) {
     if (period=="year") {
       summarised %>%
-        dplyr::transmute(year = lubridate::year({{ date_column_name }}),
+        dplyr::transmute({{ date_column_name }} := lubridate::year({{ date_column_name }}),
                          {{ string_column_name }},
                          {{ n_column_name }})
     } else if (period == "quarter") {
       summarised %>%
         dplyr::transmute(
-          quarter = lubridate::quarter(x = {{ date_column_name }},
+          {{ date_column_name }} := lubridate::quarter(x = {{ date_column_name }},
                                        with_year = TRUE) %>%
             as.character(),
           {{ string_column_name }},
@@ -79,14 +79,14 @@ cas_summarise <- function(
     } else if (period == "month") {
       summarised %>%
         dplyr::transmute(
-          month = stringr::str_extract(string = {{ date_column_name }},
+          {{ date_column_name }} := stringr::str_extract(string = {{ date_column_name }},
                                        pattern = "[:digit:]{4}-[:digit:]{2}"),
           {{ string_column_name }},
           {{ n_column_name }})
     } else if (period == "day") {
       summarised %>%
         dplyr::transmute(
-          date = as.Date({{ date_column_name }}),
+          {{ date_column_name }} := as.Date({{ date_column_name }}),
           {{ string_column_name }},
           {{ n_column_name }} )
     } else {

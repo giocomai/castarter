@@ -80,10 +80,17 @@ cass_explorer_app_server <- function( input, output, session ) {
   ###### Word counting  reactives######
 
   word_count_df_r <- shiny::eventReactive(input$go,{
-    count_df <- corpus_df %>%
-      dplyr::rename(text = .data[[input$text_column]],
-                    date = .data[[input$group_by_column]]) %>%
-      castarter2::cas_count(string = castarter2:::cass_split(input$term))
+    if (input$freq=="Absolute frequency") {
+      count_df <- corpus_df %>%
+        dplyr::rename(text = .data[[input$text_column]],
+                      date = .data[[input$group_by_column]]) %>%
+        castarter2::cas_count(string = castarter2:::cass_split(input$term))
+    } else if (input$freq=="Relative frequency") {
+      count_df <- corpus_df %>%
+        dplyr::rename(text = .data[[input$text_column]],
+                      date = .data[[input$group_by_column]]) %>%
+        castarter2::cas_count_relative(string = castarter2:::cass_split(input$term))
+    }
     count_df
   })
 
@@ -109,7 +116,6 @@ cass_explorer_app_server <- function( input, output, session ) {
 
              if (input$moving_length_type_selector=="centred") {
                units_before <- units_after <- round((input$moving_units_total-1)/2)
-
              } else {
                units_before <- input$moving_units_before
                units_after <- input$moving_units_after
@@ -181,7 +187,7 @@ cass_explorer_app_server <- function( input, output, session ) {
       conditionalPanel(condition = "input.summarise_by != ''", {
         shiny::checkboxInput(inputId = "summarise_auto_convert_checkbox",
                              label = "Autoconvert date/time format in output?",
-                             value = TRUE)
+                             value = FALSE)
       }
       ))
 
@@ -198,7 +204,7 @@ cass_explorer_app_server <- function( input, output, session ) {
                                     "Keep as is"),
                         selected = dplyr::if_else(condition = input$summarise_by=="day",
                                                   true = "average",
-                                                  false = "Keep as is"),
+                                                  false = "average"),
                         inline = TRUE)
 
   })
@@ -216,7 +222,7 @@ cass_explorer_app_server <- function( input, output, session ) {
                                                                 input$summarise_by, "s?")),
                           value = dplyr::if_else(input$summarise_by=="day",
                                                  31L,
-                                                 3L),
+                                                 1L),
 
                           min = 1L,
                           step = 2),
@@ -250,12 +256,16 @@ cass_explorer_app_server <- function( input, output, session ) {
     if (input$moving_type_selector=="Keep as is"&input$summarise_by!="") {
       text <- paste0("With the current settings, the figure for each ",
                      input$summarise_by,
-                     " corresponds to the number of matches found within that timeframe.")
+                     " corresponds to the ",
+                     stringr::str_to_lower(input$freq),
+                     " of matches found within that timeframe.")
     } else if (input$summarise_by!="") {
       text <- paste0("With the current settings, the figure for each ",
                      input$summarise_by,
                      " corresponds to the moving ",
                      input$moving_type_selector,
+                     " of the ",
+                     stringr::str_to_lower(input$freq),
                      " calculated over ",
                      input$moving_units_total,
                      " ",
@@ -327,8 +337,15 @@ cass_explorer_app_server <- function( input, output, session ) {
   ##### graph modules #####
   observeEvent(input$go,
                {
-                 mod_cass_show_ts_dygraph_server(id = "cass_show_ts_dygraph_ui_1",
-                                                 count_df = word_count_summarised_df_r())
+                 if (input$graph_type == "Line chart") {
+                   castarter2:::mod_cass_show_ts_dygraph_server(id = "cass_show_ts_dygraph_ui_1",
+                                                   count_df = word_count_summarised_df_r())
+
+                 } else if (input$graph_type == "Bar chart") {
+                   castarter2:::mod_cass_show_barchart_ggiraph_server(id = "cass_show_barchart_ggiraph_ui_1",
+                                                                count_df = word_count_summarised_df_r())
+                 }
+
                })
 
 

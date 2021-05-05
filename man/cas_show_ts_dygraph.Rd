@@ -2,24 +2,24 @@
 % Please edit documentation in R/cas_show_ts.R
 \name{cas_show_ts_dygraph}
 \alias{cas_show_ts_dygraph}
-\title{Title}
+\title{Create dygraphs based on a data frame typically generated with cas_count()}
 \usage{
 cas_show_ts_dygraph(
   count_df,
   date_column_name = date,
   n_column_name = n,
-  word_column_name = word,
+  string_column_name = string,
   range_selector = TRUE
 )
 }
 \arguments{
-\item{count}{}
+\item{count_df}{}
 }
 \value{
 
 }
 \description{
-Title
+Create dygraphs based on a data frame typically generated with cas_count()
 }
 \examples{
 

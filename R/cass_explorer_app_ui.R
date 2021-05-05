@@ -54,12 +54,19 @@ cass_explorer_app_ui <- function(request) {
                  h3("Select graph type"),
                  inputPanel(shiny::radioButtons(inputId = "graph_type",
                                                 label = "Type of graph",
-                                                choices = c("Line chart", "Bar chart")))
+                                                choices = c("Line chart",
+                                                            "Bar chart")))
           ),
           column(8,
-                 h3("Graph")
-                 ,
-                 mod_cass_show_ts_dygraph_ui("cass_show_ts_dygraph_ui_1")
+                 h3("Graph"),
+                 shiny::conditionalPanel(condition = "input.graph_type == 'Line chart'", {
+                   castarter2:::mod_cass_show_ts_dygraph_ui("cass_show_ts_dygraph_ui_1")
+                 }),
+                 shiny::conditionalPanel(condition = "input.graph_type == 'Bar chart'", {
+                   castarter2:::mod_cass_show_barchart_ggiraph_ui("cass_show_barchart_ggiraph_ui_1")
+                 })
+
+
           )
         ),
        # shiny::plotOutput("word_frequency_gg"),
