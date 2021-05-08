@@ -31,7 +31,9 @@ Imports:
     htmltools,
     bslib,
     marker,
-    dygraphs
+    dygraphs,
+    waiter,
+    ggiraph
 Suggests: 
     testthat (>= 3.0.0),
     roxygen2,
