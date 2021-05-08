@@ -33,7 +33,8 @@ Imports:
     marker,
     dygraphs,
     waiter,
-    ggiraph
+    ggiraph,
+    lubridate
 Suggests: 
     testthat (>= 3.0.0),
     roxygen2,
