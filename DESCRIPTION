@@ -34,7 +34,8 @@ Imports:
     dygraphs,
     waiter,
     ggiraph,
-    lubridate
+    lubridate,
+    tbl2xts
 Suggests: 
     testthat (>= 3.0.0),
     roxygen2,
