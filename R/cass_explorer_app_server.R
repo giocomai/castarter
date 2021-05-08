@@ -19,7 +19,6 @@ cass_explorer_app_server <- function( input, output, session ) {
       title = "Click here!",
       description = "Press 'enter' or click on the 'Go!' button to update graphs"
     )
-  guide$init()$start()
 
   corpus_df <- golem::get_golem_options("corpus")
   sentences_df <- corpus_df %>%

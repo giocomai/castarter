@@ -21,9 +21,6 @@ cass_explorer_app_ui <- function(request) {
     if (e.key == "Enter") {
     $("#go").click();
 }});'))),
-      marker::use_marker(), # include marker dependencies
-      waiter::use_waiter(), # include waiter dependencies
-      cicerone::use_cicerone(), # include cicerone dependencies
       waiter::waiter_preloader(html = waiter::spin_fading_circles()),
       sidebarLayout(sidebarPanel(
         shiny::textInput(inputId = 'string',
@@ -31,6 +28,13 @@ cass_explorer_app_ui <- function(request) {
                          value = ifelse(test = is.null(golem::get_golem_options("default_string")),
                                         yes = "",
                                         no = golem::get_golem_options("default_string"))),
+        shiny::actionButton(inputId = "go",
+                            label = "Go!",
+                            icon = shiny::icon("search"),
+                            width = "100%"),
+        shiny::h3("Additional settings"),
+
+
 
         shiny::uiOutput(outputId = "column_selector_UI"),
 
@@ -48,7 +52,6 @@ cass_explorer_app_ui <- function(request) {
         shiny::uiOutput(outputId = "date_range_input_UI")
         ,
         shiny::uiOutput(outputId = "pre_submit_help_text_UI"),
-        shiny::actionButton("go", "Go!"),
         shiny::uiOutput(outputId = "summary_tables_left_UI")
       ),
 
@@ -104,7 +107,10 @@ golem_add_external_resources <- function(){
     bundle_resources(
       path = app_sys('app/www'),
       app_title = 'castarter2'
-    )
+    ),
+    marker::use_marker(), # include marker dependencies
+    waiter::use_waiter(), # include waiter dependencies
+    cicerone::use_cicerone(), # include cicerone dependencies
     # Add here other external resources
     # for example, you can add shinyalert::useShinyalert()
   )
