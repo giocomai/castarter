@@ -35,7 +35,8 @@ Imports:
     waiter,
     ggiraph,
     lubridate,
-    tbl2xts
+    tbl2xts,
+    cicerone
 Suggests: 
     testthat (>= 3.0.0),
     roxygen2,

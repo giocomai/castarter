@@ -7,6 +7,20 @@
 cass_explorer_app_server <- function( input, output, session ) {
   # Your application server logic
 
+  guide <- cicerone::Cicerone$
+    new()$
+    step(
+      el = "string",
+      title = "Type the text you want to search here",
+      description = "You can use commas to compare frequency of different terms"
+    )$
+    step(
+      el = "go",
+      title = "Click here!",
+      description = "Press 'enter' or click on the 'Go!' button to update graphs"
+    )
+  guide$init()$start()
+
   corpus_df <- golem::get_golem_options("corpus")
   sentences_df <- corpus_df %>%
     tidytext::unnest_tokens(output = sentence,
@@ -41,7 +55,7 @@ cass_explorer_app_server <- function( input, output, session ) {
       dplyr::filter(date>input$date_range[1], date<input$date_range[2]) %>%
       dplyr::filter(stringr::str_detect(string = sentence,
                                         pattern = stringr::regex(ignore_case = TRUE,
-                                                                 pattern = paste(as.character(stringr::str_to_lower(trimws(stringr::str_split(string = input$term,
+                                                                 pattern = paste(as.character(stringr::str_to_lower(trimws(stringr::str_split(string = input$string,
                                                                                                                                               pattern = ",",
                                                                                                                                               simplify = TRUE)))),
                                                                                  collapse = "|")))) %>%
@@ -50,16 +64,16 @@ cass_explorer_app_server <- function( input, output, session ) {
       dplyr::select(Date, Source, Sentence) %>%
       dplyr::arrange(dplyr::desc(Date))
     #
-    #     if (length(as.character(stringr::str_to_lower(trimws(stringr::str_split(string = input$term,
+    #     if (length(as.character(stringr::str_to_lower(trimws(stringr::str_split(string = input$string,
     #                                                                             pattern = ",",
     #                                                                             simplify = TRUE)))))==1) {
     #       temp$Sentence <- purrr::map_chr(.x = temp$Sentence,
     #                                       .f = function (x)
     #                                         paste(c(rbind(as.character(stringr::str_split(string = x,
-    #                                                                                       pattern = stringr::regex(pattern = as.character(input$term), ignore_case = TRUE), simplify = TRUE)),
+    #                                                                                       pattern = stringr::regex(pattern = as.character(input$string), ignore_case = TRUE), simplify = TRUE)),
     #                                                       c(paste0("<span style='background-color: #FFFF00'>",
     #                                                                as.character(stringr::str_extract_all(string = x,
-    #                                                                                                      pattern = stringr::regex(as.character(input$term),
+    #                                                                                                      pattern = stringr::regex(as.character(input$string),
     #                                                                                                                               ignore_case = TRUE),
     #                                                                                                      simplify = TRUE)),
     #                                                                "</span>"), ""))),
@@ -74,7 +88,7 @@ cass_explorer_app_server <- function( input, output, session ) {
   observeEvent(input$kwic_DT_rows_current, {
     marker_kwic$
       unmark(className = "green")$
-      mark(trimws(as.character(stringr::str_split(input$term, pattern = ",",simplify = TRUE))), className = "green")
+      mark(trimws(as.character(stringr::str_split(input$string, pattern = ",",simplify = TRUE))), className = "green")
   }, priority = -1)
 
   ###### Word counting  reactives######
@@ -84,12 +98,12 @@ cass_explorer_app_server <- function( input, output, session ) {
       count_df <- corpus_df %>%
         dplyr::rename(text = .data[[input$text_column]],
                       date = .data[[input$group_by_column]]) %>%
-        castarter2::cas_count(string = castarter2:::cass_split(input$term))
+        castarter2::cas_count(string = castarter2:::cass_split(input$string))
     } else if (input$freq=="Relative frequency") {
       count_df <- corpus_df %>%
         dplyr::rename(text = .data[[input$text_column]],
                       date = .data[[input$group_by_column]]) %>%
-        castarter2::cas_count_relative(string = castarter2:::cass_split(input$term))
+        castarter2::cas_count_relative(string = castarter2:::cass_split(input$string))
     }
     count_df
   })
@@ -335,18 +349,24 @@ cass_explorer_app_server <- function( input, output, session ) {
   ##### modules #####
 
   ##### graph modules #####
-  observeEvent(input$go,
-               {
-                 if (input$graph_type == "Line chart") {
-                   castarter2:::mod_cass_show_ts_dygraph_server(id = "cass_show_ts_dygraph_ui_1",
-                                                   count_df = word_count_summarised_df_r())
+  shiny::observeEvent(input$go,
+                      {
+                        if (input$graph_type == "Line chart") {
+                          castarter2:::mod_cass_show_ts_dygraph_server(id = "cass_show_ts_dygraph_ui_1",
+                                                                       count_df = word_count_summarised_df_r())
 
-                 } else if (input$graph_type == "Bar chart") {
-                   castarter2:::mod_cass_show_barchart_ggiraph_server(id = "cass_show_barchart_ggiraph_ui_1",
-                                                                count_df = word_count_summarised_df_r())
-                 }
+                        } else if (input$graph_type == "Bar chart") {
+                          castarter2:::mod_cass_show_barchart_ggiraph_server(id = "cass_show_barchart_ggiraph_ui_1",
+                                                                             count_df = word_count_summarised_df_r())
+                        }
 
-               })
+                      }, ignoreInit = TRUE, ignoreNULL = FALSE)
+
+  observeEvent(input$cicerone, {
+    guide$start()
+  },
+  ignoreInit = TRUE,
+  ignoreNULL = TRUE)
 
 
 }

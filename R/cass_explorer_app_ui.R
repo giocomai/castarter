@@ -23,9 +23,10 @@ cass_explorer_app_ui <- function(request) {
 }});'))),
       marker::use_marker(), # include marker dependencies
       waiter::use_waiter(), # include waiter dependencies
+      cicerone::use_cicerone(), # include cicerone dependencies
       waiter::waiter_preloader(html = waiter::spin_fading_circles()),
       sidebarLayout(sidebarPanel(
-        shiny::textInput(inputId = 'term',
+        shiny::textInput(inputId = 'string',
                          label = 'String to be matched',
                          value = ifelse(test = is.null(golem::get_golem_options("default_string")),
                                         yes = "",
@@ -58,7 +59,12 @@ cass_explorer_app_ui <- function(request) {
                  inputPanel(shiny::radioButtons(inputId = "graph_type",
                                                 label = "Type of graph",
                                                 choices = c("Line chart",
-                                                            "Bar chart")))
+                                                            "Bar chart"))),
+                 h3("About"),
+                 shiny::actionButton(inputId = "cicerone",
+                                     label = "Click for a guided tour",
+                                     icon = icon("info-circle"),
+                                     width = "100%"),
           ),
           column(8,
                  h3("Graph"),
