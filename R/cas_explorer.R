@@ -10,6 +10,7 @@
 cas_explorer <- function(
   corpus = castarter2::cas_demo_corpus,
   default_string = NULL,
+  custom_head_html = "",
   onStart = NULL,
   options = list(),
   enableBookmarking = NULL,
@@ -26,6 +27,7 @@ cas_explorer <- function(
       uiPattern = uiPattern
     ),
     golem_opts = list(corpus = corpus,
-                      default_string = default_string)
+                      default_string = default_string,
+                      custom_head_html = custom_head_html)
   )
 }

@@ -16,11 +16,14 @@ cass_explorer_app_ui <- function(request) {
       tags$head(tags$style(
         ".red{background-color:#FFB8C3;}.blue{background-color:#6ECFEA;}.green{background-color:#a6ce39;}"
       )),
+      tags$head(shiny::HTML(golem::get_golem_options("custom_head_html"))),
       tags$head(tags$script(HTML('$(document).keyup(function(e) {
     if (e.key == "Enter") {
     $("#go").click();
 }});'))),
       marker::use_marker(), # include marker dependencies
+      waiter::use_waiter(), # include waiter dependencies
+      waiter::waiter_preloader(html = waiter::spin_fading_circles()),
       sidebarLayout(sidebarPanel(
         shiny::textInput(inputId = 'term',
                          label = 'String to be matched',
@@ -91,7 +94,7 @@ golem_add_external_resources <- function(){
   )
 
   tags$head(
-    favicon(),
+    favicon(ext = "png"),
     bundle_resources(
       path = app_sys('app/www'),
       app_title = 'castarter2'
