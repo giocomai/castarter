@@ -18,7 +18,7 @@ A minimal shiny app that demonstrates the functioning of related modules
 \examples{
 
 count_df <- castarter2::cas_count(corpus = castarter2::cas_demo_corpus,
-                                  words = c("russia", "moscow")) \%>\%
+                                  string = c("russia", "moscow")) \%>\%
   cas_summarise(before = 15, after = 15)
 
 cass_show_ts_dygraph_app(count_df)

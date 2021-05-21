@@ -7,6 +7,7 @@
 cas_explorer(
   corpus = castarter2::cas_demo_corpus,
   default_string = NULL,
+  custom_head_html = "",
   onStart = NULL,
   options = list(),
   enableBookmarking = NULL,

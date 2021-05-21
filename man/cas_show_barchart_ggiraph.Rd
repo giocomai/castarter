@@ -4,7 +4,12 @@
 \alias{cas_show_barchart_ggiraph}
 \title{Creates interacative barchart with ggiraph}
 \usage{
-cas_show_barchart_ggiraph(ggobj, data_id = NULL, tooltip = NULL)
+cas_show_barchart_ggiraph(
+  ggobj,
+  data_id = NULL,
+  tooltip = NULL,
+  position = "stack"
+)
 }
 \arguments{
 \item{ggobj}{A ggplot2 object, typically generated with \code{cas_show_gg_base()}}
@@ -12,6 +17,8 @@ cas_show_barchart_ggiraph(ggobj, data_id = NULL, tooltip = NULL)
 \item{data_id}{Defaults to NULL. If given, unquoted name of column, passed to ggiraph.}
 
 \item{tooltip}{Defaults to NULL. If given, unquoted name of column, passed to ggiraph.}
+
+\item{position}{Defaults to "stack". Available values include "dodge".}
 }
 \value{
 A girage/htmlwidget object
