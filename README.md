@@ -17,7 +17,7 @@ erratically.
 
 ## Installation
 
-You can installcastarter2 with:
+You can install `castarter2` with:
 
 ``` r
 remotes::install_github("giocomai/castarter2")
@@ -31,7 +31,7 @@ corpora.
 ``` r
 remotes::install_github("giocomai/tifkremlinen")
 cas_explorer(corpus = tifkremlinen::kremlin_en,
-             default_string = "Putin, Medvedev")
+             default_string = "Syria, Crimea")
 ```
 
 # To do
