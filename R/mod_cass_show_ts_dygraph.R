@@ -54,7 +54,7 @@ mod_cass_show_ts_dygraph_server <- function(id, count_df, strokeWidth = 2){
 #'                                   string = c("russia", "moscow")) %>%
 #'   cas_summarise(before = 15, after = 15)
 #'
-#' cass_show_ts_dygraph_app(count_df)
+#' # cass_show_ts_dygraph_app(count_df)
 #'
 #'
 #'

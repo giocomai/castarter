@@ -189,7 +189,8 @@ cass_explorer_app_server <- function( input, output, session ) {
                                                 20)),
                   escape = FALSE,
                   rownames = FALSE)
-  }, server = TRUE)
+  },
+  server = TRUE)
 
 
   output$word_count_summarised_DT_UI <- DT::renderDataTable({
@@ -337,11 +338,15 @@ cass_explorer_app_server <- function( input, output, session ) {
         tabsetPanel(
           tabPanel(title = "Total matches",
 
-                   DT::DTOutput(outputId = "total_matches_DT_UI")
+                   DT::DTOutput(outputId = "total_matches_DT_UI"),
+                   mod_cass_download_csv_ui("total_matches_download")
+
+
           ),
           tabPanel(title = "Processed data",
 
-                   DT::DTOutput(outputId = "word_count_summarised_DT_UI")
+                   DT::DTOutput(outputId = "word_count_summarised_DT_UI"),
+                   mod_cass_download_csv_ui("word_count_summarised_download")
           ))
 
       )
@@ -395,5 +400,10 @@ cass_explorer_app_server <- function( input, output, session ) {
   ignoreInit = TRUE,
   ignoreNULL = TRUE)
 
+  mod_cass_download_csv_server(id = "total_matches_download",
+                               df = word_count_df_r())
+  mod_cass_download_csv_server(id = "word_count_summarised_download",
+                               df = word_count_summarised_df_r(),
+                               type = "processed")
 
 }

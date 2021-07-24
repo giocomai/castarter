@@ -21,7 +21,7 @@ count_df <- castarter2::cas_count(corpus = castarter2::cas_demo_corpus,
                                   string = c("russia", "moscow")) \%>\%
   cas_summarise(before = 15, after = 15)
 
-cass_show_ts_dygraph_app(count_df)
+# cass_show_ts_dygraph_app(count_df)
 
 
 
