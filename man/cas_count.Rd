@@ -10,6 +10,7 @@ cas_count(
   text = text,
   group_by = date,
   ignore_case = TRUE,
+  drop_na = TRUE,
   fixed = FALSE,
   full_words_only = FALSE,
   string_column_name = string,
@@ -27,6 +28,8 @@ cas_count(
 \item{group_by}{Defaults to NULL. If given, the unquoted name of the column to be used for grouping (e.g. date, or doc_id, or source, etc.)}
 
 \item{ignore_case}{Defaults to TRUE.}
+
+\item{drop_na}{Defaults to TRUE. If TRUE, all rows where either date or text is NA are removed before further processing.}
 
 \item{full_words_only}{Defaults to FALSE. If FALSE, string is counted even when the it is found in the middle of a word (e.g. if FALSE, "ratio" would be counted as match in the word "irrational").}
 
