@@ -42,7 +42,7 @@ cas_kwic <- function(corpus,
                                           ignore_case = ignore_case,
                                           full_words_only = full_words_only,
                                           full_word_with_partial_match = full_word_with_partial_match,
-                                          string_column_name = {{ string }})
+                                          string_column_name = {{ string_column_name }})
                  })
 
 
