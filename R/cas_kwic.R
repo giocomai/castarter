@@ -8,6 +8,7 @@
 #' @param same_sentence Logical, defaults to TRUE. If TRUE, before and after include only words found in the sentence including the matched string.
 #' @param ignore_case Defaults to TRUE.
 #' @param full_words_only Defaults to FALSE. If FALSE, string is counted even when it is found in the middle of a word (e.g. if FALSE, "ratio" would be counted as match in the word "irrational").
+#' @param full_word_with_partial_match Defaults to TRUE. If TRUE, if there is a partial match of the string, the `string` column still includes the full word where the match has been found. and Relevant only when `full_words_only` is set to FALSE.
 #' @param string_column_name Defaults to 'string'. The unquoted name of the column to be used for the word in the output.
 #'
 #' @return A data frame (a tibble), with the same columns as input, plus three columns: before, string, and after. Only rows where the string is found are included.
@@ -27,6 +28,7 @@ cas_kwic <- function(corpus,
                      same_sentence = TRUE,
                      ignore_case = TRUE,
                      full_words_only = FALSE,
+                     full_word_with_partial_match = TRUE,
                      string_column_name = string) {
 
   purrr::map_dfr(.x = string,
@@ -36,8 +38,11 @@ cas_kwic <- function(corpus,
                                           text = {{ text }},
                                           words_before = words_before,
                                           words_after = words_after,
+                                          same_sentence = same_sentence,
                                           ignore_case = ignore_case,
-                                          full_words_only = full_words_only)
+                                          full_words_only = full_words_only,
+                                          full_word_with_partial_match = full_word_with_partial_match,
+                                          string_column_name = {{ string }})
                  })
 
 
@@ -55,6 +60,7 @@ cas_kwic <- function(corpus,
 #' @param same_sentence Logical, defaults to TRUE. If TRUE, before and after include only words found in the sentence including the matched string.
 #' @param ignore_case Defaults to TRUE.
 #' @param full_words_only Defaults to FALSE. If FALSE, string is counted even when the it is found in the middle of a word (e.g. if FALSE, "ratio" would be counted as match in the word "irrational"). Set to FALSE also if you want to use your own regex.
+#' @param full_word_with_partial_match Defaults to TRUE. If TRUE, if there is a partial match of the string, the `string` column still includes the full word where the match has been found. and Relevant only when `full_words_only` is set to FALSE.
 #' @param string_column_name Defaults to 'string'. The unquoted name of the column to be used for the word in the output.
 #'
 #' @return A data frame (a tibble), with the same columns as input, plus three columns: before, string, and after. Only rows where the string is found are included.
@@ -74,6 +80,7 @@ cas_kwic_single_string <- function(corpus,
                      same_sentence = TRUE,
                      ignore_case = TRUE,
                      full_words_only = FALSE,
+                     full_word_with_partial_match = TRUE,
                      string_column_name = string) {
 
   if (full_words_only==TRUE) {
@@ -144,21 +151,48 @@ cas_kwic_single_string <- function(corpus,
           dplyr::pull(.data$row_number)
 
 
+        if (full_word_with_partial_match==TRUE) {
+          if (current_match_row_number==1) {
+            end_of_before <-0
+          } else {
+            end_of_before <- current_all_words_location_l[current_match_row_number-1,2]
+          }
+
+          start_of_string <- current_all_words_location_l[current_match_row_number,1]
+            end_of_string <- current_all_words_location_l[current_match_row_number,2]
+
+            if (current_match_row_number==length(current_all_words_location_l)/2) {
+              start_of_after <- current_all_words_location_l[current_match_row_number,2]
+            } else {
+              start_of_after <- current_all_words_location_l[current_match_row_number+1,1]
+            }
+
+
+        } else {
+          end_of_before <- current_string_location_l[1,1]-1
+
+          start_of_string <- current_match[1]
+            end_of_string <- current_match[2]
+
+            start_of_after <- current_string_location_l[1,2]+1
+        }
+
+
         dplyr::bind_cols(
           corpus %>% dplyr::slice(i),
           tibble::tibble(before = stringr::str_sub(
             string = current_text,
             start = current_all_words_location_l[max(1,current_match_row_number-words_before),1],
-            end = current_string_location_l[1,1]-1
+            end = end_of_before
           ),
           {{ string_column_name }} := stringr::str_sub(
             string = current_text,
-            start = current_match[1],
-            end = current_match[2]
+            start = start_of_string,
+            end = end_of_string
           ),
           after = stringr::str_sub(
             string = current_text,
-            start = current_string_location_l[1,2]+1,
+            start = start_of_after,
             end = current_all_words_location_l[min(length(current_all_words_location_l)/2, current_match_row_number+words_after),2]
           )
           )

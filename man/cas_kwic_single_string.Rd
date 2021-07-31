@@ -13,6 +13,7 @@ cas_kwic_single_string(
   same_sentence = TRUE,
   ignore_case = TRUE,
   full_words_only = FALSE,
+  full_word_with_partial_match = TRUE,
   string_column_name = string
 )
 }
@@ -32,6 +33,8 @@ cas_kwic_single_string(
 \item{ignore_case}{Defaults to TRUE.}
 
 \item{full_words_only}{Defaults to FALSE. If FALSE, string is counted even when the it is found in the middle of a word (e.g. if FALSE, "ratio" would be counted as match in the word "irrational"). Set to FALSE also if you want to use your own regex.}
+
+\item{full_word_with_partial_match}{Defaults to TRUE. If TRUE, if there is a partial match of the string, the \code{string} column still includes the full word where the match has been found. and Relevant only when \code{full_words_only} is set to FALSE.}
 
 \item{string_column_name}{Defaults to 'string'. The unquoted name of the column to be used for the word in the output.}
 }
