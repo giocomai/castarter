@@ -163,7 +163,7 @@ cas_kwic_single_string <- function(corpus,
 
             if (current_match_row_number==length(current_all_words_location_l)/2) {
               start_of_after <- 0
-              enf_of_after <- 0
+              end_of_after <- 0
             } else {
               start_of_after <- current_all_words_location_l[current_match_row_number+1,1]
               end_of_after <- current_all_words_location_l[min(length(current_all_words_location_l)/2, current_match_row_number+words_after),2]
@@ -177,7 +177,7 @@ cas_kwic_single_string <- function(corpus,
             end_of_string <- current_match[2]
 
             start_of_after <- current_string_location_l[1,2]+1
-            current_all_words_location_l[min(length(current_all_words_location_l)/2, current_match_row_number+words_after),2]
+            end_of_after <- current_all_words_location_l[min(length(current_all_words_location_l)/2, current_match_row_number+words_after),2]
         }
 
 
