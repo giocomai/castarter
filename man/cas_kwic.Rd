@@ -10,8 +10,10 @@ cas_kwic(
   text = text,
   words_before = 5,
   words_after = 5,
+  same_sentence = TRUE,
   ignore_case = TRUE,
-  full_words_only = FALSE
+  full_words_only = FALSE,
+  string_column_name = string
 )
 }
 \arguments{
@@ -25,9 +27,13 @@ cas_kwic(
 
 \item{words_after}{Integer, defaults to 5. Number of columns to include in the \code{after} column.}
 
+\item{same_sentence}{Logical, defaults to TRUE. If TRUE, before and after include only words found in the sentence including the matched string.}
+
 \item{ignore_case}{Defaults to TRUE.}
 
-\item{full_words_only}{Defaults to FALSE. If FALSE, string is counted even when the it is found in the middle of a word (e.g. if FALSE, "ratio" would be counted as match in the word "irrational").}
+\item{full_words_only}{Defaults to FALSE. If FALSE, string is counted even when it is found in the middle of a word (e.g. if FALSE, "ratio" would be counted as match in the word "irrational").}
+
+\item{string_column_name}{Defaults to 'string'. The unquoted name of the column to be used for the word in the output.}
 }
 \value{
 A data frame (a tibble), with the same columns as input, plus three columns: before, string, and after. Only rows where the string is found are included.
