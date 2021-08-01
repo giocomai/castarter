@@ -48,7 +48,9 @@ cass_explorer_app_server <- function( input, output, session ) {
 
 
 
-  corpus_df <- golem::get_golem_options("corpus")
+  corpus_df <- golem::get_golem_options("corpus") %>%
+    dplyr::filter(is.na(date)==FALSE)
+
   sentences_df <- corpus_df %>%
     tidytext::unnest_tokens(output = sentence,
                             input = text,
