@@ -18,7 +18,7 @@
 #' @examples
 #'
 #' cas_kwic(corpus = tifkremlinen::kremlin_en,
-#'          string = c("china", "india))
+#'          string = c("china", "india"))
 #'
 #'
 cas_kwic <- function(corpus,
@@ -72,7 +72,7 @@ cas_kwic <- function(corpus,
 #'
 #' @examples
 #'
-#' cas_kwic(corpus = tifkremlinen::kremlin_en,
+#' cas_kwic_single_string(corpus = tifkremlinen::kremlin_en,
 #'          string = "West")
 #'
 #'
@@ -103,7 +103,8 @@ cas_kwic_single_string <- function(corpus,
   if (length(string)==1) {
     corpus <- corpus %>%
       dplyr::filter(stringr::str_detect(string = {{ text }},
-                                        pattern = string)) %>%
+                                        pattern = stringr::fixed(pattern = string,
+                                                                 ignore_case = ignore_case))) %>%
       dplyr::filter(is.na({{ text }})==FALSE)
   } else {
     usethis::ui_stop("String must be a vector of length one. You may want to use `cas_kwic()` instead.")
