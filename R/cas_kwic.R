@@ -6,6 +6,7 @@
 #' @param words_before Integer, defaults to 5. Number of columns to include in the `before` column.
 #' @param words_after Integer, defaults to 5. Number of columns to include in the `after` column.
 #' @param same_sentence Logical, defaults to TRUE. If TRUE, before and after include only words found in the sentence including the matched string.
+#' @param period_at_end_of_sentence Logical, defaults to TRUE. If TRUE, a period (".") is always included at the end of a sentence. Relevant only if `same_sentence` is set to TRUE.
 #' @param ignore_case Defaults to TRUE.
 #' @param full_words_only Defaults to FALSE. If FALSE, string is counted even when it is found in the middle of a word (e.g. if FALSE, "ratio" would be counted as match in the word "irrational").
 #' @param full_word_with_partial_match Defaults to TRUE. If TRUE, if there is a partial match of the string, the `string` column still includes the full word where the match has been found. and Relevant only when `full_words_only` is set to FALSE.
@@ -26,6 +27,7 @@ cas_kwic <- function(corpus,
                      words_before = 5,
                      words_after = 5,
                      same_sentence = TRUE,
+                     period_at_end_of_sentence = TRUE,
                      ignore_case = TRUE,
                      full_words_only = FALSE,
                      full_word_with_partial_match = TRUE,
@@ -39,6 +41,7 @@ cas_kwic <- function(corpus,
                                           words_before = words_before,
                                           words_after = words_after,
                                           same_sentence = same_sentence,
+                                          period_at_end_of_sentence = period_at_end_of_sentence,
                                           ignore_case = ignore_case,
                                           full_words_only = full_words_only,
                                           full_word_with_partial_match = full_word_with_partial_match,
@@ -58,6 +61,7 @@ cas_kwic <- function(corpus,
 #' @param words_before Integer, defaults to 5. Number of columns to include in the `before` column.
 #' @param words_after Integer, defaults to 5. Number of columns to include in the `after` column.
 #' @param same_sentence Logical, defaults to TRUE. If TRUE, before and after include only words found in the sentence including the matched string.
+#' @param period_at_end_of_sentence Logical, defaults to TRUE. If TRUE, a period (".") is always included at the end of a sentence. Relevant only if `same_sentence` is set to TRUE.
 #' @param ignore_case Defaults to TRUE.
 #' @param full_words_only Defaults to FALSE. If FALSE, string is counted even when the it is found in the middle of a word (e.g. if FALSE, "ratio" would be counted as match in the word "irrational"). Set to FALSE also if you want to use your own regex.
 #' @param full_word_with_partial_match Defaults to TRUE. If TRUE, if there is a partial match of the string, the `string` column still includes the full word where the match has been found. and Relevant only when `full_words_only` is set to FALSE.
@@ -78,6 +82,7 @@ cas_kwic_single_string <- function(corpus,
                      words_before = 5,
                      words_after = 5,
                      same_sentence = TRUE,
+                     period_at_end_of_sentence = TRUE,
                      ignore_case = TRUE,
                      full_words_only = FALSE,
                      full_word_with_partial_match = TRUE,
@@ -104,12 +109,17 @@ cas_kwic_single_string <- function(corpus,
     usethis::ui_stop("String must be a vector of length one. You may want to use `cas_kwic()` instead.")
   }
 
-  if (same_sentence==TRUE) {
+  if (same_sentence == TRUE) {
     corpus <- corpus %>%
       tidytext::unnest_tokens(output = {{ text }},
                               input = {{ text }},
                               to_lower = FALSE,
                               token = "sentences")
+
+    if (period_at_end_of_sentence == TRUE) {
+      corpus <- corpus %>%
+        dplyr::mutate({{ text }} := stringr::str_c({{ text }}, "."))
+    }
   }
 
 
@@ -152,8 +162,9 @@ cas_kwic_single_string <- function(corpus,
 
 
         if (full_word_with_partial_match==TRUE) {
+
           if (current_match_row_number==1) {
-            end_of_before <-0
+            end_of_before <- 0
           } else {
             end_of_before <- current_all_words_location_l[current_match_row_number-1,2]
           }
@@ -164,11 +175,23 @@ cas_kwic_single_string <- function(corpus,
             if (current_match_row_number==length(current_all_words_location_l)/2) {
               start_of_after <- 0
               end_of_after <- 0
+
+              if (period_at_end_of_sentence == TRUE) {
+                start_of_after <- end_of_after <- current_all_words_location_l[min(length(current_all_words_location_l)/2, current_match_row_number+words_after),2]+1
+              }
+
             } else {
               start_of_after <- current_all_words_location_l[current_match_row_number+1,1]
-              end_of_after <- current_all_words_location_l[min(length(current_all_words_location_l)/2, current_match_row_number+words_after),2]
+              if (period_at_end_of_sentence == TRUE) {
+                if (length(current_all_words_location_l)/2<=current_match_row_number+words_after) {
+                  end_of_after <- current_all_words_location_l[min(length(current_all_words_location_l)/2, current_match_row_number+words_after),2]+1
+                } else {
+                  end_of_after <- current_all_words_location_l[min(length(current_all_words_location_l)/2, current_match_row_number+words_after),2]
+                }
+              } else {
+                end_of_after <- current_all_words_location_l[min(length(current_all_words_location_l)/2, current_match_row_number+words_after),2]
+              }
             }
-
 
         } else {
           end_of_before <- current_string_location_l[1,1]-1
@@ -177,7 +200,18 @@ cas_kwic_single_string <- function(corpus,
             end_of_string <- current_match[2]
 
             start_of_after <- current_string_location_l[1,2]+1
-            end_of_after <- current_all_words_location_l[min(length(current_all_words_location_l)/2, current_match_row_number+words_after),2]
+            if (period_at_end_of_sentence == TRUE) {
+              if (length(current_all_words_location_l)/2<=current_match_row_number+words_after) {
+                end_of_after <- current_all_words_location_l[length(current_all_words_location_l)/2,2]+1
+              } else {
+                end_of_after <- current_all_words_location_l[current_match_row_number+words_after,2]
+              }
+
+            } else {
+              end_of_after <- current_all_words_location_l[min(length(current_all_words_location_l)/2,
+                                                               current_match_row_number+words_after),
+                                                           2]
+            }
         }
 
 

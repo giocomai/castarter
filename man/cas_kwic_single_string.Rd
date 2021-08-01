@@ -11,6 +11,7 @@ cas_kwic_single_string(
   words_before = 5,
   words_after = 5,
   same_sentence = TRUE,
+  period_at_end_of_sentence = TRUE,
   ignore_case = TRUE,
   full_words_only = FALSE,
   full_word_with_partial_match = TRUE,
@@ -29,6 +30,8 @@ cas_kwic_single_string(
 \item{words_after}{Integer, defaults to 5. Number of columns to include in the \code{after} column.}
 
 \item{same_sentence}{Logical, defaults to TRUE. If TRUE, before and after include only words found in the sentence including the matched string.}
+
+\item{period_at_end_of_sentence}{Logical, defaults to TRUE. If TRUE, a period (".") is always included at the end of a sentence. Relevant only if \code{same_sentence} is set to TRUE.}
 
 \item{ignore_case}{Defaults to TRUE.}
 
