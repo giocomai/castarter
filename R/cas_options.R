@@ -1,26 +1,53 @@
 #' Set folder for caching data
 #'
-#' Consider using a folder out of your current project directory, e.g. `sn_set_cache_folder("~/R/sn_data/")`: you will be able to use the same cache in different projects, and prevent cached files from being sync-ed if you use services such as Nextcloud or Dropbox.
+#' Your project folder can be anywhwere on your file system. Considering that this is where possibly a very large number of html files will be downloaded, it is usually preferrable to choose a location that is not included in live backups.
 #'
-#' @param path A path to a location used for caching data. If the folder does not exist, it will be created.
+#' These settings determine the names given to these hierarchical folders: `website` folder will be under `project` folder which will be under the `base_folder`.
 #'
-#' @return The path to the caching folder, if previously set; the same path as given to the function; or the default, `sn_data` is none is given.
+#' @param base_folder A path to a location used for storing html and other project files. If the folder does not exist, it will be created. Defaults to `castarter_data`
+#' @param project Project name. This will be used as first level folder and may be used elsewhere to describe the dataset.
+#' @param website Website name. This will be used as a second level folder and may be used elsewhere to describe the dataset.
+#'
+#' @return A list object with the newly set (or previously set if lefet to NULL) options,
 #' @export
 
 #' @examples
 #' \dontrun{
-#' sn_set_cache_folder("~/R/sn_data/")
+#' cas_set_options(base_folder = "~/R/castarter_projects/")
 #' }
 cas_set_options <- function(base_folder = NULL,
                             project = NULL,
                             website = NULL) {
   if (is.null(base_folder)) {
-    path <- Sys.getenv("cas_base_folder")
+    base_folder <- Sys.getenv("castarter_base_folder")
   } else {
-    Sys.setenv(cas_base_folder = path)
+    Sys.setenv(castarter_base_folder = base_folder)
   }
-  if (path == "") {
-    path <- fs::path("cas_data")
+  if (base_folder == "") {
+    base_folder <- fs::path("castarter_data")
   }
-  path
+
+
+  if (is.null(project)) {
+    project <- Sys.getenv("castarter_project")
+  } else {
+    Sys.setenv(castarter_project = project)
+  }
+
+  if (is.null(website)) {
+    website <- Sys.getenv("castarter_website")
+  } else {
+    Sys.setenv(castarter_website = website)
+  }
+
+ list(base_folder = base_folder,
+      project = project,
+      website = website)
 }
+
+
+#' @rdname cas_set_options
+#' @examples
+#' tw_get_cache_folder()
+#' @export
+cas_get_options <- cas_set_options

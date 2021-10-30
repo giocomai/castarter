@@ -2,21 +2,32 @@
 % Please edit documentation in R/cas_options.R
 \name{cas_set_options}
 \alias{cas_set_options}
+\alias{cas_get_options}
 \title{Set folder for caching data}
 \usage{
 cas_set_options(base_folder = NULL, project = NULL, website = NULL)
+
+cas_get_options(base_folder = NULL, project = NULL, website = NULL)
 }
 \arguments{
-\item{path}{A path to a location used for caching data. If the folder does not exist, it will be created.}
+\item{base_folder}{A path to a location used for storing html and other project files. If the folder does not exist, it will be created. Defaults to \code{castarter_data}}
+
+\item{project}{Project name. This will be used as first level folder and may be used elsewhere to describe the dataset.}
+
+\item{website}{Website name. This will be used as a second level folder and may be used elsewhere to describe the dataset.}
 }
 \value{
-The path to the caching folder, if previously set; the same path as given to the function; or the default, \code{sn_data} is none is given.
+A list object with the newly set (or previously set if lefet to NULL) options,
 }
 \description{
-Consider using a folder out of your current project directory, e.g. \code{sn_set_cache_folder("~/R/sn_data/")}: you will be able to use the same cache in different projects, and prevent cached files from being sync-ed if you use services such as Nextcloud or Dropbox.
+Your project folder can be anywhwere on your file system. Considering that this is where possibly a very large number of html files will be downloaded, it is usually preferrable to choose a location that is not included in live backups.
+}
+\details{
+These settings determine the names given to these hierarchical folders: \code{website} folder will be under \code{project} folder which will be under the \code{base_folder}.
 }
 \examples{
 \dontrun{
-sn_set_cache_folder("~/R/sn_data/")
+cas_set_options(base_folder = "~/R/castarter_projects/")
 }
+tw_get_cache_folder()
 }

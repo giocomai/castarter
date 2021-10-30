@@ -47,3 +47,10 @@ A data frame (a tibble), with the same columns as input, plus three columns: bef
 \description{
 Adds a column with n words before and after the selected string to see keywords in context
 }
+\examples{
+
+cas_kwic(corpus = tifkremlinen::kremlin_en,
+         string = c("china", "india"))
+
+
+}
