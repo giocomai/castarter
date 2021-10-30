@@ -2,12 +2,9 @@
 % Please edit documentation in R/cas_options.R
 \name{cas_set_options}
 \alias{cas_set_options}
-\alias{cas_get_options}
-\title{Set folder for caching data}
+\title{Set folder for storing project files}
 \usage{
 cas_set_options(base_folder = NULL, project = NULL, website = NULL)
-
-cas_get_options(base_folder = NULL, project = NULL, website = NULL)
 }
 \arguments{
 \item{base_folder}{A path to a location used for storing html and other project files. If the folder does not exist, it will be created. Defaults to \code{castarter_data}}
@@ -17,7 +14,7 @@ cas_get_options(base_folder = NULL, project = NULL, website = NULL)
 \item{website}{Website name. This will be used as a second level folder and may be used elsewhere to describe the dataset.}
 }
 \value{
-A list object with the newly set (or previously set if lefet to NULL) options,
+A list object with the newly set (or previously set if left to NULL) options,
 }
 \description{
 Your project folder can be anywhwere on your file system. Considering that this is where possibly a very large number of html files will be downloaded, it is usually preferrable to choose a location that is not included in live backups.
@@ -29,5 +26,4 @@ These settings determine the names given to these hierarchical folders: \code{we
 \dontrun{
 cas_set_options(base_folder = "~/R/castarter_projects/")
 }
-tw_get_cache_folder()
 }
