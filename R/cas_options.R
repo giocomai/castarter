@@ -40,9 +40,9 @@ cas_set_options <- function(base_folder = NULL,
     Sys.setenv(castarter_website = website)
   }
 
- list(base_folder = base_folder,
-      project = project,
-      website = website)
+  invisible(list(base_folder = base_folder,
+                 project = project,
+                 website = website))
 }
 
 #' Retrieve options
@@ -68,13 +68,16 @@ cas_get_options <- function(base_folder = NULL,
     base_folder <- fs::path("castarter_data")
   }
 
-
   if (is.null(project)) {
     project <- Sys.getenv("castarter_project")
   }
 
   if (is.null(website)) {
     website <- Sys.getenv("castarter_website")
+  }
+
+  if (is.null(project)|is.null(website)) {
+    usethis::ui_stop(x = "Both project and website must be set, either with {usethis::ui_code('cas_set_options()')} or directly as a parameter.")
   }
 
   list(base_folder = base_folder,
