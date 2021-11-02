@@ -1,0 +1,123 @@
+---
+title: "Check the integrity of textual datasets"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{integrity}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+```{r setup}
+library("castarter2")
+library("dplyr")
+library("ggplot2")
+
+#dataset <- tifkremlinen::kremlin_en 
+```
+
+
+Textual datasets generated from online resources may have some issues, including missing documents (e.g. due to server issues at time of download), duplicate items, "empty" items (either because the given page actually does not have textual contents, but possibly due to errors), etc. 
+
+Some such errors (e.g. missing paragraphs) may be difficult to ascertain, while others may be easier to spot. 
+
+This vignette illustrates some common checks that may be run after creating a dataset to find some common issues, based on a dataset of items published on the Kremlin's website. Some of the summary statistics generated in the process may usefully be added to the dataset if distributed. 
+
+
+## Check number of publications by day
+
+An excessive number of publications recorded as published on a given date may be a hint that further checks are needed.
+
+```{r}
+dataset %>% 
+  group_by(date) %>% 
+  count(sort = TRUE)
+  
+```
+
+
+
+## Check if there are many publications with exactly the same title
+
+Especially on institutional websites, it is not uncommon to have more items with exactly the same title. However, an excessive number of such occurrences may deserve an additional check.
+
+```{r}
+dataset %>% 
+  group_by(title) %>% 
+  count(sort = TRUE)
+```
+
+
+## Check if the distribution of publications does not have an unusual distribution
+
+```{r}
+n_days <- 90
+
+dataset %>% 
+  dplyr::filter(is.na(date)==FALSE) %>% 
+  group_by(date) %>% 
+  count(name = "n") %>% 
+  ungroup() %>% 
+  mutate(n = slider::slide_period_dbl(.x = n,
+                                      .i = date,
+                                      .period = "day",
+                                      .f = mean,
+                                      .before = n_days/2,
+                                      .after = n_days/2)) %>% 
+  ggplot(mapping = aes(x = date, y = n)) +
+  geom_line() +
+  labs(title = "Number of publications per day",
+       caption = paste("* Calculated on a rolling mean of", sum(n_days, 1), "days"))
+
+```
+
+Using an interactive timeline may make it easier to check if changes correspond to significant dates. As appears from this case, the number of publications grew significantly in early 2008. This may however not be particularly surprising, as it corresponds with the time when Dmitri Medvedev became president.
+
+```{r}
+dataset %>% 
+  group_by(date) %>% 
+  count(name = "n") %>% 
+  ungroup() %>% 
+  mutate(n = slider::slide_period_dbl(.x = n,
+                                      .i = date,
+                                      .period = "day",
+                                      .f = mean,
+                                      .before = n_days/2,
+                                      .after = n_days/2)) %>% 
+  mutate(string = "Publications") %>% 
+cas_show_ts_dygraph()
+```
+
+## Length of posts
+
+
+Is there any item with no contents at all?
+
+```{r}
+dataset %>% 
+  dplyr::filter(is.na(text))
+```
+
+
+```{r}
+dataset %>% 
+  dplyr::filter(text == "")
+```
+
+Or is there any surprisingly short post?
+
+```{r}
+dataset %>% 
+  mutate(nchar = nchar(text)) %>% 
+  arrange(nchar) %>% 
+  select(date, title, nchar)
+```
+
+
+
