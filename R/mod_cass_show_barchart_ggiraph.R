@@ -7,25 +7,23 @@
 #' @noRd
 #'
 #' @importFrom shiny NS tagList
-mod_cass_show_barchart_ggiraph_ui <- function(id){
+mod_cass_show_barchart_ggiraph_ui <- function(id) {
   ns <- NS(id)
   tagList(
     ggiraph::girafeOutput(ns("ggiraph_barchart"))
-
   )
 }
 
 #' cass_show_barchart_ggiraph Server Functions
 #'
 #' @noRd
-mod_cass_show_barchart_ggiraph_server <- function(id, count_df){
-  moduleServer( id, function(input, output, session){
+mod_cass_show_barchart_ggiraph_server <- function(id, count_df) {
+  moduleServer(id, function(input, output, session) {
     ns <- session$ns
     output$ggiraph_barchart <- ggiraph::renderGirafe({
       cas_show_gg_base(count_df = count_df) %>%
         cas_show_barchart_ggiraph()
     })
-
   })
 }
 
@@ -46,7 +44,8 @@ cass_show_barchart_ggiraph_app <- function(count_df) {
   )
   server <- function(input, output, session) {
     castarter2:::mod_cass_show_barchart_ggiraph_server("cass_show_barchart_ggiraph_ui_1",
-                                                 count_df = count_df)
+      count_df = count_df
+    )
   }
   shinyApp(ui, server)
 }

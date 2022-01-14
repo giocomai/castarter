@@ -15,7 +15,6 @@
 #' @export
 #'
 #' @examples
-#'
 #' \dontrun{
 #' cas_count(
 #'   corpus = corpus,
@@ -37,36 +36,39 @@ cas_count <- function(corpus,
                       string_column_name = string,
                       n_column_name = n,
                       locale = "en") {
-
-  if (drop_na==TRUE) {
+  if (drop_na == TRUE) {
     corpus <- corpus %>%
-      dplyr::filter(is.na({{ text }})==FALSE, is.na({{ group_by }})==FALSE)
+      dplyr::filter(is.na({{ text }}) == FALSE, is.na({{ group_by }}) == FALSE)
   }
 
   if (isTRUE(full_words_only)) {
-    string <- purrr::map_chr(.x = string,
-                            .f = function(x) {
-                              stringr::str_c(
-                                "\\b",
-                                x,
-                                "\\b"
-                              )
-                            })
+    string <- purrr::map_chr(
+      .x = string,
+      .f = function(x) {
+        stringr::str_c(
+          "\\b",
+          x,
+          "\\b"
+        )
+      }
+    )
   }
 
-  purrr::map_dfr(.x = string,
-                 .f = function(x) {
-                   cas_count_single(corpus = corpus,
-                             string = x,
-                             text = {{ text }},
-                             group_by = {{ group_by }},
-                             ignore_case = ignore_case,
-                             full_words_only = full_words_only,
-                             string_column_name = {{ string_column_name }},
-                             n_column_name = {{ n_column_name }},
-                             locale = locale)
-
-                 }
+  purrr::map_dfr(
+    .x = string,
+    .f = function(x) {
+      cas_count_single(
+        corpus = corpus,
+        string = x,
+        text = {{ text }},
+        group_by = {{ group_by }},
+        ignore_case = ignore_case,
+        full_words_only = full_words_only,
+        string_column_name = {{ string_column_name }},
+        n_column_name = {{ n_column_name }},
+        locale = locale
+      )
+    }
   )
 }
 
@@ -80,14 +82,13 @@ cas_count_single <- function(corpus,
                              full_words_only = FALSE,
                              string_column_name = word,
                              n_column_name = n,
-                             locale = "en"
-                             ) {
+                             locale = "en") {
   pattern <- string
 
   if (ignore_case == TRUE) {
     corpus <- corpus %>%
       dplyr::mutate({{ text }} := {{ text }} %>%
-                      stringr::str_to_lower(locale = locale))
+        stringr::str_to_lower(locale = locale))
 
     pattern <- pattern %>%
       stringr::str_to_lower(locale = locale)
@@ -103,12 +104,14 @@ cas_count_single <- function(corpus,
     .groups = "drop"
     )
 
-    output_df %>%
-      dplyr::transmute({{ group_by }},
-                       {{ string_column_name }} := stringr::str_c(string,
-                                                             collapse = ", "),
-                       {{ n_column_name }})
-
+  output_df %>%
+    dplyr::transmute(
+      {{ group_by }},
+      {{ string_column_name }} := stringr::str_c(string,
+        collapse = ", "
+      ),
+      {{ n_column_name }}
+    )
 }
 
 
@@ -126,23 +129,24 @@ cas_count_single <- function(corpus,
 #' @export
 #'
 #' @examples
-cas_count_total_words <-  function(corpus,
-                                   string = "[\\w\']+",
-                                   text = text,
-                                   group_by = date,
-                                   ignore_case = TRUE,
-                                   n_column_name = n,
-                                   locale = "en") {
-  cas_count_single(corpus = corpus,
-                   string = string,
-                   text = {{ text }},
-                   group_by = {{ group_by }},
-                   ignore_case = FALSE,
-                   fixed = FALSE,
-                   full_words_only = FALSE,
-                   string_column_name = cas_string,
-                   n_column_name = {{ n_column_name }},
-                   locale = locale) %>%
+cas_count_total_words <- function(corpus,
+                                  string = "[\\w\']+",
+                                  text = text,
+                                  group_by = date,
+                                  ignore_case = TRUE,
+                                  n_column_name = n,
+                                  locale = "en") {
+  cas_count_single(
+    corpus = corpus,
+    string = string,
+    text = {{ text }},
+    group_by = {{ group_by }},
+    ignore_case = FALSE,
+    fixed = FALSE,
+    full_words_only = FALSE,
+    string_column_name = cas_string,
+    n_column_name = {{ n_column_name }},
+    locale = locale
+  ) %>%
     dplyr::select(-cas_string)
-
 }

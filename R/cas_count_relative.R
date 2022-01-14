@@ -14,7 +14,6 @@
 #' @export
 #'
 #' @examples
-#'
 #' \dontrun{
 #' cas_count_relative(
 #'   corpus = corpus,
@@ -25,7 +24,6 @@
 #' )
 #' }
 #'
-
 cas_count_relative <- function(corpus,
                                string,
                                text = text,
@@ -35,28 +33,33 @@ cas_count_relative <- function(corpus,
                                full_words_only = FALSE,
                                string_column_name = string,
                                n_column_name = n,
-                               locale = "en"
-) {
-  total_words_df <- cas_count_total_words(corpus = corpus,
-                                          text = {{ text }},
-                                          n_column_name = cas_total,
-                                          group_by = {{ group_by }})
+                               locale = "en") {
+  total_words_df <- cas_count_total_words(
+    corpus = corpus,
+    text = {{ text }},
+    n_column_name = cas_total,
+    group_by = {{ group_by }}
+  )
 
-  count_df <- cas_count(corpus = corpus,
-                        string = string,
-                        text = {{ text }},
-                        ignore_case = ignore_case,
-                        fixed = fixed,
-                        full_words_only = full_words_only,
-                        group_by = {{ group_by }},
-                        n_column_name = cas_n)
+  count_df <- cas_count(
+    corpus = corpus,
+    string = string,
+    text = {{ text }},
+    ignore_case = ignore_case,
+    fixed = fixed,
+    full_words_only = full_words_only,
+    group_by = {{ group_by }},
+    n_column_name = cas_n
+  )
 
   count_df %>%
-    dplyr::left_join(y = total_words_df,
-                     by = rlang::as_string(rlang::quo_squash(rlang::enquo(group_by)))) %>%
-    dplyr::transmute({{ group_by }},
-                     {{ string_column_name }},
-                     {{n_column_name}} := cas_n/cas_total)
-
-
+    dplyr::left_join(
+      y = total_words_df,
+      by = rlang::as_string(rlang::quo_squash(rlang::enquo(group_by)))
+    ) %>%
+    dplyr::transmute(
+      {{ group_by }},
+      {{ string_column_name }},
+      {{ n_column_name }} := cas_n / cas_total
+    )
 }

@@ -43,7 +43,6 @@ A data frame
 Count strings in a corpus relative to the number of words
 }
 \examples{
-
 \dontrun{
 cas_count_relative(
   corpus = corpus,

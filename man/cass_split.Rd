@@ -18,5 +18,4 @@ Split string into multiple inputs
 \examples{
 
 cass_split("dogs, cats, horses")
-
 }

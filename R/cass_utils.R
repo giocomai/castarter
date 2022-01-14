@@ -7,13 +7,14 @@
 #' @examples
 #'
 #' cass_split("dogs, cats, horses")
-#'
 cass_split <- function(string,
                        squish = TRUE,
                        to_lower = TRUE) {
   v <- string %>%
-    stringr::str_split(pattern = ",",
-                       simplify = TRUE) %>%
+    stringr::str_split(
+      pattern = ",",
+      simplify = TRUE
+    ) %>%
     as.character()
 
   if (squish == TRUE) {
@@ -42,7 +43,6 @@ cass_split <- function(string,
 #' cass_combine_into_pattern(words)
 cass_combine_into_pattern <- function(words,
                                       full_words_only = TRUE) {
-
   if (full_words_only == TRUE) {
     pattern <- purrr::map_chr(
       .x = words,
@@ -61,4 +61,3 @@ cass_combine_into_pattern <- function(words,
   }
   pattern
 }
-

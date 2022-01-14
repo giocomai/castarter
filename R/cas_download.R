@@ -8,7 +8,7 @@
 #' @param path Defaults to NULL. If given, overrides the "type" and "folder" param and stores files in given path.
 #' @param wait Defaults to 1. Number of seconds to wait between downloading one page and the next. Can be increased to reduce server load, or can be set to 0 when this is not an issue.
 #' @param project Name of 'castarter2' project. Must correspond to the name of a folder in the current working directory.
-#' @param website Name of a website included in a 'castarter' project. Must correspond to the name of a sub-folder of the project folder.
+#' @param website Name of a website included in a 'castarter2' project. Must correspond to the name of a sub-folder of the project folder.
 #' @param method Defaults to "auto". Method is passed to the function utils::download.file(); available options are "internal", "wininet" (Windows only) "libcurl", "wget" and "curl". For more information see ?utils::download.file()
 #' @param missing_pages Logical, defaults to TRUE. If TRUE, verifies if a downloaded html file exists for each element in articlesLinks; when there is no such file, it downloads it.
 #' @param size Defaults to 500. It represents the minimum size in bytes that downloaded html files should have: files that are smaller will be downloaded again. Used only when missing_pages == FALSE.
@@ -44,34 +44,35 @@ cas_download <- function(url,
                          project = NULL,
                          website = NULL,
                          base_folder = NULL) {
-
   if (use_headless_chromium == TRUE) {
     if (requireNamespace("crrri", quietly = TRUE) == FALSE) {
       stop("You need to install the `crrri` package to download pages with headless chrome/chromium. For details, see: https://github.com/RLesur/crrri. Make sure to read the note on system requirements: https://github.com/RLesur/crrri#system-requirements")
     }
   }
 
-if (is.data.frame(url)==FALSE) {
-  url_df <- tibble::tibble(id = seq_along(url),
-                           url = url)
-} else {
-  if (sum(c("id", "url") %in% names(url))==2) {
-    url_df <- url
+  if (is.data.frame(url) == FALSE) {
+    url_df <- tibble::tibble(
+      id = seq_along(url),
+      url = url
+    )
   } else {
-    usethis::ui_stop("url must either be a character vector or a data frame with at least two columns named id and url")
+    if (sum(c("id", "url") %in% names(url)) == 2) {
+      url_df <- url
+    } else {
+      usethis::ui_stop("url must either be a character vector or a data frame with at least two columns named id and url")
+    }
+    if (is.numeric(url_df$id) == FALSE) {
+      usethis::ui_stop("If given, the {usethis::ui_code('id')} column must be numeric.")
+    }
   }
-  if (is.numeric(url_df$id)==FALSE) {
-    usethis::ui_stop(stringr::str_c("If given, the", usethis::ui_code("id"), "column must be numeric.", sep = " "))
-  }
-}
 
 
   if (is.null(path)) {
     if (is.null(folder) == FALSE) {
       path <- fs::path(
-        cas_get_options(base_folder = base_folder)$base_folder,
-        cas_get_options(base_folder = base_folder)$project,
-        cas_get_options(base_folder = base_folder)$website,
+        cas_get_options(base_folder = base_folder, project = project, website = website)$base_folder,
+        cas_get_options(base_folder = base_folder, project = project, website = website)$project,
+        cas_get_options(base_folder = base_folder, project = project, website = website)$website,
         stringr::str_c(file_format, "_", folder)
       )
     } else if (type == "contents" | type == "index") {
@@ -87,27 +88,35 @@ if (is.data.frame(url)==FALSE) {
   if (fs::file_exists(path) == FALSE) {
     fs::dir_create(path = path)
     usethis::ui_info(stringr::str_c("The folder",
-                                    usethis::ui_path(path),
-                                    "has been created.",
-                                    sep = " "))
+      usethis::ui_path(path),
+      "has been created.",
+      sep = " "
+    ))
   }
 
   previous_files_df <- fs::dir_info(path = path) %>%
     dplyr::transmute(path,
-                     size,
-                     filename = fs::path_file(path)) %>%
-    dplyr::mutate(id = stringr::str_extract(string = filename,
-                                            pattern = "[[:digit:]]+") %>%
-                    as.numeric()) %>%
+      size,
+      filename = fs::path_file(path)
+    ) %>%
+    dplyr::mutate(id = stringr::str_extract(
+      string = filename,
+      pattern = "[[:digit:]]+"
+    ) %>%
+      as.numeric()) %>%
     dplyr::arrange(id)
 
   if (is.null(url_to_download) == TRUE) {
     if (missing_pages == TRUE) {
-      expected_filenames_df <- tibble::tibble(path = fs::path(path,
-                                                              stringr::str_c(url_df$id, ".", file_format)))
-      url_to_download_df  <- dplyr::anti_join(x = expected_filenames_df,
-                                              y = previous_files_df,
-                                              by ="path")
+      expected_filenames_df <- tibble::tibble(path = fs::path(
+        path,
+        stringr::str_c(url_df$id, ".", file_format)
+      ))
+      url_to_download_df <- dplyr::anti_join(
+        x = expected_filenames_df,
+        y = previous_files_df,
+        by = "path"
+      )
     } else if (missing_pages == FALSE) {
       smallFiles <- htmlFilesList[htmlFileSize < size]
       smallFilesId <- as.integer(stringr::str_extract(
@@ -200,7 +209,18 @@ if (is.data.frame(url)==FALSE) {
         if (ignore_ssl_certificates == TRUE) {
           try(utils::download.file(url = i, destfile = fs::path(htmlFilePath, paste0(articleId, ".", file_format)), method = "wget", extra = "--no-check-certificate"))
         } else {
-          try(utils::download.file(url = i, destfile = fs::path(htmlFilePath, paste0(articleId, ".", file_format)), method = method))
+          try(utils::download.file(
+            url = i,
+            destfile = fs::path(
+              htmlFilePath,
+              paste0(
+                articleId,
+                ".",
+                file_format
+              )
+            ),
+            method = method
+          ))
         }
       }
       message(paste("Downloaded item", temp, "of", length(url[url_to_download]), ". ID: ", articleId))

@@ -7,7 +7,7 @@
 #' @noRd
 #'
 #' @importFrom shiny NS tagList
-mod_cass_show_ts_dygraph_ui <- function(id){
+mod_cass_show_ts_dygraph_ui <- function(id) {
   ns <- NS(id)
   tagList(
     dygraphs::dygraphOutput(ns("dygraph"))
@@ -17,9 +17,8 @@ mod_cass_show_ts_dygraph_ui <- function(id){
 #' cass_show_ts_dygraph Server Functions
 #'
 #' @noRd
-mod_cass_show_ts_dygraph_server <- function(id, count_df, strokeWidth = 2){
-
-  moduleServer(id, function(input, output, session){
+mod_cass_show_ts_dygraph_server <- function(id, count_df, strokeWidth = 2) {
+  moduleServer(id, function(input, output, session) {
     ns <- session$ns
 
     output$dygraph <- dygraphs::renderDygraph({
@@ -50,22 +49,21 @@ mod_cass_show_ts_dygraph_server <- function(id, count_df, strokeWidth = 2){
 #'
 #' @examples
 #'
-#' count_df <- castarter2::cas_count(corpus = castarter2::cas_demo_corpus,
-#'                                   string = c("russia", "moscow")) %>%
+#' count_df <- castarter2::cas_count(
+#'   corpus = castarter2::cas_demo_corpus,
+#'   string = c("russia", "moscow")
+#' ) %>%
 #'   cas_summarise(before = 15, after = 15)
 #'
 #' # cass_show_ts_dygraph_app(count_df)
-#'
-#'
-#'
-#'
 cass_show_ts_dygraph_app <- function(count_df) {
   ui <- fluidPage(
     castarter2:::mod_cass_show_ts_dygraph_ui("cass_show_ts_dygraph_ui_1")
   )
   server <- function(input, output, session) {
     castarter2:::mod_cass_show_ts_dygraph_server("cass_show_ts_dygraph_ui_1",
-                                    count_df = count_df)
+      count_df = count_df
+    )
   }
   shinyApp(ui, server)
 }

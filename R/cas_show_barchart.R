@@ -20,9 +20,11 @@ cas_show_gg_base <- function(count_df,
       dplyr::mutate({{ group_by }} := factor({{ group_by }}))
   }
   count_df %>%
-    ggplot2::ggplot(mapping = ggplot2::aes(x = {{ group_by }},
-                                           y = {{ n_column_name }},
-                                           fill = {{ string_column_name }})) +
+    ggplot2::ggplot(mapping = ggplot2::aes(
+      x = {{ group_by }},
+      y = {{ n_column_name }},
+      fill = {{ string_column_name }}
+    )) +
     ggplot2::scale_y_continuous(name = "", labels = scales::number) +
     ggplot2::theme_minimal() +
     ggplot2::theme(legend.title = ggplot2::element_blank())
@@ -48,14 +50,21 @@ cas_show_barchart_ggiraph <- function(ggobj,
                                       position = "stack") {
   if (position == "stack") {
     ggiraph::girafe(ggobj = ggobj +
-                      ggiraph::geom_col_interactive(mapping = ggplot2::aes(data_id = data_id,
-                                                                           tooltip = tooltip),
-                                                    position = ggplot2::position_stack()))
+      ggiraph::geom_col_interactive(
+        mapping = ggplot2::aes(
+          data_id = data_id,
+          tooltip = tooltip
+        ),
+        position = ggplot2::position_stack()
+      ))
   } else if (position == "dodge") {
     ggiraph::girafe(ggobj = ggobj +
-                      ggiraph::geom_col_interactive(mapping = ggplot2::aes(data_id = data_id,
-                                                                           tooltip = tooltip),
-                                                    position = ggplot2::position_dodge()))
+      ggiraph::geom_col_interactive(
+        mapping = ggplot2::aes(
+          data_id = data_id,
+          tooltip = tooltip
+        ),
+        position = ggplot2::position_dodge()
+      ))
   }
-
 }

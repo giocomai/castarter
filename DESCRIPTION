@@ -30,7 +30,6 @@ Imports:
     golem,
     htmltools,
     bslib,
-    marker,
     dygraphs,
     waiter,
     ggiraph,
@@ -38,13 +37,17 @@ Imports:
     tbl2xts,
     cicerone,
     usethis,
-    tibble
+    tibble,
+    DBI,
+    RSQLite
 Suggests: 
     testthat (>= 3.0.0),
     roxygen2,
     spelling,
     knitr,
     rmarkdown
+Remotes:
+    JohnCoene/marker
 Config/testthat/edition: 3
 Depends: 
     R (>= 2.10)

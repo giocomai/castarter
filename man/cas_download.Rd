@@ -57,7 +57,7 @@ cas_download(
 
 \item{project}{Name of 'castarter2' project. Must correspond to the name of a folder in the current working directory.}
 
-\item{website}{Name of a website included in a 'castarter' project. Must correspond to the name of a sub-folder of the project folder.}
+\item{website}{Name of a website included in a 'castarter2' project. Must correspond to the name of a sub-folder of the project folder.}
 }
 \value{
 By default, returns nothing, used for its side effects (downloads html files in relevant folder). Download files can then be imported in a vector with the function ImportHtml.

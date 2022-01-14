@@ -49,8 +49,8 @@ Adds a column with n words before and after the selected string to see keywords 
 }
 \examples{
 
-cas_kwic(corpus = tifkremlinen::kremlin_en,
-         string = c("china", "india"))
-
-
+cas_kwic(
+  corpus = tifkremlinen::kremlin_en,
+  string = c("china", "india")
+)
 }

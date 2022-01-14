@@ -49,9 +49,11 @@ Summarise for a given time period word counts, typically calculatd with \code{ca
 \dontrun{
 # this assumes dates are provided in a column called date
 corpus_df \%>\%
- cas_count(string = "example",
-           group_by = date) \%>\%
- cas_summarise(period = "year")
+  cas_count(
+    string = "example",
+    group_by = date
+  ) \%>\%
+  cas_summarise(period = "year")
 }
 
 }

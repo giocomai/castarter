@@ -46,7 +46,6 @@ A data frame
 Count strings in a corpus
 }
 \examples{
-
 \dontrun{
 cas_count(
   corpus = corpus,

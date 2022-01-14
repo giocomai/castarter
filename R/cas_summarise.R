@@ -18,84 +18,98 @@
 #' \dontrun{
 #' # this assumes dates are provided in a column called date
 #' corpus_df %>%
-#'  cas_count(string = "example",
-#'            group_by = date) %>%
-#'  cas_summarise(period = "year")
+#'   cas_count(
+#'     string = "example",
+#'     group_by = date
+#'   ) %>%
+#'   cas_summarise(period = "year")
 #' }
 #'
-cas_summarise <- function(
-  count_df,
-  date_column_name = date,
-  n_column_name = n,
-  string_column_name = string,
-  period = NULL,
-  f = mean,
-  every = 1L,
-  before = 0L,
-  after = 0L,
-  complete = FALSE,
-  auto_convert = FALSE) {
-
+cas_summarise <- function(count_df,
+                          date_column_name = date,
+                          n_column_name = n,
+                          string_column_name = string,
+                          period = NULL,
+                          f = mean,
+                          every = 1L,
+                          before = 0L,
+                          after = 0L,
+                          complete = FALSE,
+                          auto_convert = FALSE) {
   if (is.null(period)) {
     summarised <- count_df %>%
       dplyr::group_by({{ string_column_name }}, .drop = TRUE) %>%
-      dplyr::mutate({{ n_column_name }} := slider::slide_index_dbl(.x = {{ n_column_name }},
-                                                       .i = {{ date_column_name }},
-                                                       .f = f,
-                                                       .before = before,
-                                                       .after = after)) %>%
+      dplyr::mutate({{ n_column_name }} := slider::slide_index_dbl(
+        .x = {{ n_column_name }},
+        .i = {{ date_column_name }},
+        .f = f,
+        .before = before,
+        .after = after
+      )) %>%
       dplyr::ungroup()
-
   } else {
     summarised <- count_df %>%
-      dplyr::mutate({{ date_column_name }} := lubridate::floor_date(x = {{ date_column_name }},
-                                                       unit = period)) %>%
+      dplyr::mutate({{ date_column_name }} := lubridate::floor_date(
+        x = {{ date_column_name }},
+        unit = period
+      )) %>%
       dplyr::group_by({{ string_column_name }}, {{ date_column_name }}) %>%
       dplyr::summarise({{ n_column_name }} := sum({{ n_column_name }}),
-                       .groups = "drop_last") %>%
-      dplyr::mutate(n = slider::slide_period_dbl(.x = {{ n_column_name }},
-                                                 .i = {{ date_column_name }},
-                                                 .period = period,
-                                                 .f = f,
-                                                 .before = before,
-                                                 .after = after)) %>%
+        .groups = "drop_last"
+      ) %>%
+      dplyr::mutate(n = slider::slide_period_dbl(
+        .x = {{ n_column_name }},
+        .i = {{ date_column_name }},
+        .period = period,
+        .f = f,
+        .before = before,
+        .after = after
+      )) %>%
       dplyr::ungroup()
   }
 
   if (auto_convert == TRUE) {
-    if (period=="year") {
+    if (period == "year") {
       summarised %>%
-        dplyr::transmute({{ date_column_name }} := lubridate::year({{ date_column_name }}),
-                         {{ string_column_name }},
-                         {{ n_column_name }})
+        dplyr::transmute(
+          {{ date_column_name }} := lubridate::year({{ date_column_name }}),
+          {{ string_column_name }},
+          {{ n_column_name }}
+        )
     } else if (period == "quarter") {
       summarised %>%
         dplyr::transmute(
-          {{ date_column_name }} := lubridate::quarter(x = {{ date_column_name }},
-                                       with_year = TRUE) %>%
+          {{ date_column_name }} := lubridate::quarter(
+            x = {{ date_column_name }},
+            with_year = TRUE
+          ) %>%
             as.character(),
           {{ string_column_name }},
-          {{ n_column_name }})
+          {{ n_column_name }}
+        )
     } else if (period == "month") {
       summarised %>%
         dplyr::transmute(
-          {{ date_column_name }} := stringr::str_extract(string = {{ date_column_name }},
-                                       pattern = "[:digit:]{4}-[:digit:]{2}"),
+          {{ date_column_name }} := stringr::str_extract(
+            string = {{ date_column_name }},
+            pattern = "[:digit:]{4}-[:digit:]{2}"
+          ),
           {{ string_column_name }},
-          {{ n_column_name }})
+          {{ n_column_name }}
+        )
     } else if (period == "day") {
       summarised %>%
         dplyr::transmute(
           {{ date_column_name }} := as.Date({{ date_column_name }}),
           {{ string_column_name }},
-          {{ n_column_name }} )
+          {{ n_column_name }}
+        )
     } else {
       summarised
     }
   } else {
     summarised
   }
-
 }
 
 
@@ -108,29 +122,30 @@ cas_summarise <- function(
 
 
 
-cas_summarise_legacy <- function(
-  count_df,
-  date = date,
-  n = n,
-  period = "year",
-  f = sum,
-  auto_convert = FALSE,
-  every = 1L,
-  before = 0L,
-  after = 0L,
-  complete = FALSE) {
+cas_summarise_legacy <- function(count_df,
+                                 date = date,
+                                 n = n,
+                                 period = "year",
+                                 f = sum,
+                                 auto_convert = FALSE,
+                                 every = 1L,
+                                 before = 0L,
+                                 after = 0L,
+                                 complete = FALSE) {
   summarised <- slider::slide_period_dfr(
     .x = count_df,
     .i = count_df %>%
       dplyr::pull({{ date }}),
     .period = period,
-    .f = ~tibble::tibble(
-      {{ date }} := lubridate::floor_date(x = .x %>%
-                                            dplyr::pull({{ date }}),
-                                          unit = period) %>%
+    .f = ~ tibble::tibble(
+      {{ date }} := lubridate::floor_date(
+        x = .x %>%
+          dplyr::pull({{ date }}),
+        unit = period
+      ) %>%
         unique(),
       {{ n }} := f(.x %>%
-                     dplyr::pull({{ n }}))
+        dplyr::pull({{ n }}))
     ),
     .every = every,
     .before = before,
@@ -139,29 +154,35 @@ cas_summarise_legacy <- function(
   )
 
   if (auto_convert == TRUE) {
-    if (period=="year") {
+    if (period == "year") {
       summarised %>%
         dplyr::mutate({{ date }} := lubridate::year({{ date }}))
     } else if (period == "quarter") {
       summarised %>%
         dplyr::mutate(
           quarter = lubridate::quarter(x = quarter, with_year = TRUE) %>%
-            as.character())
+            as.character()
+        )
     } else if (period == "month") {
       summarised %>%
         dplyr::mutate(
-          month = stringr::str_extract(string = month,
-                                       pattern = "[:digit:]{4}-[:digit:]{2}"))
+          month = stringr::str_extract(
+            string = month,
+            pattern = "[:digit:]{4}-[:digit:]{2}"
+          )
+        )
     } else if (period == "day") {
       summarised %>%
         dplyr::mutate(
-          date = stringr::str_extract(string = day,
-                                      pattern = "[:digit:]{4}-[:digit:]{2}"))
+          date = stringr::str_extract(
+            string = day,
+            pattern = "[:digit:]{4}-[:digit:]{2}"
+          )
+        )
     } else {
       summarised
     }
   } else {
     summarised
   }
-
 }
