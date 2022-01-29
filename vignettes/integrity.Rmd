@@ -2,7 +2,7 @@
 title: "Check the integrity of textual datasets"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{integrity}
+  %\VignetteIndexEntry{Check the integrity of textual datasets}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
@@ -10,7 +10,8 @@ vignette: >
 ```{r, include = FALSE}
 knitr::opts_chunk$set(
   collapse = TRUE,
-  comment = "#>"
+  comment = "#>",
+  eval = FALSE
 )
 ```
 

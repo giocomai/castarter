@@ -30,17 +30,19 @@ One of the first issues that appear when starting a text mining or web scraping 
 
 In this vignette, I will outline some of the basic steps that can be used to extract and process the contents of press releases from a number of institutions of the European Union. When text mining or scraping, it is common to gather quickly many thousands of file, and keeping them in good order is fundamental, particularly in the long term. 
 
-A preliminary suggestion: depending on how you usually work and keep your files backed-up it may make sense to keep your scripts in a folder that is live-synced (e.g. with services such as Dropbox, Nextcloud, or Google Drive). It however rarely make sense to live-sync tens or hundreds of thousands of files as you proceed with your scraping. You may want to keep this in mind as you set the `base_folder` with `cas_set_options()`. I will keep in the current working directory here for the sake of simplicity, but there are no drawback in having scripts and folders in different locations. 
+A preliminary suggestion: depending on how you usually work and keep your files backed-up it may make sense to keep your scripts in a folder that is live-synced (e.g. with services such as Dropbox, Nextcloud, or Google Drive). It however rarely make sense to live-sync tens or hundreds of thousands of files as you proceed with your scraping. You may want to keep this in mind as you set the `base_folder` with `cas_set_options()`. I will keep in the current working directory here for the sake of simplicity, but there are no drawbacks in having scripts and folders in different locations. 
 
+`castarter2` stores details about the download process in a database. By default, this is stored locally in RSQlite database kept in the same folder as website files, but it can be stored in a different folder, or alternative database backends such as MySQL can also be used. 
 
 ```{r}
 
-cas_set_options(base_folder = "castarter_data",
+cas_set_options(base_folder = fs::path(fs::path_home_r(), "R", "castarter_data"),
                 project = "european_union",
                 website = "european_commission"
 )
 
 ```
+
 Assuming that my project on the European Union involves text mining the website of the European Council, the European Commission, and the European Parliament, the folder structure may look something like this:
 
 

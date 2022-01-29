@@ -16,3 +16,16 @@ Typically set with \code{cas_set_cache_db()}
 
 cas_get_cache_db()
 }
+\seealso{
+Other caching functions: 
+\code{\link{cas_check_cache_folder}()},
+\code{\link{cas_check_cache}()},
+\code{\link{cas_connect_to_cache}()},
+\code{\link{cas_create_cache_folder}()},
+\code{\link{cas_disable_cache}()},
+\code{\link{cas_disconnect_from_cache}()},
+\code{\link{cas_enable_cache}()},
+\code{\link{cas_set_cache_db}()},
+\code{\link{cas_set_cache_folder}()}
+}
+\concept{caching functions}

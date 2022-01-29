@@ -10,20 +10,31 @@ cas_set_options(base_folder = NULL, project = NULL, website = NULL)
 cas_get_options(base_folder = NULL, project = NULL, website = NULL)
 }
 \arguments{
-\item{base_folder}{Defaults to NULL, can be set once per session with \code{cas_set_options()}. A path to a location used for storing html and other project files. If the folder does not exist, it will be created. If not given, and not previously set as environment variable, defaults to \code{castarter_data}.}
+\item{base_folder}{Defaults to NULL, can be set once per session with
+\code{cas_set_options()}. A path to a location used for storing html and other
+project files. If the folder does not exist, it will be created. If not
+given, and not previously set as environment variable, defaults to
+\code{castarter_data}.}
 
-\item{project}{Defaults to NULL. Project name, can be set once per session with \code{cas_set_options()}. This will be used as first level folder and may be used elsewhere to describe the dataset.}
+\item{project}{Defaults to NULL. Project name, can be set once per session
+with \code{cas_set_options()}. This will be used as first level folder and may
+be used elsewhere to describe the dataset.}
 
-\item{website}{Defaults to NULL. Website name, can be set once per session with \code{cas_set_options()}. This will be used as a second level folder and may be used elsewhere to describe the dataset.}
+\item{website}{Defaults to NULL. Website name, can be set once per session
+with \code{cas_set_options()}. This will be used as a second level folder and
+may be used elsewhere to describe the dataset.}
 }
 \value{
-A list object with the newly set (or previously set if left to NULL) options.
+A list object with the newly set (or previously set if left to NULL)
+options.
 }
 \description{
-Your project folder can be anywhwere on your file system. Considering that this is where possibly a very large number of html files will be downloaded, it is usually preferrable to choose a location that is not included in live backups.
-}
-\details{
-These settings determine the names given to these hierarchical folders: \code{website} folder will be under \code{project} folder which will be under the \code{base_folder}.
+Your project folder can be anywhwere on your file system. Considering that
+this is where possibly a very large number of html files will be downloaded,
+it is usually preferrable to choose a location that is not included in live
+backups. These settings determine the names given to these hierarchical
+folders: \code{website} folder will be under \code{project} folder which will be under
+the \code{base_folder}.
 }
 \examples{
 cas_set_options(base_folder = fs::path(fs::path_temp(), "castarter_data"))
@@ -31,3 +42,4 @@ cas_options_list <- cas_get_options()
 cas_options_list
 cas_get_options()
 }
+\concept{settings}

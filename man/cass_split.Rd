@@ -16,6 +16,7 @@ A character vector
 Split string into multiple inputs
 }
 \examples{
-
+if (interactive()) {
 cass_split("dogs, cats, horses")
+}
 }
