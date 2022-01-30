@@ -2,31 +2,28 @@
 % Please edit documentation in R/cas_build_urls.R
 \name{cas_build_urls}
 \alias{cas_build_urls}
-\title{Generates urls to index pages listing individual articles..}
+\title{URL builder}
 \usage{
 cas_build_urls(
-  url_first_part,
-  url_second_part = NULL,
+  url_beginning,
+  url_ending = "",
   start_page = 1,
   end_page = 10,
   increase_by = 1,
-  date_format = "YMD",
+  date_format = "Ymd",
   start_date = NULL,
-  end_date = NULL,
+  end_date = Sys.Date(),
   date_separator = NULL,
-  reversed_order = FALSE,
-  project = NULL,
-  website = NULL,
-  cache = NULL,
-  cache_connection = NULL
+  increase_date_by = "day",
+  reversed_order = FALSE
 )
 }
 \arguments{
-\item{url_first_part}{First part of index link that does not change in other
+\item{url_beginning}{First part of index link that does not change in other
 index pages.}
 
-\item{url_second_part}{Part of index link appneded after the part of the link
-that varies. If not relevant, may be left empty.}
+\item{url_ending}{Part of index link appneded after the part of the link that
+varies. If not relevant, may be left empty.}
 
 \item{start_page}{If the urls include a numerical component, define first
 number of the sequence. start_page defaults to 1.}
@@ -41,25 +38,29 @@ increased in the numerical sequence. Defaults to 1.}
 \code{\link{strptime}} for valid values used to define the format of the
 date that is part of the URL. Simplified formats such as the following are
 also accepted: "Y" (e.g. 2022), "Ym" (2022-10), "Ymd" (e.g. 2022-10-24).
-Read more in details.}
+See details.}
 
-\item{start_date, end_date}{Defaults to NULL. If given, a date, or a character
-vector coercible to date with \code{\link{as.Date}}.}
+\item{start_date}{Defaults to NULL. If given, a date, or a character vector
+of length one coercible to date with \code{\link{as.Date}}. When given,
+urls are built based on dates, and parameters \code{start_page}, \code{end_page}, and
+\code{increase_by}, are ignored.}
 
-\item{project}{Name of 'castarter' project. Must correspond to the name of a
-folder in the current working directory. Not required if previously set
-with SetCastarter(project = "project", website = "website")}
+\item{end_date}{Defaults to \code{Sys.Date()}. If given, a date, or a
+character vector of length one coercible to date with
+\code{\link{as.Date}}.}
 
-\item{website}{Name of a website included in a 'castarter' project. Must
-correspond to the name of a sub-folder of the project folder. Not required
-if previously set with SetCastarter(project = "project", website =
-"website")}
+\item{increase_date_by}{Defaults to "day". See \code{\link{seq.Date}} for
+valid values.}
+
+\item{reversed_order}{Logical, defaults to FALSE. If TRUE, the order of urls
+in the output.}
 }
 \value{
-A character vector of urls to index pages.
+A character vector of unique values. Conceptually, a vector of urls
+to index pages.
 }
 \description{
-Generates urls to index pages listing individual articles.
+Typically used to generate urls to index pages listing individual articles.
 }
 \section{Date formats}{
  It is not uncommon in particular for index pages to
@@ -68,12 +69,18 @@ include dates in the URL, along the lines of
 build such urls, \code{cas_build_urls} needs a \code{start_date} and \code{end_date}.
 The formatting of the date can be defined either by providing to the
 parameter \code{date_format} a string that \code{\link{strptime}} is able to
-interpret directly, or a simplified string (such as "YMD", without the
-"\%"), and add a \code{date_separator} such as "-" as needed.
+interpret directly, or a simplified string (such as "Ymd", without the
+"\%"),adding a \code{date_separator} such as "-" as needed.
 }
 
 \examples{
-\dontrun{
-index_urls <- cas_build_urls("http://www.example.com/news/")
-}
+index_urls <- cas_build_urls(url_beginning = "http://www.example.com/news/",
+                             start_page = 1,
+                             end_page = 10)
+
+cas_build_urls(url_beginning = "https://example.com/archive/", 
+               start_date = "2022-01-01",
+               end_date = "2022-12-31",
+               date_separator = "-") \%>\% 
+               head()
 }
