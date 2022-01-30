@@ -2,7 +2,7 @@
 #'
 #' @param ask Logical, defaults to TRUE. If FALSE, and cache folder does not exist, it just creates it without asking (useful for non-interactive sessions).
 #'
-#' @family caching functions
+#' @family database functions
 #'
 #' @return Nothing, used for its side effects.
 #' @export
@@ -37,7 +37,7 @@ cas_create_cache_folder <- function(ask = TRUE) {
 #'
 #' @param path A path to a location used for caching data. If the folder does not exist, it will be created.
 #' 
-#' @family caching functions
+#' @family database functions
 #'
 #' @return The path to the caching folder, if previously set; the same path as given to the function; or the default, `cas_data` is none is given.
 #' @export
@@ -78,7 +78,7 @@ cas_get_cache_folder <- cas_set_cache_folder
 #' @param user Database user name.
 #' @param pwd Password for the database user.
 #'
-#' @family caching functions
+#' @family database functions
 #'
 #' @return A list with all given parameters (invisibly).
 #' @export
@@ -150,7 +150,7 @@ cas_set_cache_db <- function(db_settings = NULL,
 #'
 #' Typically set with `cas_set_cache_db()`
 #'
-#' @family caching functions
+#' @family database functions
 #'
 #' @return A list with all database parameters as stored in environment variables.
 #' @export
@@ -174,7 +174,7 @@ cas_get_cache_db <- function() {
 #'
 #' @param SQLite Logical, defaults to TRUE. Set to FALSE to use custom database options. See `cas_set_cache_db()` for details.
 #'
-#' @family caching functions
+#' @family database functions
 #'
 #' @return Nothing, used for its side effects.
 #' @export
@@ -192,7 +192,7 @@ cas_enable_cache <- function(SQLite = TRUE) {
 
 #' Disable caching for the current session
 #'
-#' @family caching functions
+#' @family database functions
 #'
 #' @return Nothing, used for its side effects.
 #' @export
@@ -212,7 +212,7 @@ cas_disable_cache <- function() {
 #'
 #' @param cache Defaults to NULL. If NULL, checks current cache settings. If given, returns given value, ignoring cache.
 #'
-#' @family caching functions
+#' @family database functions
 #'
 #' @return Either TRUE or FALSE, depending on current cache settings.
 #' @export
@@ -232,7 +232,7 @@ cas_check_cache <- function(cache = NULL) {
 
 #' Checks if cache folder exists, if not returns an informative message
 #'
-#' @family caching functions
+#' @family database functions
 #'
 #' @return If the cache folder exists, returns TRUE. Otherwise throws an error.
 #' @export
@@ -275,7 +275,7 @@ cas_check_cache_folder <- function() {
 #' @param language Defaults to language set with `cas_set_language()`; if not set, "en". Use "all_available" to keep all languages. For available language values, see https://www.wikidata.org/wiki/Help:Wikimedia_language_codes/lists/all
 #' @param cache Defaults to NULL. If given, it should be given either TRUE or FALSE. Typically set with `cas_enable_cache()` or `cas_disable_cache()`.
 #'
-#' @family caching functions
+#' @family database functions
 #'
 #' @return A connection object.
 #' @export
@@ -415,7 +415,7 @@ cas_connect_to_cache <- function(connection = NULL,
 #' @param disconnect_db Defaults to TRUE. If FALSE, leaves the connection to cache open.
 #' @param language Defaults to language set with `cas_set_language()`; if not set, "en". Use "all_available" to keep all languages. For available language values, see https://www.wikidata.org/wiki/Help:Wikimedia_language_codes/lists/all
 #'
-#' @family caching functions
+#' @family database functions
 #'
 #' @return Nothing, used for its side effects.
 #' @export

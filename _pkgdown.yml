@@ -4,7 +4,7 @@ template:
 reference:
 - title: Caching
 - contents:
-  - has_concept("caching functions")
+  - has_concept("database functions")
 - title: Shiny modules
 - description: These are shiny modules used in the main Shiny app. Some of them can be used for illustrative purposes elsewhere, or integrated in other Shiny apps
 contents:
