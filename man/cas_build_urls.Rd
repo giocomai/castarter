@@ -60,7 +60,8 @@ A character vector of unique values. Conceptually, a vector of urls
 to index pages.
 }
 \description{
-Typically used to generate urls to index pages listing individual articles.
+Convenience function typically used to generate urls to index pages listing
+articles.
 }
 \section{Date formats}{
  It is not uncommon in particular for index pages to
@@ -74,13 +75,20 @@ interpret directly, or a simplified string (such as "Ymd", without the
 }
 
 \examples{
-index_urls <- cas_build_urls(url_beginning = "http://www.example.com/news/",
+cas_build_urls(url_beginning = "http://www.example.com/news/",
                              start_page = 1,
                              end_page = 10)
 
-cas_build_urls(url_beginning = "https://example.com/archive/", 
+cas_build_urls(url_beginning = "https://example.com/news/?skip=",
+               start_page = 0,
+               end_page = 100,
+               increase_by = 10)
+
+
+cas_build_urls(url_beginning = "https://example.com/archive/",
                start_date = "2022-01-01",
                end_date = "2022-12-31",
-               date_separator = "-") \%>\% 
+               date_separator = "-") \%>\%
                head()
+               
 }

@@ -10,7 +10,13 @@ experimental](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](h
 <!-- badges: end -->
 
 castarter2 is a more modern, fully-featured, and consistent iteration of
-[`castarter`](https://github.com/giocomai/castarter).
+[`castarter`](https://github.com/giocomai/castarter) - Content Analysis
+Starter Toolkit for the R programming language. It facilitates text
+mining and web scraping by taking care of many of the most common file
+management issues, keeps tracks of download advancement in a local
+database, facilitates extraction through dedicated convenience
+functions, and allows for basic exploration of textual corpora through a
+Shiny interface.
 
 It is currently at an early stage of development, and will likely behave
 erratically.
@@ -35,6 +41,67 @@ cas_explorer(corpus = tifkremlinen::kremlin_en,
 ```
 
 # Key concepts
+
+## Project and website
+
+One of the first issues that appear when starting a text mining or web
+scraping project relates to the issue of managing files and folder.
+`castarter2` defaults to an opinionated folder structure that should
+work for most projects. It also facilitates downloading files (skipping
+previously downloaded files) and ensuring consistent and unique matching
+between a downloaded html, its source url, and data extracted from them.
+Finally, it facilitates archiving and backuping downloaded files and
+scripts.
+
+The folder structure is based on two levels:
+
+-   project
+-   website
+
+A project may include one or more websites. It is an intermediate level
+added to keep files in order, as the number of processes websites
+increased.
+
+Let’s clarify with an example. Let’s suppose I want to do some text
+minining of websites related to the European Union. The name of the
+project will be `european_union`, and within that project I may be
+gathering contents from different websites, e.g. “european_commission”,
+“european_parliament”, “european_council”, etc.
+
+``` r
+library("castarter2")
+cas_set_options(base_folder = fs::path(fs::path_home_r(), "R", "castarter_data"),
+                project = "european_union",
+                website = "european_commission"
+)
+```
+
+Assuming that my project on the European Union involves text mining the
+website of the European Council, the European Commission, and the
+European Parliament, the folder structure may look something like this:
+
+In brief, `castarter_data` is the base folder where I can store all of
+my text mining projects. `european_union` is the name of the project,
+while all others are the names of the specific websites I will source.
+Folders will by created automatically as needed when you start
+downloading files.
+
+When text mining or scraping, it is common to gather quickly many
+thousands of file, and keeping them in good order is fundamental,
+particularly in the long term. Hence, a preliminary suggestion:
+depending on how you usually work and keep your files backed-up it may
+make sense to keep your scripts in a folder that is live-synced
+(e.g. with services such as Dropbox, Nextcloud, or Google Drive). It
+however rarely make sense to live-sync tens or hundreds of thousands of
+files as you proceed with your scraping. You may want to keep this in
+mind as you set the `base_folder` with `cas_set_options()`.
+
+`castarter2` stores details about the download process in a database. By
+default, this is stored locally in RSQlite database kept in the same
+folder as website files, but it can be stored in a different folder, or
+alternative database backends such as MySQL can also be used.
+
+## Index pages and content pages
 
 `castarter2` starts with the idea that there are basically two types of
 pages that are commonly found while text mining.
@@ -134,6 +201,17 @@ These are the key tables to found in a `castarter2` database:
         will include fields such as “title”, “date”, “author”, “text”,
         etc., but are not limited by design. Irrespective of their
         contents, they will however all be stored as textual strings.
+
+# Workflow
+
+## What currently works
+
+``` r
+cas_set_options(base_folder = fs::path(fs::path_home_r(), "R", "castarter_data"),
+                project = "european_union",
+                website = "european_commission"
+)
+```
 
 # To do
 

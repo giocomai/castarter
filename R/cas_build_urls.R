@@ -1,6 +1,7 @@
 #' URL builder
 #'
-#' Typically used to generate urls to index pages listing individual articles.
+#' Convenience function typically used to generate urls to index pages listing
+#' articles.
 #'
 #' @section Date formats: It is not uncommon in particular for index pages to
 #'   include dates in the URL, along the lines of
@@ -42,15 +43,22 @@
 #'   to index pages.
 #' @export
 #' @examples
-#' index_urls <- cas_build_urls(url_beginning = "http://www.example.com/news/",
+#' cas_build_urls(url_beginning = "http://www.example.com/news/",
 #'                              start_page = 1,
 #'                              end_page = 10)
-#' 
-#' cas_build_urls(url_beginning = "https://example.com/archive/", 
+#'
+#' cas_build_urls(url_beginning = "https://example.com/news/?skip=",
+#'                start_page = 0,
+#'                end_page = 100,
+#'                increase_by = 10)
+#'
+#'
+#' cas_build_urls(url_beginning = "https://example.com/archive/",
 #'                start_date = "2022-01-01",
 #'                end_date = "2022-12-31",
-#'                date_separator = "-") %>% 
+#'                date_separator = "-") %>%
 #'                head()
+#'                
 cas_build_urls <- function(url_beginning,
                            url_ending = "",
                            start_page = 1,
