@@ -23,12 +23,12 @@ cas_get_website_folder <- function(base_folder = NULL,
 }
 
 #' Checks if current website folder exists
-#' 
+#'
 #' Parameters can be left to NULL; it will then rely on parameters set with `cas_set_options()`
 #'
 #' @inheritParams cas_get_options
 #'
-#' @return Logical, TRUE if website folder exists, FALSE if it does not. 
+#' @return Logical, TRUE if website folder exists, FALSE if it does not.
 #' @export
 #'
 #' @examples
@@ -40,7 +40,7 @@ cas_check_website_folder <- function(base_folder = NULL,
     project = project,
     website = website
   )
-  
+
   fs::dir_exists(
     fs::path(
       cas_options$base_folder,

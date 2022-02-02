@@ -6,7 +6,7 @@
 #'
 #' @examples
 #' if (interactive()) {
-#' cass_split("dogs, cats, horses")
+#'   cass_split("dogs, cats, horses")
 #' }
 cass_split <- function(string,
                        squish = TRUE,

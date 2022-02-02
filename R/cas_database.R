@@ -1,6 +1,6 @@
-#' Creates the base cache folder where `castarter` caches data.
+#' Creates the base folder where `castarter` stores the project database.
 #'
-#' @param ask Logical, defaults to TRUE. If FALSE, and cache folder does not exist, it just creates it without asking (useful for non-interactive sessions).
+#' @param ask Logical, defaults to TRUE. If FALSE, and database folder does not exist, it just creates it without asking (useful for non-interactive sessions).
 #'
 #' @family database functions
 #'
@@ -8,51 +8,51 @@
 #' @export
 #'
 #' @examples
-#' \donttest{
-#' if (interactive()) {
-#'   cas_create_cache_folder()
-#' }
-#' }
-cas_create_cache_folder <- function(ask = TRUE) {
-  if (fs::file_exists(castarter::cas_get_cache_folder()) == FALSE) {
+#' cas_create_db_folder(path = fs::path(fs::path_temp(), "cas_data"))
+cas_create_db_folder <- function(path = NULL,
+                                 ask = TRUE) {
+  if (is.null(path)) {
+    db_path <- castarter::cas_get_db_folder()
+  } else {
+    db_path <- path
+  }
+
+  if (fs::file_exists(db_path) == FALSE) {
     if (ask == FALSE) {
-      fs::dir_create(path = castarter::cas_get_cache_folder(), recurse = TRUE)
+      fs::dir_create(path = db_path, recurse = TRUE)
     } else {
-      usethis::ui_info(glue::glue("The cache folder {{usethis::ui_path(cas_get_cache_folder())}} does not exist. If you prefer to cache files elsewhere, reply negatively and set your preferred cache folder with `cas_set_cache_folder()`"))
-      check <- usethis::ui_yeah(glue::glue("Do you want to create {{usethis::ui_path(cas_get_cache_folder())}} for caching data?"))
+      usethis::ui_info(glue::glue("The database folder {{usethis::ui_path(cas_get_db_folder())}} does not exist. If you prefer to store database files elsewhere, reply negatively and set your preferred database folder with `cas_set_db_folder()`"))
+      check <- usethis::ui_yeah(glue::glue("Do you want to create {{usethis::ui_path(cas_get_db_folder())}} for storing data in a local database?"))
       if (check == TRUE) {
-        fs::dir_create(path = castarter::cas_get_cache_folder(), recurse = TRUE)
+        fs::dir_create(path = db_path, recurse = TRUE)
       }
     }
-    if (fs::file_exists(castarter::cas_get_cache_folder()) == FALSE) {
-      usethis::ui_stop("This function requires a valid cache folder.")
+    if (fs::file_exists(db_path) == FALSE) {
+      usethis::ui_stop("This function requires a valid database folder.")
     }
   }
 }
 
 
-#' Set folder for caching data
+#' Set folder for storing the database
 #'
-#' Consider using a folder out of your current project directory, e.g. `cas_set_cache_folder("~/R/cas_data/")`: you will be able to use the same cache in different projects, and prevent cached files from being sync-ed if you use services such as Nextcloud or Dropbox.
+#' Consider using a folder out of your current project directory, e.g. `cas_set_db_folder("~/R/cas_data/")`: you will be able to use the same database in different projects, and prevent database files from being sync-ed if you use services such as Nextcloud or Dropbox.
 #'
-#' @param path A path to a location used for caching data. If the folder does not exist, it will be created.
-#' 
+#' @param path A path to a location used for soring data data. If the folder does not exist, it will be created.
+#'
 #' @family database functions
 #'
-#' @return The path to the caching folder, if previously set; the same path as given to the function; or the default, `cas_data` is none is given.
+#' @return The path to the database folder, if previously set; the same path as given to the function; or the default, `cas_data` is none is given.
 #' @export
-
 #' @examples
-#' \donttest{
-#' if (interactive()) {
-#'   cas_set_cache_folder(fs::path(fs::path_home_r(), "R", "cas_data"))
-#' }
-#' }
-cas_set_cache_folder <- function(path = NULL) {
+#' cas_set_db_folder(fs::path(fs::path_home_r(), "R", "cas_data"))
+#'
+#' cas_set_db_folder(fs::path(fs::path_temp(), "cas_data"))
+cas_set_db_folder <- function(path = NULL) {
   if (is.null(path)) {
-    path <- Sys.getenv("castarter_cache_folder")
+    path <- Sys.getenv("castarter_database_folder")
   } else {
-    Sys.setenv(castarter_cache_folder = path)
+    Sys.setenv(castarter_database_folder = path)
   }
   if (path == "") {
     path <- fs::path("castarter_data")
@@ -60,11 +60,11 @@ cas_set_cache_folder <- function(path = NULL) {
   invisible(path)
 }
 
-#' @rdname cas_set_cache_folder
+#' @rdname cas_set_db_folder
 #' @examples
-#' cas_get_cache_folder()
+#' cas_get_db_folder()
 #' @export
-cas_get_cache_folder <- cas_set_cache_folder
+cas_get_db_folder <- cas_set_db_folder
 
 
 
@@ -97,11 +97,11 @@ cas_get_cache_folder <- cas_set_cache_folder
 #'     pwd = "secret_password"
 #'   )
 #'
-#'   cas_set_cache_db(db_settings)
+#'   cas_set_db(db_settings)
 #'
 #'   # or as parameters
 #'
-#'   cas_set_cache_db(
+#'   cas_set_db(
 #'     driver = "MySQL",
 #'     host = "localhost",
 #'     port = 3306,
@@ -111,13 +111,13 @@ cas_get_cache_folder <- cas_set_cache_folder
 #'   )
 #' }
 #' }
-cas_set_cache_db <- function(db_settings = NULL,
-                             driver = NULL,
-                             host = NULL,
-                             port,
-                             database,
-                             user,
-                             pwd) {
+cas_set_db <- function(db_settings = NULL,
+                       driver = NULL,
+                       host = NULL,
+                       port,
+                       database,
+                       user,
+                       pwd) {
   if (is.null(db_settings) == TRUE) {
     if (is.null(driver) == FALSE) Sys.setenv(castarter_db_driver = driver)
     if (is.null(host) == FALSE) Sys.setenv(castarter_db_host = host)
@@ -148,7 +148,7 @@ cas_set_cache_db <- function(db_settings = NULL,
 
 #' Get database connection settings from the environment
 #'
-#' Typically set with `cas_set_cache_db()`
+#' Typically set with `cas_set_db()`
 #'
 #' @family database functions
 #'
@@ -157,8 +157,8 @@ cas_set_cache_db <- function(db_settings = NULL,
 #'
 #' @examples
 #'
-#' cas_get_cache_db()
-cas_get_cache_db <- function() {
+#' cas_get_db()
+cas_get_db <- function() {
   list(
     driver = Sys.getenv("castarter_db_driver"),
     host = Sys.getenv("castarter_db_host"),
@@ -172,7 +172,7 @@ cas_get_cache_db <- function() {
 
 #' Enable caching for the current session
 #'
-#' @param SQLite Logical, defaults to TRUE. Set to FALSE to use custom database options. See `cas_set_cache_db()` for details.
+#' @param SQLite Logical, defaults to TRUE. Set to FALSE to use custom database options. See `cas_set_db()` for details.
 #'
 #' @family database functions
 #'
@@ -181,12 +181,12 @@ cas_get_cache_db <- function() {
 #' @examples
 #' \donttest{
 #' if (interactive()) {
-#'   cas_enable_cache()
+#'   cas_enable_db()
 #' }
 #' }
-cas_enable_cache <- function(SQLite = TRUE) {
-  Sys.setenv(castarter_cache = TRUE)
-  Sys.setenv(castarter_cache_SQLite = SQLite)
+cas_enable_db <- function(SQLite = TRUE) {
+  Sys.setenv(castarter_database = TRUE)
+  Sys.setenv(castarter_database_SQLite = SQLite)
 }
 
 
@@ -199,68 +199,68 @@ cas_enable_cache <- function(SQLite = TRUE) {
 #' @examples
 #' \donttest{
 #' if (interactive()) {
-#'   cas_disable_cache()
+#'   cas_disable_db()
 #' }
 #' }
-cas_disable_cache <- function() {
-  Sys.setenv(castarter_cache = FALSE)
+cas_disable_db <- function() {
+  Sys.setenv(castarter_database = FALSE)
 }
 
 #' Check caching status in the current session, and override it upon request
 #'
 #' Mostly used internally in functions, exported for reference.
 #'
-#' @param cache Defaults to NULL. If NULL, checks current cache settings. If given, returns given value, ignoring cache.
+#' @param use_db Defaults to NULL. If NULL, checks current use_db settings. If given, returns given value, ignoring use_db.
 #'
 #' @family database functions
 #'
-#' @return Either TRUE or FALSE, depending on current cache settings.
+#' @return Either TRUE or FALSE, depending on current use_db settings.
 #' @export
 #' @examples
-#'cas_check_cache()
-cas_check_cache <- function(cache = NULL) {
-  if (is.null(cache) == FALSE) {
-    return(as.logical(cache))
+#' cas_check_use_db()
+cas_check_use_db <- function(use_db = NULL) {
+  if (is.null(use_db) == FALSE) {
+    return(as.logical(use_db))
   }
-  current_cache <- Sys.getenv("castarter_cache")
-  if (current_cache == "") {
+  current_database <- Sys.getenv("castarter_database")
+  if (current_database == "") {
     as.logical(FALSE)
   } else {
-    as.logical(current_cache)
+    as.logical(current_database)
   }
 }
 
-#' Checks if cache folder exists, if not returns an informative message
+#' Checks if database folder exists, if not returns an informative message
 #'
 #' @family database functions
 #'
-#' @return If the cache folder exists, returns TRUE. Otherwise throws an error.
+#' @return If the database folder exists, returns TRUE. Otherwise throws an error.
 #' @export
 #'
 #' @examples
 #'
-#' # If cache folder does not exist, it throws an error
-#' tryCatch(cas_check_cache_folder(),
+#' # If database folder does not exist, it throws an error
+#' tryCatch(cas_check_db_folder(),
 #'   error = function(e) {
 #'     return(e)
 #'   }
 #' )
 #'
-#' # Create cache folder
-#' cas_set_cache_folder(path = fs::path(
+#' # Create database folder
+#' cas_set_db_folder(path = fs::path(
 #'   tempdir(),
 #'   "cas_cache_folder"
 #' ))
-#' cas_create_cache_folder(ask = FALSE)
+#' cas_create_db_folder(ask = FALSE)
 #'
-#' cas_check_cache_folder()
-cas_check_cache_folder <- function() {
-  if (fs::file_exists(cas_get_cache_folder()) == FALSE) {
+#' cas_check_db_folder()
+cas_check_db_folder <- function() {
+  if (fs::file_exists(cas_get_db_folder()) == FALSE) {
     usethis::ui_stop(paste(
-      "Cache folder does not exist. Set it with",
-      usethis::ui_code("cas_get_cache_folder()"),
+      "Database folder does not exist. Set it with",
+      usethis::ui_code("cas_get_db_folder()"),
       "and create it with",
-      usethis::ui_code("cas_create_cache_folder()")
+      usethis::ui_code("cas_create_db_folder()")
     ))
   }
   TRUE
@@ -270,10 +270,10 @@ cas_check_cache_folder <- function() {
 
 #' Return a connection to be used for caching
 #'
-#' @param connection Defaults to NULL. If NULL, uses local SQLite database. If given, must be a connection object or a list with relevant connection settings (see example).
-#' @param RSQLite Defaults to NULL, expected either NULL or logical. If set to `FALSE`, details on the database connection must be given either as a named list in the connection parameter, or with `cas_set_cache_db()` as environment variables.
+#' @param db_connection Defaults to NULL. If NULL, uses local SQLite database. If given, must be a connection object or a list with relevant connection settings (see example).
+#' @param RSQLite Defaults to NULL, expected either NULL or logical. If set to `FALSE`, details on the database connection must be given either as a named list in the connection parameter, or with `cas_set_db()` as environment variables.
 #' @param language Defaults to language set with `cas_set_language()`; if not set, "en". Use "all_available" to keep all languages. For available language values, see https://www.wikidata.org/wiki/Help:Wikimedia_language_codes/lists/all
-#' @param cache Defaults to NULL. If given, it should be given either TRUE or FALSE. Typically set with `cas_enable_cache()` or `cas_disable_cache()`.
+#' @param cache Defaults to NULL. If given, it should be given either TRUE or FALSE. Typically set with `cas_enable_db()` or `cas_disable_db()`.
 #'
 #' @family database functions
 #'
@@ -283,7 +283,7 @@ cas_check_cache_folder <- function() {
 #' @examples
 #' \donttest{
 #' if (interactive()) {
-#'   cache_connection <- pool::dbPool(
+#'   db_connection <- pool::dbPool(
 #'     RSQLite::SQLite(), # or e.g. odbc::odbc(),
 #'     Driver =  ":memory:", # or e.g. "MariaDB",
 #'     Host = "localhost",
@@ -291,7 +291,7 @@ cas_check_cache_folder <- function() {
 #'     UID = "example_user",
 #'     PWD = "example_pwd"
 #'   )
-#'   cas_connect_to_cache(cache_connection)
+#'   cas_connect_to_db(db_connection)
 #'
 #'
 #'   db_settings <- list(
@@ -303,36 +303,36 @@ cas_check_cache_folder <- function() {
 #'     pwd = "secret_password"
 #'   )
 #'
-#'   cas_connect_to_cache(db_settings)
+#'   cas_connect_to_db(db_settings)
 #' }
 #' }
 #'
-cas_connect_to_cache <- function(connection = NULL,
-                                 RSQLite = NULL,
-                                 language = NULL,
-                                 cache = NULL) {
-  if (isFALSE(x = cas_check_cache(cache))) {
+cas_connect_to_db <- function(db_connection = NULL,
+                              RSQLite = NULL,
+                              language = NULL,
+                              use_db = NULL) {
+  if (isFALSE(x = cas_check_use_db(use_db))) {
     return(NULL)
   }
 
-  if (is.null(connection) == FALSE & is.list(connection) == FALSE) {
-    if (DBI::dbIsValid(connection) == FALSE) {
-      connection <- NULL
+  if (is.null(db_connection) == FALSE & is.list(db_connection) == FALSE) {
+    if (DBI::dbIsValid(db_connection) == FALSE) {
+      db_connection <- NULL
     }
   }
 
-  if (is.null(connection)) {
+  if (is.null(db_connection)) {
     if (is.null(language) == FALSE) {
       language <- cas_get_language()
     }
 
     if (is.null(RSQLite)) {
-      RSQLite <- as.logical(Sys.getenv(x = "cas_cache_SQLite", unset = TRUE))
+      RSQLite <- as.logical(Sys.getenv(x = "cas_database_SQLite", unset = TRUE))
     }
 
     if (isTRUE(RSQLite)) {
-      cas_check_cache_folder()
-      db_file <- cas_get_cache_file(
+      cas_check_db_folder()
+      db_file <- cas_get_db_file(
         language = language
       )
 
@@ -349,9 +349,9 @@ cas_connect_to_cache <- function(connection = NULL,
       )
       return(db)
     } else {
-      connection <- cas_get_cache_db()
+      db_connection <- cas_get_db()
 
-      if (connection[["driver"]] == "SQLite") {
+      if (db_connection[["driver"]] == "SQLite") {
         if (requireNamespace("RSQLite", quietly = TRUE) == FALSE) {
           usethis::ui_stop(x = "To use SQLite databases you need to install the package `RSQLite`.")
         }
@@ -365,18 +365,18 @@ cas_connect_to_cache <- function(connection = NULL,
 
       db <- pool::dbPool(
         drv = drv,
-        driver = connection[["driver"]],
-        host = connection[["host"]],
-        port = as.integer(connection[["port"]]),
-        database = connection[["database"]],
-        user = connection[["user"]],
-        pwd = connection[["pwd"]]
+        driver = db_connection[["driver"]],
+        host = db_connection[["host"]],
+        port = as.integer(db_connection[["port"]]),
+        database = db_connection[["database"]],
+        user = db_connection[["user"]],
+        pwd = db_connection[["pwd"]]
       )
       return(db)
     }
   } else {
-    if (is.list(connection)) {
-      if (connection[["driver"]] == "SQLite") {
+    if (is.list(db_connection)) {
+      if (db_connection[["driver"]] == "SQLite") {
         if (requireNamespace("RSQLite", quietly = TRUE) == FALSE) {
           usethis::ui_stop(x = "To use SQLite databases you need to install the package `RSQLite`.")
         }
@@ -390,17 +390,17 @@ cas_connect_to_cache <- function(connection = NULL,
 
       db <- pool::dbPool(
         drv = drv,
-        driver = connection[["driver"]],
-        host = connection[["host"]],
-        port = as.integer(connection[["port"]]),
-        database = connection[["database"]],
-        dbname = connection[["database"]],
-        user = connection[["user"]],
-        pwd = connection[["pwd"]]
+        driver = db_connection[["driver"]],
+        host = db_connection[["host"]],
+        port = as.integer(db_connection[["port"]]),
+        database = db_connection[["database"]],
+        dbname = db_connection[["database"]],
+        user = db_connection[["user"]],
+        pwd = db_connection[["pwd"]]
       )
       return(db)
     } else {
-      return(connection)
+      return(db_connection)
     }
   }
 }
@@ -408,10 +408,10 @@ cas_connect_to_cache <- function(connection = NULL,
 
 
 
-#' Ensure that connection to cache is disconnected consistently
+#' Ensure that connection to database is disconnected consistently
 #'
-#' @param cache Defaults to NULL. If given, it should be given either TRUE or FALSE. Typically set with `cas_enable_cache()` or `cas_disable_cache()`.
-#' @param cache_connection Defaults to NULL. If NULL, and caching is enabled, `castarter` will use a local sqlite database. A custom connection to other databases can be given (see vignette `caching` for details).
+#' @param use_db Defaults to NULL. If given, it should be given either TRUE or FALSE. Typically set with `cas_enable_db()` or `cas_disable_db()`.
+#' @param db_connection Defaults to NULL. If NULL, and caching is enabled, `castarter` will use a local sqlite database. A custom connection to other databases can be given (see vignette `caching` for details).
 #' @param disconnect_db Defaults to TRUE. If FALSE, leaves the connection to cache open.
 #' @param language Defaults to language set with `cas_set_language()`; if not set, "en". Use "all_available" to keep all languages. For available language values, see https://www.wikidata.org/wiki/Help:Wikimedia_language_codes/lists/all
 #'
@@ -421,22 +421,20 @@ cas_connect_to_cache <- function(connection = NULL,
 #' @export
 #'
 #' @examples
-#' if (interactive()) {
-#'   cas_disconnect_from_cache()
-#' }
-cas_disconnect_from_cache <- function(cache = NULL,
-                                      cache_connection = NULL,
-                                      disconnect_db = TRUE,
-                                      language = castarter::cas_get_language()) {
+#' cas_disconnect_from_db()
+cas_disconnect_from_db <- function(use_db = NULL,
+                                   db_connection = NULL,
+                                   disconnect_db = TRUE,
+                                   language = castarter::cas_get_language()) {
   if (isFALSE(disconnect_db)) {
     return(invisible(NULL))
   }
 
-  if (isTRUE(cas_check_cache(cache))) {
-    db <- cas_connect_to_cache(
-      connection = cache_connection,
+  if (isTRUE(cas_check_use_db(cache))) {
+    db <- cas_connect_to_db(
+      db_connection = db_connection,
       language = language,
-      cache = cache
+      use_db = use_db
     )
 
     if (pool::dbIsValid(dbObj = db)) {

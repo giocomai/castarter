@@ -17,6 +17,6 @@ Split string into multiple inputs
 }
 \examples{
 if (interactive()) {
-cass_split("dogs, cats, horses")
+  cass_split("dogs, cats, horses")
 }
 }

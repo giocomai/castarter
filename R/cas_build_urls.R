@@ -43,22 +43,27 @@
 #'   to index pages.
 #' @export
 #' @examples
-#' cas_build_urls(url_beginning = "http://www.example.com/news/",
-#'                              start_page = 1,
-#'                              end_page = 10)
+#' cas_build_urls(
+#'   url_beginning = "http://www.example.com/news/",
+#'   start_page = 1,
+#'   end_page = 10
+#' )
 #'
-#' cas_build_urls(url_beginning = "https://example.com/news/?skip=",
-#'                start_page = 0,
-#'                end_page = 100,
-#'                increase_by = 10)
+#' cas_build_urls(
+#'   url_beginning = "https://example.com/news/?skip=",
+#'   start_page = 0,
+#'   end_page = 100,
+#'   increase_by = 10
+#' )
 #'
 #'
-#' cas_build_urls(url_beginning = "https://example.com/archive/",
-#'                start_date = "2022-01-01",
-#'                end_date = "2022-12-31",
-#'                date_separator = "-") %>%
-#'                head()
-#'                
+#' cas_build_urls(
+#'   url_beginning = "https://example.com/archive/",
+#'   start_date = "2022-01-01",
+#'   end_date = "2022-12-31",
+#'   date_separator = "-"
+#' ) %>%
+#'   head()
 cas_build_urls <- function(url_beginning,
                            url_ending = "",
                            start_page = 1,
@@ -70,54 +75,56 @@ cas_build_urls <- function(url_beginning,
                            date_separator = NULL,
                            increase_date_by = "day",
                            reversed_order = FALSE) {
-  
-  if (is.null(start_date)==FALSE) {
+  if (is.null(start_date) == FALSE) {
     # allow for simplified date_format
     if (stringr::str_detect(string = date_format, pattern = "%", negate = TRUE)) {
-      
-      date_format <- stringr::str_c("%",
-                                    c(stringr::str_split(string = date_format,
-                                                         pattern = "",
-                                                         simplify = TRUE))) %>% 
+      date_format <- stringr::str_c(
+        "%",
+        c(stringr::str_split(
+          string = date_format,
+          pattern = "",
+          simplify = TRUE
+        ))
+      ) %>%
         stringr::str_c(collapse = "")
     }
-    
-    if (is.null(date_separator)==FALSE) {
+
+    if (is.null(date_separator) == FALSE) {
       date_format <- stringr::str_replace_all(
         string = date_format,
         pattern = "(?!^)%",
         replacement = stringr::str_c(date_separator, "%")
       )
     }
-    
+
     variable_part <- base::format(
       base::seq.Date(as.Date(start_date),
-                     as.Date(end_date),
-                     by = increase_date_by
+        as.Date(end_date),
+        by = increase_date_by
       ),
-      date_format) %>% 
+      date_format
+    ) %>%
       base::unique()
-    
   } else {
     variable_part <- format(
       base::seq(start_page, end_page, increase_by),
       scientific = FALSE
-    ) %>% 
+    ) %>%
       stringr::str_trim()
   }
-  
-  
+
+
   urls <- stringr::str_c(
     url_beginning,
     variable_part,
     url_ending
   )
-  
+
   if (reversed_order == TRUE) {
     urls <- base::rev(urls)
   }
-  
-  urls %>% 
-    base::unique() %>% 
+
+  urls %>%
+    base::unique() %>%
     stringr::str_trim()
 }
