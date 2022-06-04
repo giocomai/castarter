@@ -60,7 +60,7 @@ mod_cass_download_csv_server <- function(id, df, type = "data") {
 #'   cas_summarise(before = 15, after = 15)
 #'
 #' # cass_cass_download_csv_app(count_df)
-cass_cass_download_csv_app <- function(df, type) {
+cass_download_csv_app <- function(df, type) {
   ui <- fluidPage(
     castarter2:::mod_cass_download_csv_ui("mod_cass_download_csv_ui_1")
   )

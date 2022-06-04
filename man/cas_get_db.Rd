@@ -25,8 +25,6 @@ may be used elsewhere to describe the dataset.}
 }
 \value{
 A list with all database parameters as stored in environment variables.
-
-
 }
 \description{
 Typically set with \code{cas_set_db()}

@@ -15,9 +15,6 @@ cas_show_ts_dygraph(
 \arguments{
 \item{count_df}{}
 }
-\value{
-
-}
 \description{
 Create dygraphs based on a data frame typically generated with cas_count()
 }
