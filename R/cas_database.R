@@ -272,7 +272,6 @@ cas_check_db_folder <- function() {
 #'
 #' @param db_connection Defaults to NULL. If NULL, uses local SQLite database. If given, must be a connection object or a list with relevant connection settings (see example).
 #' @param RSQLite Defaults to NULL, expected either NULL or logical. If set to `FALSE`, details on the database connection must be given either as a named list in the connection parameter, or with `cas_set_db()` as environment variables.
-#' @param language Defaults to language set with `cas_set_language()`; if not set, "en". Use "all_available" to keep all languages. For available language values, see https://www.wikidata.org/wiki/Help:Wikimedia_language_codes/lists/all
 #' @param cache Defaults to NULL. If given, it should be given either TRUE or FALSE. Typically set with `cas_enable_db()` or `cas_disable_db()`.
 #'
 #' @family database functions
@@ -309,7 +308,6 @@ cas_check_db_folder <- function() {
 #'
 cas_connect_to_db <- function(db_connection = NULL,
                               RSQLite = NULL,
-                              language = NULL,
                               use_db = NULL) {
   if (isFALSE(x = cas_check_use_db(use_db))) {
     return(NULL)
@@ -322,9 +320,6 @@ cas_connect_to_db <- function(db_connection = NULL,
   }
 
   if (is.null(db_connection)) {
-    if (is.null(language) == FALSE) {
-      language <- cas_get_language()
-    }
 
     if (is.null(RSQLite)) {
       RSQLite <- as.logical(Sys.getenv(x = "cas_database_SQLite", unset = TRUE))
@@ -332,9 +327,7 @@ cas_connect_to_db <- function(db_connection = NULL,
 
     if (isTRUE(RSQLite)) {
       cas_check_db_folder()
-      db_file <- cas_get_db_file(
-        language = language
-      )
+      db_file <- cas_get_db_file()
 
       if (fs::file_exists(db_file) == FALSE) {
         db <- DBI::dbConnect(
@@ -413,7 +406,6 @@ cas_connect_to_db <- function(db_connection = NULL,
 #' @param use_db Defaults to NULL. If given, it should be given either TRUE or FALSE. Typically set with `cas_enable_db()` or `cas_disable_db()`.
 #' @param db_connection Defaults to NULL. If NULL, and caching is enabled, `castarter` will use a local sqlite database. A custom connection to other databases can be given (see vignette `caching` for details).
 #' @param disconnect_db Defaults to TRUE. If FALSE, leaves the connection to cache open.
-#' @param language Defaults to language set with `cas_set_language()`; if not set, "en". Use "all_available" to keep all languages. For available language values, see https://www.wikidata.org/wiki/Help:Wikimedia_language_codes/lists/all
 #'
 #' @family database functions
 #'
@@ -424,8 +416,7 @@ cas_connect_to_db <- function(db_connection = NULL,
 #' cas_disconnect_from_db()
 cas_disconnect_from_db <- function(use_db = NULL,
                                    db_connection = NULL,
-                                   disconnect_db = TRUE,
-                                   language = castarter::cas_get_language()) {
+                                   disconnect_db = TRUE) {
   if (isFALSE(disconnect_db)) {
     return(invisible(NULL))
   }
@@ -433,7 +424,6 @@ cas_disconnect_from_db <- function(use_db = NULL,
   if (isTRUE(cas_check_use_db(cache))) {
     db <- cas_connect_to_db(
       db_connection = db_connection,
-      language = language,
       use_db = use_db
     )
 

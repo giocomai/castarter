@@ -19,9 +19,6 @@ cas_count_total_words(
 
 \item{locale}{}
 }
-\value{
-
-}
 \description{
 Count total words in a dataset
 }

@@ -7,8 +7,7 @@
 cas_disconnect_from_db(
   use_db = NULL,
   db_connection = NULL,
-  disconnect_db = TRUE,
-  language = castarter::cas_get_language()
+  disconnect_db = TRUE
 )
 }
 \arguments{
@@ -17,8 +16,6 @@ cas_disconnect_from_db(
 \item{db_connection}{Defaults to NULL. If NULL, and caching is enabled, \code{castarter} will use a local sqlite database. A custom connection to other databases can be given (see vignette \code{caching} for details).}
 
 \item{disconnect_db}{Defaults to TRUE. If FALSE, leaves the connection to cache open.}
-
-\item{language}{Defaults to language set with \code{cas_set_language()}; if not set, "en". Use "all_available" to keep all languages. For available language values, see https://www.wikidata.org/wiki/Help:Wikimedia_language_codes/lists/all}
 }
 \value{
 Nothing, used for its side effects.
