@@ -33,7 +33,7 @@ Other database functions:
 \code{\link{cas_disable_db}()},
 \code{\link{cas_disconnect_from_db}()},
 \code{\link{cas_enable_db}()},
-\code{\link{cas_get_db}()},
+\code{\link{cas_get_db_settings}()},
 \code{\link{cas_set_db}()}
 }
 \concept{database functions}

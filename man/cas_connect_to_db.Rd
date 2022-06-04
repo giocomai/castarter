@@ -4,7 +4,12 @@
 \alias{cas_connect_to_db}
 \title{Return a connection to be used for caching}
 \usage{
-cas_connect_to_db(db_connection = NULL, RSQLite = NULL, use_db = NULL)
+cas_connect_to_db(
+  db_connection = NULL,
+  RSQLite = NULL,
+  use_db = NULL,
+  project = cas_get_options()$project
+)
 }
 \arguments{
 \item{db_connection}{Defaults to NULL. If NULL, uses local SQLite database. If given, must be a connection object or a list with relevant connection settings (see example).}
@@ -55,7 +60,7 @@ Other database functions:
 \code{\link{cas_disable_db}()},
 \code{\link{cas_disconnect_from_db}()},
 \code{\link{cas_enable_db}()},
-\code{\link{cas_get_db}()},
+\code{\link{cas_get_db_settings}()},
 \code{\link{cas_set_db_folder}()},
 \code{\link{cas_set_db}()}
 }

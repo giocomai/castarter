@@ -34,7 +34,7 @@ Other database functions:
 \code{\link{cas_create_db_folder}()},
 \code{\link{cas_disable_db}()},
 \code{\link{cas_enable_db}()},
-\code{\link{cas_get_db}()},
+\code{\link{cas_get_db_settings}()},
 \code{\link{cas_set_db_folder}()},
 \code{\link{cas_set_db}()}
 }

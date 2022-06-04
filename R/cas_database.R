@@ -16,7 +16,7 @@ cas_create_db_folder <- function(path = NULL,
   } else {
     db_path <- path
   }
-
+  
   if (fs::file_exists(db_path) == FALSE) {
     if (ask == FALSE) {
       fs::dir_create(path = db_path, recurse = TRUE)
@@ -157,8 +157,8 @@ cas_set_db <- function(db_settings = NULL,
 #'
 #' @examples
 #'
-#' cas_get_db()
-cas_get_db <- function() {
+#' cas_get_db_settings()
+cas_get_db_settings <- function() {
   list(
     driver = Sys.getenv("castarter_db_driver"),
     host = Sys.getenv("castarter_db_host"),
@@ -169,6 +169,47 @@ cas_get_db <- function() {
   )
 }
 
+
+
+#' Gets location of database file
+#'
+#' @param type Defaults to NULL. Deprecated. If given, type of cache file to output. Values typically used by `tidywikidatar` in versions up to 4.2 include "item", "search", and "qualifier".
+#'
+#' @return A character vector of length one with location of the SQLite database file.
+#' @export
+#'
+#' @examples
+#'
+#' cas_set_db_folder(path = tempdir())
+#' sqlite_cache_file_location <- cas_get_db_file(project = "test-project") # outputs location of database file
+#' sqlite_cache_file_location()
+cas_get_db_file <- function(project = cas_get_options()$project, 
+                            type = NULL) {
+  if (is.null(type)) {
+    fs::path(
+      cas_get_db_folder(),
+      stringr::str_c(
+        "cas_", 
+        project, 
+        "_db.sqlite"
+      ) %>% 
+        fs::path_sanitize()
+    ) 
+  } else {
+    fs::path(
+      cas_get_db_folder(),
+      stringr::str_c(
+        "cas_",
+        project, 
+        "_",
+        type,
+        "_db_",
+        ".sqlite"
+      ) %>% 
+        fs::path_sanitize()
+    ) 
+  }
+}
 
 #' Enable caching for the current session
 #'
@@ -258,7 +299,7 @@ cas_check_db_folder <- function() {
   if (fs::file_exists(cas_get_db_folder()) == FALSE) {
     usethis::ui_stop(paste(
       "Database folder does not exist. Set it with",
-      usethis::ui_code("cas_get_db_folder()"),
+      usethis::ui_code("cas_set_db_folder()"),
       "and create it with",
       usethis::ui_code("cas_create_db_folder()")
     ))
@@ -308,42 +349,42 @@ cas_check_db_folder <- function() {
 #'
 cas_connect_to_db <- function(db_connection = NULL,
                               RSQLite = NULL,
-                              use_db = NULL) {
+                              use_db = NULL, 
+                              project = cas_get_options()$project) {
   if (isFALSE(x = cas_check_use_db(use_db))) {
     return(NULL)
   }
-
+  
   if (is.null(db_connection) == FALSE & is.list(db_connection) == FALSE) {
     if (DBI::dbIsValid(db_connection) == FALSE) {
       db_connection <- NULL
     }
   }
-
+  
   if (is.null(db_connection)) {
-
     if (is.null(RSQLite)) {
       RSQLite <- as.logical(Sys.getenv(x = "cas_database_SQLite", unset = TRUE))
     }
-
+    
     if (isTRUE(RSQLite)) {
       cas_check_db_folder()
-      db_file <- cas_get_db_file()
-
+      db_file <- cas_get_db_file(project = project)
+      
       if (fs::file_exists(db_file) == FALSE) {
         db <- DBI::dbConnect(
           drv = RSQLite::SQLite(),
           db_file
         )
       }
-
+      
       db <- pool::dbPool(
         drv = RSQLite::SQLite(),
         dbname = db_file
       )
       return(db)
     } else {
-      db_connection <- cas_get_db()
-
+      db_connection <- cas_get_db_settings()
+      
       if (db_connection[["driver"]] == "SQLite") {
         if (requireNamespace("RSQLite", quietly = TRUE) == FALSE) {
           usethis::ui_stop(x = "To use SQLite databases you need to install the package `RSQLite`.")
@@ -355,7 +396,7 @@ cas_connect_to_db <- function(db_connection = NULL,
         }
         drv <- odbc::odbc()
       }
-
+      
       db <- pool::dbPool(
         drv = drv,
         driver = db_connection[["driver"]],
@@ -380,7 +421,7 @@ cas_connect_to_db <- function(db_connection = NULL,
         }
         drv <- odbc::odbc()
       }
-
+      
       db <- pool::dbPool(
         drv = drv,
         driver = db_connection[["driver"]],
@@ -420,13 +461,13 @@ cas_disconnect_from_db <- function(use_db = NULL,
   if (isFALSE(disconnect_db)) {
     return(invisible(NULL))
   }
-
+  
   if (isTRUE(cas_check_use_db(cache))) {
     db <- cas_connect_to_db(
       db_connection = db_connection,
       use_db = use_db
     )
-
+    
     if (pool::dbIsValid(dbObj = db)) {
       if ("Pool" %in% class(db)) {
         pool::poolClose(db)
