@@ -24,7 +24,7 @@ tryCatch(cas_check_db_folder(),
 # Create database folder
 cas_set_db_folder(path = fs::path(
   tempdir(),
-  "cas_cache_folder"
+  "cas_db_folder"
 ))
 cas_create_db_folder(ask = FALSE)
 

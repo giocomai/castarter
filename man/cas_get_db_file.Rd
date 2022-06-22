@@ -7,7 +7,7 @@
 cas_get_db_file(project = cas_get_options()$project, type = NULL)
 }
 \arguments{
-\item{type}{Defaults to NULL. Deprecated. If given, type of cache file to output. Values typically used by \code{tidywikidatar} in versions up to 4.2 include "item", "search", and "qualifier".}
+\item{type}{Defaults to NULL. Deprecated. If given, type of database file to output.}
 }
 \value{
 A character vector of length one with location of the SQLite database file.
@@ -18,6 +18,6 @@ Gets location of database file
 \examples{
 
 cas_set_db_folder(path = tempdir())
-sqlite_cache_file_location <- cas_get_db_file(project = "test-project") # outputs location of database file
-sqlite_cache_file_location()
+sqlite_db_file_location <- cas_get_db_file(project = "test-project") # outputs location of database file
+sqlite_db_file_location
 }

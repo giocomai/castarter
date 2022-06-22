@@ -173,7 +173,7 @@ cas_get_db_settings <- function() {
 
 #' Gets location of database file
 #'
-#' @param type Defaults to NULL. Deprecated. If given, type of cache file to output. Values typically used by `tidywikidatar` in versions up to 4.2 include "item", "search", and "qualifier".
+#' @param type Defaults to NULL. Deprecated. If given, type of database file to output.
 #'
 #' @return A character vector of length one with location of the SQLite database file.
 #' @export
@@ -181,8 +181,8 @@ cas_get_db_settings <- function() {
 #' @examples
 #'
 #' cas_set_db_folder(path = tempdir())
-#' sqlite_cache_file_location <- cas_get_db_file(project = "test-project") # outputs location of database file
-#' sqlite_cache_file_location()
+#' sqlite_db_file_location <- cas_get_db_file(project = "test-project") # outputs location of database file
+#' sqlite_db_file_location
 cas_get_db_file <- function(project = cas_get_options()$project, 
                             type = NULL) {
   if (is.null(type)) {
@@ -290,7 +290,7 @@ cas_check_use_db <- function(use_db = NULL) {
 #' # Create database folder
 #' cas_set_db_folder(path = fs::path(
 #'   tempdir(),
-#'   "cas_cache_folder"
+#'   "cas_db_folder"
 #' ))
 #' cas_create_db_folder(ask = FALSE)
 #'
@@ -313,7 +313,7 @@ cas_check_db_folder <- function() {
 #'
 #' @param db_connection Defaults to NULL. If NULL, uses local SQLite database. If given, must be a connection object or a list with relevant connection settings (see example).
 #' @param RSQLite Defaults to NULL, expected either NULL or logical. If set to `FALSE`, details on the database connection must be given either as a named list in the connection parameter, or with `cas_set_db()` as environment variables.
-#' @param cache Defaults to NULL. If given, it should be given either TRUE or FALSE. Typically set with `cas_enable_db()` or `cas_disable_db()`.
+#' @param use_db Defaults to NULL. If given, it should be given either TRUE or FALSE. Typically set with `cas_enable_db()` or `cas_disable_db()`.
 #'
 #' @family database functions
 #'
@@ -445,8 +445,8 @@ cas_connect_to_db <- function(db_connection = NULL,
 #' Ensure that connection to database is disconnected consistently
 #'
 #' @param use_db Defaults to NULL. If given, it should be given either TRUE or FALSE. Typically set with `cas_enable_db()` or `cas_disable_db()`.
-#' @param db_connection Defaults to NULL. If NULL, and caching is enabled, `castarter` will use a local sqlite database. A custom connection to other databases can be given (see vignette `caching` for details).
-#' @param disconnect_db Defaults to TRUE. If FALSE, leaves the connection to cache open.
+#' @param db_connection Defaults to NULL. If NULL, and database is enabled, `castarter` will use a local sqlite database. A custom connection to other databases can be given (see vignette `castarter_db_management` for details).
+#' @param disconnect_db Defaults to TRUE. If FALSE, leaves the connection to database open.
 #'
 #' @family database functions
 #'
@@ -462,14 +462,14 @@ cas_disconnect_from_db <- function(use_db = NULL,
     return(invisible(NULL))
   }
   
-  if (isTRUE(cas_check_use_db(cache))) {
+  if (isTRUE(cas_check_use_db(use_db))) {
     db <- cas_connect_to_db(
       db_connection = db_connection,
       use_db = use_db
     )
     
     if (pool::dbIsValid(dbObj = db)) {
-      if ("Pool" %in% class(db)) {
+      if (inherits(db, "Pool")) {
         pool::poolClose(db)
       } else {
         DBI::dbDisconnect(db)

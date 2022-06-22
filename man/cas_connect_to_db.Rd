@@ -16,7 +16,7 @@ cas_connect_to_db(
 
 \item{RSQLite}{Defaults to NULL, expected either NULL or logical. If set to \code{FALSE}, details on the database connection must be given either as a named list in the connection parameter, or with \code{cas_set_db()} as environment variables.}
 
-\item{cache}{Defaults to NULL. If given, it should be given either TRUE or FALSE. Typically set with \code{cas_enable_db()} or \code{cas_disable_db()}.}
+\item{use_db}{Defaults to NULL. If given, it should be given either TRUE or FALSE. Typically set with \code{cas_enable_db()} or \code{cas_disable_db()}.}
 }
 \value{
 A connection object.
