@@ -54,7 +54,7 @@ The folder structure is based on two levels:
 - project
 - website
 
-A project may include one or more websites. It is an intermediate level added to keep files in order, as the number of processes websites increased. 
+A project may include one or more websites. It is an intermediate level added to keep files in order, as the number of processed websites increased. 
 
 Let's clarify with an example. Let's suppose I want to do some text minining of websites related to the European Union. The name of the project will be `european_union`, and within that project I may be gathering contents from different websites, e.g. "european_commission", "european_parliament", "european_council", etc. 
 
@@ -96,7 +96,7 @@ When text mining or scraping, it is common to gather quickly many thousands of f
 
 ## Index pages and content pages
 
-`castarter2` starts with the idea that there are basically two types of pages that are commonly found while text mining. 
+`castarter2` starts with the idea that there are basically two types of pages that are commonly found when text mining. 
 
 __index pages__. These are pages that usually include some form of list of the pages with actual contents we are interested in (or, possibly, a second layer of index pages). They can be immutable, but they are often expected to change. For example, the news archive of the official website of Russia's president is reachable via url such as the following:
 

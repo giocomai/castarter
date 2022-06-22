@@ -59,7 +59,7 @@ The folder structure is based on two levels:
 -   website
 
 A project may include one or more websites. It is an intermediate level
-added to keep files in order, as the number of processes websites
+added to keep files in order, as the number of processed websites
 increased.
 
 Let’s clarify with an example. Let’s suppose I want to do some text
@@ -104,7 +104,7 @@ alternative database backends such as MySQL can also be used.
 ## Index pages and content pages
 
 `castarter2` starts with the idea that there are basically two types of
-pages that are commonly found while text mining.
+pages that are commonly found when text mining.
 
 **index pages**. These are pages that usually include some form of list
 of the pages with actual contents we are interested in (or, possibly, a

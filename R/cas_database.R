@@ -16,7 +16,7 @@ cas_create_db_folder <- function(path = NULL,
   } else {
     db_path <- path
   }
-  
+
   if (fs::file_exists(db_path) == FALSE) {
     if (ask == FALSE) {
       fs::dir_create(path = db_path, recurse = TRUE)
@@ -183,31 +183,31 @@ cas_get_db_settings <- function() {
 #' cas_set_db_folder(path = tempdir())
 #' sqlite_db_file_location <- cas_get_db_file(project = "test-project") # outputs location of database file
 #' sqlite_db_file_location
-cas_get_db_file <- function(project = cas_get_options()$project, 
+cas_get_db_file <- function(project = cas_get_options()$project,
                             type = NULL) {
   if (is.null(type)) {
     fs::path(
       cas_get_db_folder(),
       stringr::str_c(
-        "cas_", 
-        project, 
+        "cas_",
+        project,
         "_db.sqlite"
-      ) %>% 
+      ) %>%
         fs::path_sanitize()
-    ) 
+    )
   } else {
     fs::path(
       cas_get_db_folder(),
       stringr::str_c(
         "cas_",
-        project, 
+        project,
         "_",
         type,
         "_db_",
         ".sqlite"
-      ) %>% 
+      ) %>%
         fs::path_sanitize()
-    ) 
+    )
   }
 }
 
@@ -349,34 +349,34 @@ cas_check_db_folder <- function() {
 #'
 cas_connect_to_db <- function(db_connection = NULL,
                               RSQLite = NULL,
-                              use_db = NULL, 
+                              use_db = NULL,
                               project = cas_get_options()$project) {
   if (isFALSE(x = cas_check_use_db(use_db))) {
     return(NULL)
   }
-  
+
   if (is.null(db_connection) == FALSE & is.list(db_connection) == FALSE) {
     if (DBI::dbIsValid(db_connection) == FALSE) {
       db_connection <- NULL
     }
   }
-  
+
   if (is.null(db_connection)) {
     if (is.null(RSQLite)) {
       RSQLite <- as.logical(Sys.getenv(x = "cas_database_SQLite", unset = TRUE))
     }
-    
+
     if (isTRUE(RSQLite)) {
       cas_check_db_folder()
       db_file <- cas_get_db_file(project = project)
-      
+
       if (fs::file_exists(db_file) == FALSE) {
         db <- DBI::dbConnect(
           drv = RSQLite::SQLite(),
           db_file
         )
       }
-      
+
       db <- pool::dbPool(
         drv = RSQLite::SQLite(),
         dbname = db_file
@@ -384,7 +384,7 @@ cas_connect_to_db <- function(db_connection = NULL,
       return(db)
     } else {
       db_connection <- cas_get_db_settings()
-      
+
       if (db_connection[["driver"]] == "SQLite") {
         if (requireNamespace("RSQLite", quietly = TRUE) == FALSE) {
           usethis::ui_stop(x = "To use SQLite databases you need to install the package `RSQLite`.")
@@ -396,7 +396,7 @@ cas_connect_to_db <- function(db_connection = NULL,
         }
         drv <- odbc::odbc()
       }
-      
+
       db <- pool::dbPool(
         drv = drv,
         driver = db_connection[["driver"]],
@@ -421,7 +421,7 @@ cas_connect_to_db <- function(db_connection = NULL,
         }
         drv <- odbc::odbc()
       }
-      
+
       db <- pool::dbPool(
         drv = drv,
         driver = db_connection[["driver"]],
@@ -461,13 +461,13 @@ cas_disconnect_from_db <- function(use_db = NULL,
   if (isFALSE(disconnect_db)) {
     return(invisible(NULL))
   }
-  
+
   if (isTRUE(cas_check_use_db(use_db))) {
     db <- cas_connect_to_db(
       db_connection = db_connection,
       use_db = use_db
     )
-    
+
     if (pool::dbIsValid(dbObj = db)) {
       if (inherits(db, "Pool")) {
         pool::poolClose(db)
@@ -476,4 +476,63 @@ cas_disconnect_from_db <- function(use_db = NULL,
       }
     }
   }
+}
+
+
+#' Generic function for writing to database
+#'
+#' @param df A data frame. Must correspond with the type of data expected for each table.
+#' @param table Name of the table. See readme for details.
+#' @param overwrite Logical, defaults to FALSE. If TRUE, checks if matching data are previously held in the table and overwrites them. This should be used with caution, as it may overwrite completely the selected table.
+#' @param disconnect_db
+#'
+#' @family database functions
+#'
+#' @inheritParams cas_connect_to_db
+#' @inheritParams cas_disconnect_from_db
+#'
+#' @return If successful, returns silently the same data frame provided as input and written to the database. Returns silently NULL, if nothing is added, e.g. because `use_db` is set to FALSE.
+#' @export
+#'
+#' @examples
+cas_write_to_db <- function(df,
+                            table,
+                            use_db = NULL,
+                            overwrite = FALSE,
+                            db_connection = NULL,
+                            disconnect_db = TRUE) {
+  if (cas_check_use_db(use_db = use_db) == FALSE) {
+    return(invisible(NULL))
+  }
+
+  db <- cas_connect_to_db(
+    db_connection = db_connection,
+    use_db = use_db
+  )
+
+  if (pool::dbExistsTable(conn = db, name = table) == FALSE) {
+    # do nothing: if table does not exist, previous data cannot be there
+  } else {
+    if (overwrite == TRUE) {
+      # TODO
+    }
+  }
+
+  if (table == "index_id") {
+    if (identical(colnames(df), colnames(casdb_empty_index_id)) & identical(identical(sapply(df, class), sapply(casdb_empty_index_id, class)))) {
+      pool::dbWriteTable(db,
+        name = table,
+        value = df,
+        append = TRUE
+      )
+    } else {
+      usethis::ui_stop("Incomptabile data frame passed to `index_id`. `df` should have a numeric `index_id` column, and a character `url` and `type` column.")
+    }
+  }
+
+  cas_disconnect_from_db(
+    use_db = use_db,
+    db_connection = db_connection,
+    disconnect_db = disconnect_db
+  )
 }
