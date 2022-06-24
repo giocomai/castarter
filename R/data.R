@@ -1,13 +1,9 @@
-#' Prices of 50,000 round cut diamonds.
+#' Empty data frame with the same format as data stored in the `index_id` table
 #'
-#' A dataset containing the prices and other attributes of almost 54,000
-#' diamonds.
-#'
-#' @format A data frame with 53940 rows and 10 variables:
+#' @format A data frame with 0 rows and 3 columns:
 #' \describe{
-#'   \item{price}{price, in US dollars}
-#'   \item{carat}{weight of the diamond, in carats}
-#'   ...
+#'   \item{index_id}{Numeric. Column meant for unique integer identifier corresponding to a unique url}
+#'   \item{url}{Character. A url.}
+#'   \item{type}{Character. A textual string, by default `index`.}
 #' }
-#' @source \url{http://www.diamondse.info/}
 "casdb_empty_index_id"

@@ -3,23 +3,19 @@
 \docType{data}
 \name{casdb_empty_index_id}
 \alias{casdb_empty_index_id}
-\title{Prices of 50,000 round cut diamonds.}
+\title{Empty data frame with the same format as data stored in the \code{index_id} table}
 \format{
-A data frame with 53940 rows and 10 variables:
+A data frame with 0 rows and 3 columns:
 \describe{
-\item{price}{price, in US dollars}
-\item{carat}{weight of the diamond, in carats}
-...
+\item{index_id}{Numeric. Column meant for unique integer identifier corresponding to a unique url}
+\item{url}{Character. A url.}
+\item{type}{Character. A textual string, by default \code{index}.}
 }
-}
-\source{
-\url{http://www.diamondse.info/}
 }
 \usage{
 casdb_empty_index_id
 }
 \description{
-A dataset containing the prices and other attributes of almost 54,000
-diamonds.
+Empty data frame with the same format as data stored in the \code{index_id} table
 }
 \keyword{datasets}
