@@ -15,7 +15,8 @@ cas_build_urls(
   end_date = Sys.Date(),
   date_separator = NULL,
   increase_date_by = "day",
-  reversed_order = FALSE
+  reversed_order = FALSE,
+  type = "index"
 )
 }
 \arguments{
@@ -54,10 +55,13 @@ valid values.}
 
 \item{reversed_order}{Logical, defaults to FALSE. If TRUE, the order of urls
 in the output.}
+
+\item{type}{A character vector, defaults to "index". Used for differentiating
+among different types of index or links in local databases.}
 }
 \value{
-A character vector of unique values. Conceptually, a vector of urls
-to index pages.
+A data frame with three columns, \code{index_id}, \code{url}, and \code{type}.
+Typically, \code{url} corresponds to a vector of unique urls.
 }
 \description{
 Convenience function typically used to generate urls to index pages listing
@@ -76,7 +80,7 @@ interpret directly, or a simplified string (such as "Ymd", without the
 
 \examples{
 cas_build_urls(
-  url_beginning = "http://www.example.com/news/",
+  url_beginning = "https://www.example.com/news/",
   start_page = 1,
   end_page = 10
 )
