@@ -13,7 +13,7 @@
 #' @param missing_pages Logical, defaults to TRUE. If TRUE, verifies if a downloaded html file exists for each element in articlesLinks; when there is no such file, it downloads it.
 #' @param size Defaults to 500. It represents the minimum size in bytes that downloaded html files should have: files that are smaller will be downloaded again. Used only when missing_pages == FALSE.
 #' @param wget_system Logical, defaults to FALSE. Calls wget as a system command through the system() function. Wget must be previously installed on the system.
-#' @param start Integer. Only url with position higher than start in the url vector will be downloaded: url[start:length(url)]
+#' @param start Integer. Only url with position higher than start in the url vector will be downloaded: `url[start:length(url)]`
 #' @param ignore_ssl_certificates Logical, defaults to FALSE. If TRUE it uses wget to download the page, and does not check if the SSL certificate is valid. Useful, for example, for https pages with expired or mis-configured SSL certificate.
 #' @param use_headless_chromium Logical, defaults to FALSE. If TRUE uses the `crrri` package to download pages. Useful in particular when web pages are generated via javascript. See in particular: https://github.com/RLesur/crrri#system-requirements
 #' @param headless_chromium_wait Numeric, in seconds. How long should headless chrome wait after loading page?
@@ -21,8 +21,10 @@
 #' @return By default, returns nothing, used for its side effects (downloads html files in relevant folder). Download files can then be imported in a vector with the function ImportHtml.
 #' @export
 #' @examples
+#' if (interactive()) {
 #' \dontrun{
-#' cas_download(url)
+#'   cas_download(url)
+#' }
 #' }
 #'
 cas_download <- function(url,

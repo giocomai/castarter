@@ -43,7 +43,7 @@ cas_download(
 
 \item{missing_pages}{Logical, defaults to TRUE. If TRUE, verifies if a downloaded html file exists for each element in articlesLinks; when there is no such file, it downloads it.}
 
-\item{start}{Integer. Only url with position higher than start in the url vector will be downloaded: url\link{start:length(url)}}
+\item{start}{Integer. Only url with position higher than start in the url vector will be downloaded: \code{url[start:length(url)]}}
 
 \item{wait}{Defaults to 1. Number of seconds to wait between downloading one page and the next. Can be increased to reduce server load, or can be set to 0 when this is not an issue.}
 
@@ -66,8 +66,10 @@ By default, returns nothing, used for its side effects (downloads html files in 
 Downloads html pages based on a vector of links.
 }
 \examples{
+if (interactive()) {
 \dontrun{
-cas_download(url)
+  cas_download(url)
+}
 }
 
 }
