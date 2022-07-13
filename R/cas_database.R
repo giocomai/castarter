@@ -494,6 +494,23 @@ cas_disconnect_from_db <- function(use_db = NULL,
 #' @export
 #'
 #' @examples
+#' 
+#' cas_set_options(base_folder = fs::path(tempdir(), "R", "castarter_data"),
+#' project = "example_project",
+#' website = "example_website"
+#' )
+#' cas_enable_db()
+#' 
+#' 
+#' urls_df <- cas_build_urls(
+#'   url_beginning = "https://www.example.com/news/",
+#'   start_page = 1,
+#'   end_page = 10
+#' )
+#' 
+#' cas_write_to_db(df = urls_df,
+#'                 table = "index_id")
+
 cas_write_to_db <- function(df,
                             table,
                             use_db = NULL,
@@ -518,7 +535,7 @@ cas_write_to_db <- function(df,
   }
 
   if (table == "index_id") {
-    if (identical(colnames(df), colnames(casdb_empty_index_id)) & identical(identical(sapply(df, class), sapply(casdb_empty_index_id, class)))) {
+    if (identical(colnames(df), colnames(casdb_empty_index_id)) & identical(sapply(df, class), sapply(casdb_empty_index_id, class))) {
       pool::dbWriteTable(db,
         name = table,
         value = df,
@@ -547,6 +564,24 @@ cas_write_to_db <- function(df,
 #' @export
 #'
 #' @examples
+#' cas_set_options(base_folder = fs::path(tempdir(), "R", "castarter_data"),
+#'                 project = "example_project",
+#'                 website = "example_website"
+#' )
+#' cas_enable_db()
+#' 
+#' 
+#' urls_df <- cas_build_urls(
+#'   url_beginning = "https://www.example.com/news/",
+#'   start_page = 1,
+#'   end_page = 10
+#' )
+#' 
+#' cas_write_to_db(df = urls_df,
+#'                 table = "index_id")
+#' 
+#' cas_read_from_db(table = "index_id")
+
 cas_read_from_db <- function(table,
                              use_db = NULL,
                              db_connection = NULL,
@@ -573,4 +608,6 @@ cas_read_from_db <- function(table,
     db_connection = db,
     disconnect_db = disconnect_db
   )
+  
+  output_df
 }
