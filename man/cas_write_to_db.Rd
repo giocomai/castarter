@@ -24,7 +24,7 @@ cas_write_to_db(
 
 \item{db_connection}{Defaults to NULL. If NULL, uses local SQLite database. If given, must be a connection object or a list with relevant connection settings (see example).}
 
-\item{disconnect_db}{}
+\item{disconnect_db}{Defaults to TRUE. If FALSE, leaves the connection to database open.}
 }
 \value{
 If successful, returns silently the same data frame provided as input and written to the database. Returns silently NULL, if nothing is added, e.g. because \code{use_db} is set to FALSE.
@@ -42,6 +42,7 @@ Other database functions:
 \code{\link{cas_disconnect_from_db}()},
 \code{\link{cas_enable_db}()},
 \code{\link{cas_get_db_settings}()},
+\code{\link{cas_read_from_db}()},
 \code{\link{cas_set_db_folder}()},
 \code{\link{cas_set_db}()}
 }

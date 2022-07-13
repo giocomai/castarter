@@ -484,7 +484,6 @@ cas_disconnect_from_db <- function(use_db = NULL,
 #' @param df A data frame. Must correspond with the type of data expected for each table.
 #' @param table Name of the table. See readme for details.
 #' @param overwrite Logical, defaults to FALSE. If TRUE, checks if matching data are previously held in the table and overwrites them. This should be used with caution, as it may overwrite completely the selected table.
-#' @param disconnect_db
 #'
 #' @family database functions
 #'
@@ -532,7 +531,46 @@ cas_write_to_db <- function(df,
 
   cas_disconnect_from_db(
     use_db = use_db,
+    db_connection = db,
+    disconnect_db = disconnect_db
+  )
+}
+
+
+#' Reads data from local database
+#'
+#' @family database functions
+#'
+#' @inheritParams cas_write_to_db
+#'
+#' @return
+#' @export
+#'
+#' @examples
+cas_read_from_db <- function(table,
+                             use_db = NULL,
+                             db_connection = NULL,
+                             disconnect_db = TRUE) {
+  if (cas_check_use_db(use_db = use_db) == FALSE) {
+    return(invisible(NULL))
+  }
+  
+  db <- cas_connect_to_db(
     db_connection = db_connection,
+    use_db = use_db
+  )
+  
+  if (pool::dbExistsTable(conn = db, name = table) == FALSE) {
+    # do nothing: if table does not exist, previous data cannot be there
+  } else {
+    output_df <- pool::dbReadTable(db,
+                                   name = table) %>% 
+      dplyr::collect()
+  }
+  
+  cas_disconnect_from_db(
+    use_db = use_db,
+    db_connection = db,
     disconnect_db = disconnect_db
   )
 }
