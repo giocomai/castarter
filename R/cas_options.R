@@ -8,15 +8,19 @@
 #' the `base_folder`.
 #'
 #' @param base_folder Defaults to NULL, can be set once per session with
-#'   `cas_set_options()`. A path to a location used for storing html and other
+#'   [cas_set_options()]. A path to a location used for storing html and other
 #'   project files. If the folder does not exist, it will be created. If not
 #'   given, and not previously set as environment variable, defaults to
 #'   `castarter_data`.
+#' @param db_folder Defaults to NULL. can be set once per session with
+#'   [cas_set_options()] or [cas_set_db_folder()]. A path to a location used for
+#'   storing the database. If not given, and not previously set as environment
+#'   variable, defaults to `castarter_data`.
 #' @param project Defaults to NULL. Project name, can be set once per session
-#'   with `cas_set_options()`. This will be used as first level folder and may
+#'   with [cas_set_options()]. This will be used as first level folder and may
 #'   be used elsewhere to describe the dataset.
 #' @param website Defaults to NULL. Website name, can be set once per session
-#'   with `cas_set_options()`. This will be used as a second level folder and
+#'   with [cas_set_options()]. This will be used as a second level folder and
 #'   may be used elsewhere to describe the dataset.
 #'
 #' @family settings
@@ -29,6 +33,7 @@
 #' cas_options_list <- cas_get_options()
 #' cas_options_list
 cas_set_options <- function(base_folder = NULL,
+                            db_folder = NULL,
                             project = NULL,
                             website = NULL) {
   if (is.null(base_folder)) {
@@ -40,6 +45,14 @@ cas_set_options <- function(base_folder = NULL,
     base_folder <- fs::path("castarter_data")
   }
 
+  if (is.null(db_folder)) {
+    db_folder <- Sys.getenv("castarter_database_folder")
+  } else {
+    Sys.setenv(castarter_database_folder = db_folder)
+  }
+  if (db_folder == "") {
+    db_folder <- fs::path("castarter_data")
+  }
 
   if (is.null(project)) {
     project <- Sys.getenv("castarter_project")
@@ -59,6 +72,7 @@ cas_set_options <- function(base_folder = NULL,
 
   invisible(list(
     base_folder = base_folder,
+    db_folder = db_folder,
     project = project,
     website = website
   ))
