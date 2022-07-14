@@ -5,7 +5,7 @@
 \title{Write index URLs to local database}
 \usage{
 cas_write_index(
-  url,
+  urls,
   use_db = NULL,
   overwrite = FALSE,
   db_connection = NULL,
@@ -13,7 +13,7 @@ cas_write_index(
 )
 }
 \arguments{
-\item{url}{A data frame with three columns, such as \code{casdb_empty_index_id}, or a character vector.}
+\item{urls}{A data frame with three columns, such as \code{casdb_empty_index_id}, or a character vector.}
 
 \item{use_db}{Defaults to NULL. If given, it should be given either TRUE or FALSE. Typically set with \code{cas_enable_db()} or \code{cas_disable_db()}.}
 
@@ -25,4 +25,23 @@ cas_write_index(
 }
 \description{
 If some URLs are already included in the database, it appends only the new ones: URLs are expected to be unique.
+}
+\examples{
+
+cas_set_options(base_folder = fs::path(tempdir(), "R", "castarter_data"),
+project = "example_project",
+website = "example_website"
+)
+cas_enable_db()
+
+
+urls_df <- cas_build_urls(
+  url_beginning = "https://www.example.com/news/",
+  start_page = 1,
+  end_page = 10
+)
+
+cas_write_index(urls = urls_df)
+
+cas_read_index()
 }

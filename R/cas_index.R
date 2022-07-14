@@ -2,7 +2,7 @@
 #' 
 #' If some URLs are already included in the database, it appends only the new ones: URLs are expected to be unique.
 #'
-#' @param url A data frame with three columns, such as \code{casdb_empty_index_id}, or a character vector.
+#' @param urls A data frame with three columns, such as \code{casdb_empty_index_id}, or a character vector.
 #'
 #' @inheritParams cas_write_to_db
 #'
@@ -10,32 +10,81 @@
 #' @export
 #'
 #' @examples
-cas_write_index <- function(url,
+#' 
+#' cas_set_options(base_folder = fs::path(tempdir(), "R", "castarter_data"),
+#' project = "example_project",
+#' website = "example_website"
+#' )
+#' cas_enable_db()
+#' 
+#' 
+#' urls_df <- cas_build_urls(
+#'   url_beginning = "https://www.example.com/news/",
+#'   start_page = 1,
+#'   end_page = 10
+#' )
+#' 
+#' cas_write_index(urls = urls_df)
+#' 
+#' cas_read_index()
+cas_write_index <- function(urls,
                             use_db = NULL,
                             overwrite = FALSE,
                             db_connection = NULL,
                             disconnect_db = TRUE) {
-  if (is.data.frame(url)) {
-    if (identical(colnames(df), colnames(casdb_empty_index_id)) & identical(sapply(df, class), sapply(casdb_empty_index_id, class))) {
-      url_df <- url
+  if (is.data.frame(urls)) {
+    if (identical(colnames(urls), colnames(casdb_empty_index_id)) & identical(sapply(urls, class), sapply(casdb_empty_index_id, class))) {
+      urls_df <- urls
     } else {
-      usethis::ui_stop("Url data frame must match exactly the column names and types of {usethis::ui_code('casdb_empty_index_id')}")
+      usethis::ui_stop("urls data frame must match exactly the column names and types of {usethis::ui_code('casdb_empty_index_id')}")
     }
   } else {
-    url_df <- cas_build_urls(url_beginning = url,
-                             url_ending = "",
-                             start_page = NULL,
-                             end_page = NULL)
+    urls_df <- cas_build_urls(url_beginning = urls,
+                              url_ending = "",
+                              start_page = NULL,
+                              end_page = NULL)
   }
   
-  cas_write_to_db(url_df,
-                  table = "index_id",
-                  use_db = use_db,
-                  overwrite = overwrite,
-                  db_connection = db_connection,
-                  disconnect_db = disconnect_db)
+  if (cas_check_use_db(use_db = use_db) == FALSE) {
+    return(invisible(NULL))
+  }
   
-  url_df
+  db <- cas_connect_to_db(
+    db_connection = db_connection,
+    use_db = use_db
+  )
+  
+  previous_index_df <- cas_read_index(use_db = use_db,
+                                      db_connection = db,
+                                      disconnect_db = FALSE)
+  
+  if (nrow(previous_index_df)>0) {
+    urls_to_add_df <- urls_df %>% 
+      dplyr::anti_join(y = previous_index_df,
+                       by = c("url", "type"))
+  } else {
+    urls_to_add_df <- urls_df
+  }
+  
+  urls_to_add_n <- nrow(urls_to_add_df)
+  if (urls_to_add_n>0) {
+    cas_write_to_db(urls_df,
+                    table = "index_id",
+                    use_db = use_db,
+                    overwrite = overwrite,
+                    db_connection = db,
+                    disconnect_db = FALSE)
+    
+    usethis::ui_done("Urls added to {usethis::ui_field('index_id')} table: {usethis::ui_value(urls_to_add_n)}")
+  }
+  
+  cas_disconnect_from_db(
+    use_db = use_db,
+    db_connection = db,
+    disconnect_db = disconnect_db
+  )
+  
+  urls_to_add_df
 }
 
 #' Read index from local database
