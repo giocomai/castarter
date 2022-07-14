@@ -12,7 +12,7 @@
 cas_create_db_folder <- function(path = NULL,
                                  ask = TRUE) {
   if (is.null(path)) {
-    db_path <- castarter::cas_get_db_folder()
+    db_path <- cas_get_db_folder()
   } else {
     db_path <- path
   }
@@ -184,10 +184,15 @@ cas_get_db_settings <- function() {
 #' sqlite_db_file_location <- cas_get_db_file(project = "test-project") # outputs location of database file
 #' sqlite_db_file_location
 cas_get_db_file <- function(project = cas_get_options()$project,
+                            db_folder = NULL,
                             type = NULL) {
+  if (is.null(db_folder)) {
+    db_folder <- cas_get_db_folder()
+  }
+
   if (is.null(type)) {
     fs::path(
-      cas_get_db_folder(),
+      db_folder,
       stringr::str_c(
         "cas_",
         project,
@@ -197,7 +202,7 @@ cas_get_db_file <- function(project = cas_get_options()$project,
     )
   } else {
     fs::path(
-      cas_get_db_folder(),
+      db_folder,
       stringr::str_c(
         "cas_",
         project,
@@ -311,9 +316,16 @@ cas_check_db_folder <- function() {
 
 #' Return a connection to be used for caching
 #'
-#' @param db_connection Defaults to NULL. If NULL, uses local SQLite database. If given, must be a connection object or a list with relevant connection settings (see example).
-#' @param RSQLite Defaults to NULL, expected either NULL or logical. If set to `FALSE`, details on the database connection must be given either as a named list in the connection parameter, or with `cas_set_db()` as environment variables.
-#' @param use_db Defaults to NULL. If given, it should be given either TRUE or FALSE. Typically set with `cas_enable_db()` or `cas_disable_db()`.
+#' @param db_connection Defaults to NULL. If NULL, uses local SQLite database.
+#'   If given, must be a connection object or a list with relevant connection
+#'   settings (see example).
+#' @param RSQLite Defaults to NULL, expected either NULL, logical, or character.
+#'   If set to `FALSE`, details on the database connection must be given either
+#'   as a named list in the connection parameter, or with [cas_set_db()] as
+#'   environment variables. If a character vector, it can either be a path to a
+#'   folder or the a sqlite database file.
+#' @param use_db Defaults to NULL. If given, it should be given either TRUE or
+#'   FALSE. Typically set with `cas_enable_db()` or `cas_disable_db()`.
 #'
 #' @family database functions
 #'
@@ -364,14 +376,25 @@ cas_connect_to_db <- function(db_connection = NULL,
   if (is.null(db_connection)) {
     if (is.null(RSQLite)) {
       RSQLite <- as.logical(Sys.getenv(x = "cas_database_SQLite", unset = TRUE))
-    }
-
-    if (isTRUE(RSQLite)) {
-      cas_check_db_folder()
-      db_file <- cas_get_db_file(project = project)
+    } 
+    
+    if (is.null(RSQLite) == FALSE) {
+      if (isTRUE(RSQLite)) {
+        cas_check_db_folder()
+        db_file <- cas_get_db_file(project = project)
+      } else if (is.character(RSQLite)) {
+        if (nchar(fs::path_ext(db_file)) > 0) {
+          db_file <- RSQLite
+        } else {
+          db_file <- cas_get_db_file(
+            db_folder = RSQLite,
+            project = project
+          )
+        }
+      }
 
       if (fs::file_exists(db_file) == FALSE) {
-        db <- DBI::dbConnect(
+        db <- pool::dbPool(
           drv = RSQLite::SQLite(),
           db_file
         )
@@ -494,23 +517,26 @@ cas_disconnect_from_db <- function(use_db = NULL,
 #' @export
 #'
 #' @examples
-#' 
-#' cas_set_options(base_folder = fs::path(tempdir(), "R", "castarter_data"),
-#' project = "example_project",
-#' website = "example_website"
+#'
+#' cas_set_options(
+#'   base_folder = fs::path(tempdir(), "R", "castarter_data"),
+#'   project = "example_project",
+#'   website = "example_website"
 #' )
 #' cas_enable_db()
-#' 
-#' 
+#'
+#'
 #' urls_df <- cas_build_urls(
 #'   url_beginning = "https://www.example.com/news/",
 #'   start_page = 1,
 #'   end_page = 10
 #' )
-#' 
-#' cas_write_to_db(df = urls_df,
-#'                 table = "index_id")
-
+#'
+#' cas_write_to_db(
+#'   df = urls_df,
+#'   table = "index_id"
+#' )
+#'
 cas_write_to_db <- function(df,
                             table,
                             use_db = NULL,
@@ -564,24 +590,27 @@ cas_write_to_db <- function(df,
 #' @export
 #'
 #' @examples
-#' cas_set_options(base_folder = fs::path(tempdir(), "R", "castarter_data"),
-#'                 project = "example_project",
-#'                 website = "example_website"
+#' cas_set_options(
+#'   base_folder = fs::path(tempdir(), "R", "castarter_data"),
+#'   project = "example_project",
+#'   website = "example_website"
 #' )
 #' cas_enable_db()
-#' 
-#' 
+#'
+#'
 #' urls_df <- cas_build_urls(
 #'   url_beginning = "https://www.example.com/news/",
 #'   start_page = 1,
 #'   end_page = 10
 #' )
-#' 
-#' cas_write_to_db(df = urls_df,
-#'                 table = "index_id")
-#' 
+#'
+#' cas_write_to_db(
+#'   df = urls_df,
+#'   table = "index_id"
+#' )
+#'
 #' cas_read_from_db(table = "index_id")
-
+#'
 cas_read_from_db <- function(table,
                              use_db = NULL,
                              db_connection = NULL,
@@ -589,25 +618,26 @@ cas_read_from_db <- function(table,
   if (cas_check_use_db(use_db = use_db) == FALSE) {
     return(invisible(NULL))
   }
-  
+
   db <- cas_connect_to_db(
     db_connection = db_connection,
     use_db = use_db
   )
-  
+
   if (pool::dbExistsTable(conn = db, name = table) == FALSE) {
     # do nothing: if table does not exist, previous data cannot be there
   } else {
     output_df <- pool::dbReadTable(db,
-                                   name = table) %>% 
+      name = table
+    ) %>%
       dplyr::collect()
   }
-  
+
   cas_disconnect_from_db(
     use_db = use_db,
     db_connection = db,
     disconnect_db = disconnect_db
   )
-  
+
   output_df
 }

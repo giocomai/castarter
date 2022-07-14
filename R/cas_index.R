@@ -70,7 +70,7 @@ cas_write_index <- function(urls,
   
   urls_to_add_n <- nrow(urls_to_add_df)
   if (urls_to_add_n>0) {
-    cas_write_to_db(urls_df,
+    cas_write_to_db(df = urls_df,
                     table = "index_id",
                     use_db = use_db,
                     overwrite = overwrite,
@@ -130,7 +130,7 @@ cas_read_index <- function(use_db = NULL,
   )
   
   if (isFALSE(db_result)) { 
-    casdb_empty_index_id
+    tibble::as_tibble(casdb_empty_index_id)
   } else {
     db_result
   }

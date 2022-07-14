@@ -4,7 +4,11 @@
 \alias{cas_get_db_file}
 \title{Gets location of database file}
 \usage{
-cas_get_db_file(project = cas_get_options()$project, type = NULL)
+cas_get_db_file(
+  project = cas_get_options()$project,
+  db_folder = NULL,
+  type = NULL
+)
 }
 \arguments{
 \item{type}{Defaults to NULL. Deprecated. If given, type of database file to output.}

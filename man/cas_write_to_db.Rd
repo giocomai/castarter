@@ -18,11 +18,14 @@ cas_write_to_db(
 
 \item{table}{Name of the table. See readme for details.}
 
-\item{use_db}{Defaults to NULL. If given, it should be given either TRUE or FALSE. Typically set with \code{cas_enable_db()} or \code{cas_disable_db()}.}
+\item{use_db}{Defaults to NULL. If given, it should be given either TRUE or
+FALSE. Typically set with \code{cas_enable_db()} or \code{cas_disable_db()}.}
 
 \item{overwrite}{Logical, defaults to FALSE. If TRUE, checks if matching data are previously held in the table and overwrites them. This should be used with caution, as it may overwrite completely the selected table.}
 
-\item{db_connection}{Defaults to NULL. If NULL, uses local SQLite database. If given, must be a connection object or a list with relevant connection settings (see example).}
+\item{db_connection}{Defaults to NULL. If NULL, uses local SQLite database.
+If given, must be a connection object or a list with relevant connection
+settings (see example).}
 
 \item{disconnect_db}{Defaults to TRUE. If FALSE, leaves the connection to database open.}
 }
@@ -34,9 +37,10 @@ Generic function for writing to database
 }
 \examples{
 
-cas_set_options(base_folder = fs::path(tempdir(), "R", "castarter_data"),
-project = "example_project",
-website = "example_website"
+cas_set_options(
+  base_folder = fs::path(tempdir(), "R", "castarter_data"),
+  project = "example_project",
+  website = "example_website"
 )
 cas_enable_db()
 
@@ -47,8 +51,11 @@ urls_df <- cas_build_urls(
   end_page = 10
 )
 
-cas_write_to_db(df = urls_df,
-                table = "index_id")
+cas_write_to_db(
+  df = urls_df,
+  table = "index_id"
+)
+
 }
 \seealso{
 Other database functions: 

@@ -12,11 +12,18 @@ cas_connect_to_db(
 )
 }
 \arguments{
-\item{db_connection}{Defaults to NULL. If NULL, uses local SQLite database. If given, must be a connection object or a list with relevant connection settings (see example).}
+\item{db_connection}{Defaults to NULL. If NULL, uses local SQLite database.
+If given, must be a connection object or a list with relevant connection
+settings (see example).}
 
-\item{RSQLite}{Defaults to NULL, expected either NULL or logical. If set to \code{FALSE}, details on the database connection must be given either as a named list in the connection parameter, or with \code{cas_set_db()} as environment variables.}
+\item{RSQLite}{Defaults to NULL, expected either NULL, logical, or character.
+If set to \code{FALSE}, details on the database connection must be given either
+as a named list in the connection parameter, or with \code{\link[=cas_set_db]{cas_set_db()}} as
+environment variables. If a character vector, it can either be a path to a
+folder or the a sqlite database file.}
 
-\item{use_db}{Defaults to NULL. If given, it should be given either TRUE or FALSE. Typically set with \code{cas_enable_db()} or \code{cas_disable_db()}.}
+\item{use_db}{Defaults to NULL. If given, it should be given either TRUE or
+FALSE. Typically set with \code{cas_enable_db()} or \code{cas_disable_db()}.}
 }
 \value{
 A connection object.

@@ -7,9 +7,12 @@
 cas_read_index(use_db = NULL, db_connection = NULL, disconnect_db = TRUE)
 }
 \arguments{
-\item{use_db}{Defaults to NULL. If given, it should be given either TRUE or FALSE. Typically set with \code{cas_enable_db()} or \code{cas_disable_db()}.}
+\item{use_db}{Defaults to NULL. If given, it should be given either TRUE or
+FALSE. Typically set with \code{cas_enable_db()} or \code{cas_disable_db()}.}
 
-\item{db_connection}{Defaults to NULL. If NULL, uses local SQLite database. If given, must be a connection object or a list with relevant connection settings (see example).}
+\item{db_connection}{Defaults to NULL. If NULL, uses local SQLite database.
+If given, must be a connection object or a list with relevant connection
+settings (see example).}
 
 \item{disconnect_db}{Defaults to TRUE. If FALSE, leaves the connection to database open.}
 }
