@@ -28,7 +28,9 @@ If some URLs are already included in the database, it appends only the new ones:
 }
 \examples{
 
-cas_set_options(base_folder = fs::path(tempdir(), "R", "castarter_data"),
+cas_set_options(
+base_folder = fs::path(tempdir(), "R", "castarter_data"),
+db_folder = fs::path(tempdir(), "R", "castarter_data"),
 project = "example_project",
 website = "example_website"
 )

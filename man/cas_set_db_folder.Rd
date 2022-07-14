@@ -10,7 +10,7 @@ cas_set_db_folder(path = NULL)
 cas_get_db_folder(path = NULL)
 }
 \arguments{
-\item{path}{A path to a location used for soring data data. If the folder does not exist, it will be created.}
+\item{path}{A path to a location used for storing the database. If the folder does not exist, it will be created.}
 }
 \value{
 The path to the database folder, if previously set; the same path as given to the function; or the default, \code{cas_data} is none is given.

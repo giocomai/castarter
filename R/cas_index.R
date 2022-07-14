@@ -11,7 +11,9 @@
 #'
 #' @examples
 #' 
-#' cas_set_options(base_folder = fs::path(tempdir(), "R", "castarter_data"),
+#' cas_set_options(
+#' base_folder = fs::path(tempdir(), "R", "castarter_data"),
+#' db_folder = fs::path(tempdir(), "R", "castarter_data"),
 #' project = "example_project",
 #' website = "example_website"
 #' )
@@ -84,23 +86,52 @@ cas_write_index <- function(urls,
     disconnect_db = disconnect_db
   )
   
-  urls_to_add_df
+  invisible(urls_to_add_df)
 }
 
 #' Read index from local database
 #'
 #' @inheritParams cas_write_to_db
 #'
-#' @return
+#' @return A data frame with three columns and data stored in the `index_id`
+#'   table of the local database. The data frame has zero rows if the database
+#'   does not exist or no data was previously stored there.
 #' @export
 #'
 #' @examples
+#' cas_set_options(
+#' base_folder = fs::path(tempdir(), "R", "castarter_data"),
+#' db_folder = fs::path(tempdir(), "R", "castarter_data"),
+#' project = "example_project",
+#' website = "example_website"
+#' )
+#' cas_enable_db()
+#' 
+#' 
+#' urls_df <- cas_build_urls(
+#'   url_beginning = "https://www.example.com/news/",
+#'   start_page = 1,
+#'   end_page = 10
+#' )
+#' 
+#' cas_write_index(urls = urls_df)
+#' 
+#' cas_read_index()
 cas_read_index <- function(use_db = NULL,
                            db_connection = NULL,
                            disconnect_db = TRUE) {
+  db_result <- tryCatch(cas_read_from_db(table = "index_id",
+                            use_db = use_db,
+                            db_connection = db_connection,
+                            disconnect_db = disconnect_db),
+           error = function(e) {
+             logical(1L)
+           }
+  )
   
-  cas_read_from_db(table = "index_id",
-                   use_db = use_db,
-                   db_connection = db_connection,
-                   disconnect_db = disconnect_db)
+  if (isFALSE(db_result)) { 
+    casdb_empty_index_id
+  } else {
+    db_result
+  }
 }

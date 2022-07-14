@@ -13,6 +13,31 @@ cas_read_index(use_db = NULL, db_connection = NULL, disconnect_db = TRUE)
 
 \item{disconnect_db}{Defaults to TRUE. If FALSE, leaves the connection to database open.}
 }
+\value{
+A data frame with three columns and data stored in the \code{index_id}
+table of the local database. The data frame has zero rows if the database
+does not exist or no data was previously stored there.
+}
 \description{
 Read index from local database
+}
+\examples{
+cas_set_options(
+base_folder = fs::path(tempdir(), "R", "castarter_data"),
+db_folder = fs::path(tempdir(), "R", "castarter_data"),
+project = "example_project",
+website = "example_website"
+)
+cas_enable_db()
+
+
+urls_df <- cas_build_urls(
+  url_beginning = "https://www.example.com/news/",
+  start_page = 1,
+  end_page = 10
+)
+
+cas_write_index(urls = urls_df)
+
+cas_read_index()
 }

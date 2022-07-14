@@ -38,7 +38,7 @@ cas_create_db_folder <- function(path = NULL,
 #'
 #' Consider using a folder out of your current project directory, e.g. `cas_set_db_folder("~/R/cas_data/")`: you will be able to use the same database in different projects, and prevent database files from being sync-ed if you use services such as Nextcloud or Dropbox.
 #'
-#' @param path A path to a location used for soring data data. If the folder does not exist, it will be created.
+#' @param path A path to a location used for storing the database. If the folder does not exist, it will be created.
 #'
 #' @family database functions
 #'
