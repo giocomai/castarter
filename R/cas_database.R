@@ -396,7 +396,7 @@ cas_connect_to_db <- function(db_connection = NULL,
       if (fs::file_exists(db_file) == FALSE) {
         db <- pool::dbPool(
           drv = RSQLite::SQLite(),
-          db_file
+          dbname = db_file
         )
       }
 

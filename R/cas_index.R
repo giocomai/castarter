@@ -64,13 +64,22 @@ cas_write_index <- function(urls,
     urls_to_add_df <- urls_df %>% 
       dplyr::anti_join(y = previous_index_df,
                        by = c("url", "type"))
+    
+    if (sum(is.element(urls_to_add_df$index_id, previous_index_df$index_id))>0) {
+      
+      usethis::ui_info("Introducing new {usethis::ui_code('index_id')} to ensure unique values")
+      urls_to_add_df$index_id <- seq(sum(max(previous_index_df$index_id),1), 
+                                                sum(max(previous_index_df$index_id),
+                                                    nrow(urls_to_add_df))) %>% 
+        as.numeric()
+    }
   } else {
     urls_to_add_df <- urls_df
   }
   
   urls_to_add_n <- nrow(urls_to_add_df)
   if (urls_to_add_n>0) {
-    cas_write_to_db(df = urls_df,
+    cas_write_to_db(df = urls_to_add_df,
                     table = "index_id",
                     use_db = use_db,
                     overwrite = overwrite,
