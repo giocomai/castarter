@@ -6,7 +6,7 @@
 #'
 #' @inheritParams cas_write_to_db
 #'
-#' @return
+#' @return Invisibly returns only new rows added. 
 #' @export
 #'
 #' @examples
@@ -78,6 +78,8 @@ cas_write_index <- function(urls,
                     disconnect_db = FALSE)
     
     usethis::ui_done("Urls added to {usethis::ui_field('index_id')} table: {usethis::ui_value(urls_to_add_n)}")
+  } else {
+    usethis::ui_info("No new url added to {usethis::ui_field('index_id')} table.")
   }
   
   cas_disconnect_from_db(

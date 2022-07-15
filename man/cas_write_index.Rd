@@ -26,6 +26,9 @@ settings (see example).}
 
 \item{disconnect_db}{Defaults to TRUE. If FALSE, leaves the connection to database open.}
 }
+\value{
+Invisibly returns only new rows added.
+}
 \description{
 If some URLs are already included in the database, it appends only the new ones: URLs are expected to be unique.
 }
