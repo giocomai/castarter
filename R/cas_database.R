@@ -383,7 +383,7 @@ cas_connect_to_db <- function(db_connection = NULL,
         cas_check_db_folder()
         db_file <- cas_get_db_file(project = project)
       } else if (is.character(RSQLite)) {
-        if (nchar(fs::path_ext(db_file)) > 0) {
+        if (nchar(fs::path_ext(RSQLite)) > 0) {
           db_file <- RSQLite
         } else {
           db_file <- cas_get_db_file(
