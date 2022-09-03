@@ -10,6 +10,7 @@ cas_download(
   folder = NULL,
   path = NULL,
   file_format = "html",
+  url_to_download = NULL,
   size = 500,
   wget_system = FALSE,
   method = "auto",

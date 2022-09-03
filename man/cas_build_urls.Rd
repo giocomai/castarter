@@ -60,7 +60,7 @@ in the output.}
 among different types of index or links in local databases.}
 }
 \value{
-A data frame with three columns, \code{index_id}, \code{url}, and \code{type}.
+A data frame with three columns, \code{id}, \code{url}, and \code{type}.
 Typically, \code{url} corresponds to a vector of unique urls.
 }
 \description{
