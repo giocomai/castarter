@@ -568,7 +568,7 @@ cas_write_to_db <- function(df,
         append = TRUE
       )
     } else {
-      usethis::ui_stop("Incomptabile data frame passed to `index_id`. `df` should have a numeric `index_id` column, and a character `url` and `type` column.")
+      usethis::ui_stop("Incomptabile data frame passed to `index_id`. `df` should have a numeric `id` column, and a character `url` and `type` column.")
     }
   }
 

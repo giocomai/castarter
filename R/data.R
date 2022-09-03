@@ -2,7 +2,7 @@
 #'
 #' @format A data frame with 0 rows and 3 columns:
 #' \describe{
-#'   \item{index_id}{Numeric. Column meant for unique integer identifier corresponding to a unique url}
+#'   \item{id}{Numeric. Column meant for unique integer identifier corresponding to a unique url}
 #'   \item{url}{Character. A url.}
 #'   \item{type}{Character. A textual string, by default `index`.}
 #' }

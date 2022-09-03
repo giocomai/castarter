@@ -32,6 +32,7 @@ cas_download <- function(url,
                          folder = NULL,
                          path = NULL,
                          file_format = "html",
+                         url_to_download = NULL,
                          size = 500,
                          wget_system = FALSE,
                          method = "auto",
@@ -98,8 +99,8 @@ cas_download <- function(url,
 
   previous_files_df <- fs::dir_info(path = path) %>%
     dplyr::transmute(path,
-      size,
-      filename = fs::path_file(path)
+                     size,
+                     filename = fs::path_file(path)
     ) %>%
     dplyr::mutate(id = stringr::str_extract(
       string = filename,
@@ -136,6 +137,7 @@ cas_download <- function(url,
     # do nothing
   }
   url_to_download[1:start - 1] <- FALSE
+  
   temp <- 1
   if (create_script == TRUE) {
     wget_system <- TRUE

@@ -126,33 +126,33 @@ These are the key tables to found in a `castarter2` database:
 
 - `index_id` - a table with three columns:
 
-  + `index_id`: a unique integer identifier corresponding to a unique url
+  + `id`: a unique integer identifier corresponding to a unique url
   + `url`: a url
   + `type`: a textual string, by default `index`. It is not infrequent to have separate index pages for different sections of a website (e.g. "news", "events", "statements", etc.), different tags, or different levels of the indexing process (they can, for example, be called `step_01`, `step_02`). In such cases, it is useful to separate these different types of sources in case of updates: one would be interested in downloading the latest `example.com/news/page/1` and the latest `example.com/statements/page/1`, and following, but not necessarily all index pages.
   
 - `index_download` - a table with four columns. New rows appear here only when a download has been attempted. 
 
-  + `index_id`: an integer, matching the identifier defined in the previous table
+  + `id`: an integer, matching the identifier defined in the previous table
   + `datetime`: timestamp of when download was attempted
   + `status`: http response status code, such as 200 for successful, 404 for not found, [etc](https://en.wikipedia.org/wiki/List_of_HTTP_status_codes).
   + `size`: size of the downloaded file
 
 - `contents_id`-  a table with three columns, similar to the one outlined above:
 
-  + `index_id`: a unique integer identifier corresponding to a unique url
+  + `id`: a unique integer identifier corresponding to a unique url
   + `url`: a url
   + `type`: this reflect the type defined in the `index_id` table, may or may not be useful
   
 - `contents_download` - a table with four columns, similar to the one outlined above. New rows appear here only when a download has been attempted. 
 
-  + `contents_id`: an integer, matching the identifier defined in the `contents_id` table
+  + `id`: an integer, matching the identifier defined in the `contents_id` table
   + `datetime`: timestamp of when download was attempted
   + `status`: http response status code, such as 200 for successful, 404 for not found, [etc](https://en.wikipedia.org/wiki/List_of_HTTP_status_codes).
   + `size`: size of the downloaded file
   
 - `contents_data` - a table with three columns
 
-  + `contents_id` - an integer, matching the identifier defined in the `contents_id` table
+  + `id` - an integer, matching the identifier defined in the `contents_id` table
   + `field` - a character string, defining a value type. These often will include fields such as "title", "date", "author", "text", etc., but are not limited by design. Irrespective of their contents, they will however all be stored as textual strings. 
 
 

@@ -41,7 +41,7 @@
 #'   in the output.
 #' @param type A character vector, defaults to "index". Used for differentiating
 #'   among different types of index or links in local databases.
-#' @return A data frame with three columns, `index_id`, `url`, and `type`.
+#' @return A data frame with three columns, `id`, `url`, and `type`.
 #'   Typically, `url` corresponds to a vector of unique urls.
 #' @export
 #' @examples
@@ -134,7 +134,7 @@ cas_build_urls <- function(url_beginning,
     stringr::str_trim())) %>%
     dplyr::mutate(
       type = type,
-      index_id = as.numeric(dplyr::row_number())
+      id = as.numeric(dplyr::row_number())
     ) %>%
-    dplyr::select(.data$index_id, .data$url, .data$type)
+    dplyr::select(.data$id, .data$url, .data$type)
 }

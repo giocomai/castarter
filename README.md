@@ -147,8 +147,7 @@ These are the key tables to found in a `castarter2` database:
 
 -   `index_id` - a table with three columns:
 
-    -   `index_id`: a unique integer identifier corresponding to a
-        unique url
+    -   `id`: a unique integer identifier corresponding to a unique url
     -   `url`: a url
     -   `type`: a textual string, by default `index`. It is not
         infrequent to have separate index pages for different sections
@@ -164,7 +163,7 @@ These are the key tables to found in a `castarter2` database:
 -   `index_download` - a table with four columns. New rows appear here
     only when a download has been attempted.
 
-    -   `index_id`: an integer, matching the identifier defined in the
+    -   `id`: an integer, matching the identifier defined in the
         previous table
     -   `datetime`: timestamp of when download was attempted
     -   `status`: http response status code, such as 200 for successful,
@@ -175,8 +174,7 @@ These are the key tables to found in a `castarter2` database:
 -   `contents_id`- a table with three columns, similar to the one
     outlined above:
 
-    -   `index_id`: a unique integer identifier corresponding to a
-        unique url
+    -   `id`: a unique integer identifier corresponding to a unique url
     -   `url`: a url
     -   `type`: this reflect the type defined in the `index_id` table,
         may or may not be useful
@@ -185,8 +183,8 @@ These are the key tables to found in a `castarter2` database:
     outlined above. New rows appear here only when a download has been
     attempted.
 
-    -   `contents_id`: an integer, matching the identifier defined in
-        the `contents_id` table
+    -   `id`: an integer, matching the identifier defined in the
+        `contents_id` table
     -   `datetime`: timestamp of when download was attempted
     -   `status`: http response status code, such as 200 for successful,
         404 for not found,
@@ -195,8 +193,8 @@ These are the key tables to found in a `castarter2` database:
 
 -   `contents_data` - a table with three columns
 
-    -   `contents_id` - an integer, matching the identifier defined in
-        the `contents_id` table
+    -   `id` - an integer, matching the identifier defined in the
+        `contents_id` table
     -   `field` - a character string, defining a value type. These often
         will include fields such as “title”, “date”, “author”, “text”,
         etc., but are not limited by design. Irrespective of their

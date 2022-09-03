@@ -65,11 +65,11 @@ cas_write_index <- function(urls,
       dplyr::anti_join(y = previous_index_df,
                        by = c("url", "type"))
     
-    if (sum(is.element(urls_to_add_df$index_id, previous_index_df$index_id))>0) {
+    if (sum(is.element(urls_to_add_df$id, previous_index_df$id))>0) {
       
-      usethis::ui_info("Introducing new {usethis::ui_code('index_id')} to ensure unique values")
-      urls_to_add_df$index_id <- seq(sum(max(previous_index_df$index_id),1), 
-                                                sum(max(previous_index_df$index_id),
+      usethis::ui_info("Introducing new {usethis::ui_code('id')} to ensure unique values")
+      urls_to_add_df$id <- seq(sum(max(previous_index_df$id),1), 
+                                                sum(max(previous_index_df$id),
                                                     nrow(urls_to_add_df))) %>% 
         as.numeric()
     }
