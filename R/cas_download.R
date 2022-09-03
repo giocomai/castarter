@@ -11,6 +11,7 @@
 #' @param website Name of a website included in a 'castarter2' project. Must correspond to the name of a sub-folder of the project folder.
 #' @param method Defaults to "auto". Method is passed to the function utils::download.file(); available options are "internal", "wininet" (Windows only) "libcurl", "wget" and "curl". For more information see ?utils::download.file()
 #' @param missing_pages Logical, defaults to TRUE. If TRUE, verifies if a downloaded html file exists for each element in articlesLinks; when there is no such file, it downloads it.
+#' @param url_to_download Defaults to NULL. If given, expected to be a logical vector to be applied to the given urls. If given, it takes precedence over `missing_pages` and `size`.
 #' @param size Defaults to 500. It represents the minimum size in bytes that downloaded html files should have: files that are smaller will be downloaded again. Used only when missing_pages == FALSE.
 #' @param wget_system Logical, defaults to FALSE. Calls wget as a system command through the system() function. Wget must be previously installed on the system.
 #' @param start Integer. Only url with position higher than start in the url vector will be downloaded: `url[start:length(url)]`
@@ -111,16 +112,23 @@ cas_download <- function(url,
 
   if (is.null(url_to_download) == TRUE) {
     if (missing_pages == TRUE) {
-      expected_filenames_df <- tibble::tibble(path = fs::path(
+      expected_filenames_df <- tibble::tibble(
+        id = url_df$id, 
+        path = fs::path(
         path,
         stringr::str_c(url_df$id, ".", file_format)
       ))
-      url_to_download_df <- dplyr::anti_join(
+      files_to_download_df <- dplyr::anti_join(
         x = expected_filenames_df,
         y = previous_files_df,
         by = "path"
       )
-    } else if (missing_pages == FALSE) {
+      
+      urls_to_download_df <- dplyr::left_join(x = files_to_download_df,
+                                              y = url_df,
+                                              by = "id")
+    
+      } else if (missing_pages == FALSE) {
       smallFiles <- htmlFilesList[htmlFileSize < size]
       smallFilesId <- as.integer(stringr::str_extract(
         string = smallFiles,
@@ -231,5 +239,44 @@ cas_download <- function(url,
       temp <- temp + 1
       Sys.sleep(wait)
     }
+  }
+}
+
+
+
+#' Downloads files, and stores details about the download in a local database
+#'
+#' @param download_df A data frame with one row, and four columns: `id`, `url`, `path`, `type`.
+#' @param type Accepted values are either "contents" (default) oe "index".
+#' @param overwrite Logical, defaults to FALSE.
+#'
+#' @return Invisibly returns the full `httr` response.
+#' @importFrom cas_write_to_db
+#' @export
+#'
+#' @examples
+cass_download_httr <- function(download_df,
+                               type = "contents",
+                               overwrite_file = FALSE,
+                               use_db = NULL, 
+                               db_connection = NULL,
+                               disconnect_db = TRUE) {
+
+  if (fs::file_exists(download_df$path)==FALSE|overwrite_file==TRUE) {
+    raw <- httr::GET(url = url, httr::write_disk(path = download_df$path, overwrite = overwrite_file))
+    
+    info_df <- tibble::tibble(id = download_df$id,
+                              datetime = Sys.time(),
+                              status = raw$status_code,
+                              size = fs::file_size(download_df$path))
+    
+    cas_write_to_db(df = info_df,
+                    table = stringr::str_c(type, "_", "download"),
+                    use_db = use_db,
+                    overwrite = FALSE,
+                    db_connection = db_connection,
+                    disconnect_db = disconnect_db
+    )
+    invisible(raw)
   }
 }

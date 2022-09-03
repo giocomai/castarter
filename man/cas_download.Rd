@@ -36,6 +36,8 @@ cas_download(
 
 \item{path}{Defaults to NULL. If given, overrides the "type" and "folder" param and stores files in given path.}
 
+\item{url_to_download}{Defaults to NULL. If given, expected to be a logical vector to be applied to the given urls. If given, it takes precedence over \code{missing_pages} and \code{size}.}
+
 \item{size}{Defaults to 500. It represents the minimum size in bytes that downloaded html files should have: files that are smaller will be downloaded again. Used only when missing_pages == FALSE.}
 
 \item{wget_system}{Logical, defaults to FALSE. Calls wget as a system command through the system() function. Wget must be previously installed on the system.}
