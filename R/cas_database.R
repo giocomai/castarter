@@ -376,8 +376,8 @@ cas_connect_to_db <- function(db_connection = NULL,
   if (is.null(db_connection)) {
     if (is.null(RSQLite)) {
       RSQLite <- as.logical(Sys.getenv(x = "cas_database_SQLite", unset = TRUE))
-    } 
-    
+    }
+
     if (is.null(RSQLite) == FALSE) {
       if (isTRUE(RSQLite)) {
         cas_check_db_folder()
@@ -536,7 +536,6 @@ cas_disconnect_from_db <- function(use_db = NULL,
 #'   df = urls_df,
 #'   table = "index_id"
 #' )
-#'
 cas_write_to_db <- function(df,
                             table,
                             use_db = NULL,
@@ -610,7 +609,6 @@ cas_write_to_db <- function(df,
 #' )
 #'
 #' cas_read_from_db(table = "index_id")
-#'
 cas_read_from_db <- function(table,
                              use_db = NULL,
                              db_connection = NULL,

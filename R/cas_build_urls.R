@@ -108,7 +108,7 @@ cas_build_urls <- function(url_beginning,
       date_format
     ) %>%
       base::unique()
-  } else if (is.null(start_page)|is.null(end_page)) {
+  } else if (is.null(start_page) | is.null(end_page)) {
     variable_part <- ""
   } else {
     variable_part <- format(
@@ -117,7 +117,7 @@ cas_build_urls <- function(url_beginning,
     ) %>%
       stringr::str_trim()
   }
-  
+
 
   urls <- stringr::str_c(
     url_beginning,

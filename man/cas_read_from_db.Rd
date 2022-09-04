@@ -47,7 +47,6 @@ cas_write_to_db(
 )
 
 cas_read_from_db(table = "index_id")
-
 }
 \seealso{
 Other database functions: 

@@ -18,7 +18,7 @@ cass_download_httr(
 
 \item{type}{Accepted values are either "contents" (default) oe "index".}
 
-\item{overwrite}{Logical, defaults to FALSE.}
+\item{overwrite_file}{Logical, defaults to FALSE.}
 }
 \value{
 Invisibly returns the full \code{httr} response.

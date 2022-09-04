@@ -7,8 +7,8 @@
 cas_download(
   url,
   type = "contents",
-  folder = NULL,
-  path = NULL,
+  custom_folder = NULL,
+  custom_path = NULL,
   file_format = "html",
   url_to_download = NULL,
   size = 500,
@@ -28,13 +28,11 @@ cas_download(
 )
 }
 \arguments{
-\item{url}{A character vector of urls, or a dataframe with at least two columns named \code{id} and \code{url}.}
+\item{url}{A character vector of urls, or a data frame with at least two columns named \code{id} and \code{url}.}
 
 \item{type}{Accepted values are either "contents" (default), "index".}
 
-\item{folder}{Defaults to NULL. If given, overrides the "type" param and stores files in given path as a subfolder of project/website. Folder must already exist, and should be empty.}
-
-\item{path}{Defaults to NULL. If given, overrides the "type" and "folder" param and stores files in given path.}
+\item{custom_folder}{Defaults to NULL. If given, overrides the "type" param and stores files in given path as a subfolder of project/website. Folder must already exist, and should be empty.}
 
 \item{url_to_download}{Defaults to NULL. If given, expected to be a logical vector to be applied to the given urls. If given, it takes precedence over \code{missing_pages} and \code{size}.}
 
@@ -61,6 +59,8 @@ cas_download(
 \item{project}{Name of 'castarter2' project. Must correspond to the name of a folder in the current working directory.}
 
 \item{website}{Name of a website included in a 'castarter2' project. Must correspond to the name of a sub-folder of the project folder.}
+
+\item{path}{Defaults to NULL. If given, overrides the "type" and "custom_folder" param and stores files in given path.}
 }
 \value{
 By default, returns nothing, used for its side effects (downloads html files in relevant folder). Download files can then be imported in a vector with the function ImportHtml.
