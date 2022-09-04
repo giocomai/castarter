@@ -69,8 +69,8 @@ By default, returns nothing, used for its side effects (downloads html files in 
 Downloads html pages based on a vector of links.
 }
 \examples{
-if (interactive()) {
 \dontrun{
+if (interactive()) {
   cas_download(url)
 }
 }

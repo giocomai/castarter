@@ -149,7 +149,7 @@ These are the key tables to found in a `castarter2` database:
 
     -   `id`: a unique integer identifier corresponding to a unique url
     -   `url`: a url
-    -   `type`: a textual string, by default `index`. It is not
+    -   `index_group`: a textual string, by default `index`. It is not
         infrequent to have separate index pages for different sections
         of a website (e.g. “news”, “events”, “statements”, etc.),
         different tags, or different levels of the indexing process
@@ -176,8 +176,8 @@ These are the key tables to found in a `castarter2` database:
 
     -   `id`: a unique integer identifier corresponding to a unique url
     -   `url`: a url
-    -   `type`: this reflect the type defined in the `index_id` table,
-        may or may not be useful
+    -   `index_group`: this reflect the string defined in the `index_id`
+        table, may or may not be useful
 
 -   `contents_download` - a table with four columns, similar to the one
     outlined above. New rows appear here only when a download has been

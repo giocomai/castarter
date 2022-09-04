@@ -39,9 +39,9 @@
 #'   valid values.
 #' @param reversed_order Logical, defaults to FALSE. If TRUE, the order of urls
 #'   in the output.
-#' @param type A character vector, defaults to "index". Used for differentiating
-#'   among different types of index or links in local databases.
-#' @return A data frame with three columns, `id`, `url`, and `type`.
+#' @param index_group A character vector, defaults to "index". Used for
+#'   differentiating among different types of index or links in local databases.
+#' @return A data frame with three columns, `id`, `url`, and `index_group`.
 #'   Typically, `url` corresponds to a vector of unique urls.
 #' @export
 #' @examples
@@ -77,7 +77,7 @@ cas_build_urls <- function(url_beginning,
                            date_separator = NULL,
                            increase_date_by = "day",
                            reversed_order = FALSE,
-                           type = "index") {
+                           index_group = "index") {
   if (is.null(start_date) == FALSE) {
     # allow for simplified date_format
     if (stringr::str_detect(string = date_format, pattern = "%", negate = TRUE)) {
@@ -133,8 +133,8 @@ cas_build_urls <- function(url_beginning,
     base::unique() %>%
     stringr::str_trim())) %>%
     dplyr::mutate(
-      type = type,
+      index_group = index_group,
       id = as.numeric(dplyr::row_number())
     ) %>%
-    dplyr::select(.data$id, .data$url, .data$type)
+    dplyr::select(.data$id, .data$url, .data$index_group)
 }

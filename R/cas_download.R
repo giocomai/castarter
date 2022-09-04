@@ -22,8 +22,8 @@
 #' @return By default, returns nothing, used for its side effects (downloads html files in relevant folder). Download files can then be imported in a vector with the function ImportHtml.
 #' @export
 #' @examples
-#' if (interactive()) {
 #' \dontrun{
+#' if (interactive()) {
 #'   cas_download(url)
 #' }
 #' }
@@ -85,8 +85,8 @@ cas_download <- function(url,
   if (is.null(url_to_download) == TRUE) {
     if (missing_pages == TRUE) {
 
-    
-      } else if (missing_pages == FALSE) {
+
+    } else if (missing_pages == FALSE) {
       smallFiles <- htmlFilesList[htmlFileSize < size]
       smallFilesId <- as.integer(stringr::str_extract(
         string = smallFiles,
@@ -103,7 +103,7 @@ cas_download <- function(url,
     # do nothing
   }
   url_to_download[1:start - 1] <- FALSE
-  
+
   temp <- 1
   if (create_script == TRUE) {
     wget_system <- TRUE
@@ -216,24 +216,26 @@ cas_download <- function(url,
 cass_download_httr <- function(download_df,
                                type = "contents",
                                overwrite_file = FALSE,
-                               use_db = NULL, 
+                               use_db = NULL,
                                db_connection = NULL,
                                disconnect_db = TRUE) {
-
-  if (fs::file_exists(download_df$path)==FALSE|overwrite_file==TRUE) {
+  if (fs::file_exists(download_df$path) == FALSE | overwrite_file == TRUE) {
     raw <- httr::GET(url = url, httr::write_disk(path = download_df$path, overwrite = overwrite_file))
-    
-    info_df <- tibble::tibble(id = download_df$id,
-                              datetime = Sys.time(),
-                              status = raw$status_code,
-                              size = fs::file_size(download_df$path))
-    
-    cas_write_to_db(df = info_df,
-                    table = stringr::str_c(type, "_", "download"),
-                    use_db = use_db,
-                    overwrite = FALSE,
-                    db_connection = db_connection,
-                    disconnect_db = disconnect_db
+
+    info_df <- tibble::tibble(
+      id = download_df$id,
+      datetime = Sys.time(),
+      status = raw$status_code,
+      size = fs::file_size(download_df$path)
+    )
+
+    cas_write_to_db(
+      df = info_df,
+      table = stringr::str_c(type, "_", "download"),
+      use_db = use_db,
+      overwrite = FALSE,
+      db_connection = db_connection,
+      disconnect_db = disconnect_db
     )
     invisible(raw)
   }
@@ -244,38 +246,43 @@ cass_download_httr <- function(download_df,
 #' Create a data frame with not yet downloaded files
 #'
 #' @param url_df Defaults to NULL. If given, with at least two columns named `id` and `url`. If not given, an attempt will be made to load it from the local database.
-#' 
+#'
 #' @importFrom cas_download
 #'
 #' @return A data frame with four columns: `id`, `url`, `path` and `type`
 #' @export
 #'
 #' @examples
-cass_get_files_to_download <- function(url_df = NULL, 
-                                       type = "contents", 
+cass_get_files_to_download <- function(url_df = NULL,
+                                       type = "contents",
                                        custom_folder = NULL,
                                        custom_path = NULL,
                                        file_format = "html",
                                        project = NULL,
                                        website = NULL,
-                                       base_folder = NULL
-                                       ) {
-  
+                                       base_folder = NULL,
+                                       use_db = NULL,
+                                       db_connection = NULL,
+                                       disconnect_db = TRUE) {
   if (is.null(url_df)) {
     if (type == "contents") {
-      url_df <- cas_read_db_contents(use_db = use_db,
-                                  db_connection = db_connection,
-                                  disconnect_db = disconnect_db)
+      url_df <- cas_read_db_contents(
+        use_db = use_db,
+        db_connection = db_connection,
+        disconnect_db = disconnect_db
+      )
     } else if (type == "index") {
-      url_df <- cas_read_db_index(use_db = use_db,
-                                  db_connection = db_connection,
-                                  disconnect_db = disconnect_db)
+      url_df <- cas_read_db_index(
+        use_db = use_db,
+        db_connection = db_connection,
+        disconnect_db = disconnect_db
+      )
     } else {
       usethis::ui_stop("Parameter `type` should be either `index` or `contents`.")
     }
   }
-  
-  
+
+
   if (is.null(custom_path)) {
     if (is.null(custom_folder) == FALSE) {
       path <- fs::path(
@@ -295,12 +302,21 @@ cass_get_files_to_download <- function(url_df = NULL,
       usethis::ui_stop("Parameter `type` should be either `index` or `contents`.")
     }
   }
-  
-  
+
+  if (fs::file_exists(path) == FALSE) {
+    fs::dir_create(path = path)
+    usethis::ui_info(stringr::str_c("The folder",
+      usethis::ui_path(path),
+      "has been created.",
+      sep = " "
+    ))
+  }
+
+
   previous_files_df <- fs::dir_info(path = path) %>%
     dplyr::transmute(path,
-                     size,
-                     filename = fs::path_file(path)
+      size,
+      filename = fs::path_file(path)
     ) %>%
     dplyr::mutate(id = stringr::str_extract(
       string = filename,
@@ -308,21 +324,26 @@ cass_get_files_to_download <- function(url_df = NULL,
     ) %>%
       as.numeric()) %>%
     dplyr::arrange(id)
-  
+
   expected_filenames_df <- tibble::tibble(
-    id = url_df$id, 
+    id = url_df$id,
     path = fs::path(
       path,
       stringr::str_c(url_df$id, ".", file_format)
-    ))
+    )
+  )
   files_to_download_df <- dplyr::anti_join(
     x = expected_filenames_df,
     y = previous_files_df,
     by = "path"
   )
-  
-  urls_to_download_df <- dplyr::left_join(x = files_to_download_df,
-                                          y = url_df,
-                                          by = "id") %>% 
+
+  urls_to_download_df <- dplyr::left_join(
+    x = files_to_download_df,
+    y = url_df,
+    by = "id"
+  ) %>%
     dplyr::select(.data$id, .data$url, .data$path)
+
+  urls_to_download_df
 }

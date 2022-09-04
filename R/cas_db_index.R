@@ -68,7 +68,7 @@ cas_write_db_index <- function(urls,
     urls_to_add_df <- urls_df %>%
       dplyr::anti_join(
         y = previous_index_df,
-        by = c("url", "type")
+        by = c("url", "index_group")
       )
 
     if (sum(is.element(urls_to_add_df$id, previous_index_df$id)) > 0) {
@@ -156,6 +156,6 @@ cas_read_db_index <- function(use_db = NULL,
   if (isFALSE(db_result)) {
     tibble::as_tibble(casdb_empty_index_id)
   } else {
-    db_result
+    tibble::as_tibble(db_result)
   }
 }

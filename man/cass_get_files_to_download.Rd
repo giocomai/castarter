@@ -12,7 +12,10 @@ cass_get_files_to_download(
   file_format = "html",
   project = NULL,
   website = NULL,
-  base_folder = NULL
+  base_folder = NULL,
+  use_db = NULL,
+  db_connection = NULL,
+  disconnect_db = TRUE
 )
 }
 \arguments{

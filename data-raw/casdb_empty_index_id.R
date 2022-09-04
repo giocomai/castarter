@@ -1,7 +1,7 @@
 ## code to prepare `casdb_empty_index_id` dataset goes here
 
 
-casdb_empty_index_id <- c("id", "url", "type") %>%
+casdb_empty_index_id <- c("id", "url", "index_group") %>%
   purrr::map_dfc(setNames,
     object = list(character())
   )

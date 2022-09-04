@@ -156,6 +156,6 @@ cas_read_db_contents <- function(use_db = NULL,
   if (isFALSE(db_result)) {
     tibble::as_tibble(casdb_empty_contents_id)
   } else {
-    db_result
+    tibble::as_tibble(db_result)
   }
 }

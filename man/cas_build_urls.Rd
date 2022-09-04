@@ -16,7 +16,7 @@ cas_build_urls(
   date_separator = NULL,
   increase_date_by = "day",
   reversed_order = FALSE,
-  type = "index"
+  index_group = "index"
 )
 }
 \arguments{
@@ -56,11 +56,11 @@ valid values.}
 \item{reversed_order}{Logical, defaults to FALSE. If TRUE, the order of urls
 in the output.}
 
-\item{type}{A character vector, defaults to "index". Used for differentiating
-among different types of index or links in local databases.}
+\item{index_group}{A character vector, defaults to "index". Used for
+differentiating among different types of index or links in local databases.}
 }
 \value{
-A data frame with three columns, \code{id}, \code{url}, and \code{type}.
+A data frame with three columns, \code{id}, \code{url}, and \code{index_group}.
 Typically, \code{url} corresponds to a vector of unique urls.
 }
 \description{

@@ -1,4 +1,4 @@
-casdb_empty_contents_id <- c("id", "url", "type") %>%
+casdb_empty_contents_id <- c("id", "url", "index_group") %>%
   purrr::map_dfc(setNames,
     object = list(character())
   )
