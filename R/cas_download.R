@@ -216,29 +216,38 @@ cas_download <- function(url,
 cass_download_httr <- function(download_df,
                                type = "contents",
                                overwrite_file = FALSE,
+                               wait = 1,
                                use_db = NULL,
                                db_connection = NULL,
                                disconnect_db = TRUE) {
-  if (fs::file_exists(download_df$path) == FALSE | overwrite_file == TRUE) {
-    raw <- httr::GET(url = url, httr::write_disk(path = download_df$path, overwrite = overwrite_file))
+  pb <- progress::progress_bar$new(total = nrow(download_df))
 
-    info_df <- tibble::tibble(
-      id = download_df$id,
-      datetime = Sys.time(),
-      status = raw$status_code,
-      size = fs::file_size(download_df$path)
-    )
+  purrr::walk(
+    .x = purrr::transpose(download_df),
+    .f = function(x) {
+      pb$tick()
+      if (fs::file_exists(x$path) == FALSE | overwrite_file == TRUE) {
+        raw <- httr::GET(url = x$url, httr::write_disk(path = x$path, overwrite = overwrite_file))
 
-    cas_write_to_db(
-      df = info_df,
-      table = stringr::str_c(type, "_", "download"),
-      use_db = use_db,
-      overwrite = FALSE,
-      db_connection = db_connection,
-      disconnect_db = disconnect_db
-    )
-    invisible(raw)
-  }
+        info_df <- tibble::tibble(
+          id = x$id,
+          datetime = Sys.time(),
+          status = raw$status_code,
+          size = fs::file_size(x$path)
+        )
+
+        cas_write_to_db(
+          df = info_df,
+          table = stringr::str_c(type, "_", "download"),
+          use_db = use_db,
+          overwrite = FALSE,
+          db_connection = db_connection,
+          disconnect_db = disconnect_db
+        )
+        Sys.sleep(time = wait)
+      }
+    }
+  )
 }
 
 

@@ -8,6 +8,7 @@ cass_download_httr(
   download_df,
   type = "contents",
   overwrite_file = FALSE,
+  wait = 1,
   use_db = NULL,
   db_connection = NULL,
   disconnect_db = TRUE
