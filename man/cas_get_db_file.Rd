@@ -4,14 +4,7 @@
 \alias{cas_get_db_file}
 \title{Gets location of database file}
 \usage{
-cas_get_db_file(
-  project = cas_get_options()$project,
-  db_folder = NULL,
-  type = NULL
-)
-}
-\arguments{
-\item{type}{Defaults to NULL. Deprecated. If given, type of database file to output.}
+cas_get_db_file(project = NULL, website = NULL, db_folder = NULL, type = NULL)
 }
 \value{
 A character vector of length one with location of the SQLite database file.

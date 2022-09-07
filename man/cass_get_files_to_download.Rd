@@ -5,8 +5,8 @@
 \title{Create a data frame with not yet downloaded files}
 \usage{
 cass_get_files_to_download(
-  url_df = NULL,
-  type = "contents",
+  urls = NULL,
+  index = FALSE,
   custom_folder = NULL,
   custom_path = NULL,
   file_format = "html",
@@ -19,7 +19,7 @@ cass_get_files_to_download(
 )
 }
 \arguments{
-\item{url_df}{Defaults to NULL. If given, with at least two columns named \code{id} and \code{url}. If not given, an attempt will be made to load it from the local database.}
+\item{urls}{Defaults to NULL. If given, it should correspond with a data frame with at least two columns named \code{id} and \code{url}. If not given, an attempt will be made to load it from the local database.}
 }
 \value{
 A data frame with four columns: \code{id}, \code{url}, \code{path} and \code{type}

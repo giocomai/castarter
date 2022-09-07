@@ -2,7 +2,7 @@
 % Please edit documentation in R/cas_download.R
 \name{cass_download_httr}
 \alias{cass_download_httr}
-\title{Downloads files, and stores details about the download in a local database}
+\title{Downloads one file at a time with httr}
 \usage{
 cass_download_httr(
   download_df,
@@ -25,5 +25,5 @@ cass_download_httr(
 Invisibly returns the full \code{httr} response.
 }
 \description{
-Downloads files, and stores details about the download in a local database
+Mostly used internally by \code{cas_download}.
 }

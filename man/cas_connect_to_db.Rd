@@ -8,7 +8,7 @@ cas_connect_to_db(
   db_connection = NULL,
   RSQLite = NULL,
   use_db = NULL,
-  project = cas_get_options()$project
+  project = NULL
 )
 }
 \arguments{

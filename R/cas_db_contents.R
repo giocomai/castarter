@@ -141,12 +141,18 @@ cas_write_db_contents <- function(urls,
 #' cas_read_db_contents()
 cas_read_db_contents <- function(use_db = NULL,
                                  db_connection = NULL,
-                                 disconnect_db = TRUE) {
+                                 disconnect_db = TRUE,
+                                 db_folder = NULL,
+                                 project = cas_get_options()$project,
+                                 website = cas_get_options()$website) {
   db_result <- tryCatch(cas_read_from_db(
     table = "contents_id",
     use_db = use_db,
     db_connection = db_connection,
-    disconnect_db = disconnect_db
+    disconnect_db = disconnect_db,
+    db_folder = db_folder,
+    project = project,
+    website = website
   ),
   error = function(e) {
     logical(1L)

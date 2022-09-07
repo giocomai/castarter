@@ -87,7 +87,7 @@ fs::dir_tree(cas_get_options()$base_folder)
 ```
 
 
-In brief, `castarter_data` is the base folder where I can store all of my text mining projects. `european_union` is the name of the project, while all others are the names of the specific websites I will source. Folders will by created automatically as needed when you start downloading files. 
+In brief, `castarter_data` is the base folder where I can store all of my text mining projects. `european_union` is the name of the project, while all others are the names of the specific websites I will source. Folders will be created automatically as needed when you start downloading files. 
 
 
 When text mining or scraping, it is common to gather quickly many thousands of file, and keeping them in good order is fundamental, particularly in the long term. Hence, a preliminary suggestion: depending on how you usually work and keep your files backed-up it may make sense to keep your scripts in a folder that is live-synced (e.g. with services such as Dropbox, Nextcloud, or Google Drive). It however rarely make sense to live-sync tens or hundreds of thousands of files as you proceed with your scraping. You may want to keep this in mind as you set the `base_folder` with `cas_set_options()`. 

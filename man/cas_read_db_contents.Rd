@@ -4,7 +4,14 @@
 \alias{cas_read_db_contents}
 \title{Read contents from local database}
 \usage{
-cas_read_db_contents(use_db = NULL, db_connection = NULL, disconnect_db = TRUE)
+cas_read_db_contents(
+  use_db = NULL,
+  db_connection = NULL,
+  disconnect_db = TRUE,
+  db_folder = NULL,
+  project = cas_get_options()$project,
+  website = cas_get_options()$website
+)
 }
 \arguments{
 \item{use_db}{Defaults to NULL. If given, it should be given either TRUE or

@@ -7,6 +7,7 @@
 cas_read_from_db(
   table,
   use_db = NULL,
+  db_folder = NULL,
   db_connection = NULL,
   disconnect_db = TRUE
 )

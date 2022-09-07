@@ -173,8 +173,6 @@ cas_get_db_settings <- function() {
 
 #' Gets location of database file
 #'
-#' @param type Defaults to NULL. Deprecated. If given, type of database file to output.
-#'
 #' @return A character vector of length one with location of the SQLite database file.
 #' @export
 #'
@@ -183,37 +181,31 @@ cas_get_db_settings <- function() {
 #' cas_set_db_folder(path = tempdir())
 #' sqlite_db_file_location <- cas_get_db_file(project = "test-project") # outputs location of database file
 #' sqlite_db_file_location
-cas_get_db_file <- function(project = cas_get_options()$project,
+cas_get_db_file <- function(project = NULL,
+                            website = NULL,
                             db_folder = NULL,
                             type = NULL) {
   if (is.null(db_folder)) {
     db_folder <- cas_get_db_folder()
   }
 
-  if (is.null(type)) {
-    fs::path(
-      db_folder,
-      stringr::str_c(
-        "cas_",
-        project,
-        "_db.sqlite"
-      ) %>%
-        fs::path_sanitize()
-    )
-  } else {
-    fs::path(
-      db_folder,
-      stringr::str_c(
-        "cas_",
-        project,
-        "_",
-        type,
-        "_db_",
-        ".sqlite"
-      ) %>%
-        fs::path_sanitize()
-    )
-  }
+  cas_options_l <- cas_get_options(
+    project = project,
+    website = website
+  )
+
+  fs::path(
+    db_folder,
+    stringr::str_c(
+      "cas_",
+      project,
+      "_",
+      website,
+      "_db",
+      ".sqlite"
+    ) %>%
+      fs::path_sanitize()
+  )
 }
 
 #' Enable caching for the current session
@@ -362,9 +354,13 @@ cas_check_db_folder <- function() {
 cas_connect_to_db <- function(db_connection = NULL,
                               RSQLite = NULL,
                               use_db = NULL,
-                              project = cas_get_options()$project) {
+                              project = NULL) {
   if (isFALSE(x = cas_check_use_db(use_db))) {
     return(NULL)
+  }
+
+  if (is.null(project)) {
+    project <- cas_get_options()$project
   }
 
   if (is.null(db_connection) == FALSE & is.list(db_connection) == FALSE) {
@@ -611,6 +607,7 @@ cas_write_to_db <- function(df,
 #' cas_read_from_db(table = "index_id")
 cas_read_from_db <- function(table,
                              use_db = NULL,
+                             db_folder = NULL,
                              db_connection = NULL,
                              disconnect_db = TRUE) {
   if (cas_check_use_db(use_db = use_db) == FALSE) {
