@@ -156,6 +156,19 @@ These are the key tables to found in a `castarter2` database:
   + `field` - a character string, defining a value type. These often will include fields such as "title", "date", "author", "text", etc., but are not limited by design. Irrespective of their contents, they will however all be stored as textual strings. 
 
 
+### Database location and database file naming conventions
+
+By default, SQLite databases are stored in the same folder as website data, e.g. under `base_folder/project/website/`.
+
+The location of the database cas be retrieved with:
+
+```{r}
+cas_get_db_folder()
+cas_get_db_file()
+```
+
+The filename of the SQLite database includes reference to both the project and the website name. This allows to store all database files of different projects in a single folder, as the file naming convention should prevent overlaps.
+
 
 # Workflow
 
