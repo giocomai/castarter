@@ -4,7 +4,7 @@
 \alias{cas_get_db_file}
 \title{Gets location of database file}
 \usage{
-cas_get_db_file(project = NULL, website = NULL, db_folder = NULL, type = NULL)
+cas_get_db_file(project = NULL, website = NULL, db_folder = NULL)
 }
 \value{
 A character vector of length one with location of the SQLite database file.

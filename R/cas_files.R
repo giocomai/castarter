@@ -10,15 +10,15 @@
 cas_get_website_folder <- function(base_folder = NULL,
                                    project = NULL,
                                    website = NULL) {
-  cas_options <- cas_get_options(
+  cas_options_l <- cas_get_options(
     base_folder = base_folder,
     project = project,
     website = website
   )
   fs::path(
-    cas_options$base_folder,
-    cas_options$project,
-    cas_options$website
+    cas_options_l$base_folder,
+    cas_options_l$project,
+    cas_options_l$website
   )
 }
 
@@ -35,7 +35,7 @@ cas_get_website_folder <- function(base_folder = NULL,
 cas_check_website_folder <- function(base_folder = NULL,
                                      project = NULL,
                                      website = NULL) {
-  cas_options <- cas_get_options(
+  cas_options_l <- cas_get_options(
     base_folder = base_folder,
     project = project,
     website = website
@@ -43,9 +43,9 @@ cas_check_website_folder <- function(base_folder = NULL,
 
   fs::dir_exists(
     fs::path(
-      cas_options$base_folder,
-      cas_options$project,
-      cas_options$website
+      cas_options_l$base_folder,
+      cas_options_l$project,
+      cas_options_l$website
     )
   )
 }
@@ -65,22 +65,15 @@ cas_check_website_folder <- function(base_folder = NULL,
 #'   project = "example_project",
 #'   website = "example_website"
 #' )
-cas_get_db <- function(base_folder = NULL,
+cas_get_db <- function(db_folder = NULL,
+                       base_folder = NULL,
                        project = NULL,
                        website = NULL) {
-  cas_options <- cas_get_options(
+  db_file <- cas_get_db_file(
+    db_folder = db_folder,
     base_folder = base_folder,
     project = project,
     website = website
-  )
-
-  db_file <- fs::path(
-    cas_get_website_folder(
-      base_folder = base_folder,
-      project = project,
-      website = website
-    ),
-    stringr::str_c(cas_options$website, ".sqlite")
   )
 
   DBI::dbConnect(drv = RSQLite::SQLite(), database = db_file)

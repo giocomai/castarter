@@ -183,8 +183,7 @@ cas_get_db_settings <- function() {
 #' sqlite_db_file_location
 cas_get_db_file <- function(project = NULL,
                             website = NULL,
-                            db_folder = NULL,
-                            type = NULL) {
+                            db_folder = NULL) {
   if (is.null(db_folder)) {
     db_folder <- cas_get_db_folder()
   }

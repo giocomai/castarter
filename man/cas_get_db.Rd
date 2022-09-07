@@ -4,9 +4,19 @@
 \alias{cas_get_db}
 \title{Get connection to database with details about current website}
 \usage{
-cas_get_db(base_folder = NULL, project = NULL, website = NULL)
+cas_get_db(
+  db_folder = NULL,
+  base_folder = NULL,
+  project = NULL,
+  website = NULL
+)
 }
 \arguments{
+\item{db_folder}{Defaults to NULL. can be set once per session with
+\code{\link[=cas_set_options]{cas_set_options()}} or \code{\link[=cas_set_db_folder]{cas_set_db_folder()}}. A path to a location used for
+storing the database. If not given, and not previously set as environment
+variable, defaults to \code{castarter_data}.}
+
 \item{base_folder}{Defaults to NULL, can be set once per session with
 \code{\link[=cas_set_options]{cas_set_options()}}. A path to a location used for storing html and other
 project files. If the folder does not exist, it will be created. If not
