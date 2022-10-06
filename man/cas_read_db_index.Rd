@@ -4,7 +4,12 @@
 \alias{cas_read_db_index}
 \title{Read index from local database}
 \usage{
-cas_read_db_index(use_db = NULL, db_connection = NULL, disconnect_db = TRUE)
+cas_read_db_index(
+  use_db = NULL,
+  db_connection = NULL,
+  disconnect_db = TRUE,
+  ...
+)
 }
 \arguments{
 \item{use_db}{Defaults to NULL. If given, it should be given either TRUE or

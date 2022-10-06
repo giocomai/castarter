@@ -5,21 +5,25 @@
 \title{Downloads one file at a time with httr}
 \usage{
 cass_download_httr(
-  download_df,
-  type = "contents",
+  download_df = NULL,
+  index = FALSE,
   overwrite_file = FALSE,
   wait = 1,
-  use_db = NULL,
-  db_connection = NULL,
-  disconnect_db = TRUE
+  ...
 )
 }
 \arguments{
-\item{download_df}{A data frame with one row, and four columns: \code{id}, \code{url}, \code{path}, \code{type}.}
+\item{download_df}{A data frame with four columns: \code{id}, \code{url}, \code{path}, \code{type}.}
 
-\item{type}{Accepted values are either "contents" (default) oe "index".}
+\item{index}{Logical, defaults to FALSE. If TRUE, downloaded files will be
+considered \code{index} files. If not, they will be considered \code{contents} files.
+See Readme for a more extensive explanation.}
 
 \item{overwrite_file}{Logical, defaults to FALSE.}
+
+\item{wait}{Defaults to 1. Number of seconds to wait between downloading one
+page and the next. Can be increased to reduce server load, or can be set to
+0 when this is not an issue.}
 }
 \value{
 Invisibly returns the full \code{httr} response.

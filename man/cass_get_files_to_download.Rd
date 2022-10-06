@@ -10,16 +10,15 @@ cass_get_files_to_download(
   custom_folder = NULL,
   custom_path = NULL,
   file_format = "html",
-  project = NULL,
-  website = NULL,
-  base_folder = NULL,
-  use_db = NULL,
-  db_connection = NULL,
-  disconnect_db = TRUE
+  ...
 )
 }
 \arguments{
 \item{urls}{Defaults to NULL. If given, it should correspond with a data frame with at least two columns named \code{id} and \code{url}. If not given, an attempt will be made to load it from the local database.}
+
+\item{index}{Logical, defaults to FALSE. If TRUE, downloaded files will be
+considered \code{index} files. If not, they will be considered \code{contents} files.
+See Readme for a more extensive explanation.}
 }
 \value{
 A data frame with four columns: \code{id}, \code{url}, \code{path} and \code{type}

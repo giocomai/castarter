@@ -564,6 +564,13 @@ cas_write_to_db <- function(df,
     } else {
       usethis::ui_stop("Incomptabile data frame passed to `index_id`. `df` should have a numeric `id` column, and a character `url` and `type` column.")
     }
+  } else {
+    # Write generic table without additional checks
+    pool::dbWriteTable(conn = db,
+                       name = table,
+                       value = df,
+                       append = TRUE
+    )
   }
 
   cas_disconnect_from_db(
@@ -620,6 +627,7 @@ cas_read_from_db <- function(table,
 
   if (pool::dbExistsTable(conn = db, name = table) == FALSE) {
     # do nothing: if table does not exist, previous data cannot be there
+    output_df <- NULL
   } else {
     output_df <- pool::dbReadTable(db,
       name = table
@@ -633,5 +641,6 @@ cas_read_from_db <- function(table,
     disconnect_db = disconnect_db
   )
 
-  output_df
+  output_df %>% 
+    tibble::as_tibble()
 }

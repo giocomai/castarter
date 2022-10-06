@@ -141,7 +141,8 @@ cas_write_db_index <- function(urls,
 #' cas_read_db_index()
 cas_read_db_index <- function(use_db = NULL,
                               db_connection = NULL,
-                              disconnect_db = TRUE) {
+                              disconnect_db = TRUE,
+                              ...) {
   db_result <- tryCatch(cas_read_from_db(
     table = "index_id",
     use_db = use_db,

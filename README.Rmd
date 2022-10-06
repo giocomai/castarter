@@ -169,6 +169,8 @@ cas_get_db_file()
 
 The filename of the SQLite database includes reference to both the project and the website name. This allows to store all database files of different projects in a single folder, as the file naming convention should prevent overlaps.
 
+What if details about multiple projects and websites are to be stored in a single database, e.g. because it relies on a MySQL database hosted on a server rather than on local SQLite databases? Then, the database will need an additional table, with a list of project and website associated to a unique id. That id is then used in table names of each project and website. This approach prevents potential issues with project or website names that may include characters that are not appropriate for a database table name. (#TODO: not yet implemented).
+
 
 # Workflow
 

@@ -6,17 +6,11 @@
 local database}
 \usage{
 cas_download(
-  urls = NULL,
+  download_df = NULL,
   index = FALSE,
   overwrite_file = FALSE,
   wait = 1,
-  use_db = NULL,
-  db_connection = NULL,
-  disconnect_db = TRUE,
-  base_folder = NULL,
-  db_folder = NULL,
-  project = NULL,
-  webste = NULL
+  ...
 )
 }
 \arguments{
@@ -31,13 +25,6 @@ items.}
 \item{wait}{Defaults to 1. Number of seconds to wait between downloading one
 page and the next. Can be increased to reduce server load, or can be set to
 0 when this is not an issue.}
-
-\item{use_db}{Defaults to NULL. If given, it should be given either TRUE or
-FALSE. Typically set with \code{cas_enable_db()} or \code{cas_disable_db()}.}
-
-\item{db_connection}{Defaults to NULL. If NULL, uses local SQLite database.
-If given, must be a connection object or a list with relevant connection
-settings (see example).}
 
 \item{urls_df}{A data frame with at least two columns named \code{id} and \code{url}.
 Typically generated with \code{cas_build_urls()} for index files. If a character

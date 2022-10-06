@@ -20,26 +20,16 @@
 #' @export
 #'
 #' @examples
-cas_download <- function(urls = NULL,
+cas_download <- function(download_df = NULL,
                          index = FALSE,
                          overwrite_file = FALSE,
                          wait = 1,
-                         use_db = NULL,
-                         db_connection = NULL,
-                         disconnect_db = TRUE,
-                         base_folder = NULL,
-                         db_folder = NULL,
-                         project = NULL,
-                         webste = NULL) {
-  urls_df <- cass_get_urls_df(
-    urls = urls,
-    index = index,
-    use_db = use_db,
-    db_folder = db_folder,
-    db_connection = db_connection,
-    disconnect_db = disconnect_db,
-    project = project
-  )
+                         ...) {
+  cass_download_httr(download_df = download_df,
+                     index = index,
+                     overwrite_file = overwrite_file,
+                     wait = wait,
+                     ...)
 }
 
 #' Checks that a given input corresponds to the format expected of a download
@@ -60,31 +50,12 @@ cas_download <- function(urls = NULL,
 #' ))
 cass_get_urls_df <- function(urls,
                              index = FALSE,
-                             use_db = NULL,
-                             db_connection = NULL,
-                             disconnect_db = TRUE,
-                             db_folder = NULL,
-                             project = NULL,
-                             website = NULL) {
+                             ...) {
   if (is.null(urls)) {
     if (index == FALSE) {
-      urls_df <- cas_read_db_contents(
-        use_db = use_db,
-        db_connection = db_connection,
-        disconnect_db = disconnect_db,
-        db_folder = db_folder,
-        project = project,
-        website = website
-      )
+      urls_df <- cas_read_db_contents(...)
     } else if (index == TRUE) {
-      urls_df <- cas_read_db_index(
-        use_db = use_db,
-        db_connection = db_connection,
-        disconnect_db = disconnect_db,
-        db_folder = db_folder,
-        project = project,
-        website = website
-      )
+      urls_df <- cas_read_db_index(...)
     } else {
       usethis::ui_stop("Parameter {usethis::ui_field('index`)} must be either {usethis::ui_value('TRUE`)} or {usethis::ui_value('FALSE`)}")
     }
@@ -113,22 +84,36 @@ cass_get_urls_df <- function(urls,
 #'
 #' Mostly used internally by `cas_download`.
 #'
-#' @param download_df A data frame with one row, and four columns: `id`, `url`, `path`, `type`.
-#' @param type Accepted values are either "contents" (default) oe "index".
+#' @param download_df A data frame with four columns: `id`, `url`, `path`, `type`.
 #' @param overwrite_file Logical, defaults to FALSE.
 #'
 #' @return Invisibly returns the full `httr` response.
-#' @importFrom cas_write_to_db
+#' @inheritParams cas_download
+#' @inheritParams cas_write_to_db
 #' @export
 #'
 #' @examples
-cass_download_httr <- function(download_df,
-                               type = "contents",
+cass_download_httr <- function(download_df = NULL,
+                               index = FALSE,
                                overwrite_file = FALSE,
                                wait = 1,
-                               use_db = NULL,
-                               db_connection = NULL,
-                               disconnect_db = TRUE) {
+                               ...) {
+  type <- dplyr::if_else(condition = index,
+                         true = "index",
+                         false = "contents")
+  
+  if (is.null(download_df)) {
+    download_df <- cass_get_files_to_download(index = index, ...)
+  }
+  
+  if (nrow(download_df)==0) {
+    usethis::ui_info("No new files or pages to download.")
+    return(NULL)
+  }
+  
+  
+  db <- cas_connect_to_db(...)
+  
   pb <- progress::progress_bar$new(total = nrow(download_df))
 
   purrr::walk(
@@ -136,7 +121,9 @@ cass_download_httr <- function(download_df,
     .f = function(x) {
       pb$tick()
       if (fs::file_exists(x$path) == FALSE | overwrite_file == TRUE) {
-        raw <- httr::GET(url = x$url, httr::write_disk(path = x$path, overwrite = overwrite_file))
+        raw <- httr::GET(url = x$url,
+                         httr::write_disk(path = x$path,
+                                          overwrite = overwrite_file))
 
         info_df <- tibble::tibble(
           id = x$id,
@@ -148,15 +135,16 @@ cass_download_httr <- function(download_df,
         cas_write_to_db(
           df = info_df,
           table = stringr::str_c(type, "_", "download"),
-          use_db = use_db,
-          overwrite = FALSE,
-          db_connection = db_connection,
-          disconnect_db = disconnect_db
+          db_connection = db,
+          disconnect_db = FALSE,
+          ...
         )
         Sys.sleep(time = wait)
       }
     }
   )
+  
+  cas_disconnect_from_db(db_connection = db)
 }
 
 
@@ -165,7 +153,7 @@ cass_download_httr <- function(download_df,
 #'
 #' @param urls Defaults to NULL. If given, it should correspond with a data frame with at least two columns named `id` and `url`. If not given, an attempt will be made to load it from the local database.
 #'
-#' @importFrom cas_download
+#' @inheritParams cas_download
 #'
 #' @return A data frame with four columns: `id`, `url`, `path` and `type`
 #' @export
@@ -176,39 +164,34 @@ cass_get_files_to_download <- function(urls = NULL,
                                        custom_folder = NULL,
                                        custom_path = NULL,
                                        file_format = "html",
-                                       project = NULL,
-                                       website = NULL,
-                                       base_folder = NULL,
-                                       use_db = NULL,
-                                       db_connection = NULL,
-                                       disconnect_db = TRUE) {
+                                       ...) {
+  
+  type <- dplyr::if_else(condition = index,
+                         true = "index",
+                         false = "contents")
+  
   urls_df <- cass_get_urls_df(
     urls = urls,
     index = index,
-    use_db = NULL,
-    db_connection = NULL,
-    disconnect_db = TRUE
+    ...
   )
-
-
+  
   if (is.null(custom_path)) {
     if (is.null(custom_folder) == FALSE) {
       path <- fs::path(
-        cas_get_options(base_folder = base_folder, project = project, website = website)$base_folder,
-        cas_get_options(base_folder = base_folder, project = project, website = website)$project,
-        cas_get_options(base_folder = base_folder, project = project, website = website)$website,
+        cas_get_options(...)$base_folder,
+        cas_get_options(...)$project,
+        cas_get_options(...)$website,
         stringr::str_c(file_format, "_", custom_folder)
       )
-    } else if (type == "contents" | type == "index") {
+    } else {
       path <- fs::path(
-        cas_get_options(base_folder = base_folder)$base_folder,
-        cas_get_options(project = project)$project,
-        cas_get_options(website = website)$website,
+        cas_get_options(...)$base_folder,
+        cas_get_options(...)$project,
+        cas_get_options(...)$website,
         stringr::str_c(file_format, "_", type)
       )
-    } else {
-      usethis::ui_stop("Parameter `type` should be either `index` or `contents`.")
-    }
+    } 
   }
 
   if (fs::file_exists(path) == FALSE) {
@@ -240,6 +223,7 @@ cass_get_files_to_download <- function(urls = NULL,
       stringr::str_c(urls_df$id, ".", file_format)
     )
   )
+  
   files_to_download_df <- dplyr::anti_join(
     x = expected_filenames_df,
     y = previous_files_df,
