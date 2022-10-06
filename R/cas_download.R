@@ -25,11 +25,13 @@ cas_download <- function(download_df = NULL,
                          overwrite_file = FALSE,
                          wait = 1,
                          ...) {
-  cass_download_httr(download_df = download_df,
-                     index = index,
-                     overwrite_file = overwrite_file,
-                     wait = wait,
-                     ...)
+  cass_download_httr(
+    download_df = download_df,
+    index = index,
+    overwrite_file = overwrite_file,
+    wait = wait,
+    ...
+  )
 }
 
 #' Checks that a given input corresponds to the format expected of a download
@@ -99,21 +101,22 @@ cass_download_httr <- function(download_df = NULL,
                                wait = 1,
                                ...) {
   type <- dplyr::if_else(condition = index,
-                         true = "index",
-                         false = "contents")
-  
+    true = "index",
+    false = "contents"
+  )
+
   if (is.null(download_df)) {
     download_df <- cass_get_files_to_download(index = index, ...)
   }
-  
-  if (nrow(download_df)==0) {
+
+  if (nrow(download_df) == 0) {
     usethis::ui_info("No new files or pages to download.")
     return(NULL)
   }
-  
-  
+
+
   db <- cas_connect_to_db(...)
-  
+
   pb <- progress::progress_bar$new(total = nrow(download_df))
 
   purrr::walk(
@@ -121,9 +124,13 @@ cass_download_httr <- function(download_df = NULL,
     .f = function(x) {
       pb$tick()
       if (fs::file_exists(x$path) == FALSE | overwrite_file == TRUE) {
-        raw <- httr::GET(url = x$url,
-                         httr::write_disk(path = x$path,
-                                          overwrite = overwrite_file))
+        raw <- httr::GET(
+          url = x$url,
+          httr::write_disk(
+            path = x$path,
+            overwrite = overwrite_file
+          )
+        )
 
         info_df <- tibble::tibble(
           id = x$id,
@@ -143,7 +150,7 @@ cass_download_httr <- function(download_df = NULL,
       }
     }
   )
-  
+
   cas_disconnect_from_db(db_connection = db)
 }
 
@@ -165,17 +172,17 @@ cass_get_files_to_download <- function(urls = NULL,
                                        custom_path = NULL,
                                        file_format = "html",
                                        ...) {
-  
   type <- dplyr::if_else(condition = index,
-                         true = "index",
-                         false = "contents")
-  
+    true = "index",
+    false = "contents"
+  )
+
   urls_df <- cass_get_urls_df(
     urls = urls,
     index = index,
     ...
   )
-  
+
   if (is.null(custom_path)) {
     if (is.null(custom_folder) == FALSE) {
       path <- fs::path(
@@ -191,7 +198,7 @@ cass_get_files_to_download <- function(urls = NULL,
         cas_get_options(...)$website,
         stringr::str_c(file_format, "_", type)
       )
-    } 
+    }
   }
 
   if (fs::file_exists(path) == FALSE) {
@@ -223,7 +230,7 @@ cass_get_files_to_download <- function(urls = NULL,
       stringr::str_c(urls_df$id, ".", file_format)
     )
   )
-  
+
   files_to_download_df <- dplyr::anti_join(
     x = expected_filenames_df,
     y = previous_files_df,

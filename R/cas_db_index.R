@@ -160,3 +160,66 @@ cas_read_db_index <- function(use_db = NULL,
     tibble::as_tibble(db_result)
   }
 }
+
+
+
+#' Read index from local database
+#'
+#' @inheritParams cas_write_to_db
+#'
+#' @return A data frame with three columns and data stored in the `index_id`
+#'   table of the local database. The data frame has zero rows if the database
+#'   does not exist or no data was previously stored there.
+#' @export
+#'
+#' @examples
+#' cas_set_options(
+#'   base_folder = fs::path(tempdir(), "R", "castarter_data"),
+#'   db_folder = fs::path(tempdir(), "R", "castarter_data"),
+#'   project = "example_project",
+#'   website = "example_website"
+#' )
+#' cas_enable_db()
+#'
+#'
+#' urls_df <- cas_build_urls(
+#'   url_beginning = "https://www.example.com/news/",
+#'   start_page = 1,
+#'   end_page = 10
+#' )
+#'
+#' cas_write_db_index(urls = urls_df)
+#'
+#' cas_read_db_index()
+cas_read_db_download <- function(index = FALSE,
+                                 use_db = NULL,
+                                 db_connection = NULL,
+                                 disconnect_db = TRUE,
+                                 ...) {
+  type <- dplyr::if_else(condition = index,
+    true = "index",
+    false = "contents"
+  )
+
+  db_result <- tryCatch(cas_read_from_db(
+    table = stringr::str_c(type, "_", "download"),
+    use_db = use_db,
+    db_connection = db_connection,
+    disconnect_db = disconnect_db
+  ),
+  error = function(e) {
+    logical(1L)
+  }
+  )
+
+  if (isFALSE(db_result)) {
+    tibble::as_tibble(casdb_empty_download)
+  } else {
+    db_result %>%
+      tibble::as_tibble() %>%
+      dplyr::mutate(
+        datetime = lubridate::as_datetime(datetime),
+        size = fs::as_fs_bytes(size)
+      )
+  }
+}

@@ -566,10 +566,11 @@ cas_write_to_db <- function(df,
     }
   } else {
     # Write generic table without additional checks
-    pool::dbWriteTable(conn = db,
-                       name = table,
-                       value = df,
-                       append = TRUE
+    pool::dbWriteTable(
+      conn = db,
+      name = table,
+      value = df,
+      append = TRUE
     )
   }
 
@@ -641,6 +642,6 @@ cas_read_from_db <- function(table,
     disconnect_db = disconnect_db
   )
 
-  output_df %>% 
+  output_df %>%
     tibble::as_tibble()
 }
