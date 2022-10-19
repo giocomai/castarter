@@ -1,6 +1,6 @@
 Package: castarter2
 Title: Explore Textual Datasets with Ease
-Version: 0.0.0.9004
+Version: 0.0.0.9005
 Authors@R: 
     c(person(given = "Giorgio",
              family = "Comai",
@@ -39,7 +39,8 @@ Imports:
     usethis,
     tibble,
     DBI,
-    RSQLite
+    RSQLite,
+    duckdb
 Suggests: 
     testthat (>= 3.0.0),
     roxygen2,
