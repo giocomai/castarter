@@ -32,10 +32,12 @@
 #' cas_set_options(base_folder = fs::path(fs::path_temp(), "castarter_data"))
 #' cas_options_list <- cas_get_options()
 #' cas_options_list
-cas_set_options <- function(base_folder = NULL,
-                            db_folder = NULL,
-                            project = NULL,
-                            website = NULL) {
+cas_set_options <- function(project = NULL,
+                            website = NULL,
+                            use_db = NULL,
+                            base_folder = NULL,
+                            db_type = "DuckDB",
+                            db_folder = NULL) {
   if (is.null(base_folder)) {
     base_folder <- Sys.getenv("castarter_base_folder")
   } else {
@@ -51,7 +53,7 @@ cas_set_options <- function(base_folder = NULL,
     Sys.setenv(castarter_database_folder = db_folder)
   }
   if (db_folder == "") {
-    db_folder <- fs::path("castarter_data")
+    db_folder <- NULL
   }
 
   if (is.null(project)) {
@@ -70,15 +72,21 @@ cas_set_options <- function(base_folder = NULL,
     usethis::ui_stop(x = "Both project and website must be set, either with {usethis::ui_code('cas_set_options()')} or directly as a parameter.")
   }
 
+  if (use_db == TRUE) {
+    cas_enable_db(db_type = db_type)
+  } else {
+    cas_disable_db()
+  }
+
   invisible(list(
-    base_folder = base_folder,
-    db_folder = db_folder,
     project = project,
-    website = website
+    website = website,
+    use_db = use_db,
+    base_folder = base_folder,
+    db_type = db_type,
+    db_folder = db_folder
   ))
 }
-
-
 
 #' Get key project parameters that determine the folder used for storing project files
 #'
@@ -90,10 +98,12 @@ cas_set_options <- function(base_folder = NULL,
 #' @export
 #'
 #' @examples
-cas_get_options <- function(base_folder = NULL,
-                            db_folder = NULL,
-                            project = NULL,
-                            website = NULL) {
+cas_get_options <- function(project = NULL,
+                            website = NULL,
+                            use_db = NULL,
+                            base_folder = NULL,
+                            db_type = NULL,
+                            db_folder = NULL) {
   if (is.null(base_folder)) {
     base_folder <- Sys.getenv("castarter_base_folder")
     if (base_folder == "") {
@@ -101,14 +111,12 @@ cas_get_options <- function(base_folder = NULL,
     }
   }
 
-
   if (is.null(db_folder)) {
     db_folder <- Sys.getenv("castarter_database_folder")
     if (db_folder == "") {
       db_folder <- fs::path("castarter_data")
     }
   }
-
 
   if (is.null(project)) {
     project <- Sys.getenv("castarter_project")
@@ -122,10 +130,19 @@ cas_get_options <- function(base_folder = NULL,
     usethis::ui_stop(x = "Both project and website must be set, either with {usethis::ui_code('cas_set_options()')} or directly as a parameter.")
   }
 
+  if (is.null(db_type)) {
+    db_type <- Sys.getenv("castarter_db_type")
+    if (db_type == "") {
+      db_type <- "DuckDB"
+    }
+  }
+
   invisible(list(
-    base_folder = base_folder,
-    db_folder = db_folder,
     project = project,
-    website = website
+    website = website,
+    use_db = cas_check_use_db(use_db = use_db),
+    base_folder = base_folder,
+    db_type = db_type,
+    db_folder = db_folder
   ))
 }

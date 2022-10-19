@@ -4,26 +4,17 @@
 \alias{cas_connect_to_db}
 \title{Return a connection to be used for caching}
 \usage{
-cas_connect_to_db(
-  db_connection = NULL,
-  RSQLite = NULL,
-  use_db = NULL,
-  project = NULL
-)
+cas_connect_to_db(db_connection = NULL, use_db = NULL, ...)
 }
 \arguments{
 \item{db_connection}{Defaults to NULL. If NULL, uses local SQLite database.
 If given, must be a connection object or a list with relevant connection
 settings (see example).}
 
-\item{RSQLite}{Defaults to NULL, expected either NULL, logical, or character.
-If set to \code{FALSE}, details on the database connection must be given either
-as a named list in the connection parameter, or with \code{\link[=cas_set_db]{cas_set_db()}} as
-environment variables. If a character vector, it can either be a path to a
-folder or the a sqlite database file.}
-
 \item{use_db}{Defaults to NULL. If given, it should be given either TRUE or
 FALSE. Typically set with \code{cas_enable_db()} or \code{cas_disable_db()}.}
+
+\item{...}{Passed to \code{cas_get_db_file()}.}
 }
 \value{
 A connection object.

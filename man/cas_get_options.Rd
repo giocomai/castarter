@@ -5,13 +5,23 @@
 \title{Get key project parameters that determine the folder used for storing project files}
 \usage{
 cas_get_options(
-  base_folder = NULL,
-  db_folder = NULL,
   project = NULL,
-  website = NULL
+  website = NULL,
+  use_db = NULL,
+  base_folder = NULL,
+  db_type = NULL,
+  db_folder = NULL
 )
 }
 \arguments{
+\item{project}{Defaults to NULL. Project name, can be set once per session
+with \code{\link[=cas_set_options]{cas_set_options()}}. This will be used as first level folder and may
+be used elsewhere to describe the dataset.}
+
+\item{website}{Defaults to NULL. Website name, can be set once per session
+with \code{\link[=cas_set_options]{cas_set_options()}}. This will be used as a second level folder and
+may be used elsewhere to describe the dataset.}
+
 \item{base_folder}{Defaults to NULL, can be set once per session with
 \code{\link[=cas_set_options]{cas_set_options()}}. A path to a location used for storing html and other
 project files. If the folder does not exist, it will be created. If not
@@ -22,14 +32,6 @@ given, and not previously set as environment variable, defaults to
 \code{\link[=cas_set_options]{cas_set_options()}} or \code{\link[=cas_set_db_folder]{cas_set_db_folder()}}. A path to a location used for
 storing the database. If not given, and not previously set as environment
 variable, defaults to \code{castarter_data}.}
-
-\item{project}{Defaults to NULL. Project name, can be set once per session
-with \code{\link[=cas_set_options]{cas_set_options()}}. This will be used as first level folder and may
-be used elsewhere to describe the dataset.}
-
-\item{website}{Defaults to NULL. Website name, can be set once per session
-with \code{\link[=cas_set_options]{cas_set_options()}}. This will be used as a second level folder and
-may be used elsewhere to describe the dataset.}
 }
 \value{
 A list object with the given or previously set options.

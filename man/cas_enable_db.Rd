@@ -4,10 +4,7 @@
 \alias{cas_enable_db}
 \title{Enable caching for the current session}
 \usage{
-cas_enable_db(SQLite = TRUE)
-}
-\arguments{
-\item{SQLite}{Logical, defaults to TRUE. Set to FALSE to use custom database options. See \code{cas_set_db()} for details.}
+cas_enable_db(db_type = "DuckDB")
 }
 \value{
 Nothing, used for its side effects.

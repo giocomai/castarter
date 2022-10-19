@@ -9,7 +9,7 @@ cas_get_base_folder(level = "website", custom_path = NULL, ...)
 \arguments{
 \item{level}{Defaults to "website". Valid values are "website", "project", and "base".}
 
-\item{custom_path}{Defaults to NULL. If given, all other parameters and settings are ignored.}
+\item{custom_path}{Defaults to NULL. If given, all other parameters and settings are ignored, and folder is set to this value.}
 
 \item{...}{Passed to \code{cas_get_options()}.}
 }

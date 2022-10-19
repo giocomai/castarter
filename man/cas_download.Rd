@@ -26,6 +26,8 @@ items.}
 page and the next. Can be increased to reduce server load, or can be set to
 0 when this is not an issue.}
 
+\item{...}{Passed to \code{cas_get_db_file()}.}
+
 \item{urls_df}{A data frame with at least two columns named \code{id} and \code{url}.
 Typically generated with \code{cas_build_urls()} for index files. If a character
 vector is given instead, identifiers will be given automatically.}

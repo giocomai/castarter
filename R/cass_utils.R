@@ -67,7 +67,7 @@ cass_combine_into_pattern <- function(words,
 #' Get base folder under which files will be stored.
 #'
 #' @param level Defaults to "website". Valid values are "website", "project", and "base".
-#' @param custom_path Defaults to NULL. If given, all other parameters and settings are ignored.
+#' @param custom_path Defaults to NULL. If given, all other parameters and settings are ignored, and folder is set to this value.
 #' @param ... Passed to `cas_get_options()`.
 #'
 #' @return

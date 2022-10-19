@@ -19,6 +19,12 @@ cass_get_files_to_download(
 \item{index}{Logical, defaults to FALSE. If TRUE, downloaded files will be
 considered \code{index} files. If not, they will be considered \code{contents} files.
 See Readme for a more extensive explanation.}
+
+\item{...}{
+  Arguments passed on to \code{\link[=cass_get_urls_df]{cass_get_urls_df}}, \code{\link[=cas_get_base_folder]{cas_get_base_folder}}
+  \describe{
+    \item{\code{custom_path}}{Defaults to NULL. If given, all other parameters and settings are ignored, and folder is set to this value.}
+  }}
 }
 \value{
 A data frame with four columns: \code{id}, \code{url}, \code{path} and \code{type}

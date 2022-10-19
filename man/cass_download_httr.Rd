@@ -24,6 +24,8 @@ See Readme for a more extensive explanation.}
 \item{wait}{Defaults to 1. Number of seconds to wait between downloading one
 page and the next. Can be increased to reduce server load, or can be set to
 0 when this is not an issue.}
+
+\item{...}{Passed to \code{cas_get_db_file()}.}
 }
 \value{
 Invisibly returns the full \code{httr} response.

@@ -10,12 +10,13 @@
 #' @examples
 #' cas_create_db_folder(path = fs::path(fs::path_temp(), "cas_data"))
 cas_create_db_folder <- function(path = NULL,
-                                 ask = TRUE, 
+                                 ask = TRUE,
                                  ...) {
+  db_path <- cas_get_db_folder(
+    path = path,
+    ...
+  )
 
-  db_path <- cas_get_db_folder(path = path,
-                               ...)
-  
   if (fs::file_exists(db_path) == FALSE) {
     if (ask == FALSE) {
       fs::dir_create(path = db_path, recurse = TRUE)
@@ -55,8 +56,10 @@ cas_set_db_folder <- function(path = NULL,
     Sys.setenv(castarter_database_folder = path)
   }
   if (path == "") {
-    path <- cas_get_base_folder(level = "website",
-                                ...)
+    path <- cas_get_base_folder(
+      level = "website",
+      ...
+    )
   }
   invisible(path)
 }
@@ -70,12 +73,14 @@ cas_get_db_folder <- function(path = NULL,
   if (is.null(path)) {
     path <- Sys.getenv("castarter_database_folder")
   }
-  
+
   if (path == "") {
-    path <- cas_get_base_folder(level = "website",
-                                ...)
+    path <- cas_get_base_folder(
+      level = "website",
+      ...
+    )
   }
-  
+
   invisible(path)
 }
 
@@ -224,7 +229,7 @@ cas_get_db_file <- function(db_type = "DuckDB",
 
 #' Enable caching for the current session
 #'
-#' @param SQLite Logical, defaults to TRUE. Set to FALSE to use custom database options. See `cas_set_db()` for details.
+#' @inheritParams cas_get_db_file
 #'
 #' @family database functions
 #'
@@ -236,9 +241,9 @@ cas_get_db_file <- function(db_type = "DuckDB",
 #'   cas_enable_db()
 #' }
 #' }
-cas_enable_db <- function(SQLite = TRUE) {
+cas_enable_db <- function(db_type = "DuckDB") {
   Sys.setenv(castarter_database = TRUE)
-  Sys.setenv(castarter_database_SQLite = SQLite)
+  Sys.setenv(castarter_db_type = db_type)
 }
 
 
@@ -325,13 +330,9 @@ cas_check_db_folder <- function() {
 #' @param db_connection Defaults to NULL. If NULL, uses local SQLite database.
 #'   If given, must be a connection object or a list with relevant connection
 #'   settings (see example).
-#' @param RSQLite Defaults to NULL, expected either NULL, logical, or character.
-#'   If set to `FALSE`, details on the database connection must be given either
-#'   as a named list in the connection parameter, or with [cas_set_db()] as
-#'   environment variables. If a character vector, it can either be a path to a
-#'   folder or the a sqlite database file.
 #' @param use_db Defaults to NULL. If given, it should be given either TRUE or
 #'   FALSE. Typically set with `cas_enable_db()` or `cas_disable_db()`.
+#' @param ... Passed to `cas_get_db_file()`.
 #'
 #' @family database functions
 #'
@@ -366,15 +367,10 @@ cas_check_db_folder <- function() {
 #' }
 #'
 cas_connect_to_db <- function(db_connection = NULL,
-                              RSQLite = NULL,
                               use_db = NULL,
-                              project = NULL) {
+                              ...) {
   if (isFALSE(x = cas_check_use_db(use_db))) {
     return(NULL)
-  }
-
-  if (is.null(project)) {
-    project <- cas_get_options()$project
   }
 
   if (is.null(db_connection) == FALSE & is.list(db_connection) == FALSE) {
@@ -384,32 +380,21 @@ cas_connect_to_db <- function(db_connection = NULL,
   }
 
   if (is.null(db_connection)) {
-    if (is.null(RSQLite)) {
-      RSQLite <- as.logical(Sys.getenv(x = "cas_database_SQLite", unset = TRUE))
-    }
-
-    if (is.null(RSQLite) == FALSE) {
-      if (isTRUE(RSQLite)) {
-        cas_check_db_folder()
-        db_file <- cas_get_db_file(project = project)
-      } else if (is.character(RSQLite)) {
-        if (nchar(fs::path_ext(RSQLite)) > 0) {
-          db_file <- RSQLite
-        } else {
-          db_file <- cas_get_db_file(
-            db_folder = RSQLite,
-            project = project
-          )
-        }
+    if (db_type == "DuckDB") {
+      if (requireNamespace("duckdb", quietly = TRUE) == FALSE) {
+        usethis::ui_stop(x = "To use DuckDB databases you need to install the package `duckdb`.")
       }
-
-      if (fs::file_exists(db_file) == FALSE) {
-        db <- pool::dbPool(
-          drv = RSQLite::SQLite(),
-          dbname = db_file
-        )
+      db_file <- cas_get_db_file(...)
+      db <- pool::dbPool(
+        drv = duckdb::duckdb(),
+        dbname = db_file
+      )
+      return(db)
+    } else if (db_type == "SQLite") {
+      if (requireNamespace("RSQLite", quietly = TRUE) == FALSE) {
+        usethis::ui_stop(x = "To use SQLite databases you need to install the package `RSQLite`.")
       }
-
+      db_file <- cas_get_db_file(db_type = db_type)
       db <- pool::dbPool(
         drv = RSQLite::SQLite(),
         dbname = db_file
@@ -419,9 +404,6 @@ cas_connect_to_db <- function(db_connection = NULL,
       db_connection <- cas_get_db_settings()
 
       if (db_connection[["driver"]] == "SQLite") {
-        if (requireNamespace("RSQLite", quietly = TRUE) == FALSE) {
-          usethis::ui_stop(x = "To use SQLite databases you need to install the package `RSQLite`.")
-        }
         drv <- RSQLite::SQLite()
       } else {
         if (requireNamespace("odbc", quietly = TRUE) == FALSE) {

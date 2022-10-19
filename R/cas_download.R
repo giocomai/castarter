@@ -161,6 +161,8 @@ cass_download_httr <- function(download_df = NULL,
 #' @param urls Defaults to NULL. If given, it should correspond with a data frame with at least two columns named `id` and `url`. If not given, an attempt will be made to load it from the local database.
 #'
 #' @inheritParams cas_download
+#' @inheritDotParams cass_get_urls_df -urls -index
+#' @inheritDotParams cas_get_base_folder -level
 #'
 #' @return A data frame with four columns: `id`, `url`, `path` and `type`
 #' @export
