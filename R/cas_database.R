@@ -173,15 +173,18 @@ cas_get_db_settings <- function() {
 
 #' Gets location of database file
 #'
+#' @params db_type Defaults to "DuckDB". Valid values include "SQLite".
+#'
 #' @return A character vector of length one with location of the SQLite database file.
 #' @export
 #'
 #' @examples
 #'
 #' cas_set_db_folder(path = tempdir())
-#' sqlite_db_file_location <- cas_get_db_file(project = "test-project") # outputs location of database file
-#' sqlite_db_file_location
-cas_get_db_file <- function(project = NULL,
+#' db_file_location <- cas_get_db_file(project = "test-project") # outputs location of database file
+#' db_file_location
+cas_get_db_file <- function(db_type = "DuckDB",
+                            project = NULL,
                             website = NULL,
                             db_folder = NULL) {
   if (is.null(db_folder)) {
@@ -197,11 +200,11 @@ cas_get_db_file <- function(project = NULL,
     db_folder,
     stringr::str_c(
       "cas_",
-      project,
+      cas_options_l$project,
       "_",
-      website,
-      "_db",
-      ".sqlite"
+      cas_options_l$website,
+      "_db.",
+      stringr::str_to_lower(db_type)
     ) %>%
       fs::path_sanitize()
   )

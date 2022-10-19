@@ -184,18 +184,18 @@ cass_get_files_to_download <- function(urls = NULL,
   )
 
   if (is.null(custom_path)) {
+    website_folder <- cas_get_base_folder(
+      level = "website",
+      ...
+    )
     if (is.null(custom_folder) == FALSE) {
       path <- fs::path(
-        cas_get_options(...)$base_folder,
-        cas_get_options(...)$project,
-        cas_get_options(...)$website,
+        website_folder,
         stringr::str_c(file_format, "_", custom_folder)
       )
     } else {
       path <- fs::path(
-        cas_get_options(...)$base_folder,
-        cas_get_options(...)$project,
-        cas_get_options(...)$website,
+        website_folder,
         stringr::str_c(file_format, "_", type)
       )
     }
@@ -209,7 +209,6 @@ cass_get_files_to_download <- function(urls = NULL,
       sep = " "
     ))
   }
-
 
   previous_files_df <- fs::dir_info(path = path) %>%
     dplyr::transmute(path,

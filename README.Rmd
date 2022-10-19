@@ -158,7 +158,7 @@ These are the key tables to found in a `castarter2` database:
 
 ### Database location and database file naming conventions
 
-By default, SQLite databases are stored in the same folder as website data, e.g. under `base_folder/project/website/`.
+By default, databases are stored in the same folder as website data, e.g. under `base_folder/project/website/`.
 
 The location of the database cas be retrieved with:
 

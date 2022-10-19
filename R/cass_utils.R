@@ -62,3 +62,43 @@ cass_combine_into_pattern <- function(words,
   }
   pattern
 }
+
+
+#' Get base folder under which files will be stored.
+#'
+#' @param level Defaults to "website". Valid values are "website", "project", and "base".
+#' @param custom_path Defaults to NULL. If given, all other parameters and settings are ignored.
+#' @param ... Passed to `cas_get_options()`.
+#'
+#' @return
+#' @export
+#'
+#' @examples
+cas_get_base_folder <- function(level = "website",
+                                custom_path = NULL,
+                                ...) {
+  if (is.null(custom_path) == FALSE) {
+    return(custom_path)
+  }
+
+  cas_options_l <- cas_get_options(...)
+
+  if (level == "website") {
+    path <- fs::path(
+      cas_options_l$base_folder,
+      cas_options_l$project,
+      cas_options_l$website
+    )
+  } else if (level == "project") {
+    path <- fs::path(
+      cas_options_l$base_folder,
+      cas_options_l$project
+    )
+  } else if (level == "base") {
+    path <- fs::path(
+      cas_options_l$base_folder
+    )
+  }
+
+  path
+}

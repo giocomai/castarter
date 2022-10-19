@@ -1,4 +1,4 @@
-#' Set folder for storing project files
+#' Set key project parameters that determine the folder used for storing project files
 #'
 #' Your project folder can be anywhwere on your file system. Considering that
 #' this is where possibly a very large number of html files will be downloaded,
@@ -79,8 +79,53 @@ cas_set_options <- function(base_folder = NULL,
 }
 
 
-#' @rdname cas_set_options
-#' @examples
-#' cas_get_options()
+
+#' Get key project parameters that determine the folder used for storing project files
+#'
+#' @family settings
+#'
+#' @return A list object with the given or previously set options.
+#'
+#' @inheritParams cas_set_options
 #' @export
-cas_get_options <- cas_set_options
+#'
+#' @examples
+cas_get_options <- function(base_folder = NULL,
+                            db_folder = NULL,
+                            project = NULL,
+                            website = NULL) {
+  if (is.null(base_folder)) {
+    base_folder <- Sys.getenv("castarter_base_folder")
+    if (base_folder == "") {
+      base_folder <- fs::path("castarter_data")
+    }
+  }
+
+
+  if (is.null(db_folder)) {
+    db_folder <- Sys.getenv("castarter_database_folder")
+    if (db_folder == "") {
+      db_folder <- fs::path("castarter_data")
+    }
+  }
+
+
+  if (is.null(project)) {
+    project <- Sys.getenv("castarter_project")
+  }
+
+  if (is.null(website)) {
+    website <- Sys.getenv("castarter_website")
+  }
+
+  if (project == "" | website == "") {
+    usethis::ui_stop(x = "Both project and website must be set, either with {usethis::ui_code('cas_set_options()')} or directly as a parameter.")
+  }
+
+  invisible(list(
+    base_folder = base_folder,
+    db_folder = db_folder,
+    project = project,
+    website = website
+  ))
+}

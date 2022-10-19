@@ -4,7 +4,12 @@
 \alias{cas_get_db_file}
 \title{Gets location of database file}
 \usage{
-cas_get_db_file(project = NULL, website = NULL, db_folder = NULL)
+cas_get_db_file(
+  db_type = "DuckDB",
+  project = NULL,
+  website = NULL,
+  db_folder = NULL
+)
 }
 \value{
 A character vector of length one with location of the SQLite database file.
@@ -15,6 +20,6 @@ Gets location of database file
 \examples{
 
 cas_set_db_folder(path = tempdir())
-sqlite_db_file_location <- cas_get_db_file(project = "test-project") # outputs location of database file
-sqlite_db_file_location
+db_file_location <- cas_get_db_file(project = "test-project") # outputs location of database file
+db_file_location
 }
