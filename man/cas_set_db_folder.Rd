@@ -5,9 +5,9 @@
 \alias{cas_get_db_folder}
 \title{Set folder for storing the database}
 \usage{
-cas_set_db_folder(path = NULL)
+cas_set_db_folder(path = NULL, ...)
 
-cas_get_db_folder(path = NULL)
+cas_get_db_folder(path = NULL, ...)
 }
 \arguments{
 \item{path}{A path to a location used for storing the database. If the folder does not exist, it will be created.}

@@ -4,7 +4,7 @@
 \alias{cas_create_db_folder}
 \title{Creates the base folder where \code{castarter} stores the project database.}
 \usage{
-cas_create_db_folder(path = NULL, ask = TRUE)
+cas_create_db_folder(path = NULL, ask = TRUE, ...)
 }
 \arguments{
 \item{ask}{Logical, defaults to TRUE. If FALSE, and database folder does not exist, it just creates it without asking (useful for non-interactive sessions).}

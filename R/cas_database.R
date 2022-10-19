@@ -10,13 +10,12 @@
 #' @examples
 #' cas_create_db_folder(path = fs::path(fs::path_temp(), "cas_data"))
 cas_create_db_folder <- function(path = NULL,
-                                 ask = TRUE) {
-  if (is.null(path)) {
-    db_path <- cas_get_db_folder()
-  } else {
-    db_path <- path
-  }
+                                 ask = TRUE, 
+                                 ...) {
 
+  db_path <- cas_get_db_folder(path = path,
+                               ...)
+  
   if (fs::file_exists(db_path) == FALSE) {
     if (ask == FALSE) {
       fs::dir_create(path = db_path, recurse = TRUE)
@@ -48,14 +47,16 @@ cas_create_db_folder <- function(path = NULL,
 #' cas_set_db_folder(fs::path(fs::path_home_r(), "R", "cas_data"))
 #'
 #' cas_set_db_folder(fs::path(fs::path_temp(), "cas_data"))
-cas_set_db_folder <- function(path = NULL) {
+cas_set_db_folder <- function(path = NULL,
+                              ...) {
   if (is.null(path)) {
     path <- Sys.getenv("castarter_database_folder")
   } else {
     Sys.setenv(castarter_database_folder = path)
   }
   if (path == "") {
-    path <- fs::path("castarter_data")
+    path <- cas_get_base_folder(level = "website",
+                                ...)
   }
   invisible(path)
 }
@@ -64,8 +65,19 @@ cas_set_db_folder <- function(path = NULL) {
 #' @examples
 #' cas_get_db_folder()
 #' @export
-cas_get_db_folder <- cas_set_db_folder
-
+cas_get_db_folder <- function(path = NULL,
+                              ...) {
+  if (is.null(path)) {
+    path <- Sys.getenv("castarter_database_folder")
+  }
+  
+  if (path == "") {
+    path <- cas_get_base_folder(level = "website",
+                                ...)
+  }
+  
+  invisible(path)
+}
 
 
 #' Set database connection settings for the session
