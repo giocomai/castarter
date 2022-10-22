@@ -99,23 +99,26 @@ cass_download_httr <- function(download_df = NULL,
                                index = FALSE,
                                overwrite_file = FALSE,
                                wait = 1,
+                               db_connection = NULL,
                                ...) {
   type <- dplyr::if_else(condition = index,
     true = "index",
     false = "contents"
   )
-
+  db <- cas_connect_to_db(db_connection = db_connection,
+                          ...)
+  
   if (is.null(download_df)) {
-    download_df <- cass_get_files_to_download(index = index, ...)
+    download_df <- cass_get_files_to_download(index = index,
+                                              db_connection = db,
+                                              disconnect_db = FALSE,
+                                              ...)
   }
 
   if (nrow(download_df) == 0) {
     usethis::ui_info("No new files or pages to download.")
     return(NULL)
   }
-
-
-  db <- cas_connect_to_db(...)
 
   pb <- progress::progress_bar$new(total = nrow(download_df))
 
@@ -151,7 +154,10 @@ cass_download_httr <- function(download_df = NULL,
     }
   )
 
-  cas_disconnect_from_db(db_connection = db)
+  cas_disconnect_from_db(
+    db_connection = db,
+    ...
+  )
 }
 
 
@@ -173,6 +179,7 @@ cass_get_files_to_download <- function(urls = NULL,
                                        custom_folder = NULL,
                                        custom_path = NULL,
                                        file_format = "html",
+                                       db_connection = NULL,
                                        ...) {
   type <- dplyr::if_else(condition = index,
     true = "index",

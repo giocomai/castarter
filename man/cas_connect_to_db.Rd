@@ -4,7 +4,7 @@
 \alias{cas_connect_to_db}
 \title{Return a connection to be used for caching}
 \usage{
-cas_connect_to_db(db_connection = NULL, use_db = NULL, ...)
+cas_connect_to_db(db_connection = NULL, use_db = NULL, db_type = NULL, ...)
 }
 \arguments{
 \item{db_connection}{Defaults to NULL. If NULL, uses local SQLite database.

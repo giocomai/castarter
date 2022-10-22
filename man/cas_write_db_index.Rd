@@ -4,19 +4,10 @@
 \alias{cas_write_db_index}
 \title{Write index URLs to local database}
 \usage{
-cas_write_db_index(
-  urls,
-  use_db = NULL,
-  overwrite = FALSE,
-  db_connection = NULL,
-  disconnect_db = TRUE
-)
+cas_write_db_index(urls, overwrite = FALSE, db_connection = NULL, ...)
 }
 \arguments{
 \item{urls}{A data frame with three columns, such as \code{casdb_empty_index_id}, or a character vector.}
-
-\item{use_db}{Defaults to NULL. If given, it should be given either TRUE or
-FALSE. Typically set with \code{cas_enable_db()} or \code{cas_disable_db()}.}
 
 \item{overwrite}{Logical, defaults to FALSE. If TRUE, checks if matching data are previously held in the table and overwrites them. This should be used with caution, as it may overwrite completely the selected table.}
 
@@ -24,7 +15,7 @@ FALSE. Typically set with \code{cas_enable_db()} or \code{cas_disable_db()}.}
 If given, must be a connection object or a list with relevant connection
 settings (see example).}
 
-\item{disconnect_db}{Defaults to TRUE. If FALSE, leaves the connection to database open.}
+\item{...}{Passed to \code{cas_get_db_file()}.}
 }
 \value{
 Invisibly returns only new rows added.

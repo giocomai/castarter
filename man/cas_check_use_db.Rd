@@ -4,7 +4,7 @@
 \alias{cas_check_use_db}
 \title{Check caching status in the current session, and override it upon request}
 \usage{
-cas_check_use_db(use_db = NULL)
+cas_check_use_db(use_db = NULL, ...)
 }
 \arguments{
 \item{use_db}{Defaults to NULL. If NULL, checks current use_db settings. If given, returns given value, ignoring use_db.}

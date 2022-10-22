@@ -30,10 +30,9 @@
 #'
 #' cas_read_db_contents()
 cas_write_db_contents <- function(urls,
-                                  use_db = NULL,
                                   overwrite = FALSE,
                                   db_connection = NULL,
-                                  disconnect_db = TRUE) {
+                                  ...) {
   if (is.data.frame(urls)) {
     if (identical(colnames(urls), colnames(casdb_empty_contents_id)) & identical(sapply(urls, class), sapply(casdb_empty_contents_id, class))) {
       urls_df <- urls
@@ -49,18 +48,15 @@ cas_write_db_contents <- function(urls,
     )
   }
 
-  if (cas_check_use_db(use_db = use_db) == FALSE) {
+  if (cas_check_use_db(...) == FALSE) {
     return(invisible(NULL))
   }
 
-  db <- cas_connect_to_db(
-    db_connection = db_connection,
-    use_db = use_db
-  )
+  db <- cas_connect_to_db(db_connection = db_connection,
+                          ...)
 
   previous_contents_df <- cas_read_db_contents(
-    use_db = use_db,
-    db_connection = db,
+    ...,
     disconnect_db = FALSE
   )
 
@@ -91,9 +87,8 @@ cas_write_db_contents <- function(urls,
     cas_write_to_db(
       df = urls_to_add_df,
       table = "contents_id",
-      use_db = use_db,
       overwrite = overwrite,
-      db_connection = db,
+      ...,
       disconnect_db = FALSE
     )
 
@@ -103,9 +98,8 @@ cas_write_db_contents <- function(urls,
   }
 
   cas_disconnect_from_db(
-    use_db = use_db,
     db_connection = db,
-    disconnect_db = disconnect_db
+    ...
   )
 
   invisible(urls_to_add_df)

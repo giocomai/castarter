@@ -10,7 +10,8 @@ cas_get_options(
   use_db = NULL,
   base_folder = NULL,
   db_type = NULL,
-  db_folder = NULL
+  db_folder = NULL,
+  ...
 )
 }
 \arguments{

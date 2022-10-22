@@ -9,6 +9,7 @@ cass_download_httr(
   index = FALSE,
   overwrite_file = FALSE,
   wait = 1,
+  db_connection = NULL,
   ...
 )
 }
@@ -24,6 +25,10 @@ See Readme for a more extensive explanation.}
 \item{wait}{Defaults to 1. Number of seconds to wait between downloading one
 page and the next. Can be increased to reduce server load, or can be set to
 0 when this is not an issue.}
+
+\item{db_connection}{Defaults to NULL. If NULL, uses local SQLite database.
+If given, must be a connection object or a list with relevant connection
+settings (see example).}
 
 \item{...}{Passed to \code{cas_get_db_file()}.}
 }

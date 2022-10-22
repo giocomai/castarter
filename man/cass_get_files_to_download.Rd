@@ -10,6 +10,7 @@ cass_get_files_to_download(
   custom_folder = NULL,
   custom_path = NULL,
   file_format = "html",
+  db_connection = NULL,
   ...
 )
 }

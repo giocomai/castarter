@@ -37,8 +37,7 @@ storing the database. If not given, and not previously set as environment
 variable, defaults to \code{castarter_data}.}
 }
 \value{
-A list object with the newly set (or previously set if left to NULL)
-options.
+Nothing, used for its side effects (setting options).
 }
 \description{
 Your project folder can be anywhwere on your file system. Considering that

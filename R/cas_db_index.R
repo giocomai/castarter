@@ -30,10 +30,9 @@
 #'
 #' cas_read_db_index()
 cas_write_db_index <- function(urls,
-                               use_db = NULL,
                                overwrite = FALSE,
                                db_connection = NULL,
-                               disconnect_db = TRUE) {
+                               ...) {
   if (is.data.frame(urls)) {
     if (identical(colnames(urls), colnames(casdb_empty_index_id)) & identical(sapply(urls, class), sapply(casdb_empty_index_id, class))) {
       urls_df <- urls
@@ -49,19 +48,17 @@ cas_write_db_index <- function(urls,
     )
   }
 
-  if (cas_check_use_db(use_db = use_db) == FALSE) {
+  if (cas_check_use_db(...) == FALSE) {
     return(invisible(NULL))
   }
 
-  db <- cas_connect_to_db(
-    db_connection = db_connection,
-    use_db = use_db
-  )
-
+  db <- cas_connect_to_db(db_connection = db_connection,
+                          ...)
+  
   previous_index_df <- cas_read_db_index(
-    use_db = use_db,
     db_connection = db,
-    disconnect_db = FALSE
+    disconnect_db = FALSE,
+    ...
   )
 
   if (nrow(previous_index_df) > 0) {
@@ -91,10 +88,10 @@ cas_write_db_index <- function(urls,
     cas_write_to_db(
       df = urls_to_add_df,
       table = "index_id",
-      use_db = use_db,
       overwrite = overwrite,
+      disconnect_db = FALSE,
       db_connection = db,
-      disconnect_db = FALSE
+      ...
     )
 
     usethis::ui_done("Urls added to {usethis::ui_field('index_id')} table: {usethis::ui_value(urls_to_add_n)}")
@@ -103,9 +100,8 @@ cas_write_db_index <- function(urls,
   }
 
   cas_disconnect_from_db(
-    use_db = use_db,
     db_connection = db,
-    disconnect_db = disconnect_db
+    ...
   )
 
   invisible(urls_to_add_df)
@@ -139,15 +135,14 @@ cas_write_db_index <- function(urls,
 #' cas_write_db_index(urls = urls_df)
 #'
 #' cas_read_db_index()
-cas_read_db_index <- function(use_db = NULL,
+cas_read_db_index <- function(db_folder = NULL,
                               db_connection = NULL,
-                              disconnect_db = TRUE,
                               ...) {
   db_result <- tryCatch(cas_read_from_db(
     table = "index_id",
-    use_db = use_db,
+    db_folder = db_folder,
     db_connection = db_connection,
-    disconnect_db = disconnect_db
+    ...
   ),
   error = function(e) {
     logical(1L)
@@ -192,9 +187,8 @@ cas_read_db_index <- function(use_db = NULL,
 #'
 #' cas_read_db_index()
 cas_read_db_download <- function(index = FALSE,
-                                 use_db = NULL,
                                  db_connection = NULL,
-                                 disconnect_db = TRUE,
+                                 db_folder = NULL,
                                  ...) {
   type <- dplyr::if_else(condition = index,
     true = "index",
@@ -203,9 +197,9 @@ cas_read_db_download <- function(index = FALSE,
 
   db_result <- tryCatch(cas_read_from_db(
     table = stringr::str_c(type, "_", "download"),
-    use_db = use_db,
     db_connection = db_connection,
-    disconnect_db = disconnect_db
+    db_folder = db_folder,
+    ...
   ),
   error = function(e) {
     logical(1L)
