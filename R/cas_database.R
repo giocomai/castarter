@@ -201,17 +201,11 @@ cas_get_db_settings <- function() {
 #' db_file_location <- cas_get_db_file(project = "test-project") # outputs location of database file
 #' db_file_location
 cas_get_db_file <- function(db_type = "DuckDB",
-                            project = NULL,
-                            website = NULL,
-                            db_folder = NULL) {
-  if (is.null(db_folder)) {
-    db_folder <- cas_get_db_folder()
-  }
+                            db_folder = NULL,
+                            ...) {
+  db_folder <- cas_get_db_folder(path = db_folder)
 
-  cas_options_l <- cas_get_options(
-    project = project,
-    website = website
-  )
+  cas_options_l <- cas_get_options(...)
 
   fs::path(
     db_folder,
@@ -275,7 +269,8 @@ cas_disable_db <- function() {
 #' @export
 #' @examples
 #' cas_check_use_db()
-cas_check_use_db <- function(use_db = NULL) {
+cas_check_use_db <- function(use_db = NULL,
+                             ...) {
   if (is.null(use_db) == FALSE) {
     return(as.logical(use_db))
   }
@@ -368,6 +363,7 @@ cas_check_db_folder <- function() {
 #'
 cas_connect_to_db <- function(db_connection = NULL,
                               use_db = NULL,
+                              db_type = NULL,
                               ...) {
   if (isFALSE(x = cas_check_use_db(use_db))) {
     return(NULL)
@@ -379,15 +375,24 @@ cas_connect_to_db <- function(db_connection = NULL,
     }
   }
 
+  if (is.null(db_type)) {
+    db_type <- cas_get_options()$db_type
+  }
+
   if (is.null(db_connection)) {
     if (db_type == "DuckDB") {
       if (requireNamespace("duckdb", quietly = TRUE) == FALSE) {
         usethis::ui_stop(x = "To use DuckDB databases you need to install the package `duckdb`.")
       }
-      db_file <- cas_get_db_file(...)
+      db_file <- cas_get_db_file(db_type = db_type)
+      if (fs::file_exists(db_file)==FALSE) {
+        cas_create_db_folder(path = fs::dir_create(fs::path_dir(db_file)),
+                             ask = FALSE)
+      }
+     
       db <- pool::dbPool(
         drv = duckdb::duckdb(),
-        dbname = db_file
+        dbdir = db_file
       )
       return(db)
     } else if (db_type == "SQLite") {
@@ -530,18 +535,15 @@ cas_disconnect_from_db <- function(use_db = NULL,
 #' )
 cas_write_to_db <- function(df,
                             table,
-                            use_db = NULL,
                             overwrite = FALSE,
                             db_connection = NULL,
-                            disconnect_db = TRUE) {
-  if (cas_check_use_db(use_db = use_db) == FALSE) {
+                            ...) {
+  if (cas_check_use_db(...) == FALSE) {
     return(invisible(NULL))
   }
 
-  db <- cas_connect_to_db(
-    db_connection = db_connection,
-    use_db = use_db
-  )
+  db <- cas_connect_to_db(db_connection = db_connection,
+                          ...)
 
   if (pool::dbExistsTable(conn = db, name = table) == FALSE) {
     # do nothing: if table does not exist, previous data cannot be there
@@ -572,9 +574,8 @@ cas_write_to_db <- function(df,
   }
 
   cas_disconnect_from_db(
-    use_db = use_db,
     db_connection = db,
-    disconnect_db = disconnect_db
+    ...
   )
 }
 
@@ -610,18 +611,15 @@ cas_write_to_db <- function(df,
 #'
 #' cas_read_from_db(table = "index_id")
 cas_read_from_db <- function(table,
-                             use_db = NULL,
                              db_folder = NULL,
                              db_connection = NULL,
-                             disconnect_db = TRUE) {
-  if (cas_check_use_db(use_db = use_db) == FALSE) {
+                             ...) {
+  if (cas_check_use_db(...) == FALSE) {
     return(invisible(NULL))
   }
 
-  db <- cas_connect_to_db(
-    db_connection = db_connection,
-    use_db = use_db
-  )
+  db <- cas_connect_to_db(db_connection = db_connection, 
+                          ...)
 
   if (pool::dbExistsTable(conn = db, name = table) == FALSE) {
     # do nothing: if table does not exist, previous data cannot be there
@@ -634,9 +632,8 @@ cas_read_from_db <- function(table,
   }
 
   cas_disconnect_from_db(
-    use_db = use_db,
     db_connection = db,
-    disconnect_db = disconnect_db
+    ...
   )
 
   output_df %>%
