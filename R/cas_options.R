@@ -22,6 +22,8 @@
 #' @param website Defaults to NULL. Website name, can be set once per session
 #'   with [cas_set_options()]. This will be used as a second level folder and
 #'   may be used elsewhere to describe the dataset.
+#' @param use_db Defaults to TRUE. If TRUE, stores information about the
+#'   download process and extracted text in a local database.
 #'
 #' @family settings
 #'
@@ -34,7 +36,7 @@
 #' cas_options_list
 cas_set_options <- function(project = NULL,
                             website = NULL,
-                            use_db = NULL,
+                            use_db = TRUE,
                             base_folder = NULL,
                             db_type = "DuckDB",
                             db_folder = NULL) {

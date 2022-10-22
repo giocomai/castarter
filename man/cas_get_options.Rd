@@ -22,6 +22,9 @@ be used elsewhere to describe the dataset.}
 with \code{\link[=cas_set_options]{cas_set_options()}}. This will be used as a second level folder and
 may be used elsewhere to describe the dataset.}
 
+\item{use_db}{Defaults to TRUE. If TRUE, stores information about the
+download process and extracted text in a local database.}
+
 \item{base_folder}{Defaults to NULL, can be set once per session with
 \code{\link[=cas_set_options]{cas_set_options()}}. A path to a location used for storing html and other
 project files. If the folder does not exist, it will be created. If not
