@@ -39,19 +39,19 @@ cas_set_options <- function(project = NULL,
                             base_folder = NULL,
                             db_type = "DuckDB",
                             db_folder = NULL) {
-  if (is.null(base_folder)==FALSE) {
+  if (is.null(base_folder) == FALSE) {
     Sys.setenv(castarter_base_folder = base_folder)
   }
-  
-  if (is.null(db_folder)==FALSE) {
+
+  if (is.null(db_folder) == FALSE) {
     Sys.setenv(castarter_database_folder = db_folder) <- Sys.getenv("castarter_database_folder")
   }
-  
-  if (is.null(project)==FALSE) {
+
+  if (is.null(project) == FALSE) {
     Sys.setenv(castarter_project = project)
   }
 
-  if (is.null(website)==FALSE) {
+  if (is.null(website) == FALSE) {
     Sys.setenv(castarter_website = website)
   }
 
@@ -113,12 +113,14 @@ cas_get_options <- function(project = NULL,
   if (is.null(db_folder)) {
     db_folder <- Sys.getenv("castarter_database_folder")
     if (db_folder == "") {
-      db_folder <- fs::path(base_folder,
-                            project,
-                            website)
+      db_folder <- fs::path(
+        base_folder,
+        project,
+        website
+      )
     }
   }
-  
+
   invisible(list(
     project = project,
     website = website,

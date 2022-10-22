@@ -52,8 +52,10 @@ cas_write_db_contents <- function(urls,
     return(invisible(NULL))
   }
 
-  db <- cas_connect_to_db(db_connection = db_connection,
-                          ...)
+  db <- cas_connect_to_db(
+    db_connection = db_connection,
+    ...
+  )
 
   previous_contents_df <- cas_read_db_contents(
     ...,

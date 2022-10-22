@@ -5,15 +5,16 @@
 \title{Ensure that connection to database is disconnected consistently}
 \usage{
 cas_disconnect_from_db(
-  use_db = NULL,
   db_connection = NULL,
+  db_type = NULL,
+  use_db = NULL,
   disconnect_db = TRUE
 )
 }
 \arguments{
-\item{use_db}{Defaults to NULL. If given, it should be given either TRUE or FALSE. Typically set with \code{cas_enable_db()} or \code{cas_disable_db()}.}
-
 \item{db_connection}{Defaults to NULL. If NULL, and database is enabled, \code{castarter} will use a local sqlite database. A custom connection to other databases can be given (see vignette \code{castarter_db_management} for details).}
+
+\item{use_db}{Defaults to NULL. If given, it should be given either TRUE or FALSE. Typically set with \code{cas_enable_db()} or \code{cas_disable_db()}.}
 
 \item{disconnect_db}{Defaults to TRUE. If FALSE, leaves the connection to database open.}
 }

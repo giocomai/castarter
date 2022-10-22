@@ -52,9 +52,11 @@ cas_write_db_index <- function(urls,
     return(invisible(NULL))
   }
 
-  db <- cas_connect_to_db(db_connection = db_connection,
-                          ...)
-  
+  db <- cas_connect_to_db(
+    db_connection = db_connection,
+    ...
+  )
+
   previous_index_df <- cas_read_db_index(
     db_connection = db,
     disconnect_db = FALSE,

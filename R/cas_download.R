@@ -105,14 +105,18 @@ cass_download_httr <- function(download_df = NULL,
     true = "index",
     false = "contents"
   )
-  db <- cas_connect_to_db(db_connection = db_connection,
-                          ...)
-  
+  db <- cas_connect_to_db(
+    db_connection = db_connection,
+    ...
+  )
+
   if (is.null(download_df)) {
-    download_df <- cass_get_files_to_download(index = index,
-                                              db_connection = db,
-                                              disconnect_db = FALSE,
-                                              ...)
+    download_df <- cass_get_files_to_download(
+      index = index,
+      db_connection = db,
+      disconnect_db = FALSE,
+      ...
+    )
   }
 
   if (nrow(download_df) == 0) {

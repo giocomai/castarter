@@ -385,11 +385,13 @@ cas_connect_to_db <- function(db_connection = NULL,
         usethis::ui_stop(x = "To use DuckDB databases you need to install the package `duckdb`.")
       }
       db_file <- cas_get_db_file(db_type = db_type)
-      if (fs::file_exists(db_file)==FALSE) {
-        cas_create_db_folder(path = fs::dir_create(fs::path_dir(db_file)),
-                             ask = FALSE)
+      if (fs::file_exists(db_file) == FALSE) {
+        cas_create_db_folder(
+          path = fs::dir_create(fs::path_dir(db_file)),
+          ask = FALSE
+        )
       }
-     
+
       db <- pool::dbPool(
         drv = duckdb::duckdb(),
         dbdir = db_file
@@ -475,25 +477,40 @@ cas_connect_to_db <- function(db_connection = NULL,
 #'
 #' @examples
 #' cas_disconnect_from_db()
-cas_disconnect_from_db <- function(use_db = NULL,
-                                   db_connection = NULL,
+cas_disconnect_from_db <- function(db_connection = NULL,
+                                   db_type = NULL,
+                                   use_db = NULL,
                                    disconnect_db = TRUE) {
   if (isFALSE(disconnect_db)) {
     return(invisible(NULL))
   }
 
-  if (isTRUE(cas_check_use_db(use_db))) {
-    db <- cas_connect_to_db(
-      db_connection = db_connection,
-      use_db = use_db
-    )
+  if (isFALSE(x = cas_check_use_db(use_db))) {
+    return(invisible(NULL))
+  }
 
-    if (pool::dbIsValid(dbObj = db)) {
-      if (inherits(db, "Pool")) {
-        pool::poolClose(db)
+
+  if (is.null(db_type)) {
+    db_type <- cas_get_options()$db_type
+  }
+
+  db <- cas_connect_to_db(
+    db_connection = db_connection,
+    use_db = use_db,
+    db_type = db_type
+  )
+
+  if (pool::dbIsValid(dbObj = db)) {
+    if (inherits(db, "Pool")) {
+      if (db_type == "DuckDB") {
+        db_unpooled <- pool::poolCheckout(pool = db)
+        DBI::dbDisconnect(db_unpooled, shutdown = TRUE)
+        pool::poolReturn(db_unpooled)
       } else {
-        DBI::dbDisconnect(db)
+        pool::poolClose(db)
       }
+    } else {
+      DBI::dbDisconnect(db)
     }
   }
 }
@@ -542,8 +559,10 @@ cas_write_to_db <- function(df,
     return(invisible(NULL))
   }
 
-  db <- cas_connect_to_db(db_connection = db_connection,
-                          ...)
+  db <- cas_connect_to_db(
+    db_connection = db_connection,
+    ...
+  )
 
   if (pool::dbExistsTable(conn = db, name = table) == FALSE) {
     # do nothing: if table does not exist, previous data cannot be there
@@ -618,8 +637,10 @@ cas_read_from_db <- function(table,
     return(invisible(NULL))
   }
 
-  db <- cas_connect_to_db(db_connection = db_connection, 
-                          ...)
+  db <- cas_connect_to_db(
+    db_connection = db_connection,
+    ...
+  )
 
   if (pool::dbExistsTable(conn = db, name = table) == FALSE) {
     # do nothing: if table does not exist, previous data cannot be there
