@@ -211,11 +211,15 @@ cas_read_db_download <- function(index = FALSE,
   if (isFALSE(db_result)) {
     tibble::as_tibble(casdb_empty_download)
   } else {
-    db_result %>%
-      tibble::as_tibble() %>%
-      dplyr::mutate(
-        datetime = lubridate::as_datetime(datetime),
-        size = fs::as_fs_bytes(size)
-      )
+    if (ncol(db_result) == 0) {
+      tibble::as_tibble(casdb_empty_download)
+    } else {
+      db_result %>%
+        tibble::as_tibble() %>%
+        dplyr::mutate(
+          datetime = lubridate::as_datetime(datetime),
+          size = fs::as_fs_bytes(size)
+        )
+    }
   }
 }
