@@ -83,7 +83,7 @@ European Parliament, the folder structure may look something like this:
 In brief, `castarter_data` is the base folder where I can store all of
 my text mining projects. `european_union` is the name of the project,
 while all others are the names of the specific websites I will source.
-Folders will by created automatically as needed when you start
+Folders will be created automatically as needed when you start
 downloading files.
 
 When text mining or scraping, it is common to gather quickly many
@@ -165,6 +165,9 @@ These are the key tables to found in a `castarter2` database:
 
     -   `id`: an integer, matching the identifier defined in the
         previous table
+    -   `batch`: an integer, starting from 1 and increasing. It
+        identifies the download batch and allows for matching data with
+        a specific download instance.
     -   `datetime`: timestamp of when download was attempted
     -   `status`: http response status code, such as 200 for successful,
         404 for not found,
@@ -185,6 +188,9 @@ These are the key tables to found in a `castarter2` database:
 
     -   `id`: an integer, matching the identifier defined in the
         `contents_id` table
+    -   `batch`: an integer, starting from 1 and increasing. It
+        identifies the download batch and allows for matching data with
+        a specific download instance.
     -   `datetime`: timestamp of when download was attempted
     -   `status`: http response status code, such as 200 for successful,
         404 for not found,
@@ -199,6 +205,33 @@ These are the key tables to found in a `castarter2` database:
         will include fields such as “title”, “date”, “author”, “text”,
         etc., but are not limited by design. Irrespective of their
         contents, they will however all be stored as textual strings.
+
+### Database location and database file naming conventions
+
+By default, databases are stored in the same folder as website data,
+e.g. under `base_folder/project/website/`.
+
+The location of the database cas be retrieved with:
+
+``` r
+cas_get_db_folder()
+cas_get_db_file()
+#> /home/g/R/castarter_data/european_union/european_commission/cas_european_union_european_commission_db.duckdb
+```
+
+The filename of the SQLite database includes reference to both the
+project and the website name. This allows to store all database files of
+different projects in a single folder, as the file naming convention
+should prevent overlaps.
+
+What if details about multiple projects and websites are to be stored in
+a single database, e.g. because it relies on a MySQL database hosted on
+a server rather than on local SQLite databases? Then, the database will
+need an additional table, with a list of project and website associated
+to a unique id. That id is then used in table names of each project and
+website. This approach prevents potential issues with project or website
+names that may include characters that are not appropriate for a
+database table name. (#TODO: not yet implemented).
 
 # Workflow
 
