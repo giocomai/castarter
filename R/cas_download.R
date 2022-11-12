@@ -141,6 +141,7 @@ cass_download_httr <- function(download_df = NULL,
 
         info_df <- tibble::tibble(
           id = x$id,
+          batch = x$batch,
           datetime = Sys.time(),
           status = raw$status_code,
           size = fs::file_size(x$path)
@@ -168,7 +169,13 @@ cass_download_httr <- function(download_df = NULL,
 
 #' Create a data frame with not yet downloaded files
 #'
-#' @param urls Defaults to NULL. If given, it should correspond with a data frame with at least two columns named `id` and `url`. If not given, an attempt will be made to load it from the local database.
+#' @param urls Defaults to NULL. If given, it should correspond with a data
+#'   frame with at least two columns named `id` and `url`. If not given, an
+#'   attempt will be made to load it from the local database.
+#' @param batch An integer, defaults to NULL. If not given, a check is performed
+#'   in the database to find if previous downloads have taken place. If so, by
+#'   default, the current batch will be one unit higher than the highest batch
+#'   number found in the database.
 #'
 #' @inheritParams cas_download
 #' @inheritDotParams cass_get_urls_df -urls -index
@@ -180,6 +187,7 @@ cass_download_httr <- function(download_df = NULL,
 #' @examples
 cass_get_files_to_download <- function(urls = NULL,
                                        index = FALSE,
+                                       batch = NULL,
                                        custom_folder = NULL,
                                        custom_path = NULL,
                                        file_format = "html",
@@ -193,8 +201,14 @@ cass_get_files_to_download <- function(urls = NULL,
   urls_df <- cass_get_urls_df(
     urls = urls,
     index = index,
+    db_connection = db_connection,
     ...
   )
+
+  if (nrow(urls_df) == 0) {
+    usethis::ui_warn("No {usethis::ui_code('index')} urls for download stored in database.")
+    return(NULL)
+  }
 
   if (is.null(custom_path)) {
     website_folder <- cas_get_base_folder(
@@ -223,30 +237,46 @@ cass_get_files_to_download <- function(urls = NULL,
     ))
   }
 
-  previous_files_df <- fs::dir_info(path = path) %>%
-    dplyr::transmute(path,
-      size,
-      filename = fs::path_file(path)
-    ) %>%
-    dplyr::mutate(id = stringr::str_extract(
-      string = filename,
-      pattern = "[[:digit:]]+"
-    ) %>%
-      as.numeric()) %>%
-    dplyr::arrange(id)
+  # previous_files_df <- fs::dir_info(path = path) %>%
+  #   dplyr::transmute(path,
+  #     size,
+  #     filename = fs::path_file(path)
+  #   ) %>%
+  #   dplyr::mutate(id = stringr::str_extract(
+  #     string = filename,
+  #     pattern = "[[:digit:]]+"
+  #   ) %>%
+  #     as.numeric()) %>%
+  #   dplyr::arrange(id)
+
+  ## check if previous downloads are stored
+  ## if yes, add 1 to highest batch
+  ## if not, set batch to 1
+  previous_download_df <- cas_read_db_download(
+    index = index,
+    db_connection = db_connection,
+    db_folder = db_folder,
+    ...
+  )
+
+  if (nrow(previous_download_df) == 0) {
+    current_batch <- 1
+  } else {
+    current_batch <- sum(max(previous_download_df$batch), 1)
+  }
 
   expected_filenames_df <- tibble::tibble(
     id = urls_df$id,
     path = fs::path(
       path,
-      stringr::str_c(urls_df$id, ".", file_format)
+      stringr::str_c(urls_df$id, "_", current_batch, ".", file_format)
     )
   )
 
   files_to_download_df <- dplyr::anti_join(
     x = expected_filenames_df,
-    y = previous_files_df,
-    by = "path"
+    y = previous_download_df,
+    by = "id"
   )
 
   urls_to_download_df <- dplyr::left_join(
@@ -254,7 +284,8 @@ cass_get_files_to_download <- function(urls = NULL,
     y = urls_df,
     by = "id"
   ) %>%
-    dplyr::select(.data$id, .data$url, .data$path)
+    dplyr::mutate(batch = as.numeric(current_batch)) %>%
+    dplyr::select("id", "batch", "url", "path")
 
   urls_to_download_df
 }

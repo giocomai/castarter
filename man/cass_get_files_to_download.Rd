@@ -7,6 +7,7 @@
 cass_get_files_to_download(
   urls = NULL,
   index = FALSE,
+  batch = NULL,
   custom_folder = NULL,
   custom_path = NULL,
   file_format = "html",
@@ -15,11 +16,18 @@ cass_get_files_to_download(
 )
 }
 \arguments{
-\item{urls}{Defaults to NULL. If given, it should correspond with a data frame with at least two columns named \code{id} and \code{url}. If not given, an attempt will be made to load it from the local database.}
+\item{urls}{Defaults to NULL. If given, it should correspond with a data
+frame with at least two columns named \code{id} and \code{url}. If not given, an
+attempt will be made to load it from the local database.}
 
 \item{index}{Logical, defaults to FALSE. If TRUE, downloaded files will be
 considered \code{index} files. If not, they will be considered \code{contents} files.
 See Readme for a more extensive explanation.}
+
+\item{batch}{An integer, defaults to NULL. If not given, a check is performed
+in the database to find if previous downloads have taken place. If so, by
+default, the current batch will be one unit higher than the highest batch
+number found in the database.}
 
 \item{...}{
   Arguments passed on to \code{\link[=cass_get_urls_df]{cass_get_urls_df}}, \code{\link[=cas_get_base_folder]{cas_get_base_folder}}
