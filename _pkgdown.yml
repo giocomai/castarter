@@ -2,11 +2,15 @@ url: ~
 template:
   bootstrap: 5
 reference:
+- title: Basic functions
+- contents:
+  - starts_with("cas_")
 - title: Caching
 - contents:
   - has_concept("database functions")
+  - starts_with("casdb_")
 - title: Shiny modules
 - description: These are shiny modules used in the main Shiny app. Some of them can be used for illustrative purposes elsewhere, or integrated in other Shiny apps
-contents:
+- contents:
   - starts_with("cass_")
 

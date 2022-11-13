@@ -206,7 +206,7 @@ cass_get_files_to_download <- function(urls = NULL,
   )
 
   if (nrow(urls_df) == 0) {
-    usethis::ui_warn("No {usethis::ui_code('index')} urls for download stored in database.")
+    usethis::ui_warn("No {usethis::ui_code(type)} urls for download stored in database.")
     return(NULL)
   }
 
