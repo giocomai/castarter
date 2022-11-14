@@ -13,7 +13,7 @@
 #' @param max_length If a link is longer than the number of characters given in max_length, it is excluded from the output.
 #' @param append_string If provided, appends given string to the extracted articles. Typically used to create links for print or mobile versions of the extracted page.
 #' @param remove_string If provided, remove given string (or strings) from links.
-#' @return A data frame. 
+#' @return A data frame.
 #' @export
 #' @examples
 #' \dontrun{
@@ -24,7 +24,6 @@ cas_extract_links <- function(id = NULL,
                               index = TRUE,
                               include_when = NULL,
                               exclude_when = NULL,
-                              db_connection = NULL,
                               container = NULL,
                               container_class = NULL,
                               container_id = NULL,
@@ -58,7 +57,7 @@ cas_extract_links <- function(id = NULL,
 
   pb <- progress::progress_bar$new(total = nrow(local_files_df))
 
-  links_df <- purrr::map_dfr(
+  all_links_df <- purrr::map_dfr(
     .x = purrr::transpose(local_files_df),
     .f = function(x) {
       pb$tick()
@@ -86,56 +85,64 @@ cas_extract_links <- function(id = NULL,
           rvest::html_nodes(xpath = paste0("//", container, "//a"))
       }
 
-      tibble::tibble(
+      links_df <- tibble::tibble(
         link = a_xml_nodeset %>%
           xml2::xml_attr(attribute_type),
         title = a_xml_nodeset %>%
           rvest::html_text()
       )
+
+
+
+      if (is.null(include_when) == FALSE) {
+        links_df <- links_df %>%
+          dplyr::filter(stringr::str_detect(
+            string = link,
+            pattern = include_when
+          ))
+      }
+
+      if (is.null(exclude_when) == FALSE) {
+        links_df <- links_df %>%
+          dplyr::filter(!stringr::str_detect(
+            string = link,
+            pattern = include_when
+          ))
+      }
+
+      if (is.null(domain) == FALSE) {
+        links_df <- links_df %>%
+          dplyr::mutate(link = stringr::str_c(domain, link))
+      }
+
+      if (is.null(append_string) == FALSE) {
+        links_df <- links_df %>%
+          dplyr::mutate(link = stringr::str_c(link, append_string))
+      }
+
+      if (is.null(remove_string) == FALSE) {
+        links_df <- links_df %>%
+          dplyr::mutate(link = stringr::str_remove(string = link, pattern = remove_string))
+      }
+
+      if (is.null(min_length) == FALSE) {
+        links_df <- links_df %>%
+          dplyr::filter(nchar(link) > min_length)
+      }
+
+      if (is.null(max_length) == FALSE) {
+        links_df <- links_df %>%
+          dplyr::filter(nchar(link) < max_length)
+      }
+
+      links_df %>%
+        dplyr::mutate(
+          source_index_id = x$id,
+          source_batch_id = x$batch
+        )
     }
   )
 
-
-  if (is.null(include_when) == FALSE) {
-    links_df <- links_df %>%
-      dplyr::filter(stringr::str_detect(
-        string = link,
-        pattern = include_when
-      ))
-  }
-
-  if (is.null(exclude_when) == FALSE) {
-    links_df <- links_df %>%
-      dplyr::filter(!stringr::str_detect(
-        string = link,
-        pattern = include_when
-      ))
-  }
-
-  if (is.null(domain) == FALSE) {
-    links_df <- links_df %>%
-      dplyr::mutate(link = stringr::str_c(domain, link))
-  }
-
-  if (is.null(append_string) == FALSE) {
-    links_df <- links_df %>%
-      dplyr::mutate(link = stringr::str_c(link, append_string))
-  }
-
-  if (is.null(remove_string) == FALSE) {
-    links_df <- links_df %>%
-      dplyr::mutate(link = stringr::str_remove(string = link, pattern = remove_string))
-  }
-
-  if (is.null(min_length) == FALSE) {
-    links_df <- links_df %>%
-      dplyr::filter(nchar(link) > min_length)
-  }
-
-  if (is.null(max_length) == FALSE) {
-    links_df <- links_df %>%
-      dplyr::filter(nchar(link) < max_length)
-  }
 
   links_df
 }

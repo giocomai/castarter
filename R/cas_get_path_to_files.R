@@ -45,15 +45,11 @@ cas_get_path_to_files <- function(urls = NULL,
       )
     }
   }
-
-  paths_df <- tibble::tibble(
-    id = available_files_df$id,
-    path = fs::path(
+  available_files_df %>%
+    dplyr::select("id", "batch") %>%
+    dplyr::mutate(path = fs::path(
       path,
-      stringr::str_c(available_files_df$id, "_", available_files_df$batch, ".", file_format)
-    )
-  )
-
-  paths_df %>%
+      stringr::str_c(id, "_", batch, ".", file_format)
+    )) %>%
     dplyr::mutate(available = fs::file_exists(path = path))
 }

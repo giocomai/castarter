@@ -10,7 +10,6 @@ cas_extract_links(
   index = TRUE,
   include_when = NULL,
   exclude_when = NULL,
-  db_connection = NULL,
   container = NULL,
   container_class = NULL,
   container_id = NULL,
@@ -30,10 +29,6 @@ cas_extract_links(
 \item{include_when}{Part of URL found only in links of individual articles to be downloaded. If more than one provided, it includes all links that contains either of the strings provided.}
 
 \item{exclude_when}{If an URL includes this string, it is excluded from the output. One or more strings may be provided.}
-
-\item{db_connection}{Defaults to NULL. If NULL, uses local SQLite database.
-If given, must be a connection object or a list with relevant connection
-settings (see example).}
 
 \item{container}{Type of html container from where links are to be extracted, such as "div", "ul", and others. container_class or container_id must also be provided.}
 

@@ -179,8 +179,10 @@ These are the key tables to found in a `castarter2` database:
 
     -   `id`: a unique integer identifier corresponding to a unique url
     -   `url`: a url
-    -   `index_group`: this reflect the string defined in the `index_id`
-        table, may or may not be useful
+    -   `source_index_id`: the identifier of the url from where the link
+        was extracted
+    -   `source_index_batch`: the identifier of the download batch from
+        where the link was obtained
 
 -   `contents_download` - a table with four columns, similar to the one
     outlined above. New rows appear here only when a download has been
@@ -205,6 +207,7 @@ These are the key tables to found in a `castarter2` database:
         will include fields such as “title”, “date”, “author”, “text”,
         etc., but are not limited by design. Irrespective of their
         contents, they will however all be stored as textual strings.
+    -   `value` - the actual contents for the field
 
 ### Database location and database file naming conventions
 
