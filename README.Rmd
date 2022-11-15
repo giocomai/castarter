@@ -138,14 +138,15 @@ These are the key tables to found in a `castarter2` database:
   + `status`: http response status code, such as 200 for successful, 404 for not found, [etc](https://en.wikipedia.org/wiki/List_of_HTTP_status_codes).
   + `size`: size of the downloaded file
 
-- `contents_id`-  a table with three columns, similar to the one outlined above:
+- `contents_id`-  a table with five columns, similar to the one outlined above:
 
   + `id`: a unique integer identifier corresponding to a unique url
   + `url`: a url
+  + `link_text`: text used for the link
   + `source_index_id`: the identifier of the url from where the link was extracted
   + `source_index_batch`: the identifier of the download batch from where the link was obtained
   
-- `contents_download` - a table with four columns, similar to the one outlined above. New rows appear here only when a download has been attempted. 
+- `contents_download` - a table with five columns, similar to the one outlined above. New rows appear here only when a download has been attempted. 
 
   + `id`: an integer, matching the identifier defined in the `contents_id` table
   + `batch`: an integer, starting from 1 and increasing. It identifies the download batch and allows for matching data with a specific download instance.

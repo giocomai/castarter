@@ -2,7 +2,7 @@
 #'
 #' If some URLs are already included in the database, it appends only the new ones: URLs are expected to be unique.
 #'
-#' @param urls A data frame with three columns, such as \code{casdb_empty_contents_id}, or a character vector.
+#' @param contents_id_df A data frame with five columns, such as \code{casdb_empty_contents_id}, or a character vector.
 #'
 #' @inheritParams cas_write_to_db
 #'
@@ -29,25 +29,11 @@
 #' cas_write_db_contents(urls = urls_df)
 #'
 #' cas_read_db_contents()
-cas_write_db_contents <- function(urls,
-                                  overwrite = FALSE,
-                                  db_connection = NULL,
-                                  ...) {
-  if (is.data.frame(urls)) {
-    if (identical(colnames(urls), colnames(casdb_empty_contents_id)) & identical(sapply(urls, class), sapply(casdb_empty_contents_id, class))) {
-      urls_df <- urls
-    } else {
-      usethis::ui_stop("urls data frame must match exactly the column names and types of {usethis::ui_code('casdb_empty_contents_id')}")
-    }
-  } else {
-    urls_df <- cas_build_urls(
-      url_beginning = urls,
-      url_ending = "",
-      start_page = NULL,
-      end_page = NULL
-    )
-  }
-
+cas_write_db_contents_id <- function(contents_id_df,
+                                     overwrite = FALSE,
+                                     db_connection = NULL,
+                                     disconnect_db = TRUE,
+                                     ...) {
   if (cas_check_use_db(...) == FALSE) {
     return(invisible(NULL))
   }
@@ -57,54 +43,56 @@ cas_write_db_contents <- function(urls,
     ...
   )
 
-  previous_contents_df <- cas_read_db_contents(
+  previous_contents_df <- cas_read_db_contents_id(
     ...,
     disconnect_db = FALSE
   )
 
   if (nrow(previous_contents_df) > 0) {
-    urls_to_add_df <- urls_df %>%
+    links_to_add_df <- contents_id_df %>%
       dplyr::anti_join(
         y = previous_contents_df,
-        by = c("url", "type")
+        by = c("url", "source_index_id", "source_index_batch")
       )
 
-    if (sum(is.element(urls_to_add_df$id, previous_contents_df$id)) > 0) {
+    if (sum(is.element(links_to_add_df$id, previous_contents_df$id)) > 0) {
       usethis::ui_info("Introducing new {usethis::ui_code('id')} to ensure unique values")
-      urls_to_add_df$id <- seq(
+      links_to_add_df$id <- seq(
         sum(max(previous_contents_df$id), 1),
         sum(
           max(previous_contents_df$id),
-          nrow(urls_to_add_df)
+          nrow(links_to_add_df)
         )
       ) %>%
         as.numeric()
     }
   } else {
-    urls_to_add_df <- urls_df
+    links_to_add_df <- contents_id_df
   }
 
-  urls_to_add_n <- nrow(urls_to_add_df)
-  if (urls_to_add_n > 0) {
+  links_to_add_n <- nrow(links_to_add_df)
+
+  if (links_to_add_n > 0) {
     cas_write_to_db(
-      df = urls_to_add_df,
+      df = links_to_add_df,
       table = "contents_id",
       overwrite = overwrite,
-      ...,
-      disconnect_db = FALSE
+      disconnect_db = FALSE,
+      ...
     )
 
-    usethis::ui_done("Urls added to {usethis::ui_field('contents_id')} table: {usethis::ui_value(urls_to_add_n)}")
+    usethis::ui_done("Urls added to {usethis::ui_field('contents_id')} table: {usethis::ui_value(links_to_add_n)}")
   } else {
     usethis::ui_info("No new url added to {usethis::ui_field('contents_id')} table.")
   }
 
   cas_disconnect_from_db(
     db_connection = db,
+    disconnect_db = disconnect_db,
     ...
   )
 
-  invisible(urls_to_add_df)
+  invisible(links_to_add_df)
 }
 
 #' Read contents from local database
@@ -134,21 +122,15 @@ cas_write_db_contents <- function(urls,
 #'
 #' cas_write_db_contents(urls = urls_df)
 #'
-#' cas_read_db_contents()
-cas_read_db_contents <- function(use_db = NULL,
-                                 db_connection = NULL,
-                                 disconnect_db = TRUE,
-                                 db_folder = NULL,
-                                 project = cas_get_options()$project,
-                                 website = cas_get_options()$website) {
+#' cas_read_db_contents_id()
+cas_read_db_contents_id <- function(db_connection = NULL,
+                                    db_folder = NULL,
+                                    ...) {
   db_result <- tryCatch(cas_read_from_db(
     table = "contents_id",
-    use_db = use_db,
-    db_connection = db_connection,
-    disconnect_db = disconnect_db,
     db_folder = db_folder,
-    project = project,
-    website = website
+    db_connection = db_connection,
+    ...
   ),
   error = function(e) {
     logical(1L)
@@ -157,7 +139,11 @@ cas_read_db_contents <- function(use_db = NULL,
 
   if (isFALSE(db_result)) {
     tibble::as_tibble(casdb_empty_contents_id)
-  } else {
-    tibble::as_tibble(db_result)
+  } else if (is.data.frame(db_result)) {
+    if (nrow(db_result) == 0) {
+      casdb_empty_contents_id
+    } else {
+      tibble::as_tibble(db_result)
+    }
   }
 }

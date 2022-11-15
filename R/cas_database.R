@@ -580,7 +580,17 @@ cas_write_to_db <- function(df,
         append = TRUE
       )
     } else {
-      usethis::ui_stop("Incomptabile data frame passed to `index_id`. `df` should have a numeric `id` column, and a character `url` and `type` column.")
+      usethis::ui_stop("Incompatible data frame passed to `index_id`. `df` should have a numeric `id` column, and a character `url` and `type` column.")
+    }
+  } else if (table == "contents_id") {
+    if (identical(colnames(df), colnames(casdb_empty_contents_id)) & identical(sapply(df, class), sapply(casdb_empty_contents_id, class))) {
+      pool::dbWriteTable(db,
+        name = table,
+        value = df,
+        append = TRUE
+      )
+    } else {
+      usethis::ui_stop("Incompatible data frame passed to `contents_id`.")
     }
   } else {
     # Write generic table without additional checks

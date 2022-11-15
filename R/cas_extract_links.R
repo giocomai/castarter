@@ -33,8 +33,12 @@ cas_extract_links <- function(id = NULL,
                               append_string = NULL,
                               remove_string = NULL,
                               ...) {
+  db <- cas_connect_to_db(...)
+
   local_files_df <- cas_get_path_to_files(
     index = index,
+    db_connection = db,
+    disconnect_db = FALSE,
     ...
   )
 
@@ -55,11 +59,25 @@ cas_extract_links <- function(id = NULL,
       dplyr::select(-"available")
   }
 
+  previous_links_df <- cas_read_db_contents_id(
+    index = index,
+    db_connection = db,
+    disconnect_db = FALSE,
+    ...
+  )
+
+  if (nrow(previous_links_df) == 0) {
+    start_id <- 1
+  } else {
+    start_id <- sum(1, max(previous_links_df$id))
+  }
+
   pb <- progress::progress_bar$new(total = nrow(local_files_df))
 
-  all_links_df <- purrr::map_dfr(
+  purrr::reduce(
     .x = purrr::transpose(local_files_df),
-    .f = function(x) {
+    .init = start_id,
+    .f = function(start_id, x) {
       pb$tick()
 
       temp <- xml2::read_html(
@@ -86,9 +104,9 @@ cas_extract_links <- function(id = NULL,
       }
 
       links_df <- tibble::tibble(
-        link = a_xml_nodeset %>%
+        url = a_xml_nodeset %>%
           xml2::xml_attr(attribute_type),
-        title = a_xml_nodeset %>%
+        link_text = a_xml_nodeset %>%
           rvest::html_text()
       )
 
@@ -97,7 +115,7 @@ cas_extract_links <- function(id = NULL,
       if (is.null(include_when) == FALSE) {
         links_df <- links_df %>%
           dplyr::filter(stringr::str_detect(
-            string = link,
+            string = url,
             pattern = include_when
           ))
       }
@@ -105,44 +123,62 @@ cas_extract_links <- function(id = NULL,
       if (is.null(exclude_when) == FALSE) {
         links_df <- links_df %>%
           dplyr::filter(!stringr::str_detect(
-            string = link,
+            string = url,
             pattern = include_when
           ))
       }
 
       if (is.null(domain) == FALSE) {
         links_df <- links_df %>%
-          dplyr::mutate(link = stringr::str_c(domain, link))
+          dplyr::mutate(url = stringr::str_c(domain, url))
       }
 
       if (is.null(append_string) == FALSE) {
         links_df <- links_df %>%
-          dplyr::mutate(link = stringr::str_c(link, append_string))
+          dplyr::mutate(url = stringr::str_c(url, append_string))
       }
 
       if (is.null(remove_string) == FALSE) {
         links_df <- links_df %>%
-          dplyr::mutate(link = stringr::str_remove(string = link, pattern = remove_string))
+          dplyr::mutate(url = stringr::str_remove(string = url, pattern = remove_string))
       }
 
       if (is.null(min_length) == FALSE) {
         links_df <- links_df %>%
-          dplyr::filter(nchar(link) > min_length)
+          dplyr::filter(nchar(url) > min_length)
       }
 
       if (is.null(max_length) == FALSE) {
         links_df <- links_df %>%
-          dplyr::filter(nchar(link) < max_length)
+          dplyr::filter(nchar(url) < max_length)
       }
 
-      links_df %>%
-        dplyr::mutate(
-          source_index_id = x$id,
-          source_batch_id = x$batch
+      if (nrow(links_df) > 0) {
+        end_id <- sum(start_id, nrow(links_df) - 1)
+
+        links_to_store_df <- links_df %>%
+          dplyr::mutate(
+            source_index_id = as.numeric(x$id),
+            source_index_batch = as.numeric(x$batch),
+            id = as.numeric(start_id:end_id)
+          ) %>%
+          dplyr::select("id", "url", "link_text", "source_index_id", "source_index_batch")
+
+
+        cas_write_db_contents_id(
+          contents_id_df = links_to_store_df,
+          db_connection = db,
+          disconnect_db = FALSE,
+          ...
         )
+
+        sum(end_id, 1)
+      }
     }
   )
 
-
-  links_df
+  cas_read_db_contents_id(
+    db_connection = db,
+    ...
+  )
 }
