@@ -32,6 +32,7 @@ cas_extract_links <- function(id = NULL,
                               attribute_type = "href",
                               append_string = NULL,
                               remove_string = NULL,
+                              write_to_db = TRUE,
                               ...) {
   db <- cas_connect_to_db(...)
 
@@ -60,16 +61,20 @@ cas_extract_links <- function(id = NULL,
   }
 
   previous_links_df <- cas_read_db_contents_id(
-    index = index,
     db_connection = db,
     disconnect_db = FALSE,
     ...
-  )
+  ) %>%
+    dplyr::select("id", "url")
 
   if (nrow(previous_links_df) == 0) {
     start_id <- 1
   } else {
     start_id <- sum(1, max(previous_links_df$id))
+  }
+
+  if (write_to_db == FALSE) {
+    db <- duckdb::dbConnect(duckdb::duckdb(), ":memory:")
   }
 
   pb <- progress::progress_bar$new(total = nrow(local_files_df))
@@ -110,8 +115,6 @@ cas_extract_links <- function(id = NULL,
           rvest::html_text()
       )
 
-
-
       if (is.null(include_when) == FALSE) {
         links_df <- links_df %>%
           dplyr::filter(stringr::str_detect(
@@ -130,7 +133,16 @@ cas_extract_links <- function(id = NULL,
 
       if (is.null(domain) == FALSE) {
         links_df <- links_df %>%
-          dplyr::mutate(url = stringr::str_c(domain, url))
+          dplyr::mutate(
+            url = dplyr::if_else(
+              condition = stringr::str_starts(
+                string = url,
+                pattern = "https://|http://"
+              ),
+              true = url,
+              false = stringr::str_c(domain, url)
+            )
+          )
       }
 
       if (is.null(append_string) == FALSE) {
@@ -153,6 +165,12 @@ cas_extract_links <- function(id = NULL,
           dplyr::filter(nchar(url) < max_length)
       }
 
+      links_df <- links_df %>%
+        dplyr::anti_join(
+          y = previous_links_df,
+          by = "url"
+        )
+
       if (nrow(links_df) > 0) {
         end_id <- sum(start_id, nrow(links_df) - 1)
 
@@ -162,23 +180,34 @@ cas_extract_links <- function(id = NULL,
             source_index_batch = as.numeric(x$batch),
             id = as.numeric(start_id:end_id)
           ) %>%
-          dplyr::select("id", "url", "link_text", "source_index_id", "source_index_batch")
-
+          dplyr::select(
+            "id",
+            "url",
+            "link_text",
+            "source_index_id",
+            "source_index_batch"
+          )
 
         cas_write_db_contents_id(
           contents_id_df = links_to_store_df,
           db_connection = db,
           disconnect_db = FALSE,
+          quiet = TRUE,
+          check_previous = FALSE,
           ...
         )
 
         sum(end_id, 1)
+      } else {
+        start_id
       }
     }
   )
 
-  cas_read_db_contents_id(
+  all_links_df <- cas_read_db_contents_id(
     db_connection = db,
     ...
   )
+  usethis::ui_done("Urls added to {usethis::ui_field('contents_id')} table: {usethis::ui_value(nrow(all_links_df)-nrow(previous_links_df))}")
+  all_links_df
 }
