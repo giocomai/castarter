@@ -10,6 +10,7 @@ cas_download(
   index = FALSE,
   overwrite_file = FALSE,
   wait = 1,
+  random = FALSE,
   ...
 )
 }
@@ -25,6 +26,10 @@ items.}
 \item{wait}{Defaults to 1. Number of seconds to wait between downloading one
 page and the next. Can be increased to reduce server load, or can be set to
 0 when this is not an issue.}
+
+\item{random}{Defaults to FALSE. If TRUE, the download order is randomised.
+If a numeric is given, the download order is randomised and at most the
+given number of items is downloaded.}
 
 \item{...}{Passed to \code{cas_get_db_file()}.}
 

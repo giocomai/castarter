@@ -13,6 +13,9 @@
 #' @param wait Defaults to 1. Number of seconds to wait between downloading one
 #'   page and the next. Can be increased to reduce server load, or can be set to
 #'   0 when this is not an issue.
+#' @param random Defaults to FALSE. If TRUE, the download order is randomised.
+#'   If a numeric is given, the download order is randomised and at most the
+#'   given number of items is downloaded.
 #'
 #' @inheritParams cas_connect_to_db
 #'
@@ -24,12 +27,14 @@ cas_download <- function(download_df = NULL,
                          index = FALSE,
                          overwrite_file = FALSE,
                          wait = 1,
+                         random = FALSE,
                          ...) {
   cass_download_httr(
     download_df = download_df,
     index = index,
     overwrite_file = overwrite_file,
     wait = wait,
+    random = random,
     ...
   )
 }
@@ -50,12 +55,12 @@ cas_download <- function(download_df = NULL,
 #'   "https://example.com/a/",
 #'   "https://example.com/b/"
 #' ))
-cass_get_urls_df <- function(urls,
+cass_get_urls_df <- function(urls = NULL,
                              index = FALSE,
                              ...) {
   if (is.null(urls)) {
     if (index == FALSE) {
-      urls_df <- cas_read_db_contents(...)
+      urls_df <- cas_read_db_contents_id(...)
     } else if (index == TRUE) {
       urls_df <- cas_read_db_index(...)
     } else {
@@ -100,6 +105,7 @@ cass_download_httr <- function(download_df = NULL,
                                overwrite_file = FALSE,
                                wait = 1,
                                db_connection = NULL,
+                               random = FALSE,
                                ...) {
   type <- dplyr::if_else(condition = index,
     true = "index",
@@ -122,6 +128,15 @@ cass_download_httr <- function(download_df = NULL,
   if (nrow(download_df) == 0) {
     usethis::ui_info("No new files or pages to download.")
     return(NULL)
+  }
+
+
+  if (is.numeric(random) == TRUE) {
+    download_df <- download_df %>%
+      dplyr::slice_sample(n = random)
+  } else if (isTRUE(random)) {
+    download_df <- download_df %>%
+      dplyr::slice_sample(p = 1)
   }
 
   pb <- progress::progress_bar$new(total = nrow(download_df))

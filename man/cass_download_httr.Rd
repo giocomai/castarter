@@ -10,6 +10,7 @@ cass_download_httr(
   overwrite_file = FALSE,
   wait = 1,
   db_connection = NULL,
+  random = FALSE,
   ...
 )
 }
@@ -29,6 +30,10 @@ page and the next. Can be increased to reduce server load, or can be set to
 \item{db_connection}{Defaults to NULL. If NULL, uses local SQLite database.
 If given, must be a connection object or a list with relevant connection
 settings (see example).}
+
+\item{random}{Defaults to FALSE. If TRUE, the download order is randomised.
+If a numeric is given, the download order is randomised and at most the
+given number of items is downloaded.}
 
 \item{...}{Passed to \code{cas_get_db_file()}.}
 }

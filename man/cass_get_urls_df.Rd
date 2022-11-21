@@ -5,7 +5,7 @@
 \title{Checks that a given input corresponds to the format expected of a download
 data frame, consistently returns expected format}
 \usage{
-cass_get_urls_df(urls, index = FALSE, ...)
+cass_get_urls_df(urls = NULL, index = FALSE, ...)
 }
 \arguments{
 \item{url}{A character vector or a data frame with at least two columns, \code{id}
