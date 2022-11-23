@@ -1,15 +1,20 @@
 #' Extract fields and contents from downloaded files
 #'
+#' @param extractors A named list of functions. See examples for details.
 #' @inheritParams cas_download
 #'
 #' @return
 #' @export
 #'
 #' @examples
-cas_extract <- function(index = FALSE,
+#' 
+#' 
+cas_extract <- function(extractors, 
+                        index = FALSE,
                         db_connection = NULL,
                         file_format = "html",
                         ...) {
+  ellipsis::check_dots_unnamed()
   db <- cas_connect_to_db(
     db_connection = db_connection,
     ...
@@ -31,12 +36,13 @@ cas_extract <- function(index = FALSE,
   )
 
 
-  stored_filenames_df <- previous_download_df %>%
+  stored_files_df <- previous_download_df %>%
     dplyr::select("id", "batch") %>%
-    dplyr::transmute(path = fs::path(
+    dplyr::mutate(path = fs::path(
       path,
       stringr::str_c(id, "_", batch, ".", file_format)
-    ))
+    )) %>% 
+    dplyr::select("id", "path") 
 
   ## fix with previously extracted
 
@@ -46,16 +52,31 @@ cas_extract <- function(index = FALSE,
   #   by = "id"
   # )
 
-  files_to_extract <- stored_filenames_df
+  files_to_extract <- stored_files_df
 
-  current_xml <- xml2::read_html(
-    x = x$path,
-    options = c("RECOVER", "NOERROR", "NOBLANKS", "HUGE")
-  )
+  output_df <- purrr::map_dfr(
+    .x = purrr::transpose(files_to_extract), 
+    function(x) {
+      current_html_document <- xml2::read_html(
+        x = x$path,
+        options = c("RECOVER", "NOERROR", "NOBLANKS", "HUGE")
+      )
+      
+      if (inherits(x = current_html_document, what = "xml_node") == FALSE) {
+        return(NULL)
+      }
+      
+      names(extractors) %>% 
+        purrr::set_names() %>% 
+        purrr::map(.f = function(current_function) {
+          current_function = extractors[[current_function]](current_html_document)
+      }) %>% 
+        tibble::as_tibble() %>% 
+        dplyr::mutate(id = x[["id"]]) %>% 
+        dplyr::select("id", dplyr::everything())
+    })
 
-  if (inherits(x = current_xml, what = "xml_node") == FALSE) {
-    return(NULL)
-  }
+  output_df
 }
 
 

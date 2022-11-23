@@ -4,9 +4,17 @@
 \alias{cas_extract}
 \title{Extract fields and contents from downloaded files}
 \usage{
-cas_extract(index = FALSE, db_connection = NULL, file_format = "html", ...)
+cas_extract(
+  extractors,
+  index = FALSE,
+  db_connection = NULL,
+  file_format = "html",
+  ...
+)
 }
 \arguments{
+\item{extractors}{A named list of functions. See examples for details.}
+
 \item{index}{Logical, defaults to FALSE. If TRUE, downloaded files will be
 considered \code{index} files. If not, they will be considered \code{contents} files.
 See Readme for a more extensive explanation.}
