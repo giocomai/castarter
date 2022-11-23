@@ -8,15 +8,16 @@ cass_get_base_path(
   custom_path = NULL,
   custom_folder = NULL,
   index = FALSE,
-  file_format = "html"
+  file_format = "html",
+  ...
 )
 }
 \arguments{
 \item{custom_path}{Defaults to NULL. If given, all other parameters and settings are ignored, and folder is set to this value.}
 
-\item{custom_folder}{}
-
 \item{file_format}{}
+
+\item{...}{Passed to \code{cas_get_options()}.}
 }
 \value{
 Path to base folder. A character vector of length one of class \code{fs_path}.
