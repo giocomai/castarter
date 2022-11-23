@@ -1,6 +1,6 @@
 Package: castarter2
 Title: Explore Textual Datasets with Ease
-Version: 0.0.0.9007
+Version: 0.0.0.9008
 Authors@R: 
     c(person(given = "Giorgio",
              family = "Comai",
@@ -41,7 +41,9 @@ Imports:
     DBI,
     RSQLite,
     duckdb,
-    ellipsis
+    ellipsis,
+    rvest,
+    xml2
 Suggests: 
     testthat (>= 3.0.0),
     roxygen2,

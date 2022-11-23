@@ -1,0 +1,177 @@
+#' Extract fields and contents from downloaded files
+#'
+#' @inheritParams cas_download
+#'
+#' @return
+#' @export
+#'
+#' @examples
+cas_extract <- function(index = FALSE,
+                        db_connection = NULL,
+                        file_format = "html",
+                        ...) {
+  db <- cas_connect_to_db(
+    db_connection = db_connection,
+    ...
+  )
+
+  path <- cass_get_base_path(...)
+
+  # urls_df <- cass_get_urls_df(
+  #   urls = NULL,
+  #   index = index,
+  #   db_connection = db,
+  #   ...
+  # )
+
+  previous_download_df <- cas_read_db_download(
+    index = index,
+    db_connection = db,
+    ...
+  )
+
+
+  stored_filenames_df <- previous_download_df %>%
+    dplyr::select("id", "batch") %>%
+    dplyr::transmute(path = fs::path(
+      path,
+      stringr::str_c(id, "_", batch, ".", file_format)
+    ))
+
+  ## fix with previously extracted
+
+  # files_to_download_df <- dplyr::anti_join(
+  #   x = expected_filenames_df,
+  #   y = previous_download_df,
+  #   by = "id"
+  # )
+
+  files_to_extract <- stored_filenames_df
+
+  current_xml <- xml2::read_html(
+    x = x$path,
+    options = c("RECOVER", "NOERROR", "NOBLANKS", "HUGE")
+  )
+
+  if (inherits(x = current_xml, what = "xml_node") == FALSE) {
+    return(NULL)
+  }
+}
+
+
+#' Facilitates extraction of contents from an html file
+#'
+#' @param html_document An html document parsed with `xml2::read_html()`.
+#' @param container Defaults to NULL. Type of html container from where links are to be extracted, such as "div", "ul", and others. Either `container_class` or `container_id` must also be provided.
+#' @param container_class Defaults to NULL. If provided, also `container` must be given (and `container_id` must be NULL). Only text found inside the provided combination of container/class will be extracted.
+#' @param container_id Defaults to NULL. If provided, also `container` must be given (and `container_id` must be NULL). Only text found inside the provided combination of container/class will be extracted.
+#' @param container_instance Defaults to NULL. If given, it must be an integer. If a given combination is found more than once in the same page, the relevant occurrence is kept. Use with caution, as not all pages always include the same number of elements of the same class/with the same id.
+#' @param sub_element Defaults to NULL. If provided, also `container` must be given. Only text within elements of given type under the chosen combination of container/containerClass will be extracted. When given, it will tipically be "p", to extract all p elements inside the selected div.
+#' @param no_children Defaults to FALSE, i.e. by default all subelements of the selected combination (e.g. div with given class) are extracted. If TRUE, only text found under the given combination (but not its subelements) will be extracted. Corresponds to the xpath string `/node()[not(self::div)]`.
+#' @param custom_Xpath Defaults to NULL. If given, all other parameters are ignored and given Xpath used instead.
+#' @param custom_CSSpath Defaults to NULL. If given, all other parameters are ignored and given CSSpath used instead.
+#' @param keep_everything Defaults to FALSE. If TRUE, all text included in the page is returned as a single string.
+#'
+#'
+#' @return A character vector of length one.
+#' @export
+#'
+#' @examples
+cas_extract_html <- function(html_document,
+                             container = NULL,
+                             container_class = NULL,
+                             container_id = NULL,
+                             container_instance = NULL,
+                             sub_element = NULL,
+                             no_children = NULL,
+                             encoding = "UTF-8",
+                             custom_Xpath = NULL,
+                             custom_CSSpath = NULL,
+                             keep_everything = FALSE) {
+  if (keep_everything == TRUE) {
+    output <- html_document %>%
+      rvest::html_text()
+  } else if (is.null(custom_Xpath) == FALSE) {
+    nodes <- html_document %>%
+      rvest::html_nodes(xpath = custom_Xpath)
+    if (is.null(sub_element) == TRUE) {
+      output <- nodes %>%
+        rvest::html_nodes(sub_element) %>%
+        rvest::html_text()
+    } else {
+      output <- output %>%
+        rvest::html_nodes(sub_element) %>%
+        rvest::html_text()
+    }
+  } else if (is.null(custom_CSSpath) == FALSE) {
+    nodes <- html_document %>%
+      rvest::html_nodes(css = custom_CSSpath)
+    if (is.null(sub_element) == TRUE) {
+      output <- nodes %>%
+        rvest::html_nodes(sub_element) %>%
+        rvest::html_text()
+    } else {
+      output <- nodes %>%
+        rvest::html_nodes(sub_element) %>%
+        rvest::html_text()
+    }
+  } else if (is.null(container_class) == TRUE & is.null(container_id) == TRUE) {
+    if (is.null(sub_element) == TRUE) {
+      output <- html_document %>%
+        rvest::html_nodes(container) %>%
+        rvest::html_text()
+    } else {
+      output <- html_document %>%
+        rvest::html_nodes(container) %>%
+        rvest::html_nodes(sub_element) %>%
+        rvest::html_text()
+    }
+  } else if (is.null(container_class) == FALSE & is.null(container_id) == TRUE) {
+    if (is.null(sub_element) == TRUE) {
+      output <- html_document %>%
+        rvest::html_nodes(xpath = stringr::str_c(
+          "//",
+          container,
+          "[@class='",
+          container_class, "']"
+        )) %>%
+        rvest::html_text()
+    } else {
+      output <- html_document %>%
+        rvest::html_nodes(xpath = stringr::str_c(
+          "//",
+          container,
+          "[@class='",
+          container_class,
+          "']"
+        )) %>%
+        rvest::html_nodes(sub_element) %>%
+        rvest::html_text() %>%
+        stringr::str_c(collapse = "\n")
+    }
+  } else if (is.null(container_class) == TRUE & is.null(container_id) == FALSE) {
+    if (is.null(sub_element) == TRUE) {
+      output <- html_document %>%
+        rvest::html_nodes(xpath = stringr::str_c("//", container, "[@id='", container_id, "']")) %>%
+        rvest::html_text()
+    } else {
+      output <- html_document %>%
+        rvest::html_nodes(xpath = stringr::str_c("//", container, "[@id='", container_id, "']")) %>%
+        rvest::html_nodes(sub_element) %>%
+        rvest::html_text()
+    }
+  }
+
+
+  if (length(output) > 1) {
+    if (is.null(container_instance) == FALSE) {
+      output <- output[container_instance]
+    } else {
+      output <- stringr::str_c(output, collapse = "\n")
+    }
+  } else if (length(output) == 0) {
+    output <- as.character(NA)
+  }
+
+  output
+}

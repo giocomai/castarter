@@ -6,8 +6,8 @@
 #' @param exclude_when If an URL includes this string, it is excluded from the output. One or more strings may be provided.
 #'
 #' @inheritParams cas_write_db_index
+#' @inheritParams cas_extract_html
 #'
-#' @param container Type of html container from where links are to be extracted, such as "div", "ul", and others. container_class or container_id must also be provided.
 #' @param attribute_type Defaults to "href". Type of attribute to extract from links.
 #' @param min_length If a link is shorter than the number of characters given in min_length, it is excluded from the output.
 #' @param max_length If a link is longer than the number of characters given in max_length, it is excluded from the output.

@@ -127,7 +127,7 @@ cass_download_httr <- function(download_df = NULL,
 
   if (nrow(download_df) == 0) {
     usethis::ui_info("No new files or pages to download.")
-    return(NULL)
+    return(invisible(NULL))
   }
 
 
@@ -225,32 +225,12 @@ cass_get_files_to_download <- function(urls = NULL,
     return(NULL)
   }
 
-  if (is.null(custom_path)) {
-    website_folder <- cas_get_base_folder(
-      level = "website",
-      ...
-    )
-    if (is.null(custom_folder) == FALSE) {
-      path <- fs::path(
-        website_folder,
-        stringr::str_c(file_format, "_", custom_folder)
-      )
-    } else {
-      path <- fs::path(
-        website_folder,
-        stringr::str_c(file_format, "_", type)
-      )
-    }
-  }
-
-  if (fs::file_exists(path) == FALSE) {
-    fs::dir_create(path = path)
-    usethis::ui_info(stringr::str_c("The folder",
-      usethis::ui_path(path),
-      "has been created.",
-      sep = " "
-    ))
-  }
+  path <- cass_get_base_path(
+    custom_path = custom_path,
+    custom_folder = custom_folder,
+    index = index,
+    file_format = file_format
+  )
 
   # previous_files_df <- fs::dir_info(path = path) %>%
   #   dplyr::transmute(path,
