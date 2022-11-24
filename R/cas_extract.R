@@ -7,9 +7,7 @@
 #' @export
 #'
 #' @examples
-#' 
-#' 
-cas_extract <- function(extractors, 
+cas_extract <- function(extractors,
                         index = FALSE,
                         db_connection = NULL,
                         file_format = "html",
@@ -32,6 +30,7 @@ cas_extract <- function(extractors,
   previous_download_df <- cas_read_db_download(
     index = index,
     db_connection = db,
+    disconnect_db = FALSE,
     ...
   )
 
@@ -41,42 +40,84 @@ cas_extract <- function(extractors,
     dplyr::mutate(path = fs::path(
       path,
       stringr::str_c(id, "_", batch, ".", file_format)
-    )) %>% 
-    dplyr::select("id", "path") 
+    )) %>%
+    dplyr::select("id", "path")
 
-  ## fix with previously extracted
 
-  # files_to_download_df <- dplyr::anti_join(
-  #   x = expected_filenames_df,
-  #   y = previous_download_df,
-  #   by = "id"
-  # )
+  # Do not process previously extracted
+  previously_extracted_df <- cas_read_db_contents_data(
+    db_connection = db,
+    disconnect_db = FALSE,
+    ...
+  )
 
-  files_to_extract <- stored_files_df
+  if (is.null(previously_extracted_df) == FALSE) {
+    files_to_extract_pre_df <- dplyr::anti_join(
+      x = stored_files_df,
+      y = previously_extracted_df,
+      by = "id"
+    )
+  } else {
+    files_to_extract_pre_df <- stored_files_df
+  }
 
-  output_df <- purrr::map_dfr(
-    .x = purrr::transpose(files_to_extract), 
+  if (nrow(files_to_extract_pre_df) == 0) {
+    # TODO return consistently data frame or S3 object
+    return(invisible(NULL))
+  }
+
+  files_to_extract_df <- files_to_extract_pre_df %>%
+    dplyr::left_join(
+      y = cas_read_db_contents_id(
+        db_connection = db,
+        disconnect_db = FALSE,
+        ...
+      ),
+      by = "id"
+    )
+
+  pb <- progress::progress_bar$new(total = nrow(files_to_extract_df))
+
+  purrr::walk(
+    .x = purrr::transpose(files_to_extract_df),
     function(x) {
+      pb$tick()
+
       current_html_document <- xml2::read_html(
         x = x$path,
         options = c("RECOVER", "NOERROR", "NOBLANKS", "HUGE")
       )
-      
+
       if (inherits(x = current_html_document, what = "xml_node") == FALSE) {
         return(NULL)
       }
-      
-      names(extractors) %>% 
-        purrr::set_names() %>% 
-        purrr::map(.f = function(current_function) {
-          current_function = extractors[[current_function]](current_html_document)
-      }) %>% 
-        tibble::as_tibble() %>% 
-        dplyr::mutate(id = x[["id"]]) %>% 
-        dplyr::select("id", dplyr::everything())
-    })
 
-  output_df
+      current_df <- names(extractors) %>%
+        purrr::set_names() %>%
+        purrr::map(.f = function(current_function) {
+          current_function <- extractors[[current_function]](current_html_document)
+        }) %>%
+        tibble::as_tibble() %>%
+        dplyr::mutate(
+          id = as.numeric(x[["id"]]),
+          url = as.character(x[["url"]])
+        ) %>%
+        dplyr::select("id", "url", dplyr::everything())
+
+      cas_write_to_db(
+        df = current_df,
+        table = "contents_data",
+        db_connection = db,
+        disconnect_db = FALSE,
+        ...
+      )
+    }
+  )
+
+  cas_disconnect_from_db(
+    db_connection = db,
+    ...
+  )
 }
 
 

@@ -1,6 +1,6 @@
 Package: castarter2
 Title: Explore Textual Datasets with Ease
-Version: 0.0.0.9008
+Version: 0.0.0.9009
 Authors@R: 
     c(person(given = "Giorgio",
              family = "Comai",
