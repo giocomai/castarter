@@ -33,6 +33,7 @@ cas_extract_links <- function(id = NULL,
                               append_string = NULL,
                               remove_string = NULL,
                               write_to_db = TRUE,
+                              file_format = "html",
                               ...) {
   db <- cas_connect_to_db(...)
 
@@ -40,6 +41,7 @@ cas_extract_links <- function(id = NULL,
     index = index,
     db_connection = db,
     disconnect_db = FALSE,
+    file_format = file_format,
     ...
   )
 

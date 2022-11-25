@@ -11,6 +11,7 @@ cass_download_httr(
   wait = 1,
   db_connection = NULL,
   random = FALSE,
+  file_format = "html",
   ...
 )
 }

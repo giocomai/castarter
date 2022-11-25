@@ -28,6 +28,7 @@ cas_download <- function(download_df = NULL,
                          overwrite_file = FALSE,
                          wait = 1,
                          random = FALSE,
+                         file_format = "html",
                          ...) {
   cass_download_httr(
     download_df = download_df,
@@ -35,6 +36,7 @@ cas_download <- function(download_df = NULL,
     overwrite_file = overwrite_file,
     wait = wait,
     random = random,
+    file_format = file_format,
     ...
   )
 }
@@ -106,6 +108,7 @@ cass_download_httr <- function(download_df = NULL,
                                wait = 1,
                                db_connection = NULL,
                                random = FALSE,
+                               file_format = "html",
                                ...) {
   type <- dplyr::if_else(condition = index,
     true = "index",
@@ -121,6 +124,7 @@ cass_download_httr <- function(download_df = NULL,
       index = index,
       db_connection = db,
       disconnect_db = FALSE,
+      file_format = file_format,
       ...
     )
   }

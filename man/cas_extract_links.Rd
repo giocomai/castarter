@@ -19,6 +19,7 @@ cas_extract_links(
   append_string = NULL,
   remove_string = NULL,
   write_to_db = TRUE,
+  file_format = "html",
   ...
 )
 }

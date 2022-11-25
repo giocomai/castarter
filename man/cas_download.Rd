@@ -11,6 +11,7 @@ cas_download(
   overwrite_file = FALSE,
   wait = 1,
   random = FALSE,
+  file_format = "html",
   ...
 )
 }
