@@ -5,10 +5,10 @@
 \title{URL builder}
 \usage{
 cas_build_urls(
-  url_beginning,
+  url,
   url_ending = "",
-  start_page = 1,
-  end_page = 10,
+  start_page = NULL,
+  end_page = NULL,
   increase_by = 1,
   date_format = "Ymd",
   start_date = NULL,
@@ -20,7 +20,7 @@ cas_build_urls(
 )
 }
 \arguments{
-\item{url_beginning}{First part of index link that does not change in other
+\item{url}{First part of index link that does not change in other
 index pages.}
 
 \item{url_ending}{Part of index link appneded after the part of the link that
@@ -80,13 +80,13 @@ interpret directly, or a simplified string (such as "Ymd", without the
 
 \examples{
 cas_build_urls(
-  url_beginning = "https://www.example.com/news/",
+  url = "https://www.example.com/news/",
   start_page = 1,
   end_page = 10
 )
 
 cas_build_urls(
-  url_beginning = "https://example.com/news/?skip=",
+  url = "https://example.com/news/?skip=",
   start_page = 0,
   end_page = 100,
   increase_by = 10
@@ -94,7 +94,7 @@ cas_build_urls(
 
 
 cas_build_urls(
-  url_beginning = "https://example.com/archive/",
+  url = "https://example.com/archive/",
   start_date = "2022-01-01",
   end_date = "2022-12-31",
   date_separator = "-"

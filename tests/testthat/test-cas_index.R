@@ -35,7 +35,7 @@ test_that("cas_write_db_index writes, and cas_read_db_index returns data frame o
     )
 
     urls_df <- cas_build_urls(
-      url_beginning = "https://www.example.com/news/",
+      url = "https://www.example.com/news/",
       start_page = 1,
       end_page = 10
     )
@@ -71,7 +71,7 @@ test_that("cas_write_db_index tries to write twice same data, and cas_read_db_in
     )
 
     urls_df <- cas_build_urls(
-      url_beginning = "https://www.example.com/news/",
+      url = "https://www.example.com/news/",
       start_page = 1,
       end_page = 10
     )
@@ -117,7 +117,7 @@ test_that("cas_write_db_index tries to write new set of urls, but with already u
     )
 
     urls_df <- cas_build_urls(
-      url_beginning = "https://www.example.com/news/",
+      url = "https://www.example.com/news/",
       start_page = 1,
       end_page = 10
     )
@@ -131,7 +131,7 @@ test_that("cas_write_db_index tries to write new set of urls, but with already u
     )
 
     urls_df <- cas_build_urls(
-      url_beginning = "https://www.example.com/news/",
+      url = "https://www.example.com/news/",
       start_page = 10,
       end_page = 20
     )

@@ -541,7 +541,7 @@ cas_disconnect_from_db <- function(db_connection = NULL,
 #'
 #'
 #' urls_df <- cas_build_urls(
-#'   url_beginning = "https://www.example.com/news/",
+#'   url = "https://www.example.com/news/",
 #'   start_page = 1,
 #'   end_page = 10
 #' )
@@ -628,7 +628,7 @@ cas_write_to_db <- function(df,
 #'
 #'
 #' urls_df <- cas_build_urls(
-#'   url_beginning = "https://www.example.com/news/",
+#'   url = "https://www.example.com/news/",
 #'   start_page = 1,
 #'   end_page = 10
 #' )

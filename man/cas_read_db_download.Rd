@@ -37,7 +37,7 @@ cas_enable_db()
 
 
 urls_df <- cas_build_urls(
-  url_beginning = "https://www.example.com/news/",
+  url = "https://www.example.com/news/",
   start_page = 1,
   end_page = 10
 )

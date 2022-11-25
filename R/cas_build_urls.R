@@ -13,7 +13,7 @@
 #'   "%"),adding a `date_separator` such as "-" as needed.
 #'
 #'
-#' @param url_beginning First part of index link that does not change in other
+#' @param url First part of index link that does not change in other
 #'   index pages.
 #' @param url_ending Part of index link appneded after the part of the link that
 #'   varies. If not relevant, may be left empty.
@@ -46,13 +46,13 @@
 #' @export
 #' @examples
 #' cas_build_urls(
-#'   url_beginning = "https://www.example.com/news/",
+#'   url = "https://www.example.com/news/",
 #'   start_page = 1,
 #'   end_page = 10
 #' )
 #'
 #' cas_build_urls(
-#'   url_beginning = "https://example.com/news/?skip=",
+#'   url = "https://example.com/news/?skip=",
 #'   start_page = 0,
 #'   end_page = 100,
 #'   increase_by = 10
@@ -60,16 +60,16 @@
 #'
 #'
 #' cas_build_urls(
-#'   url_beginning = "https://example.com/archive/",
+#'   url = "https://example.com/archive/",
 #'   start_date = "2022-01-01",
 #'   end_date = "2022-12-31",
 #'   date_separator = "-"
 #' ) %>%
 #'   head()
-cas_build_urls <- function(url_beginning,
+cas_build_urls <- function(url,
                            url_ending = "",
-                           start_page = 1,
-                           end_page = 10,
+                           start_page = NULL,
+                           end_page = NULL,
                            increase_by = 1,
                            date_format = "Ymd",
                            start_date = NULL,
@@ -120,7 +120,7 @@ cas_build_urls <- function(url_beginning,
 
 
   urls <- stringr::str_c(
-    url_beginning,
+    url,
     variable_part,
     url_ending
   )
@@ -136,5 +136,7 @@ cas_build_urls <- function(url_beginning,
       index_group = index_group,
       id = as.numeric(dplyr::row_number())
     ) %>%
-    dplyr::select(.data$id, .data$url, .data$index_group)
+    dplyr::select("id",
+                  "url",
+                  "index_group")
 }
