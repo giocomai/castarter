@@ -49,6 +49,7 @@ cas_get_path_to_files <- function(urls = NULL,
     dplyr::select("id", "batch") %>%
     dplyr::mutate(path = fs::path(
       path,
+      batch,
       stringr::str_c(id, "_", batch, ".", file_format)
     )) %>%
     dplyr::mutate(available = fs::file_exists(path = path))
