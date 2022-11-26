@@ -136,7 +136,9 @@ cas_build_urls <- function(url,
       index_group = index_group,
       id = as.numeric(dplyr::row_number())
     ) %>%
-    dplyr::select("id",
-                  "url",
-                  "index_group")
+    dplyr::select(
+      "id",
+      "url",
+      "index_group"
+    )
 }
