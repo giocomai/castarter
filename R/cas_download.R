@@ -132,8 +132,17 @@ cass_download_httr <- function(download_df = NULL,
   if (nrow(download_df) == 0) {
     usethis::ui_info("No new files or pages to download.")
     return(invisible(NULL))
+  } else {
+    current_batch_folder <- fs::path_dir(path = download_df[["path"]][1])
+    if (fs::file_exists(current_batch_folder) == FALSE) {
+      fs::dir_create(path = current_batch_folder)
+      usethis::ui_info(stringr::str_c("The folder",
+        usethis::ui_path(current_batch_folder),
+        "for the current download batch has been created.",
+        sep = " "
+      ))
+    }
   }
-
 
   if (is.numeric(random) == TRUE) {
     download_df <- download_df %>%
@@ -268,7 +277,14 @@ cass_get_files_to_download <- function(urls = NULL,
     id = urls_df$id,
     path = fs::path(
       path,
-      stringr::str_c(urls_df$id, "_", current_batch, ".", file_format)
+      current_batch,
+      stringr::str_c(
+        urls_df$id,
+        "_",
+        current_batch,
+        ".",
+        file_format
+      )
     )
   )
 

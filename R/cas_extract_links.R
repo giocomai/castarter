@@ -68,8 +68,7 @@ cas_extract_links <- function(id = NULL,
     db_connection = db,
     disconnect_db = FALSE,
     ...
-  ) %>%
-    dplyr::select("id", "url")
+  )
 
   if (nrow(previous_links_df) == 0) {
     start_id <- 1
@@ -81,9 +80,30 @@ cas_extract_links <- function(id = NULL,
     db <- duckdb::dbConnect(duckdb::duckdb(), ":memory:")
   }
 
-  if (is.null(random) == FALSE) {
+
+  local_files_df <- local_files_df %>%
+    dplyr::anti_join(
+      y = previous_links_df %>%
+        dplyr::select(-"id") %>%
+        dplyr::rename(
+          id = source_index_id,
+          batch = source_index_batch
+        ),
+      by = c(
+        "id",
+        "batch"
+      )
+    )
+
+  if (is.numeric(random) == TRUE) {
     local_files_df <- local_files_df %>%
       dplyr::slice_sample(n = random)
+  } else if (isTRUE(random)) {
+    local_files_df <- local_files_df %>%
+      dplyr::slice_sample(p = 1)
+  } else {
+    local_files_df <- local_files_df %>%
+      dplyr::arrange(dplyr::desc(id))
   }
 
   pb <- progress::progress_bar$new(total = nrow(local_files_df))
@@ -122,7 +142,7 @@ cas_extract_links <- function(id = NULL,
         url = a_xml_nodeset %>%
           xml2::xml_attr(attribute_type),
         link_text = a_xml_nodeset %>%
-          rvest::html_text() %>% 
+          rvest::html_text() %>%
           stringr::str_squish()
       )
 
@@ -234,6 +254,7 @@ cas_extract_links <- function(id = NULL,
     db_connection = db,
     ...
   )
+
   usethis::ui_done("Urls added to {usethis::ui_field('contents_id')} table: {usethis::ui_value(nrow(all_links_df)-nrow(previous_links_df))}")
   all_links_df
 }

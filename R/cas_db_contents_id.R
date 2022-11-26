@@ -170,7 +170,7 @@ cas_read_db_contents_id <- function(db_connection = NULL,
     if (nrow(db_result) == 0) {
       casdb_empty_contents_id
     } else {
-      tibble::as_tibble(db_result)
+      db_result
     }
   }
 }
