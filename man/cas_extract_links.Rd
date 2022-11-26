@@ -20,6 +20,8 @@ cas_extract_links(
   remove_string = NULL,
   write_to_db = TRUE,
   file_format = "html",
+  random = FALSE,
+  encoding = "UTF-8",
   ...
 )
 }

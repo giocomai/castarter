@@ -34,6 +34,8 @@ cas_extract_links <- function(id = NULL,
                               remove_string = NULL,
                               write_to_db = TRUE,
                               file_format = "html",
+                              random = FALSE,
+                              encoding = "UTF-8",
                               ...) {
   db <- cas_connect_to_db(...)
 
@@ -79,6 +81,11 @@ cas_extract_links <- function(id = NULL,
     db <- duckdb::dbConnect(duckdb::duckdb(), ":memory:")
   }
 
+  if (is.null(random) == FALSE) {
+    local_files_df <- local_files_df %>%
+      dplyr::slice_sample(n = random)
+  }
+
   pb <- progress::progress_bar$new(total = nrow(local_files_df))
 
   purrr::reduce(
@@ -89,7 +96,8 @@ cas_extract_links <- function(id = NULL,
 
       temp <- xml2::read_html(
         x = x$path,
-        options = c("RECOVER", "NOERROR", "NOBLANKS", "HUGE")
+        options = c("RECOVER", "NOERROR", "NOBLANKS", "HUGE"),
+        encoding = encoding
       )
 
       if (inherits(x = temp, what = "xml_node") == FALSE) {
@@ -136,13 +144,28 @@ cas_extract_links <- function(id = NULL,
       if (is.null(domain) == FALSE) {
         links_df <- links_df %>%
           dplyr::mutate(
-            url = dplyr::if_else(
-              condition = stringr::str_starts(
+            url = dplyr::case_when(
+              stringr::str_starts(
                 string = url,
                 pattern = "https://|http://"
+              ) ~ url,
+              stringr::str_starts(
+                string = url,
+                pattern = stringr::fixed("/")
+              ) & stringr::str_ends(
+                string = domain,
+                pattern = stringr::fixed("/")
+              ) ~ stringr::str_c(
+                domain,
+                stringr::str_remove(
+                  string = url,
+                  pattern = "/"
+                )
               ),
-              true = url,
-              false = stringr::str_c(domain, url)
+              TRUE ~ stringr::str_c(
+                domain,
+                url
+              )
             )
           )
       }
