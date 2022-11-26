@@ -137,7 +137,7 @@ cas_extract_links <- function(id = NULL,
         links_df <- links_df %>%
           dplyr::filter(!stringr::str_detect(
             string = url,
-            pattern = include_when
+            pattern = exclude_when
           ))
       }
 
