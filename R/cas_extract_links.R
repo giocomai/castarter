@@ -122,7 +122,8 @@ cas_extract_links <- function(id = NULL,
         url = a_xml_nodeset %>%
           xml2::xml_attr(attribute_type),
         link_text = a_xml_nodeset %>%
-          rvest::html_text()
+          rvest::html_text() %>% 
+          stringr::str_squish()
       )
 
       if (is.null(include_when) == FALSE) {
