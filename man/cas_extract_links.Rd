@@ -22,17 +22,25 @@ cas_extract_links(
   file_format = "html",
   random = FALSE,
   encoding = "UTF-8",
+  reverse_order = TRUE,
+  index_group = NULL,
   ...
 )
 }
 \arguments{
-\item{id}{Defaults to NULL. If provided, it should be a vector of integers. Only html files corresponding to given id in the relevant will be processed.}
+\item{id}{Defaults to NULL. If provided, it should be a vector of integers.
+Only html files corresponding to given id will be processed.}
 
-\item{domain}{Defaults to "". Web domain of the website. It is added at the beginning of each link found. If links in the page already include the full web address this should be ignored.}
+\item{domain}{Defaults to "". Web domain of the website. It is added at the
+beginning of each link found. If links in the page already include the full
+web address this should be ignored.}
 
-\item{include_when}{Part of URL found only in links of individual articles to be downloaded. If more than one provided, it includes all links that contains either of the strings provided.}
+\item{include_when}{Part of URL found only in links of individual articles to
+be downloaded. If more than one provided, it includes all links that
+contains either of the strings provided.}
 
-\item{exclude_when}{If an URL includes this string, it is excluded from the output. One or more strings may be provided.}
+\item{exclude_when}{If an URL includes this string, it is excluded from the
+output. One or more strings may be provided.}
 
 \item{container}{Defaults to NULL. Type of html container from where links are to be extracted, such as "div", "ul", and others. Either \code{container_class} or \code{container_id} must also be provided.}
 
@@ -40,15 +48,26 @@ cas_extract_links(
 
 \item{container_id}{Defaults to NULL. If provided, also \code{container} must be given (and \code{container_id} must be NULL). Only text found inside the provided combination of container/class will be extracted.}
 
-\item{min_length}{If a link is shorter than the number of characters given in min_length, it is excluded from the output.}
+\item{min_length}{If a link is shorter than the number of characters given in
+min_length, it is excluded from the output.}
 
-\item{max_length}{If a link is longer than the number of characters given in max_length, it is excluded from the output.}
+\item{max_length}{If a link is longer than the number of characters given in
+max_length, it is excluded from the output.}
 
-\item{attribute_type}{Defaults to "href". Type of attribute to extract from links.}
+\item{attribute_type}{Defaults to "href". Type of attribute to extract from
+links.}
 
-\item{append_string}{If provided, appends given string to the extracted articles. Typically used to create links for print or mobile versions of the extracted page.}
+\item{append_string}{If provided, appends given string to the extracted
+articles. Typically used to create links for print or mobile versions of
+the extracted page.}
 
-\item{remove_string}{If provided, remove given string (or strings) from links.}
+\item{remove_string}{If provided, remove given string (or strings) from
+links.}
+
+\item{reverse_order}{Logical, defaults to TRUE. If TRUE, index files are
+processed in reverse order of \code{id} and \code{batch}, which may give more
+meaningful order to content id. The difference is ultimately cosmetic, and
+has no substantive impact either way.}
 
 \item{...}{Passed to \code{cas_get_db_file()}.}
 }

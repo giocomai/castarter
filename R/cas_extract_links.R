@@ -1,18 +1,34 @@
 #' Extract direct links to individual content pages from index pages
 #'
-#' @param domain Defaults to "". Web domain of the website. It is added at the beginning of each link found. If links in the page already include the full web address this should be ignored.
-#' @param id Defaults to NULL. If provided, it should be a vector of integers. Only html files corresponding to given id in the relevant will be processed.
-#' @param include_when Part of URL found only in links of individual articles to be downloaded. If more than one provided, it includes all links that contains either of the strings provided.
-#' @param exclude_when If an URL includes this string, it is excluded from the output. One or more strings may be provided.
+#' @param domain Defaults to "". Web domain of the website. It is added at the
+#'   beginning of each link found. If links in the page already include the full
+#'   web address this should be ignored.
+#' @param id Defaults to NULL. If provided, it should be a vector of integers.
+#'   Only html files corresponding to given id will be processed.
+#' @param include_when Part of URL found only in links of individual articles to
+#'   be downloaded. If more than one provided, it includes all links that
+#'   contains either of the strings provided.
+#' @param exclude_when If an URL includes this string, it is excluded from the
+#'   output. One or more strings may be provided.
 #'
 #' @inheritParams cas_write_db_index
 #' @inheritParams cas_extract_html
 #'
-#' @param attribute_type Defaults to "href". Type of attribute to extract from links.
-#' @param min_length If a link is shorter than the number of characters given in min_length, it is excluded from the output.
-#' @param max_length If a link is longer than the number of characters given in max_length, it is excluded from the output.
-#' @param append_string If provided, appends given string to the extracted articles. Typically used to create links for print or mobile versions of the extracted page.
-#' @param remove_string If provided, remove given string (or strings) from links.
+#' @param attribute_type Defaults to "href". Type of attribute to extract from
+#'   links.
+#' @param min_length If a link is shorter than the number of characters given in
+#'   min_length, it is excluded from the output.
+#' @param max_length If a link is longer than the number of characters given in
+#'   max_length, it is excluded from the output.
+#' @param append_string If provided, appends given string to the extracted
+#'   articles. Typically used to create links for print or mobile versions of
+#'   the extracted page.
+#' @param remove_string If provided, remove given string (or strings) from
+#'   links.
+#' @param reverse_order Logical, defaults to TRUE. If TRUE, index files are
+#'   processed in reverse order of `id` and `batch`, which may give more
+#'   meaningful order to content id. The difference is ultimately cosmetic, and
+#'   has no substantive impact either way.
 #' @return A data frame.
 #' @export
 #' @examples
@@ -36,6 +52,8 @@ cas_extract_links <- function(id = NULL,
                               file_format = "html",
                               random = FALSE,
                               encoding = "UTF-8",
+                              reverse_order = TRUE,
+                              index_group = NULL,
                               ...) {
   db <- cas_connect_to_db(...)
 
@@ -76,11 +94,6 @@ cas_extract_links <- function(id = NULL,
     start_id <- sum(1, max(previous_links_df$id))
   }
 
-  if (write_to_db == FALSE) {
-    db <- duckdb::dbConnect(duckdb::duckdb(), ":memory:")
-  }
-
-
   local_files_df <- local_files_df %>%
     dplyr::anti_join(
       y = previous_links_df %>%
@@ -102,8 +115,43 @@ cas_extract_links <- function(id = NULL,
     local_files_df <- local_files_df %>%
       dplyr::slice_sample(p = 1)
   } else {
+    if (reverse_order == TRUE) {
+      local_files_df <- local_files_df %>%
+        dplyr::arrange(dplyr::desc(id), dplyr::desc(batch))
+    } else {
+      local_files_df <- local_files_df %>%
+        dplyr::arrange(id, batch)
+    }
+  }
+
+  if (is.null(id) == FALSE) {
+    id_to_keep_v <- id
     local_files_df <- local_files_df %>%
-      dplyr::arrange(dplyr::desc(id))
+      dplyr::filter(.data$id %in% id_to_keep_v)
+  }
+
+  if (is.null(index_group) == FALSE) {
+    previous_index_links_df <- cas_read_db_index(
+      db_connection = db,
+      disconnect_db = FALSE,
+      ...
+    )
+
+    local_files_df <- local_files_df %>%
+      dplyr::right_join(
+        y = previous_index_links_df %>%
+          dplyr::select("id", "index_group"),
+        by = "id"
+      )
+
+    index_group_to_keep <- index_group
+
+    local_files_df <- local_files_df %>%
+      dplyr::filter(.data$index_group %in% index_group_to_keep)
+  }
+
+  if (write_to_db == FALSE) {
+    db <- duckdb::dbConnect(duckdb::duckdb(), ":memory:")
   }
 
   pb <- progress::progress_bar$new(total = nrow(local_files_df))
@@ -255,6 +303,9 @@ cas_extract_links <- function(id = NULL,
     ...
   )
 
-  usethis::ui_done("Urls added to {usethis::ui_field('contents_id')} table: {usethis::ui_value(nrow(all_links_df)-nrow(previous_links_df))}")
+  if (write_to_db == TRUE) {
+    usethis::ui_done("Urls added to {usethis::ui_field('contents_id')} table: {usethis::ui_value(nrow(all_links_df)-nrow(previous_links_df))}")
+  }
+
   all_links_df
 }
