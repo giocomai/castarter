@@ -108,22 +108,6 @@ cas_extract_links <- function(id = NULL,
       )
     )
 
-  if (is.numeric(random) == TRUE) {
-    local_files_df <- local_files_df %>%
-      dplyr::slice_sample(n = random)
-  } else if (isTRUE(random)) {
-    local_files_df <- local_files_df %>%
-      dplyr::slice_sample(p = 1)
-  } else {
-    if (reverse_order == TRUE) {
-      local_files_df <- local_files_df %>%
-        dplyr::arrange(dplyr::desc(id), dplyr::desc(batch))
-    } else {
-      local_files_df <- local_files_df %>%
-        dplyr::arrange(id, batch)
-    }
-  }
-
   if (is.null(id) == FALSE) {
     id_to_keep_v <- id
     local_files_df <- local_files_df %>%
@@ -150,6 +134,23 @@ cas_extract_links <- function(id = NULL,
       dplyr::filter(.data$index_group %in% index_group_to_keep)
   }
 
+  
+  if (is.numeric(random) == TRUE) {
+    local_files_df <- local_files_df %>%
+      dplyr::slice_sample(n = random)
+  } else if (isTRUE(random)) {
+    local_files_df <- local_files_df %>%
+      dplyr::slice_sample(p = 1)
+  } else {
+    if (reverse_order == TRUE) {
+      local_files_df <- local_files_df %>%
+        dplyr::arrange(dplyr::desc(id), dplyr::desc(batch))
+    } else {
+      local_files_df <- local_files_df %>%
+        dplyr::arrange(id, batch)
+    }
+  }
+  
   if (write_to_db == FALSE) {
     db <- duckdb::dbConnect(duckdb::duckdb(), ":memory:")
   }
