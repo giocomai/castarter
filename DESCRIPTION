@@ -1,13 +1,13 @@
-Package: castarter2
-Title: Explore Textual Datasets with Ease
-Version: 0.0.0.9010
+Package: castarter
+Title: Create and Explore Textual Datasets with Ease
+Version: 0.0.1.9001
 Authors@R: 
     c(person(given = "Giorgio",
              family = "Comai",
              role = c("aut", "cre", "cph"),
              email = "g@giorgiocomai.eu",
              comment = c(ORCID = "0000-0002-0515-9542")))
-Description: Basic word frequency analysis of textual datasets made easy
+Description: Consistent approaches for basic text mining and word frequency analysis of textual datasets
 License: MIT + file LICENSE
 Encoding: UTF-8
 LazyData: true
