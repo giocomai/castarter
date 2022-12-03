@@ -1,7 +1,7 @@
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 
-# castarter2 <a href='https://github.com/giocomai/castarter2'><img src='man/figures/hex-castarter2.png' align="right" height="320" /></a>
+# castarter <a href='https://github.com/giocomai/castarter'><img src='man/figures/hex-castarter.png' align="right" height="320" /></a>
 
 <!-- badges: start -->
 
@@ -9,30 +9,29 @@
 experimental](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](https://lifecycle.r-lib.org/articles/stages.html#experimental)
 <!-- badges: end -->
 
-castarter2 is a more modern, fully-featured, and consistent iteration of
-[`castarter`](https://github.com/giocomai/castarter) - Content Analysis
-Starter Toolkit for the R programming language. It facilitates text
-mining and web scraping by taking care of many of the most common file
-management issues, keeps tracks of download advancement in a local
-database, facilitates extraction through dedicated convenience
-functions, and allows for basic exploration of textual corpora through a
-Shiny interface.
+castarter is a more modern, fully-featured, and consistent iteration of
+[`castarter` (legacy)](https://github.com/giocomai/castarter_legacy) -
+Content Analysis Starter Toolkit for the R programming language. It
+facilitates text mining and web scraping by taking care of many of the
+most common file management issues, keeps tracks of download advancement
+in a local database, facilitates extraction through dedicated
+convenience functions, and allows for basic exploration of textual
+corpora through a Shiny interface.
 
-It is currently at an early stage of development, and will likely behave
+It is currently at an early stage of development, and may behave
 erratically.
 
 ## Installation
 
-You can install `castarter2` with:
+You can install `castarter` with:
 
 ``` r
-remotes::install_github("giocomai/castarter2")
+remotes::install_github("giocomai/castarter")
 ```
 
 ## Interactive exploration of textual corpora
 
-Check out `castarter2`’s interactive web interface for exploring
-corpora.
+Check out `castarter`’s interactive web interface for exploring corpora.
 
 ``` r
 remotes::install_github("giocomai/tifkremlinen")
@@ -46,8 +45,8 @@ cas_explorer(corpus = tifkremlinen::kremlin_en,
 
 One of the first issues that appear when starting a text mining or web
 scraping project relates to the issue of managing files and folder.
-`castarter2` defaults to an opinionated folder structure that should
-work for most projects. It also facilitates downloading files (skipping
+`castarter` defaults to an opinionated folder structure that should work
+for most projects. It also facilitates downloading files (skipping
 previously downloaded files) and ensuring consistent and unique matching
 between a downloaded html, its source url, and data extracted from them.
 Finally, it facilitates archiving and backuping downloaded files and
@@ -69,7 +68,7 @@ gathering contents from different websites, e.g. “european_commission”,
 “european_parliament”, “european_council”, etc.
 
 ``` r
-library("castarter2")
+library("castarter")
 cas_set_options(base_folder = fs::path(fs::path_home_r(), "R", "castarter_data"),
                 project = "european_union",
                 website = "european_commission"
@@ -96,14 +95,14 @@ however rarely make sense to live-sync tens or hundreds of thousands of
 files as you proceed with your scraping. You may want to keep this in
 mind as you set the `base_folder` with `cas_set_options()`.
 
-`castarter2` stores details about the download process in a database. By
+`castarter` stores details about the download process in a database. By
 default, this is stored locally in RSQlite database kept in the same
 folder as website files, but it can be stored in a different folder, or
 alternative database backends such as MySQL can also be used.
 
 ## Index pages and content pages
 
-`castarter2` starts with the idea that there are basically two types of
+`castarter` starts with the idea that there are basically two types of
 pages that are commonly found when text mining.
 
 **index pages**. These are pages that usually include some form of list
@@ -139,11 +138,11 @@ such pages only once.
 
 ## Database
 
-To keep track of the urls we are working on, `castarter2` facilitates
+To keep track of the urls we are working on, `castarter` facilitates
 storing urls, as well as some basic metadata about them, in an orderly
 fashion.
 
-These are the key tables to found in a `castarter2` database:
+These are the key tables to found in a `castarter` database:
 
 - `index_id` - a table with three columns:
 
@@ -200,15 +199,19 @@ These are the key tables to found in a `castarter2` database:
     [etc](https://en.wikipedia.org/wiki/List_of_HTTP_status_codes).
   - `size`: size of the downloaded file
 
-- `contents_data` - a table with three columns
+- `contents_data` - a table with an unspecified number of columns. They
+  must include:
 
   - `id` - an integer, matching the identifier defined in the
     `contents_id` table
-  - `field` - a character string, defining a value type. These often
-    will include fields such as “title”, “date”, “author”, “text”, etc.,
-    but are not limited by design. Irrespective of their contents, they
-    will however all be stored as textual strings.
-  - `value` - the actual contents for the field
+  - `url` - url from which the contents have been extracted. In
+    principle, this is redundant as it can be derived from the
+    `contents_id` table. However, given the importance of ensuring full
+    consistency between data and their source, some redundancy may be
+    warranted.
+  - … - value columns with the actual contents for the field.
+
+See vignettes for how all of this works in practice.
 
 ### Database location and database file naming conventions
 
