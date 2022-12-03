@@ -2,6 +2,8 @@
 #'
 #' This function relies on data stored in the database.
 #'
+#' @inheritParams cas_download
+#'
 #' @return
 #' @export
 #'
@@ -11,6 +13,7 @@ cas_get_path_to_files <- function(urls = NULL,
                                   custom_folder = NULL,
                                   custom_path = NULL,
                                   file_format = "html",
+                                  random = FALSE,
                                   db_connection = NULL,
                                   ...) {
   type <- dplyr::if_else(condition = index,
@@ -27,6 +30,14 @@ cas_get_path_to_files <- function(urls = NULL,
     dplyr::arrange(id, dplyr::desc(batch)) %>%
     dplyr::distinct(id, .keep_all = TRUE) %>%
     dplyr::filter(status == 200)
+  
+  if (is.numeric(random) == TRUE) {
+    available_files_df <- available_files_df %>%
+      dplyr::slice_sample(n = random)
+  } else if (isTRUE(random)) {
+    available_files_df <- available_files_df %>%
+      dplyr::slice_sample(p = 1)
+  }
 
   if (is.null(custom_path)) {
     website_folder <- cas_get_base_folder(

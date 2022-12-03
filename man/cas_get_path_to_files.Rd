@@ -10,9 +10,21 @@ cas_get_path_to_files(
   custom_folder = NULL,
   custom_path = NULL,
   file_format = "html",
+  random = FALSE,
   db_connection = NULL,
   ...
 )
+}
+\arguments{
+\item{index}{Logical, defaults to FALSE. If TRUE, downloaded files will be
+considered \code{index} files. If not, they will be considered \code{contents} files.
+See Readme for a more extensive explanation.}
+
+\item{random}{Defaults to FALSE. If TRUE, the download order is randomised.
+If a numeric is given, the download order is randomised and at most the
+given number of items is downloaded.}
+
+\item{...}{Passed to \code{cas_get_db_file()}.}
 }
 \description{
 This function relies on data stored in the database.
