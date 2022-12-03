@@ -9,6 +9,7 @@ cas_extract(
   index = FALSE,
   db_connection = NULL,
   file_format = "html",
+  write_to_db = TRUE,
   ...
 )
 }

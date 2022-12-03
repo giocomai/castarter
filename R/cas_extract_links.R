@@ -156,10 +156,14 @@ cas_extract_links <- function(id = NULL,
       db_connection = db,
       ...
     )
-    return(NULL)
+    return(invisible(NULL))
   }
   
   if (write_to_db == FALSE) {
+    cas_disconnect_from_db(
+      db_connection = db,
+      ...
+    )
     db <- duckdb::dbConnect(duckdb::duckdb(), ":memory:")
   }
 
