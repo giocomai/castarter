@@ -9,7 +9,7 @@ cas_browse(
   remote = FALSE,
   id = NULL,
   batch = NULL,
-  index_group = FALSE,
+  index_group = NULL,
   file_format = "html",
   random = 1,
   ...

@@ -30,7 +30,7 @@ cas_get_path_to_files <- function(urls = NULL,
     dplyr::arrange(id, dplyr::desc(batch)) %>%
     dplyr::distinct(id, .keep_all = TRUE) %>%
     dplyr::filter(status == 200)
-  
+
   if (is.numeric(random) == TRUE) {
     available_files_df <- available_files_df %>%
       dplyr::slice_sample(n = random)

@@ -116,13 +116,13 @@ cas_extract_links <- function(id = NULL,
 
   if (is.null(index_group) == FALSE) {
     index_group_to_keep <- index_group
-    
+
     previous_index_links_df <- cas_read_db_index(
       db_connection = db,
       disconnect_db = FALSE,
       ...
     )
-    
+
     local_files_df <- local_files_df %>%
       dplyr::left_join(
         y = previous_index_links_df %>%
@@ -134,7 +134,7 @@ cas_extract_links <- function(id = NULL,
       dplyr::filter(.data$index_group %in% index_group_to_keep)
   }
 
-  
+
   if (is.numeric(random) == TRUE) {
     local_files_df <- local_files_df %>%
       dplyr::slice_sample(n = random)
@@ -150,15 +150,15 @@ cas_extract_links <- function(id = NULL,
         dplyr::arrange(id, batch)
     }
   }
-  
-  if (nrow(local_files_df)==0) {
+
+  if (nrow(local_files_df) == 0) {
     cas_disconnect_from_db(
       db_connection = db,
       ...
     )
     return(invisible(NULL))
   }
-  
+
   if (write_to_db == FALSE) {
     cas_disconnect_from_db(
       db_connection = db,

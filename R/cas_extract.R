@@ -82,10 +82,10 @@ cas_extract <- function(extractors,
       db_connection = db,
       ...
     )
-    
+
     db <- duckdb::dbConnect(duckdb::duckdb(), ":memory:")
   }
-  
+
   pb <- progress::progress_bar$new(total = nrow(files_to_extract_df))
 
   purrr::walk(
@@ -125,13 +125,15 @@ cas_extract <- function(extractors,
   )
 
   if (write_to_db == FALSE) {
-    output_df <- cas_read_db_contents_data(db_connection = db_connection,
-                                           ...)
+    output_df <- cas_read_db_contents_data(
+      db_connection = db_connection,
+      ...
+    )
     cas_disconnect_from_db(
       db_connection = db,
       disconnect_db = TRUE
     )
-    
+
     output_df
   }
   cas_disconnect_from_db(
