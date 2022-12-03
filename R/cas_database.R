@@ -644,7 +644,7 @@ cas_read_from_db <- function(table,
                              db_connection = NULL,
                              ...) {
   if (cas_check_use_db(...) == FALSE) {
-    return(invisible(NULL))
+    usethis::ui_stop("Database not set. Set the database connection with `cas_set_options()` or pass database connection with the parameter `db_connection`.")
   }
 
   db <- cas_connect_to_db(
