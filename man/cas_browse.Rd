@@ -6,7 +6,7 @@
 \usage{
 cas_browse(
   index = FALSE,
-  remote = FALSE,
+  remote = TRUE,
   id = NULL,
   batch = NULL,
   index_group = NULL,
@@ -20,7 +20,10 @@ cas_browse(
 considered \code{index} files. If not, they will be considered \code{contents} files.
 See Readme for a more extensive explanation.}
 
-\item{random}{Defaults to 1.}
+\item{remote}{Defaults to TRUE. If TRUE, open relevant url online. If FALSE,
+it opens the locally stored file.}
+
+\item{random}{Defaults to 1. By defaults, it opens one random url.}
 
 \item{...}{Passed to \code{cas_get_db_file()}.}
 }

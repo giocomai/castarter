@@ -1,6 +1,8 @@
 #' Open in a browser a URL
 #'
-#' @param random Defaults to 1.
+#' @param remote Defaults to TRUE. If TRUE, open relevant url online. If FALSE,
+#'   it opens the locally stored file.
+#' @param random Defaults to 1. By defaults, it opens one random url.
 #'
 #' @inheritParams cas_download
 #'
@@ -9,7 +11,7 @@
 #'
 #' @examples
 cas_browse <- function(index = FALSE,
-                       remote = FALSE,
+                       remote = TRUE,
                        id = NULL,
                        batch = NULL,
                        index_group = NULL,
