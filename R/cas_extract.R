@@ -41,6 +41,7 @@ cas_extract <- function(extractors,
     dplyr::select("id", "batch") %>%
     dplyr::mutate(path = fs::path(
       path,
+      batch,
       stringr::str_c(id, "_", batch, ".", file_format)
     )) %>%
     dplyr::select("id", "path")
