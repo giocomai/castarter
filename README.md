@@ -10,7 +10,7 @@ experimental](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](h
 <!-- badges: end -->
 
 castarter is a more modern, fully-featured, and consistent iteration of
-[`castarter` (legacy)](https://github.com/giocomai/castarter_legacy) -
+[`castarter` (legacy)](https://github.com/giocomai/castarter.legacy) -
 Content Analysis Starter Toolkit for the R programming language. It
 facilitates text mining and web scraping by taking care of many of the
 most common file management issues, keeps tracks of download advancement

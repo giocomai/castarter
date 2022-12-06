@@ -19,7 +19,7 @@ knitr::opts_chunk$set(
 [![Lifecycle: experimental](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](https://lifecycle.r-lib.org/articles/stages.html#experimental)
 <!-- badges: end -->
 
-castarter is a more modern, fully-featured, and consistent iteration of [`castarter` (legacy)](https://github.com/giocomai/castarter_legacy) - Content Analysis Starter Toolkit for the R programming language. It facilitates text mining and web scraping by taking care of many of the most common file management issues, keeps tracks of download advancement in a local database, facilitates extraction through dedicated convenience functions, and allows for basic exploration of textual corpora through a Shiny interface.
+castarter is a more modern, fully-featured, and consistent iteration of [`castarter` (legacy)](https://github.com/giocomai/castarter.legacy) - Content Analysis Starter Toolkit for the R programming language. It facilitates text mining and web scraping by taking care of many of the most common file management issues, keeps tracks of download advancement in a local database, facilitates extraction through dedicated convenience functions, and allows for basic exploration of textual corpora through a Shiny interface.
 
 It is currently at an early stage of development, and may behave erratically.
 
