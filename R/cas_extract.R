@@ -22,20 +22,12 @@ cas_extract <- function(extractors,
 
   path <- cass_get_base_path(...)
 
-  # urls_df <- cass_get_urls_df(
-  #   urls = NULL,
-  #   index = index,
-  #   db_connection = db,
-  #   ...
-  # )
-
   previous_download_df <- cas_read_db_download(
     index = index,
     db_connection = db,
     disconnect_db = FALSE,
     ...
   )
-
 
   stored_files_df <- previous_download_df %>%
     dplyr::select("id", "batch") %>%
@@ -136,20 +128,31 @@ cas_extract <- function(extractors,
 
   if (write_to_db == FALSE) {
     output_df <- cas_read_db_contents_data(
-      db_connection = db_connection,
+      db_connection = db,
       ...
     )
+    
     cas_disconnect_from_db(
       db_connection = db,
       disconnect_db = TRUE
     )
 
-    output_df
+    return(output_df)
+    
+  } else {
+    output_df <- cas_read_db_contents_data(
+      db_connection = db,
+      ...
+    )
+    
+    cas_disconnect_from_db(
+      db_connection = db,
+      ...
+    )
+    
+    return(output_df)
   }
-  cas_disconnect_from_db(
-    db_connection = db,
-    ...
-  )
+
 }
 
 
