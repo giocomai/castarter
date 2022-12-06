@@ -11,6 +11,7 @@ cas_extract <- function(extractors,
                         index = FALSE,
                         db_connection = NULL,
                         file_format = "html",
+                        random = FALSE,
                         write_to_db = TRUE,
                         ...) {
   ellipsis::check_dots_unnamed()
@@ -76,6 +77,14 @@ cas_extract <- function(extractors,
       ),
       by = "id"
     )
+
+  if (is.numeric(random) == TRUE) {
+    files_to_extract_df <- files_to_extract_df %>%
+      dplyr::slice_sample(n = random)
+  } else if (isTRUE(random)) {
+    files_to_extract_df <- files_to_extract_df %>%
+      dplyr::slice_sample(p = 1)
+  }
 
   if (write_to_db == FALSE) {
     cas_disconnect_from_db(

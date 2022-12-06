@@ -9,6 +9,7 @@ cas_extract(
   index = FALSE,
   db_connection = NULL,
   file_format = "html",
+  random = FALSE,
   write_to_db = TRUE,
   ...
 )
@@ -19,6 +20,10 @@ cas_extract(
 \item{index}{Logical, defaults to FALSE. If TRUE, downloaded files will be
 considered \code{index} files. If not, they will be considered \code{contents} files.
 See Readme for a more extensive explanation.}
+
+\item{random}{Defaults to FALSE. If TRUE, the download order is randomised.
+If a numeric is given, the download order is randomised and at most the
+given number of items is downloaded.}
 
 \item{...}{Passed to \code{cas_get_db_file()}.}
 }
