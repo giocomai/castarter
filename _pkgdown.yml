@@ -9,6 +9,10 @@ reference:
 - contents:
   - has_concept("database functions")
   - starts_with("casdb_")
+- title: Functions interacting with the Internet Archive's Wayback Machine
+- description: Check availability of URLs in the Wayback machine, and store them if needed
+- contents:
+  - starts_with("cas_ia_")
 - title: Shiny modules
 - description: These are shiny modules used in the main Shiny app. Some of them can be used for illustrative purposes elsewhere, or integrated in other Shiny apps
 - contents:

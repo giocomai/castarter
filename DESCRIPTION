@@ -1,6 +1,6 @@
 Package: castarter
-Title: Create and Explore Textual Datasets with Ease
-Version: 0.0.1.9001
+Title: Content Analysis Starter Toolkit
+Version: 0.0.1.9002
 Authors@R: 
     c(person(given = "Giorgio",
              family = "Comai",

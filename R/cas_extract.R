@@ -131,28 +131,26 @@ cas_extract <- function(extractors,
       db_connection = db,
       ...
     )
-    
+
     cas_disconnect_from_db(
       db_connection = db,
       disconnect_db = TRUE
     )
 
     return(output_df)
-    
   } else {
     output_df <- cas_read_db_contents_data(
       db_connection = db,
       ...
     )
-    
+
     cas_disconnect_from_db(
       db_connection = db,
       ...
     )
-    
+
     return(output_df)
   }
-
 }
 
 
