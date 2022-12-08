@@ -4,7 +4,7 @@
 \alias{cas_ia_save}
 \title{Save a URL the Internet Archive's Wayback Machine}
 \usage{
-cas_ia_save(url, wait = 1)
+cas_ia_save(url, wait = 1, ...)
 }
 \arguments{
 \item{url}{A charachter vector of length one, a url.}
@@ -12,6 +12,8 @@ cas_ia_save(url, wait = 1)
 \item{wait}{Defaults to 1. Number of seconds to wait between downloading one
 page and the next. Can be increased to reduce server load, or can be set to
 0 when this is not an issue.}
+
+\item{...}{Passed to \code{cas_get_db_file()}.}
 }
 \description{
 Save a URL the Internet Archive's Wayback Machine

@@ -136,11 +136,14 @@ cass_download_httr <- function(download_df = NULL,
     current_batch_folder <- fs::path_dir(path = download_df[["path"]][1])
     if (fs::file_exists(current_batch_folder) == FALSE) {
       fs::dir_create(path = current_batch_folder)
-      usethis::ui_info(stringr::str_c("The folder",
-        usethis::ui_path(current_batch_folder),
-        "for the current download batch has been created.",
-        sep = " "
-      ))
+      usethis::ui_info(
+        stringr::str_c(
+          "The folder",
+          usethis::ui_path(current_batch_folder),
+          "for the current download batch has been created.",
+          sep = " "
+        )
+      )
     }
   }
 
