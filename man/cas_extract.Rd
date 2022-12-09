@@ -6,6 +6,7 @@
 \usage{
 cas_extract(
   extractors,
+  id = NULL,
   index = FALSE,
   db_connection = NULL,
   file_format = "html",

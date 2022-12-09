@@ -8,6 +8,7 @@
 #'
 #' @examples
 cas_extract <- function(extractors,
+                        id = NULL,
                         index = FALSE,
                         db_connection = NULL,
                         file_format = "html",
@@ -74,7 +75,17 @@ cas_extract <- function(extractors,
       by = "id"
     )
 
+  if (is.null(id) == FALSE) {
+    id_to_keep <- id
+    files_to_extract_df <- files_to_extract_df %>%
+      dplyr::filter(id %in% id_to_keep)
+  }
+
   if (is.numeric(random) == TRUE) {
+    if (random>nrow(files_to_extract_df)) {
+      random <- nrow(files_to_extract_df)
+    }
+    
     files_to_extract_df <- files_to_extract_df %>%
       dplyr::slice_sample(n = random)
   } else if (isTRUE(random)) {
