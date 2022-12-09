@@ -12,6 +12,7 @@ cas_extract_html(
   container_instance = NULL,
   sub_element = NULL,
   no_children = NULL,
+  squish = TRUE,
   encoding = "UTF-8",
   custom_Xpath = NULL,
   custom_CSSpath = NULL,
@@ -21,23 +22,45 @@ cas_extract_html(
 \arguments{
 \item{html_document}{An html document parsed with \code{xml2::read_html()}.}
 
-\item{container}{Defaults to NULL. Type of html container from where links are to be extracted, such as "div", "ul", and others. Either \code{container_class} or \code{container_id} must also be provided.}
+\item{container}{Defaults to NULL. Type of html container from where links
+are to be extracted, such as "div", "ul", and others. Either
+\code{container_class} or \code{container_id} must also be provided.}
 
-\item{container_class}{Defaults to NULL. If provided, also \code{container} must be given (and \code{container_id} must be NULL). Only text found inside the provided combination of container/class will be extracted.}
+\item{container_class}{Defaults to NULL. If provided, also \code{container} must
+be given (and \code{container_id} must be NULL). Only text found inside the
+provided combination of container/class will be extracted.}
 
-\item{container_id}{Defaults to NULL. If provided, also \code{container} must be given (and \code{container_id} must be NULL). Only text found inside the provided combination of container/class will be extracted.}
+\item{container_id}{Defaults to NULL. If provided, also \code{container} must be
+given (and \code{container_id} must be NULL). Only text found inside the
+provided combination of container/class will be extracted.}
 
-\item{container_instance}{Defaults to NULL. If given, it must be an integer. If a given combination is found more than once in the same page, the relevant occurrence is kept. Use with caution, as not all pages always include the same number of elements of the same class/with the same id.}
+\item{container_instance}{Defaults to NULL. If given, it must be an integer.
+If a given combination is found more than once in the same page, the
+relevant occurrence is kept. Use with caution, as not all pages always
+include the same number of elements of the same class/with the same id.}
 
-\item{sub_element}{Defaults to NULL. If provided, also \code{container} must be given. Only text within elements of given type under the chosen combination of container/containerClass will be extracted. When given, it will tipically be "p", to extract all p elements inside the selected div.}
+\item{sub_element}{Defaults to NULL. If provided, also \code{container} must be
+given. Only text within elements of given type under the chosen combination
+of container/containerClass will be extracted. When given, it will
+tipically be "p", to extract all p elements inside the selected div.}
 
-\item{no_children}{Defaults to FALSE, i.e. by default all subelements of the selected combination (e.g. div with given class) are extracted. If TRUE, only text found under the given combination (but not its subelements) will be extracted. Corresponds to the xpath string \verb{/node()[not(self::div)]}.}
+\item{no_children}{Defaults to FALSE, i.e. by default all subelements of the
+selected combination (e.g. div with given class) are extracted. If TRUE,
+only text found under the given combination (but not its subelements) will
+be extracted. Corresponds to the xpath string \verb{/node()[not(self::div)]}.}
 
-\item{custom_Xpath}{Defaults to NULL. If given, all other parameters are ignored and given Xpath used instead.}
+\item{squish}{Defaults to TRUE. If TRUE, applies \code{stringr::str_squish()} to
+output, removing whitespace from start and end of string, and replacing
+repeated whitespace with a single space.}
 
-\item{custom_CSSpath}{Defaults to NULL. If given, all other parameters are ignored and given CSSpath used instead.}
+\item{custom_Xpath}{Defaults to NULL. If given, all other parameters are
+ignored and given Xpath used instead.}
 
-\item{keep_everything}{Defaults to FALSE. If TRUE, all text included in the page is returned as a single string.}
+\item{custom_CSSpath}{Defaults to NULL. If given, all other parameters are
+ignored and given CSSpath used instead.}
+
+\item{keep_everything}{Defaults to FALSE. If TRUE, all text included in the
+page is returned as a single string.}
 }
 \value{
 A character vector of length one.

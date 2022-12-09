@@ -42,11 +42,17 @@ contains either of the strings provided.}
 \item{exclude_when}{If an URL includes this string, it is excluded from the
 output. One or more strings may be provided.}
 
-\item{container}{Defaults to NULL. Type of html container from where links are to be extracted, such as "div", "ul", and others. Either \code{container_class} or \code{container_id} must also be provided.}
+\item{container}{Defaults to NULL. Type of html container from where links
+are to be extracted, such as "div", "ul", and others. Either
+\code{container_class} or \code{container_id} must also be provided.}
 
-\item{container_class}{Defaults to NULL. If provided, also \code{container} must be given (and \code{container_id} must be NULL). Only text found inside the provided combination of container/class will be extracted.}
+\item{container_class}{Defaults to NULL. If provided, also \code{container} must
+be given (and \code{container_id} must be NULL). Only text found inside the
+provided combination of container/class will be extracted.}
 
-\item{container_id}{Defaults to NULL. If provided, also \code{container} must be given (and \code{container_id} must be NULL). Only text found inside the provided combination of container/class will be extracted.}
+\item{container_id}{Defaults to NULL. If provided, also \code{container} must be
+given (and \code{container_id} must be NULL). Only text found inside the
+provided combination of container/class will be extracted.}
 
 \item{min_length}{If a link is shorter than the number of characters given in
 min_length, it is excluded from the output.}
