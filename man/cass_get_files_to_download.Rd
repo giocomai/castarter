@@ -12,6 +12,7 @@ cass_get_files_to_download(
   custom_path = NULL,
   file_format = "html",
   db_connection = NULL,
+  download_again_if_status_is_not = NULL,
   ...
 )
 }
@@ -28,6 +29,9 @@ See Readme for a more extensive explanation.}
 in the database to find if previous downloads have taken place. If so, by
 default, the current batch will be one unit higher than the highest batch
 number found in the database.}
+
+\item{download_again_if_status_is_not}{Defaults to NULL. If given, it must a
+status code as integer, typically \code{200L}.}
 
 \item{...}{
   Arguments passed on to \code{\link[=cass_get_urls_df]{cass_get_urls_df}}, \code{\link[=cas_get_base_folder]{cas_get_base_folder}}

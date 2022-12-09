@@ -12,6 +12,7 @@ cass_download_httr(
   db_connection = NULL,
   random = FALSE,
   file_format = "html",
+  download_again_if_status_is_not = NULL,
   ...
 )
 }

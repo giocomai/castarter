@@ -29,6 +29,7 @@ cas_download <- function(download_df = NULL,
                          wait = 1,
                          random = FALSE,
                          file_format = "html",
+                         download_again_if_status_is_not = NULL,
                          ...) {
   cass_download_httr(
     download_df = download_df,
@@ -37,6 +38,7 @@ cas_download <- function(download_df = NULL,
     wait = wait,
     random = random,
     file_format = file_format,
+    download_again_if_status_is_not = download_again_if_status_is_not,
     ...
   )
 }
@@ -109,6 +111,7 @@ cass_download_httr <- function(download_df = NULL,
                                db_connection = NULL,
                                random = FALSE,
                                file_format = "html",
+                               download_again_if_status_is_not = NULL,
                                ...) {
   type <- dplyr::if_else(condition = index,
     true = "index",
@@ -125,6 +128,7 @@ cass_download_httr <- function(download_df = NULL,
       db_connection = db,
       disconnect_db = FALSE,
       file_format = file_format,
+      download_again_if_status_is_not = download_again_if_status_is_not,
       ...
     )
   }
@@ -207,6 +211,8 @@ cass_download_httr <- function(download_df = NULL,
 #'   in the database to find if previous downloads have taken place. If so, by
 #'   default, the current batch will be one unit higher than the highest batch
 #'   number found in the database.
+#' @param download_again_if_status_is_not Defaults to NULL. If given, it must a
+#'   status code as integer, typically `200L`.
 #'
 #' @inheritParams cas_download
 #' @inheritDotParams cass_get_urls_df -urls -index
@@ -223,6 +229,7 @@ cass_get_files_to_download <- function(urls = NULL,
                                        custom_path = NULL,
                                        file_format = "html",
                                        db_connection = NULL,
+                                       download_again_if_status_is_not = NULL,
                                        ...) {
   type <- dplyr::if_else(condition = index,
     true = "index",
@@ -247,18 +254,6 @@ cass_get_files_to_download <- function(urls = NULL,
     index = index,
     file_format = file_format
   )
-
-  # previous_files_df <- fs::dir_info(path = path) %>%
-  #   dplyr::transmute(path,
-  #     size,
-  #     filename = fs::path_file(path)
-  #   ) %>%
-  #   dplyr::mutate(id = stringr::str_extract(
-  #     string = filename,
-  #     pattern = "[[:digit:]]+"
-  #   ) %>%
-  #     as.numeric()) %>%
-  #   dplyr::arrange(id)
 
   ## check if previous downloads are stored
   ## if yes, add 1 to highest batch
@@ -291,6 +286,10 @@ cass_get_files_to_download <- function(urls = NULL,
     )
   )
 
+  if (is.null(download_again_if_status_is_not) == FALSE) {
+    previous_download_df <- previous_download_df %>%
+      dplyr::filter(status %in% download_again_if_status_is_not)
+  }
   files_to_download_df <- dplyr::anti_join(
     x = expected_filenames_df,
     y = previous_download_df,

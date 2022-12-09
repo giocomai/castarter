@@ -12,6 +12,7 @@ cas_download(
   wait = 1,
   random = FALSE,
   file_format = "html",
+  download_again_if_status_is_not = NULL,
   ...
 )
 }
