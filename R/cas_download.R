@@ -16,6 +16,8 @@
 #' @param random Defaults to FALSE. If TRUE, the download order is randomised.
 #'   If a numeric is given, the download order is randomised and at most the
 #'   given number of items is downloaded.
+#' @param retry_times Defaults to 3. Number of times to retry download in case
+#'   of errors.
 #'
 #' @inheritParams cas_connect_to_db
 #'
@@ -29,6 +31,7 @@ cas_download <- function(download_df = NULL,
                          wait = 1,
                          random = FALSE,
                          file_format = "html",
+                         retry_times = 3,
                          download_again_if_status_is_not = NULL,
                          ...) {
   cass_download_httr(
@@ -38,6 +41,7 @@ cas_download <- function(download_df = NULL,
     wait = wait,
     random = random,
     file_format = file_format,
+    retry_times = retry_times,
     download_again_if_status_is_not = download_again_if_status_is_not,
     ...
   )
@@ -111,6 +115,7 @@ cass_download_httr <- function(download_df = NULL,
                                db_connection = NULL,
                                random = FALSE,
                                file_format = "html",
+                               retry_times = 3,
                                download_again_if_status_is_not = NULL,
                                ...) {
   type <- dplyr::if_else(condition = index,
@@ -166,8 +171,10 @@ cass_download_httr <- function(download_df = NULL,
     .f = function(x) {
       pb$tick()
       if (fs::file_exists(x$path) == FALSE | overwrite_file == TRUE) {
-        raw <- httr::GET(
+        raw <- httr::RETRY(
+          verb = "GET",
           url = x$url,
+          times = retry_times,
           httr::write_disk(
             path = x$path,
             overwrite = overwrite_file

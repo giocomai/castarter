@@ -12,6 +12,7 @@ cas_download(
   wait = 1,
   random = FALSE,
   file_format = "html",
+  retry_times = 3,
   download_again_if_status_is_not = NULL,
   ...
 )
@@ -32,6 +33,9 @@ page and the next. Can be increased to reduce server load, or can be set to
 \item{random}{Defaults to FALSE. If TRUE, the download order is randomised.
 If a numeric is given, the download order is randomised and at most the
 given number of items is downloaded.}
+
+\item{retry_times}{Defaults to 3. Number of times to retry download in case
+of errors.}
 
 \item{...}{Passed to \code{cas_get_db_file()}.}
 
