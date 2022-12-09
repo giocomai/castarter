@@ -27,7 +27,10 @@ cas_extract <- function(extractors,
     db_connection = db,
     disconnect_db = FALSE,
     ...
-  )
+  ) %>%
+    dplyr::arrange(dplyr::desc(datetime)) %>%
+    dplyr::distinct(id, .keep_all = TRUE) %>%
+    dplyr::arrange(id, batch, datetime)
 
   stored_files_df <- previous_download_df %>%
     dplyr::select("id", "batch") %>%
