@@ -26,7 +26,7 @@ cas_read_db_contents_data <- function(db_connection = NULL,
     if (nrow(db_result) == 0) {
       # TODO
     } else {
-      tibble::as_tibble(db_result)
+      db_result
     }
   }
 }

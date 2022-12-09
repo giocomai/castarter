@@ -8,7 +8,7 @@ cas_disconnect_from_db(
   db_connection = NULL,
   db_type = NULL,
   use_db = NULL,
-  disconnect_db = TRUE
+  disconnect_db = FALSE
 )
 }
 \arguments{

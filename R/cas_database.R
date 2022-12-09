@@ -480,7 +480,7 @@ cas_connect_to_db <- function(db_connection = NULL,
 cas_disconnect_from_db <- function(db_connection = NULL,
                                    db_type = NULL,
                                    use_db = NULL,
-                                   disconnect_db = TRUE) {
+                                   disconnect_db = FALSE) {
   if (isFALSE(disconnect_db)) {
     return(invisible(NULL))
   }
@@ -656,10 +656,7 @@ cas_read_from_db <- function(table,
     # do nothing: if table does not exist, previous data cannot be there
     output_df <- NULL
   } else {
-    output_df <- pool::dbReadTable(db,
-      name = table
-    ) %>%
-      dplyr::collect()
+    output_df <- dplyr::tbl(db, table)
   }
 
   cas_disconnect_from_db(
@@ -667,6 +664,5 @@ cas_read_from_db <- function(table,
     ...
   )
 
-  output_df %>%
-    tibble::as_tibble()
+  output_df
 }

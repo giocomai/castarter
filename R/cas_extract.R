@@ -82,10 +82,10 @@ cas_extract <- function(extractors,
   }
 
   if (is.numeric(random) == TRUE) {
-    if (random>nrow(files_to_extract_df)) {
+    if (random > nrow(files_to_extract_df)) {
       random <- nrow(files_to_extract_df)
     }
-    
+
     files_to_extract_df <- files_to_extract_df %>%
       dplyr::slice_sample(n = random)
   } else if (isTRUE(random)) {
@@ -145,24 +145,6 @@ cas_extract <- function(extractors,
       db_connection = db,
       ...
     )
-
-    cas_disconnect_from_db(
-      db_connection = db,
-      disconnect_db = TRUE
-    )
-
-    return(output_df)
-  } else {
-    output_df <- cas_read_db_contents_data(
-      db_connection = db,
-      ...
-    )
-
-    cas_disconnect_from_db(
-      db_connection = db,
-      ...
-    )
-
     return(output_df)
   }
 }

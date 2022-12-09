@@ -154,7 +154,7 @@ cas_read_db_index <- function(db_folder = NULL,
   if (isFALSE(db_result)) {
     tibble::as_tibble(casdb_empty_index_id)
   } else {
-    tibble::as_tibble(db_result)
+    db_result
   }
 }
 
