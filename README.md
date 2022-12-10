@@ -10,13 +10,13 @@ experimental](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](h
 <!-- badges: end -->
 
 castarter is a more modern, fully-featured, and consistent iteration of
-[`castarter` (legacy)](https://github.com/giocomai/castarter.legacy) -
+[`castarter.legacy`](https://github.com/giocomai/castarter.legacy) -
 Content Analysis Starter Toolkit for the R programming language. It
 facilitates text mining and web scraping by taking care of many of the
-most common file management issues, keeps tracks of download advancement
-in a local database, facilitates extraction through dedicated
-convenience functions, and allows for basic exploration of textual
-corpora through a Shiny interface.
+most common file management issues. It keeps tracks of download
+advancement in a local database, facilitates extraction through
+dedicated convenience functions, and allows for basic exploration of
+textual corpora through a Shiny interface.
 
 It is currently at an early stage of development, and may behave
 erratically.
@@ -29,19 +29,44 @@ You can install `castarter` with:
 remotes::install_github("giocomai/castarter")
 ```
 
-## Interactive exploration of textual corpora
+## Key features
 
-Check out `castarter`’s interactive web interface for exploring corpora.
+`castarter` aims to streamline the process of aquiring textual contents
+retrieved online and transforming them into a structured format ready to
+be analysed.
 
-``` r
-remotes::install_github("giocomai/tifkremlinen")
-cas_explorer(corpus = tifkremlinen::kremlin_en,
-             default_string = "Syria, Crimea")
-```
+It facilitates many of the tasks that often pose an excessive hurdle for
+beginners and are unnecessarily time consuming even for experienced
+users:
 
-# Key concepts
+- creating list of URLs from sections of a website
+- managing the download process by
+  - ensuring pages are downloaded only once
+  - managing the creation of folders and subfolders
+  - keeping a log of the download process for reporting
+- extracting text and metadata from the downloaded files, including
+  support for different formats, including html (default), json, xml,
+  and csv
+- keeping extracted text in a database in order to allow further
+  analysis even if the resulting dataset is larger than available memory
+- keeping a textual dataset updated
+- sharing a textual dataset with the wider public through a web
+  interface that enables basic analaysis of the corpus
+- conducting basic quality and sanity checks on the textual dataset
+- exporting the dataset to common formats
+- making backup of files, and storing them to a remote location
+- producing reports about the download process, including basic summary
+  statistics
 
-## Project and website
+This package allows for many custom options for advanced users, but is
+still opinionated about how a typical workflow looks like and about the
+likely user preferences. More broadly, a core idea is that reliability
+is more important than speed, as more advanced users can then export the
+data in more efficient formats.
+
+## Key concepts
+
+### Project and website
 
 One of the first issues that appear when starting a text mining or web
 scraping project relates to the issue of managing files and folder.
@@ -100,7 +125,7 @@ default, this is stored locally in RSQlite database kept in the same
 folder as website files, but it can be stored in a different folder, or
 alternative database backends such as MySQL can also be used.
 
-## Index pages and content pages
+### Index pages and content pages
 
 `castarter` starts with the idea that there are basically two types of
 pages that are commonly found when text mining.
@@ -136,109 +161,24 @@ the part of the page we are interested in does not change. Unless we
 have some specific reason to do otherwise, we usually need to download
 such pages only once.
 
+## Interactive exploration of textual datasets
+
+Check out `castarter`’s interactive web interface for exploring corpora.
+
+``` r
+library("castarter")
+remotes::install_github("giocomai/tifkremlinen")
+cas_explorer(corpus = tifkremlinen::kremlin_en,
+             default_string = "Syria, Crimea")
+```
+
 ## Database
 
 To keep track of the urls we are working on, `castarter` facilitates
 storing urls, as well as some basic metadata about them, in an orderly
 fashion.
 
-These are the key tables to found in a `castarter` database:
-
-- `index_id` - a table with three columns:
-
-  - `id`: a unique integer identifier corresponding to a unique url
-  - `url`: a url
-  - `index_group`: a textual string, by default `index`. It is not
-    infrequent to have separate index pages for different sections of a
-    website (e.g. “news”, “events”, “statements”, etc.), different tags,
-    or different levels of the indexing process (they can, for example,
-    be called `step_01`, `step_02`). In such cases, it is useful to
-    separate these different types of sources in case of updates: one
-    would be interested in downloading the latest
-    `example.com/news/page/1` and the latest
-    `example.com/statements/page/1`, and following, but not necessarily
-    all index pages.
-
-- `index_download` - a table with four columns. New rows appear here
-  only when a download has been attempted.
-
-  - `id`: an integer, matching the identifier defined in the previous
-    table
-  - `batch`: an integer, starting from 1 and increasing. It identifies
-    the download batch and allows for matching data with a specific
-    download instance.
-  - `datetime`: timestamp of when download was attempted
-  - `status`: http response status code, such as 200 for successful, 404
-    for not found,
-    [etc](https://en.wikipedia.org/wiki/List_of_HTTP_status_codes).
-  - `size`: size of the downloaded file
-
-- `contents_id`- a table with five columns, similar to the one outlined
-  above:
-
-  - `id`: a unique integer identifier corresponding to a unique url
-  - `url`: a url
-  - `link_text`: text used for the link
-  - `source_index_id`: the identifier of the url from where the link was
-    extracted
-  - `source_index_batch`: the identifier of the download batch from
-    where the link was obtained
-
-- `contents_download` - a table with five columns, similar to the one
-  outlined above. New rows appear here only when a download has been
-  attempted.
-
-  - `id`: an integer, matching the identifier defined in the
-    `contents_id` table
-  - `batch`: an integer, starting from 1 and increasing. It identifies
-    the download batch and allows for matching data with a specific
-    download instance.
-  - `datetime`: timestamp of when download was attempted
-  - `status`: http response status code, such as 200 for successful, 404
-    for not found,
-    [etc](https://en.wikipedia.org/wiki/List_of_HTTP_status_codes).
-  - `size`: size of the downloaded file
-
-- `contents_data` - a table with an unspecified number of columns. They
-  must include:
-
-  - `id` - an integer, matching the identifier defined in the
-    `contents_id` table
-  - `url` - url from which the contents have been extracted. In
-    principle, this is redundant as it can be derived from the
-    `contents_id` table. However, given the importance of ensuring full
-    consistency between data and their source, some redundancy may be
-    warranted.
-  - … - value columns with the actual contents for the field.
-
 See vignettes for how all of this works in practice.
-
-### Database location and database file naming conventions
-
-By default, databases are stored in the same folder as website data,
-e.g. under `base_folder/project/website/`.
-
-The location of the database cas be retrieved with:
-
-``` r
-cas_get_db_folder()
-cas_get_db_file()
-#> /home/g/R/castarter_data/european_union/european_commission/cas_european_union_european_commission_db.duckdb
-```
-
-The filename of the SQLite database includes reference to both the
-project and the website name. This allows to store all database files of
-different projects in a single folder, as the file naming convention
-should prevent overlaps.
-
-What if details about multiple projects and websites are to be stored in
-a single database, e.g. because it relies on a MySQL database hosted on
-a server rather than on local SQLite databases? Then, the database will
-need an additional table, with a list of project and website associated
-to a unique id. That id is then used in table names of each project and
-website. This approach prevents potential issues with project or website
-names that may include characters that are not appropriate for a
-database table name. (#TODO: not yet implemented).
 
 # Workflow
 
