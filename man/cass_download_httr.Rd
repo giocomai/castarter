@@ -12,7 +12,7 @@ cass_download_httr(
   db_connection = NULL,
   random = FALSE,
   file_format = "html",
-  retry_times = 3,
+  retry_times = 5,
   download_again_if_status_is_not = NULL,
   ...
 )
@@ -38,7 +38,7 @@ settings (see example).}
 If a numeric is given, the download order is randomised and at most the
 given number of items is downloaded.}
 
-\item{retry_times}{Defaults to 3. Number of times to retry download in case
+\item{retry_times}{Defaults to 5. Number of times to retry download in case
 of errors.}
 
 \item{...}{Passed to \code{cas_get_db_file()}.}
