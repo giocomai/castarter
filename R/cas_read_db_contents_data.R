@@ -22,11 +22,7 @@ cas_read_db_contents_data <- function(db_connection = NULL,
 
   if (isFALSE(db_result)) {
     # TODO
-  } else if (is.data.frame(db_result)) {
-    if (nrow(db_result) == 0) {
-      # TODO
-    } else {
-      db_result
-    }
+  } else {
+    db_result
   }
 }

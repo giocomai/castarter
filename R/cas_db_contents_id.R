@@ -166,11 +166,7 @@ cas_read_db_contents_id <- function(db_connection = NULL,
 
   if (isFALSE(db_result)) {
     tibble::as_tibble(casdb_empty_contents_id)
-  } else if (is.data.frame(db_result)) {
-    if (nrow(db_result) == 0) {
-      casdb_empty_contents_id
-    } else {
-      db_result
-    }
+  } else {
+    db_result
   }
 }
