@@ -63,7 +63,8 @@ cas_extract_links <- function(id = NULL,
     disconnect_db = FALSE,
     file_format = file_format,
     ...
-  )
+  ) %>%
+    dplyr::collect()
 
   if (sum(local_files_df$available) < nrow(local_files_df)) {
     usethis::ui_warn(x = "Missing files: {nrow(local_files_df %>% dplyr::filter(!available))}")
@@ -86,7 +87,8 @@ cas_extract_links <- function(id = NULL,
     db_connection = db,
     disconnect_db = FALSE,
     ...
-  )
+  ) %>%
+    dplyr::collect()
 
   if (nrow(previous_links_df) == 0) {
     start_id <- 1

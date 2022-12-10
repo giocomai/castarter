@@ -61,7 +61,8 @@ cas_write_db_index <- function(urls,
     db_connection = db,
     disconnect_db = FALSE,
     ...
-  )
+  ) %>%
+    dplyr::collect()
 
   if (nrow(previous_index_df) > 0) {
     urls_to_add_df <- urls_df %>%
@@ -215,6 +216,7 @@ cas_read_db_download <- function(index = FALSE,
       tibble::as_tibble(casdb_empty_download)
     } else {
       db_result %>%
+        dplyr::collect() %>%
         dplyr::mutate(
           datetime = lubridate::as_datetime(datetime),
           size = fs::as_fs_bytes(size)

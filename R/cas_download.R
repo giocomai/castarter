@@ -135,7 +135,8 @@ cass_download_httr <- function(download_df = NULL,
       file_format = file_format,
       download_again_if_status_is_not = download_again_if_status_is_not,
       ...
-    )
+    ) %>%
+      dplyr::collect()
   }
 
   if (nrow(download_df) == 0) {
@@ -248,7 +249,8 @@ cass_get_files_to_download <- function(urls = NULL,
     index = index,
     db_connection = db_connection,
     ...
-  )
+  ) %>%
+    dplyr::collect()
 
   if (nrow(urls_df) == 0) {
     usethis::ui_warn("No {usethis::ui_code(type)} urls for download stored in database.")
@@ -270,7 +272,8 @@ cass_get_files_to_download <- function(urls = NULL,
     db_connection = db_connection,
     db_folder = db_folder,
     ...
-  )
+  ) %>%
+    dplyr::collect()
 
   if (nrow(previous_download_df) == 0) {
     current_batch <- 1
