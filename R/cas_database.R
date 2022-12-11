@@ -337,7 +337,7 @@ cas_check_db_folder <- function() {
 #' @examples
 #' \donttest{
 #' if (interactive()) {
-#'   db_connection <- pool::dbPool(
+#'   db_connection <- DBI::dbConnect(
 #'     RSQLite::SQLite(), # or e.g. odbc::odbc(),
 #'     Driver =  ":memory:", # or e.g. "MariaDB",
 #'     Host = "localhost",
@@ -392,7 +392,7 @@ cas_connect_to_db <- function(db_connection = NULL,
         )
       }
 
-      db <- pool::dbPool(
+      db <- DBI::dbConnect(
         drv = duckdb::duckdb(),
         dbdir = db_file
       )
@@ -402,7 +402,7 @@ cas_connect_to_db <- function(db_connection = NULL,
         usethis::ui_stop(x = "To use SQLite databases you need to install the package `RSQLite`.")
       }
       db_file <- cas_get_db_file(db_type = db_type)
-      db <- pool::dbPool(
+      db <- DBI::dbConnect(
         drv = RSQLite::SQLite(),
         dbname = db_file
       )
@@ -419,7 +419,7 @@ cas_connect_to_db <- function(db_connection = NULL,
         drv <- odbc::odbc()
       }
 
-      db <- pool::dbPool(
+      db <- DBI::dbConnect(
         drv = drv,
         driver = db_connection[["driver"]],
         host = db_connection[["host"]],
@@ -444,7 +444,7 @@ cas_connect_to_db <- function(db_connection = NULL,
         drv <- odbc::odbc()
       }
 
-      db <- pool::dbPool(
+      db <- DBI::dbConnect(
         drv = drv,
         driver = db_connection[["driver"]],
         host = db_connection[["host"]],
@@ -500,7 +500,7 @@ cas_disconnect_from_db <- function(db_connection = NULL,
     db_type = db_type
   )
 
-  if (pool::dbIsValid(dbObj = db)) {
+  if (DBI::dbIsValid(dbObj = db)) {
     if (inherits(db, "Pool")) {
       if (db_type == "DuckDB") {
         db_unpooled <- pool::poolCheckout(pool = db)
@@ -564,7 +564,7 @@ cas_write_to_db <- function(df,
     ...
   )
 
-  if (pool::dbExistsTable(conn = db, name = table) == FALSE) {
+  if (DBI::dbExistsTable(conn = db, name = table) == FALSE) {
     # do nothing: if table does not exist, previous data cannot be there
   } else {
     if (overwrite == TRUE) {
@@ -574,7 +574,7 @@ cas_write_to_db <- function(df,
 
   if (table == "index_id") {
     if (identical(colnames(df), colnames(casdb_empty_index_id)) & identical(sapply(df, class), sapply(casdb_empty_index_id, class))) {
-      pool::dbWriteTable(db,
+      DBI::dbWriteTable(db,
         name = table,
         value = df,
         append = TRUE
@@ -584,7 +584,7 @@ cas_write_to_db <- function(df,
     }
   } else if (table == "contents_id") {
     if (identical(colnames(df), colnames(casdb_empty_contents_id)) & identical(sapply(df, class), sapply(casdb_empty_contents_id, class))) {
-      pool::dbWriteTable(db,
+      DBI::dbWriteTable(db,
         name = table,
         value = df,
         append = TRUE
@@ -594,7 +594,7 @@ cas_write_to_db <- function(df,
     }
   } else {
     # Write generic table without additional checks
-    pool::dbWriteTable(
+    DBI::dbWriteTable(
       conn = db,
       name = table,
       value = df,
@@ -652,7 +652,7 @@ cas_read_from_db <- function(table,
     ...
   )
 
-  if (pool::dbExistsTable(conn = db, name = table) == FALSE) {
+  if (DBI::dbExistsTable(conn = db, name = table) == FALSE) {
     # do nothing: if table does not exist, previous data cannot be there
     output_df <- NULL
   } else {

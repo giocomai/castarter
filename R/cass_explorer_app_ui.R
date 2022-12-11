@@ -83,10 +83,10 @@ cass_explorer_app_ui <- function(request) {
               8,
               h3("Graph"),
               shiny::conditionalPanel(condition = "input.graph_type == 'Line chart'", {
-                castarter2:::mod_cass_show_ts_dygraph_ui("cass_show_ts_dygraph_ui_1")
+                castarter:::mod_cass_show_ts_dygraph_ui("cass_show_ts_dygraph_ui_1")
               }),
               shiny::conditionalPanel(condition = "input.graph_type == 'Bar chart'", {
-                castarter2:::mod_cass_show_barchart_ggiraph_ui("cass_show_barchart_ggiraph_ui_1")
+                castarter:::mod_cass_show_barchart_ggiraph_ui("cass_show_barchart_ggiraph_ui_1")
               })
             )
           ),
@@ -115,9 +115,9 @@ golem_add_external_resources <- function() {
     favicon(ext = "png"),
     bundle_resources(
       path = app_sys("app/www"),
-      app_title = "castarter2"
+      app_title = "castarter"
     ),
-    marker::use_marker(), # include marker dependencies
+    marker::useMarker(), # include marker dependencies
     waiter::use_waiter(), # include waiter dependencies
     cicerone::use_cicerone(), # include cicerone dependencies
     # Add here other external resources

@@ -7,7 +7,7 @@
 #' @export
 #' @importFrom shiny shinyApp
 #' @importFrom golem with_golem_options
-cas_explorer <- function(corpus = castarter2::cas_demo_corpus,
+cas_explorer <- function(corpus = castarter::cas_demo_corpus,
                          default_string = NULL,
                          custom_head_html = "",
                          onStart = NULL,

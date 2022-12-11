@@ -1,8 +1,8 @@
 ---
-title: "Shiny modules included in castarter2"
+title: "Shiny modules included in castarter"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{Shiny modules included in castarter2}
+  %\VignetteIndexEntry{shiny_modules}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
@@ -16,10 +16,11 @@ knitr::opts_chunk$set(
 ```
 
 ```{r setup}
-library(castarter2)
+library(castarter)
 #remotes::install_github("giocomai/tifkremlinen")
 ```
 
+[#TODO]
 
 ## Time series
 
@@ -27,7 +28,7 @@ library(castarter2)
 ### Dygraphs
 
 ```{r eval = FALSE}
-count_df <- castarter2::cas_count(corpus = tifkremlinen::kremlin_en,
+count_df <- castarter::cas_count(corpus = tifkremlinen::kremlin_en,
                                   string = c("syria", "ukraine")) %>%
   cas_summarise(before = 45, after = 45)
 
@@ -37,7 +38,7 @@ cass_show_ts_dygraph_app(count_df)
 ## Barchart
 
 ```{r}
-count_df <- castarter2::cas_count(corpus = tifkremlinen::kremlin_en,
+count_df <- castarter::cas_count(corpus = tifkremlinen::kremlin_en,
                                   string = c("putin", "medvedev")) %>% 
   cas_summarise(period = "year", auto_convert = TRUE)
 

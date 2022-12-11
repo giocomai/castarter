@@ -9,11 +9,11 @@
 #' @export
 #'
 #' @examples
-cass_get_base_path <- function(custom_path = NULL,
-                               custom_folder = NULL,
-                               index = FALSE,
-                               file_format = "html",
-                               ...) {
+cas_get_base_path <- function(custom_path = NULL,
+                              custom_folder = NULL,
+                              index = FALSE,
+                              file_format = "html",
+                              ...) {
   type <- dplyr::if_else(condition = index,
     true = "index",
     false = "contents"

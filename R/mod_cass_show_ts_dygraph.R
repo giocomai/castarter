@@ -49,8 +49,8 @@ mod_cass_show_ts_dygraph_server <- function(id, count_df, strokeWidth = 2) {
 #'
 #' @examples
 #'
-#' count_df <- castarter2::cas_count(
-#'   corpus = castarter2::cas_demo_corpus,
+#' count_df <- castarter::cas_count(
+#'   corpus = castarter::cas_demo_corpus,
 #'   string = c("russia", "moscow")
 #' ) %>%
 #'   cas_summarise(before = 15, after = 15)
@@ -58,10 +58,10 @@ mod_cass_show_ts_dygraph_server <- function(id, count_df, strokeWidth = 2) {
 #' # cass_show_ts_dygraph_app(count_df)
 cass_show_ts_dygraph_app <- function(count_df) {
   ui <- fluidPage(
-    castarter2:::mod_cass_show_ts_dygraph_ui("cass_show_ts_dygraph_ui_1")
+    castarter:::mod_cass_show_ts_dygraph_ui("cass_show_ts_dygraph_ui_1")
   )
   server <- function(input, output, session) {
-    castarter2:::mod_cass_show_ts_dygraph_server("cass_show_ts_dygraph_ui_1",
+    castarter:::mod_cass_show_ts_dygraph_server("cass_show_ts_dygraph_ui_1",
       count_df = count_df
     )
   }

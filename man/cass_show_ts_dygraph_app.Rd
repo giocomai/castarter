@@ -17,8 +17,8 @@ A minimal shiny app that demonstrates the functioning of related modules
 }
 \examples{
 
-count_df <- castarter2::cas_count(
-  corpus = castarter2::cas_demo_corpus,
+count_df <- castarter::cas_count(
+  corpus = castarter::cas_demo_corpus,
   string = c("russia", "moscow")
 ) \%>\%
   cas_summarise(before = 15, after = 15)

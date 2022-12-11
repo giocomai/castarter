@@ -16,12 +16,13 @@ cas_extract <- function(extractors,
                         write_to_db = TRUE,
                         ...) {
   ellipsis::check_dots_unnamed()
+
   db <- cas_connect_to_db(
     db_connection = db_connection,
     ...
   )
 
-  path <- cass_get_base_path(...)
+  path <- cas_get_base_path(...)
 
   previous_download_df <- cas_read_db_download(
     index = index,
@@ -72,7 +73,8 @@ cas_extract <- function(extractors,
         disconnect_db = FALSE,
         ...
       ),
-      by = "id"
+      by = "id",
+      copy = TRUE
     )
 
   if (is.null(id) == FALSE) {

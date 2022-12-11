@@ -32,7 +32,7 @@ mod_cass_show_barchart_ggiraph_server <- function(id, count_df) {
 
 ## To be copied in the server
 # mod_cass_show_barchart_ggiraph_server("cass_show_barchart_ggiraph_ui_1")
-# count_df <- castarter2::cas_count(corpus = tifkremlinen::kremlin_en,
+# count_df <- castarter::cas_count(corpus = tifkremlinen::kremlin_en,
 #                                   string = c("putin", "medvedev")) %>%
 #   cas_summarise(period = "year")
 # cass_show_barchart_ggiraph_app(count_df)
@@ -40,10 +40,10 @@ mod_cass_show_barchart_ggiraph_server <- function(id, count_df) {
 
 cass_show_barchart_ggiraph_app <- function(count_df) {
   ui <- fluidPage(
-    castarter2:::mod_cass_show_barchart_ggiraph_ui("cass_show_barchart_ggiraph_ui_1")
+    castarter:::mod_cass_show_barchart_ggiraph_ui("cass_show_barchart_ggiraph_ui_1")
   )
   server <- function(input, output, session) {
-    castarter2:::mod_cass_show_barchart_ggiraph_server("cass_show_barchart_ggiraph_ui_1",
+    castarter:::mod_cass_show_barchart_ggiraph_server("cass_show_barchart_ggiraph_ui_1",
       count_df = count_df
     )
   }

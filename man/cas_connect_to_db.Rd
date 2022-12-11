@@ -25,7 +25,7 @@ Return a connection to be used for caching
 \examples{
 \donttest{
 if (interactive()) {
-  db_connection <- pool::dbPool(
+  db_connection <- DBI::dbConnect(
     RSQLite::SQLite(), # or e.g. odbc::odbc(),
     Driver =  ":memory:", # or e.g. "MariaDB",
     Host = "localhost",

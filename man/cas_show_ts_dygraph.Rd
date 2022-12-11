@@ -20,8 +20,8 @@ Create dygraphs based on a data frame typically generated with cas_count()
 }
 \examples{
 
-count_df <- castarter2::cas_count(
-  corpus = castarter2::cas_demo_corpus,
+count_df <- castarter::cas_count(
+  corpus = castarter::cas_demo_corpus,
   words = c("russia", "moscow")
 ) \%>\%
   cas_summarise(before = 15, after = 15)

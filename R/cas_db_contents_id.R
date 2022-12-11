@@ -164,7 +164,9 @@ cas_read_db_contents_id <- function(db_connection = NULL,
   }
   )
 
-  if (isFALSE(db_result)) {
+  if (is.null(db_result)) {
+    tibble::as_tibble(casdb_empty_contents_id)
+  } else if (isFALSE(db_result)) {
     tibble::as_tibble(casdb_empty_contents_id)
   } else {
     db_result

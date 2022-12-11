@@ -152,7 +152,9 @@ cas_read_db_index <- function(db_folder = NULL,
   }
   )
 
-  if (isFALSE(db_result)) {
+  if (is.null(db_result)) {
+    tibble::as_tibble(casdb_empty_index_id)
+  } else if (isFALSE(db_result)) {
     tibble::as_tibble(casdb_empty_index_id)
   } else {
     db_result
@@ -208,8 +210,9 @@ cas_read_db_download <- function(index = FALSE,
     logical(1L)
   }
   )
-
-  if (isFALSE(db_result)) {
+  if (is.null(db_result)) {
+    tibble::as_tibble(casdb_empty_download)
+  } else if (isFALSE(db_result)) {
     tibble::as_tibble(casdb_empty_download)
   } else {
     if (ncol(db_result) == 0) {

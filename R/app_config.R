@@ -9,7 +9,7 @@
 #'
 #' @noRd
 app_sys <- function(...) {
-  system.file(..., package = "castarter2")
+  system.file(..., package = "castarter")
 }
 
 

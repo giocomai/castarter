@@ -29,6 +29,8 @@
 #'   processed in reverse order of `id` and `batch`, which may give more
 #'   meaningful order to content id. The difference is ultimately cosmetic, and
 #'   has no substantive impact either way.
+#' @param keep_only_within_domain Logical, defaults to TRUE. If TRUE, and domain
+#'   given, links to external websites are dropped.
 #' @return A data frame.
 #' @export
 #' @examples
@@ -50,6 +52,7 @@ cas_extract_links <- function(id = NULL,
                               remove_string = NULL,
                               write_to_db = TRUE,
                               file_format = "html",
+                              keep_only_within_domain = TRUE,
                               random = FALSE,
                               encoding = "UTF-8",
                               reverse_order = TRUE,
@@ -252,6 +255,14 @@ cas_extract_links <- function(id = NULL,
               )
             )
           )
+
+        if (keep_only_within_domain == TRUE) {
+          links_df <- links_df %>%
+            dplyr::filter(stringr::str_starts(
+              string = url,
+              pattern = stringr::fixed(domain)
+            ))
+        }
       }
 
       if (is.null(append_string) == FALSE) {

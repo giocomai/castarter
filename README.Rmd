@@ -139,35 +139,30 @@ cas_explorer(corpus = tifkremlinen::kremlin_en,
 ```
 
 
-## Database
+## Vignettes
 
-To keep track of the urls we are working on, `castarter` facilitates storing urls, as well as some basic metadata about them, in an orderly fashion. 
+### Workflow
 
+See `vignette("castarter-workflow")`
 
-See vignettes for how all of this works in practice. 
+### Database structure
 
+See `vignette("castarter-database")`
 
-# Workflow
+### Data quality issues
 
-## What currently works
+See `vignette("integrity")`
 
-```{r, eval=FALSE}
-cas_set_options(base_folder = fs::path(fs::path_home_r(), "R", "castarter_data"),
-                project = "european_union",
-                website = "european_commission"
-)
-```
+### Shiny modules
 
+See `vignette("castarter-shiny-modules")`
 
-# To do
+## Forthcoming features
 
-## Getting files
-
-- make castarter download files in the background
-  + with callr
-  + possibly, via rstudio jobs
-
-
-## Time series
-
+- comprehensive documentation
+- make `castarter` download files in the background (e.g. with callr, or rstudio jobs)
 - more options for analysis: peaks, periods, etc.
+
+## License
+
+`castarter` is released with a MIT license. 

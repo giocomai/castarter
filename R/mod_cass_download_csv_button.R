@@ -53,8 +53,8 @@ mod_cass_download_csv_server <- function(id, df, type = "data") {
 #'
 #' @examples
 #'
-#' count_df <- castarter2::cas_count(
-#'   corpus = castarter2::cas_demo_corpus,
+#' count_df <- castarter::cas_count(
+#'   corpus = castarter::cas_demo_corpus,
 #'   string = c("russia", "moscow")
 #' ) %>%
 #'   cas_summarise(before = 15, after = 15)
@@ -62,10 +62,10 @@ mod_cass_download_csv_server <- function(id, df, type = "data") {
 #' # cass_cass_download_csv_app(count_df)
 cass_download_csv_app <- function(df, type) {
   ui <- fluidPage(
-    castarter2:::mod_cass_download_csv_ui("mod_cass_download_csv_ui_1")
+    castarter:::mod_cass_download_csv_ui("mod_cass_download_csv_ui_1")
   )
   server <- function(input, output, session) {
-    castarter2:::mod_cass_download_csv_server("mod_cass_download_csv_ui_1",
+    castarter:::mod_cass_download_csv_server("mod_cass_download_csv_ui_1",
       df = df, type = type
     )
   }

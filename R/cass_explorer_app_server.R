@@ -143,14 +143,14 @@ cass_explorer_app_server <- function(input, output, session) {
           text = .data[[input$text_column]],
           date = .data[[input$group_by_column]]
         ) %>%
-        castarter2::cas_count(string = castarter2:::cass_split(input$string))
+        castarter::cas_count(string = castarter:::cass_split(input$string))
     } else if (input$freq == "Relative frequency") {
       count_df <- corpus_df %>%
         dplyr::rename(
           text = .data[[input$text_column]],
           date = .data[[input$group_by_column]]
         ) %>%
-        castarter2::cas_count_relative(string = castarter2:::cass_split(input$string))
+        castarter::cas_count_relative(string = castarter:::cass_split(input$string))
     }
     count_df
   })
@@ -185,7 +185,7 @@ cass_explorer_app_server <- function(input, output, session) {
 
 
         count_summarised_df <- word_count_df_r() %>%
-          castarter2::cas_summarise(
+          castarter::cas_summarise(
             period = input$summarise_by,
             before = units_before,
             after = units_after,
@@ -468,12 +468,12 @@ cass_explorer_app_server <- function(input, output, session) {
   shiny::observeEvent(input$go,
     {
       if (input$graph_type == "Line chart") {
-        castarter2:::mod_cass_show_ts_dygraph_server(
+        castarter:::mod_cass_show_ts_dygraph_server(
           id = "cass_show_ts_dygraph_ui_1",
           count_df = word_count_summarised_df_r()
         )
       } else if (input$graph_type == "Bar chart") {
-        castarter2:::mod_cass_show_barchart_ggiraph_server(
+        castarter:::mod_cass_show_barchart_ggiraph_server(
           id = "cass_show_barchart_ggiraph_ui_1",
           count_df = word_count_summarised_df_r()
         )

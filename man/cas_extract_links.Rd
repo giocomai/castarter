@@ -20,6 +20,7 @@ cas_extract_links(
   remove_string = NULL,
   write_to_db = TRUE,
   file_format = "html",
+  keep_only_within_domain = TRUE,
   random = FALSE,
   encoding = "UTF-8",
   reverse_order = TRUE,
@@ -69,6 +70,9 @@ the extracted page.}
 
 \item{remove_string}{If provided, remove given string (or strings) from
 links.}
+
+\item{keep_only_within_domain}{Logical, defaults to TRUE. If TRUE, and domain
+given, links to external websites are dropped.}
 
 \item{reverse_order}{Logical, defaults to TRUE. If TRUE, index files are
 processed in reverse order of \code{id} and \code{batch}, which may give more

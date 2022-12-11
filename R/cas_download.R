@@ -34,7 +34,7 @@ cas_download <- function(download_df = NULL,
                          retry_times = 5,
                          download_again_if_status_is_not = NULL,
                          ...) {
-  cass_download_httr(
+  cas_download_httr(
     download_df = download_df,
     index = index,
     overwrite_file = overwrite_file,
@@ -59,13 +59,13 @@ cas_download <- function(download_df = NULL,
 #'
 #' @examples
 #'
-#' cass_get_urls_df(c(
+#' cas_get_urls_df(c(
 #'   "https://example.com/a/",
 #'   "https://example.com/b/"
 #' ))
-cass_get_urls_df <- function(urls = NULL,
-                             index = FALSE,
-                             ...) {
+cas_get_urls_df <- function(urls = NULL,
+                            index = FALSE,
+                            ...) {
   if (is.null(urls)) {
     if (index == FALSE) {
       urls_df <- cas_read_db_contents_id(...)
@@ -108,16 +108,16 @@ cass_get_urls_df <- function(urls = NULL,
 #' @export
 #'
 #' @examples
-cass_download_httr <- function(download_df = NULL,
-                               index = FALSE,
-                               overwrite_file = FALSE,
-                               wait = 1,
-                               db_connection = NULL,
-                               random = FALSE,
-                               file_format = "html",
-                               retry_times = 5,
-                               download_again_if_status_is_not = NULL,
-                               ...) {
+cas_download_httr <- function(download_df = NULL,
+                              index = FALSE,
+                              overwrite_file = FALSE,
+                              wait = 1,
+                              db_connection = NULL,
+                              random = FALSE,
+                              file_format = "html",
+                              retry_times = 5,
+                              download_again_if_status_is_not = NULL,
+                              ...) {
   type <- dplyr::if_else(condition = index,
     true = "index",
     false = "contents"
@@ -128,7 +128,7 @@ cass_download_httr <- function(download_df = NULL,
   )
 
   if (is.null(download_df)) {
-    download_df <- cass_get_files_to_download(
+    download_df <- cas_get_files_to_download(
       index = index,
       db_connection = db,
       disconnect_db = FALSE,
@@ -223,28 +223,28 @@ cass_download_httr <- function(download_df = NULL,
 #'   status code as integer, typically `200L`.
 #'
 #' @inheritParams cas_download
-#' @inheritDotParams cass_get_urls_df -urls -index
+#' @inheritDotParams cas_get_urls_df -urls -index
 #' @inheritDotParams cas_get_base_folder -level
 #'
 #' @return A data frame with four columns: `id`, `url`, `path` and `type`
 #' @export
 #'
 #' @examples
-cass_get_files_to_download <- function(urls = NULL,
-                                       index = FALSE,
-                                       batch = NULL,
-                                       custom_folder = NULL,
-                                       custom_path = NULL,
-                                       file_format = "html",
-                                       db_connection = NULL,
-                                       download_again_if_status_is_not = NULL,
-                                       ...) {
+cas_get_files_to_download <- function(urls = NULL,
+                                      index = FALSE,
+                                      batch = NULL,
+                                      custom_folder = NULL,
+                                      custom_path = NULL,
+                                      file_format = "html",
+                                      db_connection = NULL,
+                                      download_again_if_status_is_not = NULL,
+                                      ...) {
   type <- dplyr::if_else(condition = index,
     true = "index",
     false = "contents"
   )
 
-  urls_df <- cass_get_urls_df(
+  urls_df <- cas_get_urls_df(
     urls = urls,
     index = index,
     db_connection = db_connection,
@@ -257,7 +257,7 @@ cass_get_files_to_download <- function(urls = NULL,
     return(NULL)
   }
 
-  path <- cass_get_base_path(
+  path <- cas_get_base_path(
     custom_path = custom_path,
     custom_folder = custom_folder,
     index = index,
