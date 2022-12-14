@@ -213,7 +213,7 @@ cas_extract_links <- function(id = NULL,
           rvest::html_elements(xpath = paste0("//", container, "//a"))
       }
 
-      if (file_format == "xml") {
+      if (file_format == "xml"|file_format == "xml.gz") {
         links_df <- tibble::tibble(
           url = a_xml_nodeset %>%
             rvest::html_text() %>%
