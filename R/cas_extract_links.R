@@ -195,10 +195,10 @@ cas_extract_links <- function(id = NULL,
 
       if (is.null(custom_xpath) == FALSE) {
         temp %>%
-          rvest::html_elements(css = custom_xpath)
+          rvest::html_elements(xpath = custom_xpath)
       } else if (is.null(custom_css) == FALSE) {
         a_xml_nodeset <- temp %>%
-          rvest::html_elements(custom_css)
+          rvest::html_elements(css = custom_css)
       } else if (is.null(container)) {
         a_xml_nodeset <- temp %>%
           rvest::html_elements("a")
