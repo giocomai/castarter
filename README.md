@@ -94,7 +94,7 @@ gathering contents from different websites, e.g. “european_commission”,
 
 ``` r
 library("castarter")
-cas_set_options(base_folder = fs::path(fs::path_home_r(), "R", "castarter_data"),
+cas_set_options(base_folder = fs::path(fs::path_temp(), "castarter_data"),
                 project = "european_union",
                 website = "european_commission"
 )
@@ -103,6 +103,12 @@ cas_set_options(base_folder = fs::path(fs::path_home_r(), "R", "castarter_data")
 Assuming that my project on the European Union involves text mining the
 website of the European Council, the European Commission, and the
 European Parliament, the folder structure may look something like this:
+
+    #> /tmp/RtmpVgNgDJ/castarter_data
+    #> └── european_union
+    #>     ├── european_commission
+    #>     ├── european_council
+    #>     └── european_parliament
 
 In brief, `castarter_data` is the base folder where I can store all of
 my text mining projects. `european_union` is the name of the project,
