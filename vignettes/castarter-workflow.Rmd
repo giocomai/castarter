@@ -40,7 +40,7 @@ cas_set_options(base_folder = fs::path(fs::path_temp(),
 ```
 
 
-```{r eval = TRUE, include = FALSE}
+```{r eval = TRUE, include = TRUE, echo=FALSE}
 
 fs::dir_create(path = fs::path(cas_get_options()$base_folder,
                                cas_get_options()$project,
