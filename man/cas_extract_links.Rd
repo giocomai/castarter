@@ -13,6 +13,8 @@ cas_extract_links(
   container = NULL,
   container_class = NULL,
   container_id = NULL,
+  custom_xpath = NULL,
+  custom_css = NULL,
   min_length = NULL,
   max_length = NULL,
   attribute_type = "href",

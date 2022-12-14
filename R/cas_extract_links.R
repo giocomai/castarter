@@ -45,6 +45,8 @@ cas_extract_links <- function(id = NULL,
                               container = NULL,
                               container_class = NULL,
                               container_id = NULL,
+                              custom_xpath = NULL,
+                              custom_css = NULL,
                               min_length = NULL,
                               max_length = NULL,
                               attribute_type = "href",
@@ -126,7 +128,8 @@ cas_extract_links <- function(id = NULL,
       db_connection = db,
       disconnect_db = FALSE,
       ...
-    )
+    ) %>%
+      dplyr::collect()
 
     local_files_df <- local_files_df %>%
       dplyr::left_join(
@@ -190,27 +193,44 @@ cas_extract_links <- function(id = NULL,
         return(NULL)
       }
 
-      if (is.null(container)) {
+      if (is.null(custom_xpath) == FALSE) {
+        temp %>%
+          rvest::html_elements(css = custom_xpath)
+      } else if (is.null(custom_css) == FALSE) {
         a_xml_nodeset <- temp %>%
-          rvest::html_nodes("a")
+          rvest::html_elements(custom_css)
+      } else if (is.null(container)) {
+        a_xml_nodeset <- temp %>%
+          rvest::html_elements("a")
       } else if (is.null(container_id) == TRUE & is.null(container_class) == FALSE) {
         a_xml_nodeset <- temp %>%
-          rvest::html_nodes(xpath = paste0("//", container, "[@class='", container_class, "']//a"))
+          rvest::html_elements(xpath = paste0("//", container, "[@class='", container_class, "']//a"))
       } else if (is.null(container_class) == TRUE & is.null(container_id) == FALSE) {
         a_xml_nodeset <- temp %>%
-          rvest::html_nodes(xpath = paste0("//", container, "[@id='", container_id, "']//a"))
+          rvest::html_elements(xpath = paste0("//", container, "[@id='", container_id, "']//a"))
       } else if (is.null(container_class) & is.null(container_id)) {
         a_xml_nodeset <- temp %>%
-          rvest::html_nodes(xpath = paste0("//", container, "//a"))
+          rvest::html_elements(xpath = paste0("//", container, "//a"))
       }
 
-      links_df <- tibble::tibble(
-        url = a_xml_nodeset %>%
-          xml2::xml_attr(attribute_type),
-        link_text = a_xml_nodeset %>%
-          rvest::html_text() %>%
-          stringr::str_squish()
-      )
+      if (file_format == "xml") {
+        links_df <- tibble::tibble(
+          url = a_xml_nodeset %>%
+            rvest::html_text() %>%
+            stringr::str_squish(),
+          link_text = NA_character_
+        )
+      } else {
+        # effectively, expect html
+        links_df <- tibble::tibble(
+          url = a_xml_nodeset %>%
+            xml2::xml_attr(attribute_type),
+          link_text = a_xml_nodeset %>%
+            rvest::html_text() %>%
+            stringr::str_squish()
+        )
+      }
+
 
       if (is.null(include_when) == FALSE) {
         links_df <- links_df %>%
