@@ -23,7 +23,8 @@ cas_browse <- function(index = FALSE,
     false = "contents"
   )
 
-  db <- cas_connect_to_db(...)
+  db <- cas_connect_to_db(read_only = TRUE, 
+                          ...)
 
   if (remote == FALSE) {
     local_files <- cas_get_path_to_files(
@@ -65,6 +66,9 @@ cas_browse <- function(index = FALSE,
         dplyr::pull("url")
     }
   }
+  
+  cas_disconnect_from_db(db_connection = DB,
+                         ...)
 
   browseURL(url_to_open_v)
 }

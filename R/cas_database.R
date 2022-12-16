@@ -327,6 +327,7 @@ cas_check_db_folder <- function() {
 #'   settings (see example).
 #' @param use_db Defaults to NULL. If given, it should be given either TRUE or
 #'   FALSE. Typically set with `cas_enable_db()` or `cas_disable_db()`.
+#' @param read_only Defaults to FALSE. Passed to `DBI::dbConnect`.
 #' @param ... Passed to `cas_get_db_file()`.
 #'
 #' @family database functions
@@ -364,6 +365,7 @@ cas_check_db_folder <- function() {
 cas_connect_to_db <- function(db_connection = NULL,
                               use_db = NULL,
                               db_type = NULL,
+                              read_only = FALSE,
                               ...) {
   if (isFALSE(x = cas_check_use_db(use_db))) {
     return(NULL)
@@ -394,7 +396,8 @@ cas_connect_to_db <- function(db_connection = NULL,
 
       db <- DBI::dbConnect(
         drv = duckdb::duckdb(),
-        dbdir = db_file
+        dbdir = db_file,
+        read_only = read_only
       )
       return(db)
     } else if (db_type == "SQLite") {
@@ -649,6 +652,7 @@ cas_read_from_db <- function(table,
 
   db <- cas_connect_to_db(
     db_connection = db_connection,
+    read_only = TRUE,
     ...
   )
 

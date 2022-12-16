@@ -4,7 +4,13 @@
 \alias{cas_connect_to_db}
 \title{Return a connection to be used for caching}
 \usage{
-cas_connect_to_db(db_connection = NULL, use_db = NULL, db_type = NULL, ...)
+cas_connect_to_db(
+  db_connection = NULL,
+  use_db = NULL,
+  db_type = NULL,
+  read_only = FALSE,
+  ...
+)
 }
 \arguments{
 \item{db_connection}{Defaults to NULL. If NULL, uses local SQLite database.
@@ -13,6 +19,8 @@ settings (see example).}
 
 \item{use_db}{Defaults to NULL. If given, it should be given either TRUE or
 FALSE. Typically set with \code{cas_enable_db()} or \code{cas_disable_db()}.}
+
+\item{read_only}{Defaults to FALSE. Passed to \code{DBI::dbConnect}, relevant e.g. for DuckDB.}
 
 \item{...}{Passed to \code{cas_get_db_file()}.}
 }
