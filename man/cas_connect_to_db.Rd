@@ -20,7 +20,7 @@ settings (see example).}
 \item{use_db}{Defaults to NULL. If given, it should be given either TRUE or
 FALSE. Typically set with \code{cas_enable_db()} or \code{cas_disable_db()}.}
 
-\item{read_only}{Defaults to FALSE. Passed to \code{DBI::dbConnect}, relevant e.g. for DuckDB.}
+\item{read_only}{Defaults to FALSE. Passed to \code{DBI::dbConnect}.}
 
 \item{...}{Passed to \code{cas_get_db_file()}.}
 }
