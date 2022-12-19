@@ -90,7 +90,7 @@ cas_write_db_contents_id <- function(contents_id_df,
       links_to_add_df <- contents_id_df
     }
   } else {
-    links_to_add_df <- contents_id_df %>% 
+    links_to_add_df <- contents_id_df %>%
       dplyr::collect()
   }
 

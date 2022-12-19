@@ -34,7 +34,7 @@ cas_extract <- function(extractors,
   ) %>%
     dplyr::arrange(dplyr::desc(datetime)) %>%
     dplyr::distinct(id, .keep_all = TRUE) %>%
-    dplyr::arrange(id, batch, datetime) %>% 
+    dplyr::arrange(id, batch, datetime) %>%
     dplyr::filter(status %in% keep_if_status)
 
   stored_files_df <- previous_download_df %>%
@@ -52,9 +52,13 @@ cas_extract <- function(extractors,
     db_connection = db,
     disconnect_db = FALSE,
     ...
-  ) %>% 
-    dplyr::select(id) %>% 
-    dplyr::collect()
+  )
+
+  if (is.null(previously_extracted_df) == FALSE) {
+    previously_extracted_df <- previously_extracted_df %>%
+      dplyr::select(id) %>%
+      dplyr::collect()
+  }
 
   if (is.null(previously_extracted_df) == FALSE) {
     files_to_extract_pre_df <- dplyr::anti_join(
