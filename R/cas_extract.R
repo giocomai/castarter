@@ -1,6 +1,7 @@
 #' Extract fields and contents from downloaded files
 #'
 #' @param extractors A named list of functions. See examples for details.
+#' @param keep_if_status Defaults to 200. Keep only if recorded download status matches the given status.
 #' @inheritParams cas_download
 #'
 #' @return
@@ -14,6 +15,7 @@ cas_extract <- function(extractors,
                         file_format = "html",
                         random = FALSE,
                         write_to_db = TRUE,
+                        keep_if_status = 200,
                         ...) {
   ellipsis::check_dots_unnamed()
 
@@ -32,7 +34,8 @@ cas_extract <- function(extractors,
   ) %>%
     dplyr::arrange(dplyr::desc(datetime)) %>%
     dplyr::distinct(id, .keep_all = TRUE) %>%
-    dplyr::arrange(id, batch, datetime)
+    dplyr::arrange(id, batch, datetime) %>% 
+    dplyr::filter(status %in% keep_if_status)
 
   stored_files_df <- previous_download_df %>%
     dplyr::select("id", "batch") %>%
@@ -49,7 +52,9 @@ cas_extract <- function(extractors,
     db_connection = db,
     disconnect_db = FALSE,
     ...
-  )
+  ) %>% 
+    dplyr::select(id) %>% 
+    dplyr::collect()
 
   if (is.null(previously_extracted_df) == FALSE) {
     files_to_extract_pre_df <- dplyr::anti_join(

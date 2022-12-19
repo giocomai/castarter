@@ -12,6 +12,7 @@ cas_extract(
   file_format = "html",
   random = FALSE,
   write_to_db = TRUE,
+  keep_if_status = 200,
   ...
 )
 }
@@ -25,6 +26,8 @@ See Readme for a more extensive explanation.}
 \item{random}{Defaults to FALSE. If TRUE, the download order is randomised.
 If a numeric is given, the download order is randomised and at most the
 given number of items is downloaded.}
+
+\item{keep_if_status}{Defaults to 200. Keep only if recorded download status matches the given status.}
 
 \item{...}{Passed to \code{cas_get_db_file()}.}
 }
