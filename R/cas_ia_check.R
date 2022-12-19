@@ -30,22 +30,23 @@ cas_ia_check <- function(url = NULL,
     ...
   )
 
-  db_result <- tryCatch(cas_read_from_db(
-    table = "ia_check",
-    db_folder = db_folder,
-    db_connection = db_connection,
-    disconnect_db = FALSE,
-    ...
-  ),
-  error = function(e) {
-    logical(1L)
-  }
+  db_result <- tryCatch(
+    cas_read_db_ia(
+      db_connection = db,
+      disconnect_db = FALSE,
+      ...
+    ),
+    error = function(e) {
+      logical(1L)
+    }
   )
 
-  if (isFALSE(db_result)) {
+  if (is.null(db_result)) {
     previous_df <- casdb_empty_ia_check
-  } else if (is.data.frame(db_result)) {
-    if (nrow(db_result) == 0) {
+  } else if (isFALSE(db_result)) {
+    previous_df <- casdb_empty_ia_check
+  } else {
+    if (length(db_result %>% dplyr::pull(url)) == 0) {
       previous_df <- casdb_empty_ia_check
     } else {
       previous_df <- db_result
@@ -70,13 +71,14 @@ cas_ia_check <- function(url = NULL,
   url_to_process_df <- tibble::tibble(url = unique(url_v)) %>%
     dplyr::anti_join(
       y = previous_df,
-      by = "url"
+      by = "url", 
+      copy = TRUE
     )
 
   pb <- progress::progress_bar$new(total = nrow(url_to_process_df))
 
   output_df <- purrr::map_dfr(
-    .x = url_to_process_df$url,
+    .x = url_to_process_df %>% dplyr::pull("url"),
     .f = function(x) {
       pb$tick()
 
@@ -172,4 +174,36 @@ cas_ia_save <- function(url,
       }
     }
   )
+}
+
+
+#' Read status on the Internet Archive of given URLs
+#'
+#' @inheritParams cas_write_to_db
+#'
+#' @return
+#' @export
+#'
+#' @examples
+cas_read_db_ia <- function(db_connection = NULL,
+                           db_folder = NULL,
+                           ...) {
+  db_result <- tryCatch(cas_read_from_db(
+    table = "ia_check",
+    db_folder = db_folder,
+    db_connection = db_connection,
+    ...
+  ),
+  error = function(e) {
+    logical(1L)
+  }
+  )
+
+  if (is.null(db_result)) {
+    tibble::as_tibble(casdb_empty_ia_check)
+  } else if (isFALSE(db_result)) {
+    tibble::as_tibble(casdb_empty_ia_check)
+  } else {
+    db_result
+  }
 }
