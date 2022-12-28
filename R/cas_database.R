@@ -373,7 +373,7 @@ cas_connect_to_db <- function(db_connection = NULL,
 
   if (inherits(db_connection, "DBIConnection"))  {
     if (DBI::dbIsValid(db_connection)) {
-      return(db)
+      return(db_connection)
     }
   }
   
