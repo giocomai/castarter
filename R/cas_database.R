@@ -371,12 +371,12 @@ cas_connect_to_db <- function(db_connection = NULL,
     return(NULL)
   }
 
-  if (inherits(db_connection, "DBIConnection"))  {
+  if (inherits(db_connection, "DBIConnection")) {
     if (DBI::dbIsValid(db_connection)) {
       return(db_connection)
     }
   }
-  
+
   if (is.null(db_connection) == FALSE & is.list(db_connection) == FALSE) {
     if (DBI::dbIsValid(db_connection) == FALSE) {
       db_connection <- NULL

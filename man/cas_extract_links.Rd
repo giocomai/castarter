@@ -27,6 +27,7 @@ cas_extract_links(
   encoding = "UTF-8",
   reverse_order = TRUE,
   index_group = NULL,
+  db_connection = NULL,
   ...
 )
 }
@@ -80,6 +81,10 @@ given, links to external websites are dropped.}
 processed in reverse order of \code{id} and \code{batch}, which may give more
 meaningful order to content id. The difference is ultimately cosmetic, and
 has no substantive impact either way.}
+
+\item{db_connection}{Defaults to NULL. If NULL, uses local SQLite database.
+If given, must be a connection object or a list with relevant connection
+settings (see example).}
 
 \item{...}{Passed to \code{cas_get_db_file()}.}
 }
