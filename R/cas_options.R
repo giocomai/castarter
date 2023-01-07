@@ -37,7 +37,7 @@ cas_set_options <- function(project = NULL,
                             website = NULL,
                             use_db = TRUE,
                             base_folder = NULL,
-                            db_type = "DuckDB",
+                            db_type = "SQLite",
                             db_folder = NULL) {
   if (is.null(base_folder) == FALSE) {
     Sys.setenv(castarter_base_folder = base_folder)
@@ -106,7 +106,7 @@ cas_get_options <- function(project = NULL,
   if (is.null(db_type)) {
     db_type <- Sys.getenv("castarter_db_type")
     if (db_type == "") {
-      db_type <- "DuckDB"
+      db_type <- "SQLite"
     }
   }
 
