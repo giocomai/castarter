@@ -388,7 +388,7 @@ cas_connect_to_db <- function(db_connection = NULL,
   }
 
   if (is.null(db_connection)) {
-    if (db_type == "DuckDB") {
+    if (stringr::str_to_lower(db_type) == "duckdb") {
       if (requireNamespace("duckdb", quietly = TRUE) == FALSE) {
         usethis::ui_stop(x = "To use DuckDB databases you need to install the package `duckdb`.")
       }
@@ -406,7 +406,7 @@ cas_connect_to_db <- function(db_connection = NULL,
         read_only = read_only
       )
       return(db)
-    } else if (db_type == "SQLite") {
+    } else if (stringr::str_to_lower(db_type) == "sqlite") {
       if (requireNamespace("RSQLite", quietly = TRUE) == FALSE) {
         usethis::ui_stop(x = "To use SQLite databases you need to install the package `RSQLite`.")
       }
