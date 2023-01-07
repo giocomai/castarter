@@ -9,7 +9,7 @@ cas_set_options(
   website = NULL,
   use_db = TRUE,
   base_folder = NULL,
-  db_type = "DuckDB",
+  db_type = "SQLite",
   db_folder = NULL
 )
 }
