@@ -4,7 +4,14 @@
 \alias{cas_ia_check}
 \title{Gets an Archive.org Wayback Machine URL}
 \usage{
-cas_ia_check(url = NULL, wait = 1, db_connection = NULL, ...)
+cas_ia_check(
+  url = NULL,
+  wait = 1,
+  db_connection = NULL,
+  check_db = TRUE,
+  write_db = TRUE,
+  ...
+)
 }
 \arguments{
 \item{url}{A charachter vector of length one, a url.}
@@ -12,6 +19,12 @@ cas_ia_check(url = NULL, wait = 1, db_connection = NULL, ...)
 \item{wait}{Defaults to 1. Number of seconds to wait between downloading one
 page and the next. Can be increased to reduce server load, or can be set to
 0 when this is not an issue.}
+
+\item{check_db}{Defaults to TRUE. If TRUE, checks if given URL has already
+been checked in local database, and queries APIs only for URLs that have
+not been previously checked.}
+
+\item{write_db}{Defaults to TRUE. If TRUE, writes result to a local database.}
 
 \item{...}{Passed to \code{cas_get_db_file()}.}
 }
