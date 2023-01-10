@@ -61,8 +61,10 @@ cas_extract_links <- function(id = NULL,
                               index_group = NULL,
                               db_connection = NULL,
                               ...) {
-  db <- cas_connect_to_db(db_connection = db_connection,
-                          ...)
+  db <- cas_connect_to_db(
+    db_connection = db_connection,
+    ...
+  )
 
   local_files_df <- cas_get_path_to_files(
     index = index,
