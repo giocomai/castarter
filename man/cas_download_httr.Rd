@@ -12,7 +12,7 @@ cas_download_httr(
   db_connection = NULL,
   random = FALSE,
   file_format = "html",
-  retry_times = 5,
+  retry_times = 10,
   download_again_if_status_is_not = NULL,
   ...
 )

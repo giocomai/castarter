@@ -10,6 +10,7 @@ cas_ia_check(
   db_connection = NULL,
   check_db = TRUE,
   write_db = TRUE,
+  retry_times = 10,
   ...
 )
 }

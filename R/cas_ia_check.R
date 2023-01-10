@@ -25,6 +25,7 @@ cas_ia_check <- function(url = NULL,
                          db_connection = NULL,
                          check_db = TRUE,
                          write_db = TRUE,
+                         retry_times = 10,
                          ...) {
   if (length(url) < 2) {
     wait <- 0
