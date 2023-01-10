@@ -27,6 +27,9 @@ not been previously checked.}
 
 \item{write_db}{Defaults to TRUE. If TRUE, writes result to a local database.}
 
+\item{retry_times}{Defaults to 5. Number of times to retry download in case
+of errors.}
+
 \item{...}{Passed to \code{cas_get_db_file()}.}
 }
 \value{

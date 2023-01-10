@@ -99,8 +99,11 @@ cas_ia_check <- function(url = NULL,
 
       Sys.sleep(time = wait)
 
-      ia_available <- httr::GET("https://archive.org/wayback/available",
-        query = list(url = x)
+      ia_available <- httr::RETRY(
+        verb = "GET",
+        url = "https://archive.org/wayback/available",
+        query = list(url = x),
+        times = retry_times
       )
 
       httr::stop_for_status(ia_available)
