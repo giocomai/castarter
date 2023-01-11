@@ -6,6 +6,8 @@
 #' For an R package facilitating more extensive interaction with the API, see:
 #' https://github.com/hrbrmstr/wayback
 #'
+#' Integration with Wayback CDX Server API to be considered.
+#'
 #' @param url A charachter vector of length one, a url.
 #' @param check_db Defaults to TRUE. If TRUE, checks if given URL has already
 #'   been checked in local database, and queries APIs only for URLs that have
@@ -26,6 +28,7 @@ cas_ia_check <- function(url = NULL,
                          check_db = TRUE,
                          write_db = TRUE,
                          retry_times = 10,
+                         output_only_newly_checked = FALSE,
                          ...) {
   if (length(url) < 2) {
     wait <- 0
@@ -156,50 +159,105 @@ cas_ia_check <- function(url = NULL,
   if (check_db == FALSE & write_db == FALSE) {
     # do nothing, as db object won't exist
   } else {
-    cas_disconnect_from_db(
-      db_connection = db,
-      ...
-    )
+    if (output_only_newly_checked == TRUE) {
+      cas_disconnect_from_db(
+        db_connection = db,
+        ...
+      )
+      return(output_df)
+    }
+    input_url <- url
+
+    cas_read_db_ia() %>%
+      dplyr::filter(url %in% input_url) %>%
+      dplyr::group_by(url) %>%
+      dplyr::slice_max(checked_at) %>%
+      dplyr::ungroup()
   }
-
-
-  output_df
 }
 
 #' Save a URL the Internet Archive's Wayback Machine
 #'
+#' Consider using long waiting times, and using a high number of retry.
+#' Retry is done graciously, using `httr::RETRY`, and respecting the waiting time given when error 529 "too many requests" is returned by the server.
+#' This is still likely to take a long amount of time.
+#'
 #' @inheritParams cas_ia_check
+#' @inheritParams httr::RETRY
 #'
 #' @return
 #' @export
 #'
 #' @examples
 cas_ia_save <- function(url,
-                        wait = 1,
+                        wait = 2^4,
+                        retry_times = 2^7,
+                        pause_base = 2^3,
+                        pause_cap = 2^8,
+                        pause_min = 2^3,
+                        only_if_unavailable = TRUE,
+                        ia_check = TRUE,
+                        db_connection = NULL,
+                        check_db = TRUE,
+                        write_db = TRUE,
                         ...) {
+  db <- cas_connect_to_db(
+    db_connection = db_connection,
+    ...
+  )
+
+  if (only_if_unavailable) {
+    url <- cas_ia_check(
+      url = url,
+      db_connection = db,
+      check_db = check_db,
+      write_db = write_db,
+      output_only_newly_checked = FALSE
+    ) %>%
+      dplyr::filter(available == FALSE) %>%
+      dplyr::pull(url)
+  }
+
   if (length(url) < 2) {
     wait <- 0
   }
 
   pb <- progress::progress_bar$new(total = length(url))
 
-  purrr::map_chr(
+  purrr::map_dfr(
     .x = url,
     .f = function(x) {
       pb$tick()
 
-      ia_saved <- httr::GET(
-        url = stringr::str_c("https://web.archive.org/save/", x)
+      ia_saved <- httr::RETRY(
+        verb = "GET",
+        url = stringr::str_c("https://web.archive.org/save/", x),
+        times = retry_times,
+        pause_base = pause_base,
+        pause_cap = pause_cap,
+        pause_min = pause_min
       )
 
       httr::stop_for_status(ia_saved)
 
-      saved_url <- ia_saved[["url"]]
-
-      if (is.null(saved_url)) {
-        NA_character_
+      if (ia_check) {
+        cas_ia_check(
+          url = x,
+          wait = 0,
+          db_connection = db,
+          check_db = check_db,
+          write_db = write_db,
+          retry_times = retry_times,
+          ...
+        )
       } else {
-        as.character(saved_url)
+        saved_url <- ia_saved[["url"]]
+
+        if (is.null(saved_url)) {
+          tibble::tibble(ia_url = NA_character_)
+        } else {
+          tibble::tibble(ia_url = as.character(saved_url))
+        }
       }
     }
   )

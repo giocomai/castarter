@@ -11,6 +11,7 @@ cas_ia_check(
   check_db = TRUE,
   write_db = TRUE,
   retry_times = 10,
+  output_only_newly_checked = FALSE,
   ...
 )
 }
@@ -27,7 +28,7 @@ not been previously checked.}
 
 \item{write_db}{Defaults to TRUE. If TRUE, writes result to a local database.}
 
-\item{retry_times}{Defaults to 5. Number of times to retry download in case
+\item{retry_times}{Defaults to 10. Number of times to retry download in case
 of errors.}
 
 \item{...}{Passed to \code{cas_get_db_file()}.}
@@ -42,6 +43,8 @@ https://archive.org/help/wayback_api.php
 \details{
 For an R package facilitating more extensive interaction with the API, see:
 https://github.com/hrbrmstr/wayback
+
+Integration with Wayback CDX Server API to be considered.
 }
 \examples{
 \dontrun{

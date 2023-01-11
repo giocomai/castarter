@@ -4,7 +4,20 @@
 \alias{cas_ia_save}
 \title{Save a URL the Internet Archive's Wayback Machine}
 \usage{
-cas_ia_save(url, wait = 1, ...)
+cas_ia_save(
+  url,
+  wait = 2^4,
+  retry_times = 2^7,
+  pause_base = 2^3,
+  pause_cap = 2^8,
+  pause_min = 2^3,
+  only_if_unavailable = TRUE,
+  ia_check = TRUE,
+  db_connection = NULL,
+  check_db = TRUE,
+  write_db = TRUE,
+  ...
+)
 }
 \arguments{
 \item{url}{A charachter vector of length one, a url.}
@@ -13,8 +26,28 @@ cas_ia_save(url, wait = 1, ...)
 page and the next. Can be increased to reduce server load, or can be set to
 0 when this is not an issue.}
 
+\item{retry_times}{Defaults to 10. Number of times to retry download in case
+of errors.}
+
+\item{pause_base, pause_cap}{This method uses exponential back-off with
+full jitter - this means that each request will randomly wait between 0
+and \code{pause_base * 2 ^ attempt} seconds, up to a maximum of
+\code{pause_cap} seconds.}
+
+\item{pause_min}{Minimum time to wait in the backoff; generally
+only necessary if you need pauses less than one second (which may
+not be kind to the server, use with caution!).}
+
+\item{check_db}{Defaults to TRUE. If TRUE, checks if given URL has already
+been checked in local database, and queries APIs only for URLs that have
+not been previously checked.}
+
+\item{write_db}{Defaults to TRUE. If TRUE, writes result to a local database.}
+
 \item{...}{Passed to \code{cas_get_db_file()}.}
 }
 \description{
-Save a URL the Internet Archive's Wayback Machine
+Consider using long waiting times, and using a high number of retry.
+Retry is done graciously, using \code{httr::RETRY}, and respecting the waiting time given when error 529 "too many requests" is returned by the server.
+This is still likely to take a long amount of time.
 }
