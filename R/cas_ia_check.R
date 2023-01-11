@@ -245,7 +245,7 @@ cas_ia_save <- function(url,
           url = x,
           wait = 0,
           db_connection = db,
-          check_db = check_db,
+          check_db = FALSE,
           write_db = write_db,
           retry_times = retry_times,
           ...
