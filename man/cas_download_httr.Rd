@@ -38,7 +38,7 @@ settings (see example).}
 If a numeric is given, the download order is randomised and at most the
 given number of items is downloaded.}
 
-\item{retry_times}{Defaults to 5. Number of times to retry download in case
+\item{retry_times}{Defaults to 10. Number of times to retry download in case
 of errors.}
 
 \item{...}{Passed to \code{cas_get_db_file()}.}

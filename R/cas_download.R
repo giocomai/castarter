@@ -16,7 +16,7 @@
 #' @param random Defaults to FALSE. If TRUE, the download order is randomised.
 #'   If a numeric is given, the download order is randomised and at most the
 #'   given number of items is downloaded.
-#' @param retry_times Defaults to 5. Number of times to retry download in case
+#' @param retry_times Defaults to 10. Number of times to retry download in case
 #'   of errors.
 #'
 #' @inheritParams cas_connect_to_db
@@ -31,7 +31,7 @@ cas_download <- function(download_df = NULL,
                          wait = 1,
                          random = FALSE,
                          file_format = "html",
-                         retry_times = 5,
+                         retry_times = 10,
                          download_again_if_status_is_not = NULL,
                          ...) {
   cas_download_httr(
