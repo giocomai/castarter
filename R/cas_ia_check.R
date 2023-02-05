@@ -229,6 +229,8 @@ cas_ia_save <- function(url,
     .f = function(x) {
       pb$tick()
 
+      Sys.sleep(time = wait)
+
       ia_saved <- httr::RETRY(
         verb = "GET",
         url = stringr::str_c("https://web.archive.org/save/", x),
