@@ -103,7 +103,6 @@ cas_get_db_folder <- function(path = NULL,
 #' @examples
 #' \donttest{
 #' if (interactive()) {
-#'
 #'   # Settings can be provided either as a list
 #'   db_settings <- list(
 #'     driver = "MySQL",
@@ -340,7 +339,7 @@ cas_check_db_folder <- function() {
 #' if (interactive()) {
 #'   db_connection <- DBI::dbConnect(
 #'     RSQLite::SQLite(), # or e.g. odbc::odbc(),
-#'     Driver =  ":memory:", # or e.g. "MariaDB",
+#'     Driver = ":memory:", # or e.g. "MariaDB",
 #'     Host = "localhost",
 #'     database = "example_db",
 #'     UID = "example_user",

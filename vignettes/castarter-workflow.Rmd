@@ -31,28 +31,35 @@ Assuming that my project on the European Union involves text mining the website 
 
 ```{r}
 library("castarter")
-cas_set_options(base_folder = fs::path(fs::path_temp(),
-                                       "castarter_data"),
-                project = "European Union",
-                website = "EEAS"
+cas_set_options(
+  base_folder = fs::path(
+    fs::path_temp(),
+    "castarter_data"
+  ),
+  project = "European Union",
+  website = "EEAS"
 )
-
 ```
 
 
 ```{r eval = TRUE, include = TRUE, echo=FALSE}
+fs::dir_create(path = fs::path(
+  cas_get_options()$base_folder,
+  cas_get_options()$project,
+  "European Parliament"
+))
 
-fs::dir_create(path = fs::path(cas_get_options()$base_folder,
-                               cas_get_options()$project,
-                               "European Parliament"))
+fs::dir_create(path = fs::path(
+  cas_get_options()$base_folder,
+  cas_get_options()$project,
+  "European Council"
+))
 
-fs::dir_create(path = fs::path(cas_get_options()$base_folder,
-                               cas_get_options()$project,
-                               "European Council"))
-
-fs::dir_create(path = fs::path(cas_get_options()$base_folder,
-                               cas_get_options()$project,
-                               "EEAS"))
+fs::dir_create(path = fs::path(
+  cas_get_options()$base_folder,
+  cas_get_options()$project,
+  "EEAS"
+))
 
 fs::dir_tree(cas_get_options()$base_folder)
 ```
@@ -67,7 +74,7 @@ In text mining a common scenario involves first downloading web pages containing
 These URLs look something like this:
 
 ```{r eval = TRUE, echo=FALSE}
-tibble::tibble(index_urls = paste0("https://ec.europa.eu/commission/presscorner/home/en?pagenumber=", 1:10)) %>% 
+tibble::tibble(index_urls = paste0("https://ec.europa.eu/commission/presscorner/home/en?pagenumber=", 1:10)) %>%
   knitr::kable()
 ```
 
@@ -81,7 +88,7 @@ index_df <- cas_build_urls(
   index_group = "Statements"
 )
 
-index_df %>% 
+index_df %>%
   knitr::kable()
 ```
 
@@ -118,10 +125,12 @@ download_status_df
 
 
 ```{r}
-cas_extract_links(container = "h5",
-                  container_class = "card-title",
-                  domain = "https://www.eeas.europa.eu",
-                  write_to_db = TRUE)
+cas_extract_links(
+  container = "h5",
+  container_class = "card-title",
+  domain = "https://www.eeas.europa.eu",
+  write_to_db = TRUE
+)
 ```
 
 
@@ -131,7 +140,6 @@ cas_read_db_contents_id()
 
 ```{r}
 cas_get_files_to_download()
-
 ```
 
 
@@ -143,23 +151,27 @@ cas_download(random = 5)
 
 ```{r}
 cas_read_db_download()
-
 ```
 
 
 
 ```{r}
-extractors_l <- list(title = \(x) cas_extract_html(html_document = x,
-                                                 container = "h1",
-                                                 container_class = "node__title") %>% 
-                     stringr::str_remove_all(pattern = stringr::fixed("\n")) %>% 
-                     stringr::str_squish(), 
-                   date = \(x) cas_extract_html(html_document = x,
-                                                container = "div",
-                                                container_class = "node__meta") %>% 
-                     stringr::str_extract("[[:digit:]]+\\.[[:digit:]]+\\.[[:digit:]]+") %>% 
-                     lubridate::dmy())
-
+extractors_l <- list(
+  title = \(x) cas_extract_html(
+    html_document = x,
+    container = "h1",
+    container_class = "node__title"
+  ) %>%
+    stringr::str_remove_all(pattern = stringr::fixed("\n")) %>%
+    stringr::str_squish(),
+  date = \(x) cas_extract_html(
+    html_document = x,
+    container = "div",
+    container_class = "node__meta"
+  ) %>%
+    stringr::str_extract("[[:digit:]]+\\.[[:digit:]]+\\.[[:digit:]]+") %>%
+    lubridate::dmy()
+)
 ```
 
 ```{r}
@@ -167,7 +179,7 @@ cas_extract(extractors = extractors_l)
 ```
 
 ```{r}
-cas_read_db_contents_data() 
+cas_read_db_contents_data()
 ```
 
 

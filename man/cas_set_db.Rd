@@ -38,7 +38,6 @@ Set database connection settings for the session
 \examples{
 \donttest{
 if (interactive()) {
-
   # Settings can be provided either as a list
   db_settings <- list(
     driver = "MySQL",

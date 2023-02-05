@@ -17,7 +17,7 @@ knitr::opts_chunk$set(
 
 ```{r setup}
 library(castarter)
-#remotes::install_github("giocomai/tifkremlinen")
+# remotes::install_github("giocomai/tifkremlinen")
 ```
 
 [#TODO]
@@ -28,8 +28,10 @@ library(castarter)
 ### Dygraphs
 
 ```{r eval = FALSE}
-count_df <- castarter::cas_count(corpus = tifkremlinen::kremlin_en,
-                                  string = c("syria", "ukraine")) %>%
+count_df <- castarter::cas_count(
+  corpus = tifkremlinen::kremlin_en,
+  string = c("syria", "ukraine")
+) %>%
   cas_summarise(before = 45, after = 45)
 
 cass_show_ts_dygraph_app(count_df)
@@ -38,13 +40,15 @@ cass_show_ts_dygraph_app(count_df)
 ## Barchart
 
 ```{r}
-count_df <- castarter::cas_count(corpus = tifkremlinen::kremlin_en,
-                                  string = c("putin", "medvedev")) %>% 
+count_df <- castarter::cas_count(
+  corpus = tifkremlinen::kremlin_en,
+  string = c("putin", "medvedev")
+) %>%
   cas_summarise(period = "year", auto_convert = TRUE)
 
-base_gg <- cas_show_gg_base(count_df = count_df) 
+base_gg <- cas_show_gg_base(count_df = count_df)
 
-base_gg %>% 
-  cas_show_barchart_ggiraph() 
+base_gg %>%
+  cas_show_barchart_ggiraph()
 ```
 

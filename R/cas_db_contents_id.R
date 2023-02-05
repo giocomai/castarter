@@ -57,7 +57,6 @@ cas_write_db_contents_id <- function(contents_id_df,
   )
 
   if (check_previous == TRUE) {
-
     # TODO check what happens when check_previous is actually set to TRUE
     # the following is likely legacy code
 
@@ -154,15 +153,16 @@ cas_write_db_contents_id <- function(contents_id_df,
 cas_read_db_contents_id <- function(db_connection = NULL,
                                     db_folder = NULL,
                                     ...) {
-  db_result <- tryCatch(cas_read_from_db(
-    table = "contents_id",
-    db_folder = db_folder,
-    db_connection = db_connection,
-    ...
-  ),
-  error = function(e) {
-    logical(1L)
-  }
+  db_result <- tryCatch(
+    cas_read_from_db(
+      table = "contents_id",
+      db_folder = db_folder,
+      db_connection = db_connection,
+      ...
+    ),
+    error = function(e) {
+      logical(1L)
+    }
   )
 
   if (is.null(db_result)) {

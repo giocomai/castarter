@@ -141,15 +141,16 @@ cas_write_db_index <- function(urls,
 cas_read_db_index <- function(db_folder = NULL,
                               db_connection = NULL,
                               ...) {
-  db_result <- tryCatch(cas_read_from_db(
-    table = "index_id",
-    db_folder = db_folder,
-    db_connection = db_connection,
-    ...
-  ),
-  error = function(e) {
-    logical(1L)
-  }
+  db_result <- tryCatch(
+    cas_read_from_db(
+      table = "index_id",
+      db_folder = db_folder,
+      db_connection = db_connection,
+      ...
+    ),
+    error = function(e) {
+      logical(1L)
+    }
   )
 
   if (is.null(db_result)) {
@@ -200,15 +201,16 @@ cas_read_db_download <- function(index = FALSE,
     false = "contents"
   )
 
-  db_result <- tryCatch(cas_read_from_db(
-    table = stringr::str_c(type, "_", "download"),
-    db_connection = db_connection,
-    db_folder = db_folder,
-    ...
-  ),
-  error = function(e) {
-    logical(1L)
-  }
+  db_result <- tryCatch(
+    cas_read_from_db(
+      table = stringr::str_c(type, "_", "download"),
+      db_connection = db_connection,
+      db_folder = db_folder,
+      ...
+    ),
+    error = function(e) {
+      logical(1L)
+    }
   )
   if (is.null(db_result)) {
     tibble::as_tibble(casdb_empty_download)

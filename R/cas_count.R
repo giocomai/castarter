@@ -96,12 +96,13 @@ cas_count_single <- function(corpus,
 
   output_df <- corpus %>%
     dplyr::group_by({{ group_by }}) %>%
-    dplyr::summarise({{ n_column_name }} := stringr::str_count(
-      string = {{ text }},
-      pattern = pattern
-    ) %>%
-      sum(na.rm = TRUE),
-    .groups = "drop"
+    dplyr::summarise(
+      {{ n_column_name }} := stringr::str_count(
+        string = {{ text }},
+        pattern = pattern
+      ) %>%
+        sum(na.rm = TRUE),
+      .groups = "drop"
     )
 
   output_df %>%

@@ -19,9 +19,6 @@
 #' @export
 #'
 #' @examples
-#' \dontrun{
-#'
-#' }
 cas_ia_check <- function(url = NULL,
                          wait = 1,
                          db_connection = NULL,
@@ -190,11 +187,11 @@ cas_ia_check <- function(url = NULL,
 #'
 #' @examples
 cas_ia_save <- function(url,
-                        wait = 2^4,
-                        retry_times = 2^7,
-                        pause_base = 2^3,
-                        pause_cap = 2^8,
-                        pause_min = 2^3,
+                        wait = 20,
+                        retry_times = 50,
+                        pause_base = 10,
+                        pause_cap = 1000,
+                        pause_min = 10,
                         only_if_unavailable = TRUE,
                         ia_check = TRUE,
                         db_connection = NULL,
@@ -277,15 +274,16 @@ cas_ia_save <- function(url,
 cas_read_db_ia <- function(db_connection = NULL,
                            db_folder = NULL,
                            ...) {
-  db_result <- tryCatch(cas_read_from_db(
-    table = "ia_check",
-    db_folder = db_folder,
-    db_connection = db_connection,
-    ...
-  ),
-  error = function(e) {
-    logical(1L)
-  }
+  db_result <- tryCatch(
+    cas_read_from_db(
+      table = "ia_check",
+      db_folder = db_folder,
+      db_connection = db_connection,
+      ...
+    ),
+    error = function(e) {
+      logical(1L)
+    }
   )
 
   if (is.null(db_result)) {

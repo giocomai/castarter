@@ -6,11 +6,11 @@
 \usage{
 cas_ia_save(
   url,
-  wait = 2^4,
-  retry_times = 2^7,
-  pause_base = 2^3,
-  pause_cap = 2^8,
-  pause_min = 2^3,
+  wait = 20,
+  retry_times = 50,
+  pause_base = 10,
+  pause_cap = 1000,
+  pause_min = 10,
   only_if_unavailable = TRUE,
   ia_check = TRUE,
   db_connection = NULL,

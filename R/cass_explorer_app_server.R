@@ -90,12 +90,13 @@ cass_explorer_app_server <- function(input, output, session) {
         string = sentence,
         pattern = stringr::regex(
           ignore_case = TRUE,
-          pattern = paste(as.character(stringr::str_to_lower(trimws(stringr::str_split(
-            string = input$string,
-            pattern = ",",
-            simplify = TRUE
-          )))),
-          collapse = "|"
+          pattern = paste(
+            as.character(stringr::str_to_lower(trimws(stringr::str_split(
+              string = input$string,
+              pattern = ",",
+              simplify = TRUE
+            )))),
+            collapse = "|"
           )
         )
       )) %>%

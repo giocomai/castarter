@@ -72,28 +72,34 @@ Let's clarify with an example. Let's suppose I want to do some text minining of 
 
 ```{r}
 library("castarter")
-cas_set_options(base_folder = fs::path(fs::path_temp(), "castarter_data"),
-                project = "european_union",
-                website = "european_commission"
+cas_set_options(
+  base_folder = fs::path(fs::path_temp(), "castarter_data"),
+  project = "european_union",
+  website = "european_commission"
 )
-
 ```
 
 Assuming that my project on the European Union involves text mining the website of the European Council, the European Commission, and the European Parliament, the folder structure may look something like this:
 
 
 ```{r eval = TRUE, include = TRUE, echo=FALSE}
-fs::dir_create(path = fs::path(cas_get_options()$base_folder,
-                               cas_get_options()$project,
-                               cas_get_options()$website))
+fs::dir_create(path = fs::path(
+  cas_get_options()$base_folder,
+  cas_get_options()$project,
+  cas_get_options()$website
+))
 
-fs::dir_create(path = fs::path(cas_get_options()$base_folder,
-                               cas_get_options()$project,
-                               "european_parliament"))
+fs::dir_create(path = fs::path(
+  cas_get_options()$base_folder,
+  cas_get_options()$project,
+  "european_parliament"
+))
 
-fs::dir_create(path = fs::path(cas_get_options()$base_folder,
-                               cas_get_options()$project,
-                               "european_council"))
+fs::dir_create(path = fs::path(
+  cas_get_options()$base_folder,
+  cas_get_options()$project,
+  "european_council"
+))
 
 fs::dir_tree(cas_get_options()$base_folder)
 ```
@@ -134,8 +140,10 @@ Check out `castarter`'s interactive web interface for exploring corpora.
 ```{r example, eval = FALSE}
 library("castarter")
 remotes::install_github("giocomai/tifkremlinen")
-cas_explorer(corpus = tifkremlinen::kremlin_en,
-             default_string = "Syria, Crimea")
+cas_explorer(
+  corpus = tifkremlinen::kremlin_en,
+  default_string = "Syria, Crimea"
+)
 ```
 
 
