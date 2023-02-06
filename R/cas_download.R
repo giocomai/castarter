@@ -65,12 +65,13 @@ cas_download <- function(download_df = NULL,
 #' ))
 cas_get_urls_df <- function(urls = NULL,
                             index = FALSE,
+                            index_group = NULL,
                             ...) {
   if (is.null(urls)) {
     if (index == FALSE) {
       urls_df <- cas_read_db_contents_id(...)
     } else if (index == TRUE) {
-      urls_df <- cas_read_db_index(...)
+      urls_df <- cas_read_db_index(index_group = index_group, ...)
     } else {
       usethis::ui_stop("Parameter {usethis::ui_field('index`)} must be either {usethis::ui_value('TRUE`)} or {usethis::ui_value('FALSE`)}")
     }
@@ -215,6 +216,8 @@ cas_download_httr <- function(download_df = NULL,
 #' @param urls Defaults to NULL. If given, it should correspond with a data
 #'   frame with at least two columns named `id` and `url`. If not given, an
 #'   attempt will be made to load it from the local database.
+#' @param desc_id Logical, defaults to FALSE. If TRUE, results are returned with
+#'   highest id first.
 #' @param batch An integer, defaults to NULL. If not given, a check is performed
 #'   in the database to find if previous downloads have taken place. If so, by
 #'   default, the current batch will be one unit higher than the highest batch
@@ -232,11 +235,14 @@ cas_download_httr <- function(download_df = NULL,
 #' @examples
 cas_get_files_to_download <- function(urls = NULL,
                                       index = FALSE,
+                                      index_group = NULL,
+                                      desc_id = FALSE,
                                       batch = NULL,
                                       custom_folder = NULL,
                                       custom_path = NULL,
                                       file_format = "html",
                                       db_connection = NULL,
+                                      download_again = FALSE,
                                       download_again_if_status_is_not = NULL,
                                       ...) {
   type <- dplyr::if_else(condition = index,
@@ -247,6 +253,7 @@ cas_get_files_to_download <- function(urls = NULL,
   urls_df <- cas_get_urls_df(
     urls = urls,
     index = index,
+    index_group = index_group,
     db_connection = db_connection,
     ...
   ) %>%
@@ -296,15 +303,19 @@ cas_get_files_to_download <- function(urls = NULL,
     )
   )
 
-  if (is.null(download_again_if_status_is_not) == FALSE) {
-    previous_download_df <- previous_download_df %>%
-      dplyr::filter(status %in% download_again_if_status_is_not)
+  if (isTRUE(download_again)) {
+    files_to_download_df <- expected_filenames_df
+  } else {
+    if (is.null(download_again_if_status_is_not) == FALSE) {
+      previous_download_df <- previous_download_df %>%
+        dplyr::filter(status %in% download_again_if_status_is_not)
+    }
+    files_to_download_df <- dplyr::anti_join(
+      x = expected_filenames_df,
+      y = previous_download_df,
+      by = "id"
+    )
   }
-  files_to_download_df <- dplyr::anti_join(
-    x = expected_filenames_df,
-    y = previous_download_df,
-    by = "id"
-  )
 
   urls_to_download_df <- dplyr::left_join(
     x = files_to_download_df,
@@ -314,5 +325,10 @@ cas_get_files_to_download <- function(urls = NULL,
     dplyr::mutate(batch = as.numeric(current_batch)) %>%
     dplyr::select("id", "batch", "url", "path")
 
-  urls_to_download_df
+  if (desc_id) {
+    urls_to_download_df %>%
+      dplyr::arrange(dplyr::desc(x = id))
+  } else {
+    urls_to_download_df
+  }
 }

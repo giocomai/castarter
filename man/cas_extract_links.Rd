@@ -8,6 +8,8 @@ cas_extract_links(
   id = NULL,
   domain = NULL,
   index = TRUE,
+  output_index = FALSE,
+  output_index_group = NULL,
   include_when = NULL,
   exclude_when = NULL,
   container = NULL,
@@ -38,6 +40,14 @@ Only html files corresponding to given id will be processed.}
 \item{domain}{Defaults to "". Web domain of the website. It is added at the
 beginning of each link found. If links in the page already include the full
 web address this should be ignored.}
+
+\item{output_index}{Defaults to FALSE. If FALSE, new links are added to the
+contents table. If FALSE, the links extracted will be stored again as
+index, using \code{output_index_group} as \code{index_group}.}
+
+\item{output_index_group}{Defaults to NULL. Relevant only when \code{output_index}
+is set to TRUE. Used to store new index urls in the database with reference
+to the appropriate group.}
 
 \item{include_when}{Part of URL found only in links of individual articles to
 be downloaded. If more than one provided, it includes all links that

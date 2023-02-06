@@ -4,7 +4,12 @@
 \alias{cas_read_db_index}
 \title{Read index from local database}
 \usage{
-cas_read_db_index(db_folder = NULL, db_connection = NULL, ...)
+cas_read_db_index(
+  db_folder = NULL,
+  db_connection = NULL,
+  index_group = NULL,
+  ...
+)
 }
 \arguments{
 \item{db_connection}{Defaults to NULL. If NULL, uses local SQLite database.

@@ -14,6 +14,12 @@
 #' @inheritParams cas_write_db_index
 #' @inheritParams cas_extract_html
 #'
+#' @param output_index Defaults to FALSE. If FALSE, new links are added to the
+#'   contents table. If FALSE, the links extracted will be stored again as
+#'   index, using `output_index_group` as `index_group`.
+#' @param output_index_group Defaults to NULL. Relevant only when `output_index`
+#'   is set to TRUE. Used to store new index urls in the database with reference
+#'   to the appropriate group.
 #' @param attribute_type Defaults to "href". Type of attribute to extract from
 #'   links.
 #' @param min_length If a link is shorter than the number of characters given in
@@ -40,6 +46,8 @@
 cas_extract_links <- function(id = NULL,
                               domain = NULL,
                               index = TRUE,
+                              output_index = FALSE,
+                              output_index_group = NULL,
                               include_when = NULL,
                               exclude_when = NULL,
                               container = NULL,
@@ -92,12 +100,22 @@ cas_extract_links <- function(id = NULL,
       dplyr::select(-"available")
   }
 
-  previous_links_df <- cas_read_db_contents_id(
-    db_connection = db,
-    disconnect_db = FALSE,
-    ...
-  ) %>%
-    dplyr::collect()
+  if (output_index == TRUE) {
+    previous_links_df <- cas_read_db_index(
+      index_group = output_index_group,
+      db_connection = db,
+      disconnect_db = FALSE,
+      ...
+    ) %>%
+      dplyr::collect()
+  } else {
+    previous_links_df <- cas_read_db_contents_id(
+      db_connection = db,
+      disconnect_db = FALSE,
+      ...
+    ) %>%
+      dplyr::collect()
+  }
 
   if (nrow(previous_links_df) == 0) {
     start_id <- 1
@@ -332,14 +350,27 @@ cas_extract_links <- function(id = NULL,
             "source_index_batch"
           )
 
-        cas_write_db_contents_id(
-          contents_id_df = links_to_store_df,
-          db_connection = db,
-          disconnect_db = FALSE,
-          quiet = TRUE,
-          check_previous = FALSE,
-          ...
-        )
+        if (output_index == TRUE) {
+          cas_write_db_index(
+            urls = links_to_store_df %>%
+              dplyr::select("id", "url") %>%
+              dplyr::mutate(index_group = output_index_group),
+            db_connection = db,
+            disconnect_db = FALSE,
+            quiet = TRUE,
+            check_previous = FALSE,
+            ...
+          )
+        } else {
+          cas_write_db_contents_id(
+            contents_id_df = links_to_store_df,
+            db_connection = db,
+            disconnect_db = FALSE,
+            quiet = TRUE,
+            check_previous = FALSE,
+            ...
+          )
+        }
 
         sum(end_id, 1)
       } else {

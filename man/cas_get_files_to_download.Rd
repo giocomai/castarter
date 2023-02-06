@@ -7,11 +7,14 @@
 cas_get_files_to_download(
   urls = NULL,
   index = FALSE,
+  index_group = NULL,
+  desc_id = FALSE,
   batch = NULL,
   custom_folder = NULL,
   custom_path = NULL,
   file_format = "html",
   db_connection = NULL,
+  download_again = FALSE,
   download_again_if_status_is_not = NULL,
   ...
 )
@@ -24,6 +27,9 @@ attempt will be made to load it from the local database.}
 \item{index}{Logical, defaults to FALSE. If TRUE, downloaded files will be
 considered \code{index} files. If not, they will be considered \code{contents} files.
 See Readme for a more extensive explanation.}
+
+\item{desc_id}{Logical, defaults to FALSE. If TRUE, results are returned with
+highest id first.}
 
 \item{batch}{An integer, defaults to NULL. If not given, a check is performed
 in the database to find if previous downloads have taken place. If so, by

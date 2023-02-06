@@ -140,6 +140,7 @@ cas_write_db_index <- function(urls,
 #' cas_read_db_index()
 cas_read_db_index <- function(db_folder = NULL,
                               db_connection = NULL,
+                              index_group = NULL,
                               ...) {
   db_result <- tryCatch(
     cas_read_from_db(
@@ -158,7 +159,12 @@ cas_read_db_index <- function(db_folder = NULL,
   } else if (isFALSE(db_result)) {
     tibble::as_tibble(casdb_empty_index_id)
   } else {
-    db_result
+    if (is.null(index_group) == FALSE) {
+      db_result %>%
+        dplyr::filter(index_group == !!index_group)
+    } else {
+      db_result
+    }
   }
 }
 
