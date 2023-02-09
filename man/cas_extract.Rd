@@ -8,6 +8,7 @@ cas_extract(
   extractors,
   id = NULL,
   index = FALSE,
+  store_as_character = TRUE,
   db_connection = NULL,
   file_format = "html",
   random = FALSE,
@@ -23,11 +24,22 @@ cas_extract(
 considered \code{index} files. If not, they will be considered \code{contents} files.
 See Readme for a more extensive explanation.}
 
+\item{store_as_character}{Logical, defaults to TRUE. If TRUE, it converts to
+character all extracted contents before writing them to database. This
+reduces issues of type conversions with the default database backend (for
+example, SQLite automatically converts dates to numeric) or using different
+backends. This implies you will need to set data types when you read the
+database, but it also means that you can consistently expect all columns to
+be character vectors, which in one form or another are consistently
+implemented across database backends. Set to FALSE if you want to remain in
+control of column types.}
+
 \item{random}{Defaults to FALSE. If TRUE, the download order is randomised.
 If a numeric is given, the download order is randomised and at most the
 given number of items is downloaded.}
 
-\item{keep_if_status}{Defaults to 200. Keep only if recorded download status matches the given status.}
+\item{keep_if_status}{Defaults to 200. Keep only if recorded download status
+matches the given status.}
 
 \item{...}{Passed to \code{cas_get_db_file()}.}
 }

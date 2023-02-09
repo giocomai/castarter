@@ -1,7 +1,17 @@
 #' Extract fields and contents from downloaded files
 #'
 #' @param extractors A named list of functions. See examples for details.
-#' @param keep_if_status Defaults to 200. Keep only if recorded download status matches the given status.
+#' @param store_as_character Logical, defaults to TRUE. If TRUE, it converts to
+#'   character all extracted contents before writing them to database. This
+#'   reduces issues of type conversions with the default database backend (for
+#'   example, SQLite automatically converts dates to numeric) or using different
+#'   backends. This implies you will need to set data types when you read the
+#'   database, but it also means that you can consistently expect all columns to
+#'   be character vectors, which in one form or another are consistently
+#'   implemented across database backends. Set to FALSE if you want to remain in
+#'   control of column types.
+#' @param keep_if_status Defaults to 200. Keep only if recorded download status
+#'   matches the given status.
 #' @inheritParams cas_download
 #'
 #' @return
@@ -11,6 +21,7 @@
 cas_extract <- function(extractors,
                         id = NULL,
                         index = FALSE,
+                        store_as_character = TRUE,
                         db_connection = NULL,
                         file_format = "html",
                         random = FALSE,
@@ -140,6 +151,14 @@ cas_extract <- function(extractors,
           url = as.character(x[["url"]])
         ) %>%
         dplyr::select("id", "url", dplyr::everything())
+
+      if (store_as_character == TRUE) {
+        current_df <- current_df %>%
+          dplyr::mutate(dplyr::across(
+            .cols = dplyr::everything(),
+            .fns = as.character
+          ))
+      }
 
       cas_write_to_db(
         df = current_df,
