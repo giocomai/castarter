@@ -49,7 +49,8 @@ Suggests:
     roxygen2,
     spelling,
     knitr,
-    rmarkdown
+    rmarkdown,
+    marker (>= 0.1.1)
 Remotes:
     JohnCoene/marker
 Config/testthat/edition: 3
