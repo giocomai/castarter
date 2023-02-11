@@ -77,14 +77,31 @@ cas_archive <- function(path = NULL,
           file_format
         )
 
+        tarfile_v <- fs::path(
+          fs::path_rel(path),
+          current_filename
+        )
+
         tar(
-          tarfile = fs::path(
-            fs::path_rel(path),
-            current_filename
-          ),
+          tarfile = tarfile_v,
           files = current_folder,
           compression = "gzip"
         )
+
+        if (remove_original == TRUE) {
+          ## check if files actually stored
+
+          tarred_files_v <- untar(tarfile = tarfile_v, list = TRUE)
+          local_files_v <- fs::dir_ls(path = current_folder)
+
+          if (sum(local_files_v %in% tarred_files_v) == length(local_files_v)) {
+            fs::dir_delete(path = current_folder)
+          } else {
+            cli::cli_abort(c("Something's not right: not all locally stored files in folder {.folder {fs::path_real(current_folder)}} are included in the newly generated {.path {fs::path_real(tarfile_v)}}",
+              i = "Archiving process has been stopped."
+            ))
+          }
+        }
       }
     )
   }
@@ -114,14 +131,30 @@ cas_archive <- function(path = NULL,
           file_format
         )
 
+        tarfile_v <- fs::path(
+          fs::path_rel(path),
+          current_filename
+        )
+
         tar(
-          tarfile = fs::path(
-            fs::path_rel(path),
-            current_filename
-          ),
+          tarfile = tarfile_v,
           files = current_folder,
           compression = "gzip"
         )
+
+        if (remove_original == TRUE) {
+          ## check if files actually stored
+          tarred_files_v <- untar(tarfile = tarfile_v, list = TRUE)
+          local_files_v <- fs::dir_ls(path = current_folder)
+
+          if (sum(local_files_v %in% tarred_files_v) == length(local_files_v)) {
+            fs::dir_delete(path = current_folder)
+          } else {
+            cli::cli_abort(c("Something's not right: not all locally stored files in folder {.folder {fs::path_real(current_folder)}} are included in the newly generated {.path {fs::path_real(tarfile_v)}}",
+              i = "Archiving process has been stopped."
+            ))
+          }
+        }
       }
     )
   }
