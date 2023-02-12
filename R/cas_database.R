@@ -199,8 +199,7 @@ cas_get_db_settings <- function() {
 #' cas_set_db_folder(path = tempdir())
 #' db_file_location <- cas_get_db_file(project = "test-project") # outputs location of database file
 #' db_file_location
-cas_get_db_file <- function(db_type = "DuckDB",
-                            db_folder = NULL,
+cas_get_db_file <- function(db_folder = NULL,
                             ...) {
   db_folder <- cas_get_db_folder(path = db_folder)
 
@@ -214,7 +213,7 @@ cas_get_db_file <- function(db_type = "DuckDB",
       "_",
       cas_options_l$website,
       "_db.",
-      stringr::str_to_lower(db_type)
+      stringr::str_to_lower(cas_options_l$db_type)
     ) %>%
       fs::path_sanitize()
   )
@@ -234,7 +233,7 @@ cas_get_db_file <- function(db_type = "DuckDB",
 #'   cas_enable_db()
 #' }
 #' }
-cas_enable_db <- function(db_type = "DuckDB") {
+cas_enable_db <- function(db_type = "SQLite") {
   Sys.setenv(castarter_database = TRUE)
   Sys.setenv(castarter_db_type = db_type)
 }

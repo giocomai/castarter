@@ -4,7 +4,7 @@
 \alias{cas_enable_db}
 \title{Enable caching for the current session}
 \usage{
-cas_enable_db(db_type = "DuckDB")
+cas_enable_db(db_type = "SQLite")
 }
 \value{
 Nothing, used for its side effects.
