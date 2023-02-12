@@ -25,12 +25,14 @@ cas_convert_db_type <- function(source_db_type,
 
   source_db <- cas_connect_to_db(
     db_type = source_db_type,
-    read_only = TRUE
+    read_only = TRUE,
+    ...
   )
 
   destination_db <- cas_connect_to_db(
     db_type = destination_db_type,
-    read_only = FALSE
+    read_only = FALSE,
+    ...
   )
 
   purrr::walk(
