@@ -28,26 +28,41 @@ cas_convert_db_type <- function(source_db_type,
     read_only = FALSE
   )
 
-  purrr::walk(
-    .x = DBI::dbListTables(conn = source_db),
-    .f = function(current_table_name) {
-      DBI::dbReadTable(
-        conn = source_db,
-        name = current_table_name
-      ) %>%
-        DBI::dbWriteTable(
-          conn = destination_db,
+  if (fs::file_exists(cas_get_db_file(db_type = destination_db_type)==FALSE)) {
+    purrr::walk(
+      .x = DBI::dbListTables(conn = source_db),
+      .f = function(current_table_name) {
+        DBI::dbReadTable(
+          conn = source_db,
           name = current_table_name
-        )
-    }
-  )
-
+        ) %>%
+          DBI::dbWriteTable(
+            conn = destination_db,
+            name = current_table_name
+          )
+      }
+    )
+  } else {
+    
+    cas_disconnect_from_db(
+      db_connection = source_db,
+      ...
+    )
+    
+    cas_disconnect_from_db(
+      db_connection = destination_db,
+      ...
+    )
+    
+    cli::cli_abort(c(x = "Conversion aborted. Destination database already exists.",
+                     i = "{.path {cas_get_db_file(db_type = destination_db_type)}}"))
+  }
 
   cas_disconnect_from_db(
     db_connection = source_db,
     ...
   )
-
+  
   cas_disconnect_from_db(
     db_connection = destination_db,
     ...
