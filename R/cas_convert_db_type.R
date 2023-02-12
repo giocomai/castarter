@@ -16,7 +16,7 @@ cas_convert_db_type <- function(source_db_type,
       "i" = "Make sure that website and project have been set correctly with {.fun cas_set_options}.",
       "i" = "Also check that the {.code source_db_type} has been set correctly."
     ))
-  } else if (fs::file_exists(cas_get_db_file(db_type = destination_db_type) == FALSE)) {
+  } else if (fs::file_exists(cas_get_db_file(db_type = destination_db_type)) == FALSE) {
     cli::cli_abort(c(
       x = "Conversion aborted. Destination database already exists.",
       i = "{.path {cas_get_db_file(db_type = destination_db_type)}}"
