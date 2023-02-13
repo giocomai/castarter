@@ -26,6 +26,9 @@ script of type "NewsArticle".}
 from reading the with \code{jsonlite} the result of the previous steps and
 filter.}
 }
+\value{
+May return a list or a character vector. If no match is found, returns \code{NA_character_}
+}
 \description{
 Extracts scripts from an html page
 }
@@ -63,7 +66,7 @@ if (interactive()) {
     html_document = html_document,
     script_type = "application/ld+json",
     match = c(`@type` = "NewsArticle"),
-    accessors = c("publisher", "logo", "url")
+    accessors = cas("publisher", "logo", "url")
   )
 }
 }

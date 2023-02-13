@@ -6,6 +6,7 @@
 \usage{
 cas_get_path_to_files(
   urls = NULL,
+  id = NULL,
   index = FALSE,
   custom_folder = NULL,
   custom_path = NULL,
