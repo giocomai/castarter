@@ -9,6 +9,7 @@
 #'
 #' @examples
 cas_get_path_to_files <- function(urls = NULL,
+                                  id = NULL,
                                   index = FALSE,
                                   custom_folder = NULL,
                                   custom_path = NULL,
@@ -30,6 +31,11 @@ cas_get_path_to_files <- function(urls = NULL,
     dplyr::arrange(id, dplyr::desc(batch)) %>%
     dplyr::distinct(id, .keep_all = TRUE) %>%
     dplyr::filter(status == 200)
+
+  if (is.null(id) == FALSE) {
+    available_files_df <- available_files_df %>%
+      dplyr::filter({{ id }} == id)
+  }
 
   if (nrow(available_files_df) == 0) {
     return(invisible(NULL))
