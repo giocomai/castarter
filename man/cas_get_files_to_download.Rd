@@ -37,7 +37,7 @@ default, the current batch will be one unit higher than the highest batch
 number found in the database.}
 
 \item{download_again_if_status_is_not}{Defaults to NULL. If given, it must a
-status code as integer, typically \code{200L}.}
+status code as integer, typically \code{200L}, or \code{c(200L, 404L)}.}
 
 \item{...}{
   Arguments passed on to \code{\link[=cas_get_urls_df]{cas_get_urls_df}}, \code{\link[=cas_get_base_folder]{cas_get_base_folder}}

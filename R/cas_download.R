@@ -223,7 +223,7 @@ cas_download_httr <- function(download_df = NULL,
 #'   default, the current batch will be one unit higher than the highest batch
 #'   number found in the database.
 #' @param download_again_if_status_is_not Defaults to NULL. If given, it must a
-#'   status code as integer, typically `200L`.
+#'   status code as integer, typically `200L`, or `c(200L, 404L)`.
 #'
 #' @inheritParams cas_download
 #' @inheritDotParams cas_get_urls_df -urls -index

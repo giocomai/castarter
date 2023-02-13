@@ -12,8 +12,8 @@ cas_extract_html(
   container_instance = NULL,
   sub_element = NULL,
   no_children = NULL,
+  attribute = NULL,
   squish = TRUE,
-  encoding = "UTF-8",
   custom_Xpath = NULL,
   custom_CSSpath = NULL,
   keep_everything = FALSE
@@ -48,6 +48,10 @@ tipically be "p", to extract all p elements inside the selected div.}
 selected combination (e.g. div with given class) are extracted. If TRUE,
 only text found under the given combination (but not its subelements) will
 be extracted. Corresponds to the xpath string \verb{/node()[not(self::div)]}.}
+
+\item{attribute}{Defaults to NULL. If given, type of attribute to extract.
+Typically used in combination with container, as in
+\code{cas_extract_html(container = "time", attribute = "datetime")}.}
 
 \item{squish}{Defaults to TRUE. If TRUE, applies \code{stringr::str_squish()} to
 output, removing whitespace from start and end of string, and replacing

@@ -204,6 +204,9 @@ cas_extract <- function(extractors,
 #'   selected combination (e.g. div with given class) are extracted. If TRUE,
 #'   only text found under the given combination (but not its subelements) will
 #'   be extracted. Corresponds to the xpath string `/node()[not(self::div)]`.
+#' @param attribute Defaults to NULL. If given, type of attribute to extract.
+#'   Typically used in combination with container, as in
+#'   `cas_extract_html(container = "time", attribute = "datetime")`.
 #' @param custom_Xpath Defaults to NULL. If given, all other parameters are
 #'   ignored and given Xpath used instead.
 #' @param custom_CSSpath Defaults to NULL. If given, all other parameters are
@@ -225,8 +228,8 @@ cas_extract_html <- function(html_document,
                              container_instance = NULL,
                              sub_element = NULL,
                              no_children = NULL,
+                             attribute = NULL,
                              squish = TRUE,
-                             encoding = "UTF-8",
                              custom_Xpath = NULL,
                              custom_CSSpath = NULL,
                              keep_everything = FALSE) {
@@ -268,6 +271,13 @@ cas_extract_html <- function(html_document,
         rvest::html_nodes(sub_element) %>%
         rvest::html_text2()
     }
+  } else if (is.null(container_class) == FALSE & is.null(attribute) == FALSE) {
+    output <- html_document %>%
+      rvest::html_nodes(xpath = stringr::str_c(
+        "//",
+        container
+      )) %>%
+      rvest::html_attr(name = attribute)
   } else if (is.null(container_class) == FALSE & is.null(container_id) == TRUE) {
     if (is.null(sub_element) == TRUE) {
       output <- html_document %>%
@@ -319,4 +329,101 @@ cas_extract_html <- function(html_document,
     output <- stringr::str_squish(string = output)
   }
   output
+}
+
+
+#' Extracts scripts from an html page
+#'
+#' @param script_type Defaults to NULL. Type of script. Common script types
+#'   include `application/ld+json`, `text/template`, etc.
+#' @param match Default to NULL. If given, used to filter extracted scripts.
+#'   Must be a named vector in the format `c(`@type` = "NewsArticle")` for a
+#'   script of type "NewsArticle".
+#' @param accessors Defaults to NULL. If given, a vector of accessors passed to
+#'   `purrr::pluck` in order to extract sub-components of the list resulting
+#'   from reading the with `jsonlite` the result of the previous steps and
+#'   filter.
+#'
+#' @inheritParams cas_extract_html
+#'
+#' @return
+#' @export
+#'
+#' @examples
+#' \dontrun{
+#' if (interactive()) {
+#'   url <- "https://www.digi24.ro/stiri/externe/casa-alba-pune-capat-isteriei-globale-nu-exista-indicii-ca-obiectele-zburatoare-doborate-de-rachetele-sua-ar-fi-extraterestre-2250863"
+#'
+#'   html_document <- rvest::read_html(x = url)
+#'
+#'   cas_extract_script(
+#'     html_document = html_document,
+#'     script_type = "application/ld+json"
+#'   )
+#'
+#'   # get date published
+#'   cas_extract_script(
+#'     html_document = html_document,
+#'     script_type = "application/ld+json",
+#'     match = c(`@type` = "NewsArticle"),
+#'     accessors = "datePublished"
+#'   )
+#'
+#'   # get title
+#'   cas_extract_script(
+#'     html_document = html_document,
+#'     script_type = "application/ld+json",
+#'     match = c(`@type` = "NewsArticle"),
+#'     accessors = "headline"
+#'   )
+#'
+#'   # get nested element, e.g. url of the logo of the publisher
+#'
+#'   cas_extract_script(
+#'     html_document = html_document,
+#'     script_type = "application/ld+json",
+#'     match = c(`@type` = "NewsArticle"),
+#'     accessors = c("publisher", "logo", "url")
+#'   )
+#' }
+#' }
+cas_extract_script <- function(html_document,
+                               script_type = NULL,
+                               match = NULL,
+                               accessors = NULL) {
+  if (is.null(script_type) == TRUE) {
+    script_pre <- html_document %>%
+      rvest::html_elements("script")
+  } else {
+    script_pre <- html_document %>%
+      rvest::html_elements(stringr::str_c("script[type='", script_type, "']"))
+  }
+
+  script_l <- purrr::map(
+    .x = script_pre,
+    .f = function(x) {
+      x %>%
+        rvest::html_text() %>%
+        jsonlite::parse_json()
+    }
+  )
+
+  if (is.null(match) == FALSE) {
+    matched_pre <- purrr::map_chr(
+      .x = script_l,
+      .f = function(x) {
+        x %>%
+          purrr::pluck(names(match))
+      }
+    )
+
+    script_l <- script_l[[which(matched_pre == match)]]
+  }
+
+  if (is.null(accessors) == FALSE) {
+    script_l %>%
+      purrr::pluck(!!!accessors)
+  } else {
+    script_l
+  }
 }
