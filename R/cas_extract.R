@@ -27,6 +27,7 @@ cas_extract <- function(extractors,
                         random = FALSE,
                         write_to_db = TRUE,
                         keep_if_status = 200,
+                        encoding = "UTF-8",
                         ...) {
   ellipsis::check_dots_unnamed()
 
@@ -133,7 +134,8 @@ cas_extract <- function(extractors,
 
       current_html_document <- xml2::read_html(
         x = x$path,
-        options = c("RECOVER", "NOERROR", "NOBLANKS", "HUGE")
+        options = c("RECOVER", "NOERROR", "NOBLANKS", "HUGE"),
+        encoding = encoding
       )
 
       if (inherits(x = current_html_document, what = "xml_node") == FALSE) {
@@ -346,7 +348,7 @@ cas_extract_html <- function(html_document,
 #'
 #' @inheritParams cas_extract_html
 #'
-#' @return
+#' @return May return a list or a character vector. If no match is found, returns `NA_character_`
 #' @export
 #'
 #' @examples
@@ -383,7 +385,7 @@ cas_extract_html <- function(html_document,
 #'     html_document = html_document,
 #'     script_type = "application/ld+json",
 #'     match = c(`@type` = "NewsArticle"),
-#'     accessors = c("publisher", "logo", "url")
+#'     accessors = cas("publisher", "logo", "url")
 #'   )
 #' }
 #' }
@@ -403,7 +405,7 @@ cas_extract_script <- function(html_document,
     .x = script_pre,
     .f = function(x) {
       x %>%
-        rvest::html_text() %>%
+        rvest::html_text2() %>%
         jsonlite::parse_json()
     }
   )
@@ -417,7 +419,13 @@ cas_extract_script <- function(html_document,
       }
     )
 
-    script_l <- script_l[[which(matched_pre == match)]]
+    match_index_v <- which(matched_pre == match)
+
+    if (length(match_index_v) == 0) {
+      return(NA_character_)
+    } else {
+      script_l <- script_l[[match_index_v]]
+    }
   }
 
   if (is.null(accessors) == FALSE) {

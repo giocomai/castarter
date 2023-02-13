@@ -14,6 +14,7 @@ cas_extract(
   random = FALSE,
   write_to_db = TRUE,
   keep_if_status = 200,
+  encoding = "UTF-8",
   ...
 )
 }
