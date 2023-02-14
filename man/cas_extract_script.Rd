@@ -66,7 +66,7 @@ if (interactive()) {
     html_document = html_document,
     script_type = "application/ld+json",
     match = c(`@type` = "NewsArticle"),
-    accessors = cas("publisher", "logo", "url")
+    accessors = c("publisher", "logo", "url")
   )
 }
 }

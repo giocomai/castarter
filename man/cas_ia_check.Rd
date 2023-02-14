@@ -6,7 +6,7 @@
 \usage{
 cas_ia_check(
   url = NULL,
-  wait = 1,
+  wait = 2,
   db_connection = NULL,
   check_db = TRUE,
   write_db = TRUE,
