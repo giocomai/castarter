@@ -20,17 +20,16 @@
 #'
 #' @examples
 cas_ia_check <- function(url = NULL,
-                         wait = 2,
+                         wait = 1,
+                         retry_times = 16,
+                         pause_base = 4,
+                         pause_cap = 512,
+                         pause_min = 4,
                          db_connection = NULL,
                          check_db = TRUE,
                          write_db = TRUE,
-                         retry_times = 10,
                          output_only_newly_checked = FALSE,
                          ...) {
-  if (length(url) < 2) {
-    wait <- 0
-  }
-
   if (check_db == FALSE & write_db == FALSE) {
     # do nothing, as connection won't be needed
   } else {
@@ -89,7 +88,11 @@ cas_ia_check <- function(url = NULL,
   } else {
     url_to_process_df <- tibble::tibble(url = unique(url))
   }
-
+  
+  if (nrow(url_to_process_df) < 2) {
+    wait <- 0
+  }
+  
   pb <- progress::progress_bar$new(total = nrow(url_to_process_df))
 
   output_df <- purrr::map_dfr(
@@ -97,12 +100,13 @@ cas_ia_check <- function(url = NULL,
     .f = function(x) {
       pb$tick()
 
-      Sys.sleep(time = wait)
-
       ia_available <- httr::RETRY(
         verb = "GET",
         url = "https://archive.org/wayback/available",
         query = list(url = x),
+        pause_base = pause_base,
+        pause_cap = pause_cap,
+        pause_min = pause_min,
         times = retry_times
       )
 
@@ -148,7 +152,8 @@ cas_ia_check <- function(url = NULL,
         )
       }
 
-
+      Sys.sleep(time = wait)
+      
       current_df
     }
   )
@@ -230,6 +235,9 @@ cas_ia_save <- function(url = NULL,
       check_db = check_db,
       write_db = write_db,
       wait = ia_check_wait,
+      pause_base = pause_base,
+      pause_cap = pause_cap,
+      pause_min = pause_min,
       output_only_newly_checked = FALSE
     ) %>%
       dplyr::filter(available == FALSE) %>%
@@ -263,8 +271,6 @@ cas_ia_save <- function(url = NULL,
     .f = function(x) {
       pb$tick()
 
-      Sys.sleep(time = wait)
-
       ia_saved <- httr::RETRY(
         verb = "GET",
         url = stringr::str_c("https://web.archive.org/save/", x),
@@ -275,6 +281,8 @@ cas_ia_save <- function(url = NULL,
       )
 
       httr::stop_for_status(ia_saved)
+      
+      Sys.sleep(time = wait)
 
       if (ia_check) {
         cas_ia_check(

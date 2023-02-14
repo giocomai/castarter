@@ -6,11 +6,14 @@
 \usage{
 cas_ia_check(
   url = NULL,
-  wait = 2,
+  wait = 1,
+  retry_times = 16,
+  pause_base = 4,
+  pause_cap = 512,
+  pause_min = 4,
   db_connection = NULL,
   check_db = TRUE,
   write_db = TRUE,
-  retry_times = 10,
   output_only_newly_checked = FALSE,
   ...
 )
@@ -22,14 +25,14 @@ cas_ia_check(
 page and the next. Can be increased to reduce server load, or can be set to
 0 when this is not an issue.}
 
+\item{retry_times}{Defaults to 10. Number of times to retry download in case
+of errors.}
+
 \item{check_db}{Defaults to TRUE. If TRUE, checks if given URL has already
 been checked in local database, and queries APIs only for URLs that have
 not been previously checked.}
 
 \item{write_db}{Defaults to TRUE. If TRUE, writes result to a local database.}
-
-\item{retry_times}{Defaults to 10. Number of times to retry download in case
-of errors.}
 
 \item{...}{Passed to \code{cas_get_db_file()}.}
 }
