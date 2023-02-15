@@ -22,7 +22,7 @@
 cas_ia_check <- function(url = NULL,
                          wait = 1,
                          retry_times = 16,
-                         pause_base = 4,
+                         pause_base = 2,
                          pause_cap = 512,
                          pause_min = 4,
                          db_connection = NULL,

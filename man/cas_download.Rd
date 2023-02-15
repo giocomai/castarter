@@ -8,11 +8,14 @@ local database}
 cas_download(
   download_df = NULL,
   index = FALSE,
+  file_format = "html",
   overwrite_file = FALSE,
   wait = 1,
+  pause_base = 2,
+  pause_cap = 256,
+  pause_min = 4,
   random = FALSE,
-  file_format = "html",
-  retry_times = 10,
+  retry_times = 16,
   download_again_if_status_is_not = NULL,
   ...
 )
