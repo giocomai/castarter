@@ -338,6 +338,7 @@ cas_extract_links <- function(id = NULL,
 
         links_to_store_df <- links_df %>%
           dplyr::mutate(
+            url = stringr::str_remove_all(string = url, pattern = "\\s"),
             source_index_id = as.numeric(x$id),
             source_index_batch = as.numeric(x$batch),
             id = as.numeric(start_id:end_id)
