@@ -84,7 +84,7 @@ cas_extract_links <- function(id = NULL,
     dplyr::collect()
 
   if (sum(local_files_df$available) < nrow(local_files_df)) {
-    usethis::ui_warn(x = "Missing files: {nrow(local_files_df %>% dplyr::filter(!available))}")
+    cli::cli_warn(x = "Missing files: {nrow(local_files_df %>% dplyr::filter(!available))}")
 
     local_files_df <- local_files_df %>%
       dplyr::filter(available) %>%
@@ -93,7 +93,7 @@ cas_extract_links <- function(id = NULL,
     if (nrow(local_files_df) == 0) {
       return(NULL)
     } else {
-      usethis::ui_info(x = "Links will be extracted from the {nrow(local_files_df)} file available.")
+      cli::cli_inform(c(i = "Links will be extracted from the {nrow(local_files_df)} files available."))
     }
   } else {
     local_files_df <- local_files_df %>%
