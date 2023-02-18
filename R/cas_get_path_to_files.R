@@ -15,7 +15,7 @@ cas_get_path_to_files <- function(urls = NULL,
                                   custom_folder = NULL,
                                   custom_path = NULL,
                                   file_format = "html",
-                                  random = FALSE,
+                                  sample = FALSE,
                                   db_connection = NULL,
                                   db_folder = NULL,
                                   ...) {
@@ -57,10 +57,10 @@ cas_get_path_to_files <- function(urls = NULL,
     return(invisible(NULL))
   }
 
-  if (is.numeric(random) == TRUE) {
+  if (is.numeric(sample) == TRUE) {
     available_files_df <- available_files_df %>%
-      dplyr::slice_sample(n = random)
-  } else if (isTRUE(random)) {
+      dplyr::slice_sample(n = sample)
+  } else if (isTRUE(sample)) {
     available_files_df <- available_files_df %>%
       dplyr::slice_sample(p = 1)
   }

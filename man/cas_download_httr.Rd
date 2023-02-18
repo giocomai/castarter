@@ -14,7 +14,7 @@ cas_download_httr(
   pause_cap = 256,
   pause_min = 4,
   db_connection = NULL,
-  random = FALSE,
+  sample = FALSE,
   file_format = "html",
   retry_times = 16,
   download_again_if_status_is_not = NULL,
@@ -38,7 +38,7 @@ page and the next. Can be increased to reduce server load, or can be set to
 If given, must be a connection object or a list with relevant connection
 settings (see example).}
 
-\item{random}{Defaults to FALSE. If TRUE, the download order is randomised.
+\item{sample}{Defaults to FALSE. If TRUE, the download order is randomised.
 If a numeric is given, the download order is randomised and at most the
 given number of items is downloaded.}
 

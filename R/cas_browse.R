@@ -2,7 +2,7 @@
 #'
 #' @param remote Defaults to TRUE. If TRUE, open relevant url online. If FALSE,
 #'   it opens the locally stored file.
-#' @param random Defaults to 1. By defaults, it opens one random url.
+#' @param sample Defaults to 1. By defaults, it opens one random url.
 #'
 #' @inheritParams cas_download
 #'
@@ -16,7 +16,7 @@ cas_browse <- function(index = FALSE,
                        batch = NULL,
                        index_group = NULL,
                        file_format = "html",
-                       random = 1,
+                       sample = 1,
                        ...) {
   type <- dplyr::if_else(condition = index,
     true = "index",
@@ -33,7 +33,7 @@ cas_browse <- function(index = FALSE,
       index = index,
       file_format = file_format,
       db_connection = db,
-      random = random,
+      sample = sample,
       ...
     )
 
@@ -46,7 +46,7 @@ cas_browse <- function(index = FALSE,
           db_connection = db,
           ...
         ) %>%
-          dplyr::slice_sample(n = random) %>%
+          dplyr::slice_sample(n = sample) %>%
           dplyr::pull("url")
       } else {
         index_group_to_filter <- index_group
@@ -56,7 +56,7 @@ cas_browse <- function(index = FALSE,
           ...
         ) %>%
           dplyr::filter(index_group == index_group_to_filter) %>%
-          dplyr::slice_sample(n = random) %>%
+          dplyr::slice_sample(n = sample) %>%
           dplyr::pull("url")
       }
     } else {
@@ -64,7 +64,7 @@ cas_browse <- function(index = FALSE,
         db_connection = db,
         ...
       ) %>%
-        dplyr::slice_sample(n = random) %>%
+        dplyr::slice_sample(n = sample) %>%
         dplyr::pull("url")
     }
   }

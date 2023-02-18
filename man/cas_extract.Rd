@@ -11,7 +11,7 @@ cas_extract(
   store_as_character = TRUE,
   db_connection = NULL,
   file_format = "html",
-  random = FALSE,
+  sample = FALSE,
   write_to_db = TRUE,
   keep_if_status = 200,
   encoding = "UTF-8",
@@ -35,7 +35,7 @@ be character vectors, which in one form or another are consistently
 implemented across database backends. Set to FALSE if you want to remain in
 control of column types.}
 
-\item{random}{Defaults to FALSE. If TRUE, the download order is randomised.
+\item{sample}{Defaults to FALSE. If TRUE, the download order is randomised.
 If a numeric is given, the download order is randomised and at most the
 given number of items is downloaded.}
 

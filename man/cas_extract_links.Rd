@@ -26,7 +26,7 @@ cas_extract_links(
   write_to_db = TRUE,
   file_format = "html",
   keep_only_within_domain = TRUE,
-  random = FALSE,
+  sample = FALSE,
   encoding = "UTF-8",
   reverse_order = TRUE,
   index_group = NULL,

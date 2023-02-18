@@ -24,7 +24,7 @@ cas_extract <- function(extractors,
                         store_as_character = TRUE,
                         db_connection = NULL,
                         file_format = "html",
-                        random = FALSE,
+                        sample = FALSE,
                         write_to_db = TRUE,
                         keep_if_status = 200,
                         encoding = "UTF-8",
@@ -104,14 +104,14 @@ cas_extract <- function(extractors,
       dplyr::filter(id %in% id_to_keep)
   }
 
-  if (is.numeric(random) == TRUE) {
-    if (random > nrow(files_to_extract_df)) {
-      random <- nrow(files_to_extract_df)
+  if (is.numeric(sample) == TRUE) {
+    if (sample > nrow(files_to_extract_df)) {
+      sample <- nrow(files_to_extract_df)
     }
 
     files_to_extract_df <- files_to_extract_df %>%
-      dplyr::slice_sample(n = random)
-  } else if (isTRUE(random)) {
+      dplyr::slice_sample(n = sample)
+  } else if (isTRUE(sample)) {
     files_to_extract_df <- files_to_extract_df %>%
       dplyr::slice_sample(p = 1)
   }

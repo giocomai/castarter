@@ -13,7 +13,7 @@
 #' @param wait Defaults to 1. Number of seconds to wait between downloading one
 #'   page and the next. Can be increased to reduce server load, or can be set to
 #'   0 when this is not an issue.
-#' @param random Defaults to FALSE. If TRUE, the download order is randomised.
+#' @param sample Defaults to FALSE. If TRUE, the download order is randomised.
 #'   If a numeric is given, the download order is randomised and at most the
 #'   given number of items is downloaded.
 #' @param retry_times Defaults to 10. Number of times to retry download in case
@@ -34,7 +34,7 @@ cas_download <- function(download_df = NULL,
                          pause_base = 2,
                          pause_cap = 256,
                          pause_min = 4,
-                         random = FALSE,
+                         sample = FALSE,
                          retry_times = 16,
                          download_again_if_status_is_not = NULL,
                          ...) {
@@ -44,7 +44,7 @@ cas_download <- function(download_df = NULL,
     index_group = index_group,
     overwrite_file = overwrite_file,
     wait = wait,
-    random = random,
+    sample = sample,
     file_format = file_format,
     retry_times = retry_times,
     pause_base = pause_base,
@@ -126,7 +126,7 @@ cas_download_httr <- function(download_df = NULL,
                               pause_cap = 256,
                               pause_min = 4,
                               db_connection = NULL,
-                              random = FALSE,
+                              sample = FALSE,
                               file_format = "html",
                               retry_times = 16,
                               download_again_if_status_is_not = NULL,
@@ -171,10 +171,10 @@ cas_download_httr <- function(download_df = NULL,
     }
   }
 
-  if (is.numeric(random) == TRUE) {
+  if (is.numeric(sample) == TRUE) {
     download_df <- download_df %>%
-      dplyr::slice_sample(n = random)
-  } else if (isTRUE(random)) {
+      dplyr::slice_sample(n = sample)
+  } else if (isTRUE(sample)) {
     download_df <- download_df %>%
       dplyr::slice_sample(p = 1)
   }

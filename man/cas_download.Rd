@@ -15,7 +15,7 @@ cas_download(
   pause_base = 2,
   pause_cap = 256,
   pause_min = 4,
-  random = FALSE,
+  sample = FALSE,
   retry_times = 16,
   download_again_if_status_is_not = NULL,
   ...
@@ -34,7 +34,7 @@ items.}
 page and the next. Can be increased to reduce server load, or can be set to
 0 when this is not an issue.}
 
-\item{random}{Defaults to FALSE. If TRUE, the download order is randomised.
+\item{sample}{Defaults to FALSE. If TRUE, the download order is randomised.
 If a numeric is given, the download order is randomised and at most the
 given number of items is downloaded.}
 

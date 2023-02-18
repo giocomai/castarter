@@ -67,7 +67,7 @@ cas_extract_links <- function(id = NULL,
                               write_to_db = TRUE,
                               file_format = "html",
                               keep_only_within_domain = TRUE,
-                              random = FALSE,
+                              sample = FALSE,
                               encoding = "UTF-8",
                               reverse_order = TRUE,
                               index_group = NULL,
@@ -169,10 +169,10 @@ cas_extract_links <- function(id = NULL,
   }
 
 
-  if (is.numeric(random) == TRUE) {
+  if (is.numeric(sample) == TRUE) {
     local_files_df <- local_files_df %>%
-      dplyr::slice_sample(n = random)
-  } else if (isTRUE(random)) {
+      dplyr::slice_sample(n = sample)
+  } else if (isTRUE(sample)) {
     local_files_df <- local_files_df %>%
       dplyr::slice_sample(p = 1)
   } else {

@@ -11,7 +11,7 @@ cas_browse(
   batch = NULL,
   index_group = NULL,
   file_format = "html",
-  random = 1,
+  sample = 1,
   ...
 )
 }
@@ -23,7 +23,7 @@ See Readme for a more extensive explanation.}
 \item{remote}{Defaults to TRUE. If TRUE, open relevant url online. If FALSE,
 it opens the locally stored file.}
 
-\item{random}{Defaults to 1. By defaults, it opens one random url.}
+\item{sample}{Defaults to 1. By defaults, it opens one random url.}
 
 \item{...}{Passed to \code{cas_get_db_file()}.}
 }

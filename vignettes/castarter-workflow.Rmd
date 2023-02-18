@@ -144,7 +144,7 @@ cas_get_files_to_download()
 
 
 ```{r}
-cas_download(random = 5)
+cas_download(sample = 5)
 ```
 
 
