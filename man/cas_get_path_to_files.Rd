@@ -8,11 +8,13 @@ cas_get_path_to_files(
   urls = NULL,
   id = NULL,
   index = FALSE,
+  index_group = NULL,
   custom_folder = NULL,
   custom_path = NULL,
   file_format = "html",
   random = FALSE,
   db_connection = NULL,
+  db_folder = NULL,
   ...
 )
 }

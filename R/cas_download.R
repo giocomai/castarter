@@ -27,6 +27,7 @@
 #' @examples
 cas_download <- function(download_df = NULL,
                          index = FALSE,
+                         index_group = NULL,
                          file_format = "html",
                          overwrite_file = FALSE,
                          wait = 1,
@@ -40,6 +41,7 @@ cas_download <- function(download_df = NULL,
   cas_download_httr(
     download_df = download_df,
     index = index,
+    index_group = index_group,
     overwrite_file = overwrite_file,
     wait = wait,
     random = random,
@@ -117,6 +119,7 @@ cas_get_urls_df <- function(urls = NULL,
 #' @examples
 cas_download_httr <- function(download_df = NULL,
                               index = FALSE,
+                              index_group = NULL,
                               overwrite_file = FALSE,
                               wait = 1,
                               pause_base = 2,
@@ -140,6 +143,7 @@ cas_download_httr <- function(download_df = NULL,
   if (is.null(download_df)) {
     download_df <- cas_get_files_to_download(
       index = index,
+      index_group = index_group,
       db_connection = db,
       disconnect_db = FALSE,
       file_format = file_format,

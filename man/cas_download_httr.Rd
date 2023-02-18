@@ -7,6 +7,7 @@
 cas_download_httr(
   download_df = NULL,
   index = FALSE,
+  index_group = NULL,
   overwrite_file = FALSE,
   wait = 1,
   pause_base = 2,

@@ -88,11 +88,11 @@ cas_ia_check <- function(url = NULL,
   } else {
     url_to_process_df <- tibble::tibble(url = unique(url))
   }
-  
+
   if (nrow(url_to_process_df) < 2) {
     wait <- 0
   }
-  
+
   pb <- progress::progress_bar$new(total = nrow(url_to_process_df))
 
   output_df <- purrr::map_dfr(
@@ -153,7 +153,7 @@ cas_ia_check <- function(url = NULL,
       }
 
       Sys.sleep(time = wait)
-      
+
       current_df
     }
   )
@@ -281,7 +281,7 @@ cas_ia_save <- function(url = NULL,
       )
 
       httr::stop_for_status(ia_saved)
-      
+
       Sys.sleep(time = wait)
 
       if (ia_check) {

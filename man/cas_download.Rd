@@ -8,6 +8,7 @@ local database}
 cas_download(
   download_df = NULL,
   index = FALSE,
+  index_group = NULL,
   file_format = "html",
   overwrite_file = FALSE,
   wait = 1,

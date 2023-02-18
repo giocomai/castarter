@@ -386,18 +386,22 @@ cas_connect_to_db <- function(db_connection = NULL,
   }
 
   if (is.null(db_connection)) {
+    db_file <- cas_get_db_file(db_type = db_type)
+    if (fs::file_exists(db_file) == FALSE) {
+      cas_create_db_folder(
+        path = fs::dir_create(
+          path = fs::path_dir(db_file),
+          recurse = TRUE
+        ),
+        ask = FALSE
+      )
+      cli::cli_inform(message = c(i = "Folder {.path {fs::path_dir(db_file)}} for storing project and website files created."))
+    }
+
     if (stringr::str_to_lower(db_type) == "duckdb") {
       if (requireNamespace("duckdb", quietly = TRUE) == FALSE) {
         usethis::ui_stop(x = "To use DuckDB databases you need to install the package `duckdb`.")
       }
-      db_file <- cas_get_db_file(db_type = db_type)
-      if (fs::file_exists(db_file) == FALSE) {
-        cas_create_db_folder(
-          path = fs::dir_create(fs::path_dir(db_file)),
-          ask = FALSE
-        )
-      }
-
       db <- DBI::dbConnect(
         drv = duckdb::duckdb(),
         dbdir = db_file,
@@ -408,7 +412,6 @@ cas_connect_to_db <- function(db_connection = NULL,
       if (requireNamespace("RSQLite", quietly = TRUE) == FALSE) {
         usethis::ui_stop(x = "To use SQLite databases you need to install the package `RSQLite`.")
       }
-      db_file <- cas_get_db_file(db_type = db_type)
       db <- DBI::dbConnect(
         drv = RSQLite::SQLite(),
         dbname = db_file
