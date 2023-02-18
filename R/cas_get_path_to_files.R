@@ -35,17 +35,19 @@ cas_get_path_to_files <- function(urls = NULL,
     dplyr::filter(status == 200)
 
   if (isTRUE(index)) {
-    index_group_id_v <- cas_read_db_index(
-      db_folder = db_folder,
-      db_connection = db_connection,
-      index_group = index_group,
-      ...
-    ) %>%
-      dplyr::filter(index_group %in% {{ index_group }}) %>%
-      dplyr::pull(id)
-
-    available_files_df <- available_files_df %>%
-      dplyr::filter(id %in% {{ index_group_id_v }})
+    if (is.null(index_group)==FALSE) {
+      index_group_id_v <- cas_read_db_index(
+        db_folder = db_folder,
+        db_connection = db_connection,
+        index_group = index_group,
+        ...
+      ) %>%
+        dplyr::filter(index_group %in% {{ index_group }}) %>%
+        dplyr::pull(id)
+      
+      available_files_df <- available_files_df %>%
+        dplyr::filter(id %in% {{ index_group_id_v }})
+    }
   }
 
   if (is.null(id) == FALSE) {
