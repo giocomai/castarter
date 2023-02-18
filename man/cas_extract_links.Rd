@@ -17,6 +17,7 @@ cas_extract_links(
   container_id = NULL,
   custom_xpath = NULL,
   custom_css = NULL,
+  match = NULL,
   min_length = NULL,
   max_length = NULL,
   attribute_type = "href",
@@ -67,6 +68,10 @@ provided combination of container/class will be extracted.}
 \item{container_id}{Defaults to NULL. If provided, also \code{container} must be
 given (and \code{container_id} must be NULL). Only text found inside the
 provided combination of container/class will be extracted.}
+
+\item{match}{Defaults to NULL. Used when extracting json files. Name of
+property from where url is to be extracted. N.B. Only partly implemented,
+please report issues along with specific example where it emerged.}
 
 \item{min_length}{If a link is shorter than the number of characters given in
 min_length, it is excluded from the output.}

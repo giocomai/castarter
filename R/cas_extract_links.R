@@ -14,6 +14,9 @@
 #' @inheritParams cas_write_db_index
 #' @inheritParams cas_extract_html
 #'
+#' @param match Defaults to NULL. Used when extracting json files. Name of
+#'   property from where url is to be extracted. N.B. Only partly implemented,
+#'   please report issues along with specific example where it emerged.
 #' @param output_index Defaults to FALSE. If FALSE, new links are added to the
 #'   contents table. If FALSE, the links extracted will be stored again as
 #'   index, using `output_index_group` as `index_group`.
@@ -55,6 +58,7 @@ cas_extract_links <- function(id = NULL,
                               container_id = NULL,
                               custom_xpath = NULL,
                               custom_css = NULL,
+                              match = NULL,
                               min_length = NULL,
                               max_length = NULL,
                               attribute_type = "href",
@@ -205,54 +209,84 @@ cas_extract_links <- function(id = NULL,
     .f = function(start_id, x) {
       pb$tick()
 
-      temp <- xml2::read_html(
-        x = x$path,
-        options = c("RECOVER", "NOERROR", "NOBLANKS", "HUGE"),
-        encoding = encoding
-      )
+      if (file_format == "json") {
+        temp <- jsonlite::read_json(path = x$path)
 
-      if (inherits(x = temp, what = "xml_node") == FALSE) {
-        return(NULL)
-      }
-
-      if (is.null(custom_xpath) == FALSE) {
-        a_xml_nodeset <- temp %>%
-          rvest::html_elements(xpath = custom_xpath)
-      } else if (is.null(custom_css) == FALSE) {
-        a_xml_nodeset <- temp %>%
-          rvest::html_elements(css = custom_css)
-      } else if (is.null(container)) {
-        a_xml_nodeset <- temp %>%
-          rvest::html_elements("a")
-      } else if (is.null(container_id) == TRUE & is.null(container_class) == FALSE) {
-        a_xml_nodeset <- temp %>%
-          rvest::html_elements(xpath = paste0("//", container, "[@class='", container_class, "']//a"))
-      } else if (is.null(container_class) == TRUE & is.null(container_id) == FALSE) {
-        a_xml_nodeset <- temp %>%
-          rvest::html_elements(xpath = paste0("//", container, "[@id='", container_id, "']//a"))
-      } else if (is.null(container_class) & is.null(container_id)) {
-        a_xml_nodeset <- temp %>%
-          rvest::html_elements(xpath = paste0("//", container, "//a"))
-      }
-
-      if (file_format == "xml" | file_format == "xml.gz") {
-        links_df <- tibble::tibble(
-          url = a_xml_nodeset %>%
-            rvest::html_text() %>%
-            stringr::str_squish(),
-          link_text = NA_character_
-        )
+        if (is.null(match) == FALSE) {
+          if (is.null(names(match))) {
+            matched_pre <- purrr::map_chr(
+              .x = temp,
+              .f = function(x) {
+                x %>%
+                  purrr::pluck(match)
+              }
+            )
+          } else {
+            matched_pre <- purrr::map_chr(
+              .x = temp,
+              .f = function(x) {
+                x %>%
+                  purrr::pluck(names(match))
+              }
+            )
+          }
+          links_df <- tibble::tibble(
+            url = matched_pre,
+            link_text = NA_character_
+          )
+        } else {
+          cli::cli_abort(message = "Parameter {.code match} must be given when file format is set to {.code json}")
+        }
       } else {
-        # effectively, expect html
-        links_df <- tibble::tibble(
-          url = a_xml_nodeset %>%
-            xml2::xml_attr(attribute_type),
-          link_text = a_xml_nodeset %>%
-            rvest::html_text() %>%
-            stringr::str_squish()
+        # effectively, expect html or xml
+        temp <- xml2::read_html(
+          x = x$path,
+          options = c("RECOVER", "NOERROR", "NOBLANKS", "HUGE"),
+          encoding = encoding
         )
-      }
 
+        if (inherits(x = temp, what = "xml_node") == FALSE) {
+          return(NULL)
+        }
+
+        if (is.null(custom_xpath) == FALSE) {
+          a_xml_nodeset <- temp %>%
+            rvest::html_elements(xpath = custom_xpath)
+        } else if (is.null(custom_css) == FALSE) {
+          a_xml_nodeset <- temp %>%
+            rvest::html_elements(css = custom_css)
+        } else if (is.null(container)) {
+          a_xml_nodeset <- temp %>%
+            rvest::html_elements("a")
+        } else if (is.null(container_id) == TRUE & is.null(container_class) == FALSE) {
+          a_xml_nodeset <- temp %>%
+            rvest::html_elements(xpath = paste0("//", container, "[@class='", container_class, "']//a"))
+        } else if (is.null(container_class) == TRUE & is.null(container_id) == FALSE) {
+          a_xml_nodeset <- temp %>%
+            rvest::html_elements(xpath = paste0("//", container, "[@id='", container_id, "']//a"))
+        } else if (is.null(container_class) & is.null(container_id)) {
+          a_xml_nodeset <- temp %>%
+            rvest::html_elements(xpath = paste0("//", container, "//a"))
+        }
+
+        if (file_format == "xml" | file_format == "xml.gz") {
+          links_df <- tibble::tibble(
+            url = a_xml_nodeset %>%
+              rvest::html_text() %>%
+              stringr::str_squish(),
+            link_text = NA_character_
+          )
+        } else {
+          # effectively, expect html
+          links_df <- tibble::tibble(
+            url = a_xml_nodeset %>%
+              xml2::xml_attr(attribute_type),
+            link_text = a_xml_nodeset %>%
+              rvest::html_text() %>%
+              stringr::str_squish()
+          )
+        }
+      }
 
       if (is.null(include_when) == FALSE) {
         links_df <- links_df %>%
