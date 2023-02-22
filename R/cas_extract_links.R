@@ -40,6 +40,10 @@
 #'   has no substantive impact either way.
 #' @param keep_only_within_domain Logical, defaults to TRUE. If TRUE, and domain
 #'   given, links to external websites are dropped.
+#' @param check_previous Defaults to TRUE. If TRUE, checks if newly found links
+#'   are previously stored in database, and if they are, it discards them. If
+#'   FALSE, and `write_to_db` is also set to FALSE, it does not check for
+#'   previously stored links.
 #' @return A data frame.
 #' @export
 #' @examples
@@ -50,6 +54,7 @@ cas_extract_links <- function(id = NULL,
                               batch = "latest",
                               domain = NULL,
                               index = TRUE,
+                              index_group = NULL,
                               output_index = FALSE,
                               output_index_group = NULL,
                               include_when = NULL,
@@ -69,9 +74,9 @@ cas_extract_links <- function(id = NULL,
                               file_format = "html",
                               keep_only_within_domain = TRUE,
                               sample = FALSE,
+                              check_previous = TRUE,
                               encoding = "UTF-8",
                               reverse_order = TRUE,
-                              index_group = NULL,
                               db_connection = NULL,
                               ...) {
   db <- cas_connect_to_db(
@@ -107,22 +112,33 @@ cas_extract_links <- function(id = NULL,
       dplyr::select(-"available")
   }
 
-  if (output_index == TRUE) {
-    previous_links_df <- cas_read_db_index(
-      index_group = output_index_group,
-      db_connection = db,
-      disconnect_db = FALSE,
-      ...
-    ) %>%
-      dplyr::collect()
+  if (check_previous == FALSE & write_to_db == FALSE) {
+    
+    if (output_index == TRUE) {
+      previous_links_df <- casdb_empty_index_id
+    } else {
+      previous_links_df <- casdb_empty_contents_id
+    }
+    
   } else {
-    previous_links_df <- cas_read_db_contents_id(
-      db_connection = db,
-      disconnect_db = FALSE,
-      ...
-    ) %>%
-      dplyr::collect()
+    if (output_index == TRUE) {
+      previous_links_df <- cas_read_db_index(
+        index_group = output_index_group,
+        db_connection = db,
+        disconnect_db = FALSE,
+        ...
+      ) %>%
+        dplyr::collect()
+    } else {
+      previous_links_df <- cas_read_db_contents_id(
+        db_connection = db,
+        disconnect_db = FALSE,
+        ...
+      ) %>%
+        dplyr::collect()
+    }
   }
+
 
   if (nrow(previous_links_df) == 0) {
     start_id <- 1

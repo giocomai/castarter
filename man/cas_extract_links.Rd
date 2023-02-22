@@ -9,6 +9,7 @@ cas_extract_links(
   batch = "latest",
   domain = NULL,
   index = TRUE,
+  index_group = NULL,
   output_index = FALSE,
   output_index_group = NULL,
   include_when = NULL,
@@ -28,9 +29,9 @@ cas_extract_links(
   file_format = "html",
   keep_only_within_domain = TRUE,
   sample = FALSE,
+  check_previous = TRUE,
   encoding = "UTF-8",
   reverse_order = TRUE,
-  index_group = NULL,
   db_connection = NULL,
   ...
 )
@@ -92,6 +93,11 @@ links.}
 
 \item{keep_only_within_domain}{Logical, defaults to TRUE. If TRUE, and domain
 given, links to external websites are dropped.}
+
+\item{check_previous}{Defaults to TRUE. If TRUE, checks if newly found links
+are previously stored in database, and if they are, it discards them. If
+FALSE, and \code{write_to_db} is also set to FALSE, it does not check for
+previously stored links.}
 
 \item{reverse_order}{Logical, defaults to TRUE. If TRUE, index files are
 processed in reverse order of \code{id} and \code{batch}, which may give more
