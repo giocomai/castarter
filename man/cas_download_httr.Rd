@@ -13,6 +13,7 @@ cas_download_httr(
   pause_base = 2,
   pause_cap = 256,
   pause_min = 4,
+  terminate_on = 404,
   db_connection = NULL,
   sample = FALSE,
   file_format = "html",

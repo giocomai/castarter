@@ -54,11 +54,6 @@ cas_get_path_to_files <- function(urls = NULL,
     }
   }
 
-  if (is.null(id) == FALSE) {
-    available_files_df <- available_files_df %>%
-      dplyr::filter(id %in% {{ id }})
-  }
-
   if (nrow(available_files_df) == 0) {
     return(invisible(NULL))
   }

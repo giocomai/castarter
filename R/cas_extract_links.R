@@ -47,6 +47,7 @@
 #' links <- cas_extract_links(domain = "http://www.example.com/")
 #' }
 cas_extract_links <- function(id = NULL,
+                              batch = "latest",
                               domain = NULL,
                               index = TRUE,
                               output_index = FALSE,
@@ -80,6 +81,7 @@ cas_extract_links <- function(id = NULL,
 
   local_files_df <- cas_get_path_to_files(
     id = id,
+    batch = batch,
     index = index,
     db_connection = db,
     disconnect_db = FALSE,
@@ -143,8 +145,6 @@ cas_extract_links <- function(id = NULL,
     )
 
   if (is.null(index_group) == FALSE) {
-    index_group_to_keep <- index_group
-
     previous_index_links_df <- cas_read_db_index(
       db_connection = db,
       disconnect_db = FALSE,
@@ -160,7 +160,7 @@ cas_extract_links <- function(id = NULL,
       )
 
     local_files_df <- local_files_df %>%
-      dplyr::filter(.data$index_group %in% index_group_to_keep)
+      dplyr::filter(index_group %in% {{ index_group }})
   }
 
 

@@ -6,6 +6,7 @@
 \usage{
 cas_extract_links(
   id = NULL,
+  batch = "latest",
   domain = NULL,
   index = TRUE,
   output_index = FALSE,

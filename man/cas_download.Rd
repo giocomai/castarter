@@ -16,7 +16,8 @@ cas_download(
   pause_cap = 256,
   pause_min = 4,
   sample = FALSE,
-  retry_times = 16,
+  retry_times = 8,
+  terminate_on = 404,
   download_again_if_status_is_not = NULL,
   ...
 )

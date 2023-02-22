@@ -35,7 +35,8 @@ cas_download <- function(download_df = NULL,
                          pause_cap = 256,
                          pause_min = 4,
                          sample = FALSE,
-                         retry_times = 16,
+                         retry_times = 8,
+                         terminate_on = 404,
                          download_again_if_status_is_not = NULL,
                          ...) {
   cas_download_httr(
@@ -50,6 +51,7 @@ cas_download <- function(download_df = NULL,
     pause_base = pause_base,
     pause_cap = pause_cap,
     pause_min = pause_min,
+    terminate_on = terminate_on,
     download_again_if_status_is_not = download_again_if_status_is_not,
     ...
   )
@@ -125,6 +127,7 @@ cas_download_httr <- function(download_df = NULL,
                               pause_base = 2,
                               pause_cap = 256,
                               pause_min = 4,
+                              terminate_on = 404,
                               db_connection = NULL,
                               sample = FALSE,
                               file_format = "html",
@@ -193,6 +196,7 @@ cas_download_httr <- function(download_df = NULL,
           pause_base = pause_base,
           pause_cap = pause_cap,
           pause_min = pause_min,
+          terminate_on = terminate_on,
           httr::write_disk(
             path = x$path,
             overwrite = overwrite_file
