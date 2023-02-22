@@ -3,13 +3,17 @@
 #' This function relies on data stored in the database.
 #'
 #' @inheritParams cas_download
+#' @inheritParams cas_read_db_download
 #'
-#' @return
+#' @return A data frame of one row if "batch" is set to "latest". Possibly more
+#'   than one row in other cases.
 #' @export
 #'
 #' @examples
 cas_get_path_to_files <- function(urls = NULL,
                                   id = NULL,
+                                  batch = "latest",
+                                  status = 200,
                                   index = FALSE,
                                   index_group = NULL,
                                   custom_folder = NULL,
@@ -25,17 +29,17 @@ cas_get_path_to_files <- function(urls = NULL,
   )
 
   available_files_df <- cas_read_db_download(
+    id = id,
+    batch = batch,
+    status = status,
     index = index,
     db_connection = db_connection,
     db_folder = db_folder,
     ...
-  ) %>%
-    dplyr::arrange(id, dplyr::desc(batch)) %>%
-    dplyr::distinct(id, .keep_all = TRUE) %>%
-    dplyr::filter(status == 200)
+  )
 
   if (isTRUE(index)) {
-    if (is.null(index_group)==FALSE) {
+    if (is.null(index_group) == FALSE) {
       index_group_id_v <- cas_read_db_index(
         db_folder = db_folder,
         db_connection = db_connection,
@@ -44,7 +48,7 @@ cas_get_path_to_files <- function(urls = NULL,
       ) %>%
         dplyr::filter(index_group %in% {{ index_group }}) %>%
         dplyr::pull(id)
-      
+
       available_files_df <- available_files_df %>%
         dplyr::filter(id %in% {{ index_group_id_v }})
     }

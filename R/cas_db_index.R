@@ -173,6 +173,12 @@ cas_read_db_index <- function(db_folder = NULL,
 #' Read index from local database
 #'
 #' @inheritParams cas_write_to_db
+#' @param batch Default to "latest": returns only the path to the file with the
+#'   highest batch identifier available. Valid values are: "latest", "all", or a
+#'   numeric identifier corresponding to desired batch.
+#' @param status Defaults to 200. Keeps only files downloaded with the given
+#'   status (can be more than one, given as a vector). If NULL, no filter based
+#'   on status is applied.
 #'
 #' @return A data frame with three columns and data stored in the `index_id`
 #'   table of the local database. The data frame has zero rows if the database
@@ -199,10 +205,14 @@ cas_read_db_index <- function(db_folder = NULL,
 #'
 #' cas_read_db_index()
 cas_read_db_download <- function(index = FALSE,
+                                 id = NULL,
+                                 batch = "latest",
+                                 status = 200L,
                                  db_connection = NULL,
                                  db_folder = NULL,
                                  ...) {
-  type <- dplyr::if_else(condition = index,
+  type <- dplyr::if_else(
+    condition = index,
     true = "index",
     false = "contents"
   )
@@ -218,6 +228,7 @@ cas_read_db_download <- function(index = FALSE,
       logical(1L)
     }
   )
+
   if (is.null(db_result)) {
     tibble::as_tibble(casdb_empty_download)
   } else if (isFALSE(db_result)) {
@@ -226,6 +237,31 @@ cas_read_db_download <- function(index = FALSE,
     if (ncol(db_result) == 0) {
       tibble::as_tibble(casdb_empty_download)
     } else {
+      if (is.null(id) == FALSE) {
+        db_result <- db_result %>%
+          dplyr::filter(id %in% {{ id }})
+      }
+
+      if (is.null(batch) == TRUE) {
+        # do nothing
+      } else if (is.numeric(batch)) {
+        db_result <- db_result %>%
+          dplyr::filter(batch %in% {{ batch }})
+      } else if (batch == "latest") {
+        db_result <- db_result %>%
+          dplyr::slice_max(batch,
+            n = 1,
+            by = "id"
+          )
+      }
+
+      if (is.null(status) == TRUE) {
+        # do nothing
+      } else if (is.numeric(status)) {
+        db_result <- db_result %>%
+          dplyr::filter(status %in% {{ status }})
+      }
+
       db_result %>%
         dplyr::collect() %>%
         dplyr::mutate(

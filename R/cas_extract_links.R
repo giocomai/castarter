@@ -79,6 +79,7 @@ cas_extract_links <- function(id = NULL,
   )
 
   local_files_df <- cas_get_path_to_files(
+    id = id,
     index = index,
     db_connection = db,
     disconnect_db = FALSE,
@@ -140,12 +141,6 @@ cas_extract_links <- function(id = NULL,
         "batch"
       )
     )
-
-  if (is.null(id) == FALSE) {
-    id_to_keep_v <- id
-    local_files_df <- local_files_df %>%
-      dplyr::filter(.data$id %in% id_to_keep_v)
-  }
 
   if (is.null(index_group) == FALSE) {
     index_group_to_keep <- index_group

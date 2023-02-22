@@ -6,12 +6,23 @@
 \usage{
 cas_read_db_download(
   index = FALSE,
+  id = NULL,
+  batch = "latest",
+  status = 200L,
   db_connection = NULL,
   db_folder = NULL,
   ...
 )
 }
 \arguments{
+\item{batch}{Default to "latest": returns only the path to the file with the
+highest batch identifier available. Valid values are: "latest", "all", or a
+numeric identifier corresponding to desired batch.}
+
+\item{status}{Defaults to 200. Keeps only files downloaded with the given
+status (can be more than one, given as a vector). If NULL, no filter based
+on status is applied.}
+
 \item{db_connection}{Defaults to NULL. If NULL, uses local SQLite database.
 If given, must be a connection object or a list with relevant connection
 settings (see example).}

@@ -7,6 +7,8 @@
 cas_get_path_to_files(
   urls = NULL,
   id = NULL,
+  batch = "latest",
+  status = 200,
   index = FALSE,
   index_group = NULL,
   custom_folder = NULL,
@@ -19,6 +21,14 @@ cas_get_path_to_files(
 )
 }
 \arguments{
+\item{batch}{Default to "latest": returns only the path to the file with the
+highest batch identifier available. Valid values are: "latest", "all", or a
+numeric identifier corresponding to desired batch.}
+
+\item{status}{Defaults to 200. Keeps only files downloaded with the given
+status (can be more than one, given as a vector). If NULL, no filter based
+on status is applied.}
+
 \item{index}{Logical, defaults to FALSE. If TRUE, downloaded files will be
 considered \code{index} files. If not, they will be considered \code{contents} files.
 See Readme for a more extensive explanation.}
@@ -27,7 +37,15 @@ See Readme for a more extensive explanation.}
 If a numeric is given, the download order is randomised and at most the
 given number of items is downloaded.}
 
+\item{db_connection}{Defaults to NULL. If NULL, uses local SQLite database.
+If given, must be a connection object or a list with relevant connection
+settings (see example).}
+
 \item{...}{Passed to \code{cas_get_db_file()}.}
+}
+\value{
+A data frame of one row if "batch" is set to "latest". Possibly more
+than one row in other cases.
 }
 \description{
 This function relies on data stored in the database.
