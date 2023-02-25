@@ -57,7 +57,11 @@ cas_extract <- function(extractors,
       stringr::str_c(id, "_", batch, ".", file_format)
     )) %>%
     dplyr::select("id", "path")
-
+  
+  if (store_as_character == TRUE) {
+    stored_files_df <- stored_files_df %>% 
+      dplyr::mutate(id = as.character(id))
+  }
 
   # Do not process previously extracted
   previously_extracted_df <- cas_read_db_contents_data(
@@ -65,11 +69,16 @@ cas_extract <- function(extractors,
     disconnect_db = FALSE,
     ...
   )
-
+  
   if (is.null(previously_extracted_df) == FALSE) {
     previously_extracted_df <- previously_extracted_df %>%
       dplyr::select(id) %>%
-      dplyr::collect()
+      dplyr::collect() 
+    
+    if (store_as_character == TRUE) {
+      previously_extracted_df <- previously_extracted_df %>% 
+        dplyr::mutate(id = as.character(id))
+    }
   }
 
   if (is.null(previously_extracted_df) == FALSE) {
@@ -87,15 +96,22 @@ cas_extract <- function(extractors,
     return(invisible(NULL))
   }
 
+  contents_id_df <- cas_read_db_contents_id(
+    db_connection = db,
+    disconnect_db = FALSE,
+    ...
+  ) %>% 
+    dplyr::collect()
+  
+  if (store_as_character == TRUE) {
+    contents_id_df <- contents_id_df %>% 
+      dplyr::mutate(id = as.character(id))
+  }
+  
   files_to_extract_df <- files_to_extract_pre_df %>%
     dplyr::left_join(
-      y = cas_read_db_contents_id(
-        db_connection = db,
-        disconnect_db = FALSE,
-        ...
-      ),
-      by = "id",
-      copy = TRUE
+      y =  contents_id_df,
+      by = "id"
     )
 
   if (is.null(id) == FALSE) {
