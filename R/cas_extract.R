@@ -57,9 +57,9 @@ cas_extract <- function(extractors,
       stringr::str_c(id, "_", batch, ".", file_format)
     )) %>%
     dplyr::select("id", "path")
-  
+
   if (store_as_character == TRUE) {
-    stored_files_df <- stored_files_df %>% 
+    stored_files_df <- stored_files_df %>%
       dplyr::mutate(id = as.character(id))
   }
 
@@ -69,14 +69,14 @@ cas_extract <- function(extractors,
     disconnect_db = FALSE,
     ...
   )
-  
+
   if (is.null(previously_extracted_df) == FALSE) {
     previously_extracted_df <- previously_extracted_df %>%
       dplyr::select(id) %>%
-      dplyr::collect() 
-    
+      dplyr::collect()
+
     if (store_as_character == TRUE) {
-      previously_extracted_df <- previously_extracted_df %>% 
+      previously_extracted_df <- previously_extracted_df %>%
         dplyr::mutate(id = as.character(id))
     }
   }
@@ -100,17 +100,17 @@ cas_extract <- function(extractors,
     db_connection = db,
     disconnect_db = FALSE,
     ...
-  ) %>% 
+  ) %>%
     dplyr::collect()
-  
+
   if (store_as_character == TRUE) {
-    contents_id_df <- contents_id_df %>% 
+    contents_id_df <- contents_id_df %>%
       dplyr::mutate(id = as.character(id))
   }
-  
+
   files_to_extract_df <- files_to_extract_pre_df %>%
     dplyr::left_join(
-      y =  contents_id_df,
+      y = contents_id_df,
       by = "id"
     )
 
@@ -239,14 +239,51 @@ cas_extract <- function(extractors,
 #' @export
 #'
 #' @examples
+#' \dontrun{
+#' if (interactive()) {
+#'   url <- "https://example.com"
+#'   html_document <- rvest::read_html(x = url)
+#'
+#'   # example for a tag that looks like:
+#'   # <meta name="twitter:title" content="Example title" />
+#'
+#'   cas_extract_html(
+#'     html_document = html_document,
+#'     container = "meta",
+#'     container_name = "twitter:title",
+#'     attribute = "content"
+#'   )
+#'
+#'
+#'   # example for a tag that looks like:
+#'   # <meta name="keywords" content="various;keywords;">
+#'   cas_extract_html(
+#'     html_document = html_document,
+#'     container = "meta",
+#'     container_name = "keywords",
+#'     attribute = "content"
+#'   )
+#'
+#'   # example for a tag that looks like:
+#'   # <meta property="article:published_time" content="2016-10-29T13:09+03:00"/>
+#'   cas_extract_html(
+#'     html_document = html_document,
+#'     container = "meta",
+#'     container_property = "article:published_time",
+#'     attribute = "content"
+#'   )
+#' }
+#' }
 cas_extract_html <- function(html_document,
                              container = NULL,
                              container_class = NULL,
                              container_id = NULL,
                              container_instance = NULL,
+                             container_name = NULL,
+                             container_property = NULL,
+                             attribute = NULL,
                              sub_element = NULL,
                              no_children = NULL,
-                             attribute = NULL,
                              squish = TRUE,
                              custom_Xpath = NULL,
                              custom_CSSpath = NULL,
@@ -280,9 +317,41 @@ cas_extract_html <- function(html_document,
     }
   } else if (is.null(container_class) == TRUE & is.null(container_id) == TRUE) {
     if (is.null(sub_element) == TRUE) {
-      output <- html_document %>%
-        rvest::html_nodes(container) %>%
-        rvest::html_text2()
+      if (is.null(container_name) == TRUE) {
+        if (is.null(container_property)) {
+          output <- html_document %>%
+            rvest::html_nodes(container) %>%
+            rvest::html_text2()
+        } else {
+          output <- html_document %>%
+            rvest::html_nodes(xpath = stringr::str_c(
+              "//",
+              container,
+              "[@property='",
+              container_property, "']"
+            )) %>%
+            rvest::html_attr(name = attribute)
+        }
+      } else {
+        if (is.null(attribute)) {
+          output <- html_document %>%
+            rvest::html_nodes(xpath = stringr::str_c(
+              "//",
+              container,
+              "[@name='",
+              container_name, "']"
+            ))
+        } else {
+          output <- html_document %>%
+            rvest::html_nodes(xpath = stringr::str_c(
+              "//",
+              container,
+              "[@name='",
+              container_name, "']"
+            )) %>%
+            rvest::html_attr(name = attribute)
+        }
+      }
     } else {
       output <- html_document %>%
         rvest::html_nodes(container) %>%
@@ -290,12 +359,23 @@ cas_extract_html <- function(html_document,
         rvest::html_text2()
     }
   } else if (is.null(container_class) == FALSE & is.null(attribute) == FALSE) {
-    output <- html_document %>%
-      rvest::html_nodes(xpath = stringr::str_c(
-        "//",
-        container
-      )) %>%
-      rvest::html_attr(name = attribute)
+    if (is.null(container_name)) {
+      output <- html_document %>%
+        rvest::html_nodes(xpath = stringr::str_c(
+          "//",
+          container
+        )) %>%
+        rvest::html_attr(name = attribute)
+    } else {
+      output <- html_document %>%
+        rvest::html_nodes(xpath = stringr::str_c(
+          "//",
+          container,
+          "[@name='",
+          container_name, "']"
+        )) %>%
+        rvest::html_attr(name = attribute)
+    }
   } else if (is.null(container_class) == FALSE & is.null(container_id) == TRUE) {
     if (is.null(sub_element) == TRUE) {
       output <- html_document %>%

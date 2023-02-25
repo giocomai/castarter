@@ -113,13 +113,11 @@ cas_extract_links <- function(id = NULL,
   }
 
   if (check_previous == FALSE & write_to_db == FALSE) {
-    
     if (output_index == TRUE) {
       previous_links_df <- casdb_empty_index_id
     } else {
       previous_links_df <- casdb_empty_contents_id
     }
-    
   } else {
     if (output_index == TRUE) {
       previous_links_df <- cas_read_db_index(

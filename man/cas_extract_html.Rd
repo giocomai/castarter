@@ -10,9 +10,11 @@ cas_extract_html(
   container_class = NULL,
   container_id = NULL,
   container_instance = NULL,
+  container_name = NULL,
+  container_property = NULL,
+  attribute = NULL,
   sub_element = NULL,
   no_children = NULL,
-  attribute = NULL,
   squish = TRUE,
   custom_Xpath = NULL,
   custom_CSSpath = NULL,
@@ -39,6 +41,10 @@ If a given combination is found more than once in the same page, the
 relevant occurrence is kept. Use with caution, as not all pages always
 include the same number of elements of the same class/with the same id.}
 
+\item{attribute}{Defaults to NULL. If given, type of attribute to extract.
+Typically used in combination with container, as in
+\code{cas_extract_html(container = "time", attribute = "datetime")}.}
+
 \item{sub_element}{Defaults to NULL. If provided, also \code{container} must be
 given. Only text within elements of given type under the chosen combination
 of container/containerClass will be extracted. When given, it will
@@ -48,10 +54,6 @@ tipically be "p", to extract all p elements inside the selected div.}
 selected combination (e.g. div with given class) are extracted. If TRUE,
 only text found under the given combination (but not its subelements) will
 be extracted. Corresponds to the xpath string \verb{/node()[not(self::div)]}.}
-
-\item{attribute}{Defaults to NULL. If given, type of attribute to extract.
-Typically used in combination with container, as in
-\code{cas_extract_html(container = "time", attribute = "datetime")}.}
 
 \item{squish}{Defaults to TRUE. If TRUE, applies \code{stringr::str_squish()} to
 output, removing whitespace from start and end of string, and replacing
@@ -71,4 +73,41 @@ A character vector of length one.
 }
 \description{
 Facilitates extraction of contents from an html file
+}
+\examples{
+\dontrun{
+if (interactive()) {
+  url <- "https://example.com"
+  html_document <- rvest::read_html(x = url)
+
+  # example for a tag that looks like:
+  # <meta name="twitter:title" content="Example title" />
+
+  cas_extract_html(
+    html_document = html_document,
+    container = "meta",
+    container_name = "twitter:title",
+    attribute = "content"
+  )
+
+
+  # example for a tag that looks like:
+  # <meta name="keywords" content="various;keywords;">
+  cas_extract_html(
+    html_document = html_document,
+    container = "meta",
+    container_name = "keywords",
+    attribute = "content"
+  )
+
+  # example for a tag that looks like:
+  # <meta property="article:published_time" content="2016-10-29T13:09+03:00"/>
+  cas_extract_html(
+    html_document = html_document,
+    container = "meta",
+    container_property = "article:published_time",
+    attribute = "content"
+  )
+}
+}
 }

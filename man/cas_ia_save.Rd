@@ -31,9 +31,9 @@ positive replies from the server very soon.}
 \item{retry_times}{Defaults to 10. Number of times to retry download in case
 of errors.}
 
-\item{pause_base, pause_cap}{This method uses exponential back-off with
-full jitter - this means that each request will randomly wait between 0
-and \code{pause_base * 2 ^ attempt} seconds, up to a maximum of
+\item{pause_base, pause_cap}{This method uses exponential back-off with full
+jitter - this means that each request will randomly wait between
+\code{pause_min} and \code{pause_base * 2 ^ attempt} seconds, up to a maximum of
 \code{pause_cap} seconds.}
 
 \item{pause_min}{Minimum time to wait in the backoff; generally
