@@ -34,7 +34,7 @@
 #'   the extracted page.
 #' @param remove_string If provided, remove given string (or strings) from
 #'   links.
-#' @param reverse_order Logical, defaults to TRUE. If TRUE, index files are
+#' @param reverse_order Logical, defaults to FALSE If TRUE, index files are
 #'   processed in reverse order of `id` and `batch`, which may give more
 #'   meaningful order to content id. The difference is ultimately cosmetic, and
 #'   has no substantive impact either way.
@@ -76,7 +76,7 @@ cas_extract_links <- function(id = NULL,
                               sample = FALSE,
                               check_previous = TRUE,
                               encoding = "UTF-8",
-                              reverse_order = TRUE,
+                              reverse_order = FALSE,
                               db_connection = NULL,
                               ...) {
   db <- cas_connect_to_db(
