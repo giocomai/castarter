@@ -9,9 +9,9 @@ cas_extract_html(
   container = NULL,
   container_class = NULL,
   container_id = NULL,
-  container_instance = NULL,
   container_name = NULL,
   container_property = NULL,
+  container_itemprop = NULL,
   attribute = NULL,
   sub_element = NULL,
   no_children = NULL,
@@ -36,10 +36,10 @@ provided combination of container/class will be extracted.}
 given (and \code{container_id} must be NULL). Only text found inside the
 provided combination of container/class will be extracted.}
 
-\item{container_instance}{Defaults to NULL. If given, it must be an integer.
-If a given combination is found more than once in the same page, the
-relevant occurrence is kept. Use with caution, as not all pages always
-include the same number of elements of the same class/with the same id.}
+\item{container_itemprop}{Defaults to NULL. If provided, also \code{container}
+must be given (and \code{container_id} and \code{container_class} must be NULL or
+will be silently ignored). Only text found inside the provided combination
+of container/itemprop will be extracted.}
 
 \item{attribute}{Defaults to NULL. If given, type of attribute to extract.
 Typically used in combination with container, as in
@@ -67,6 +67,11 @@ ignored and given CSSpath used instead.}
 
 \item{keep_everything}{Defaults to FALSE. If TRUE, all text included in the
 page is returned as a single string.}
+
+\item{container_instance}{Defaults to NULL. If given, it must be an integer.
+If a given combination is found more than once in the same page, the
+relevant occurrence is kept. Use with caution, as not all pages always
+include the same number of elements of the same class/with the same id.}
 }
 \value{
 A character vector of length one.

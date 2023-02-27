@@ -210,6 +210,10 @@ cas_extract <- function(extractors,
 #' @param container_id Defaults to NULL. If provided, also `container` must be
 #'   given (and `container_id` must be NULL). Only text found inside the
 #'   provided combination of container/class will be extracted.
+#' @param container_itemprop Defaults to NULL. If provided, also `container`
+#'   must be given (and `container_id` and `container_class` must be NULL or
+#'   will be silently ignored). Only text found inside the provided combination
+#'   of container/itemprop will be extracted.
 #' @param container_instance Defaults to NULL. If given, it must be an integer.
 #'   If a given combination is found more than once in the same page, the
 #'   relevant occurrence is kept. Use with caution, as not all pages always
@@ -278,9 +282,9 @@ cas_extract_html <- function(html_document,
                              container = NULL,
                              container_class = NULL,
                              container_id = NULL,
-                             container_instance = NULL,
                              container_name = NULL,
                              container_property = NULL,
+                             container_itemprop = NULL,
                              attribute = NULL,
                              sub_element = NULL,
                              no_children = NULL,
@@ -315,6 +319,15 @@ cas_extract_html <- function(html_document,
         rvest::html_nodes(sub_element) %>%
         rvest::html_text2()
     }
+  } else if (is.null(container_itemprop) == FALSE) {
+    output <- html_document %>%
+      rvest::html_nodes(xpath = stringr::str_c(
+        "//",
+        container,
+        "[@property='",
+        container_itemprop, "']"
+      )) %>%
+      rvest::html_text2()
   } else if (is.null(container_class) == TRUE & is.null(container_id) == TRUE) {
     if (is.null(sub_element) == TRUE) {
       if (is.null(container_name) == TRUE) {
