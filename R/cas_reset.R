@@ -65,3 +65,50 @@ cas_reset_db_contents_data <- function(db_connection = NULL,
     ...
   )
 }
+
+
+
+#' Removes from the local database the folder where links to contents associated
+#' with their id are stored
+#'
+#' @inheritParams cas_reset_db
+#'
+#' @return
+#' @export
+#'
+#' @examples
+cas_reset_db_contents_id <- function(db_connection = NULL,
+                                     db_folder = NULL,
+                                     ask = TRUE,
+                                     ...) {
+  cas_reset_db(
+    table = "contents_id",
+    db_connection = db_connection,
+    db_folder = db_folder,
+    ask = ask,
+    ...
+  )
+}
+
+
+#' Removes from the local database the folder where links to index associated
+#' with their id are stored
+#'
+#' @inheritParams cas_reset_db
+#'
+#' @return
+#' @export
+#'
+#' @examples
+cas_reset_db_index_id <- function(db_connection = NULL,
+                                  db_folder = NULL,
+                                  ask = TRUE,
+                                  ...) {
+  cas_reset_db(
+    table = "index_id",
+    db_connection = db_connection,
+    db_folder = db_folder,
+    ask = ask,
+    ...
+  )
+}

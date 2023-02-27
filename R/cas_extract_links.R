@@ -34,7 +34,7 @@
 #'   the extracted page.
 #' @param remove_string If provided, remove given string (or strings) from
 #'   links.
-#' @param reverse_order Logical, defaults to FALSE If TRUE, index files are
+#' @param reverse_order Logical, defaults to FALSE. If TRUE, index files are
 #'   processed in reverse order of `id` and `batch`, which may give more
 #'   meaningful order to content id. The difference is ultimately cosmetic, and
 #'   has no substantive impact either way.

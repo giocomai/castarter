@@ -31,7 +31,7 @@ cas_extract_links(
   sample = FALSE,
   check_previous = TRUE,
   encoding = "UTF-8",
-  reverse_order = TRUE,
+  reverse_order = FALSE,
   db_connection = NULL,
   ...
 )
@@ -99,7 +99,7 @@ are previously stored in database, and if they are, it discards them. If
 FALSE, and \code{write_to_db} is also set to FALSE, it does not check for
 previously stored links.}
 
-\item{reverse_order}{Logical, defaults to TRUE. If TRUE, index files are
+\item{reverse_order}{Logical, defaults to FALSE. If TRUE, index files are
 processed in reverse order of \code{id} and \code{batch}, which may give more
 meaningful order to content id. The difference is ultimately cosmetic, and
 has no substantive impact either way.}
