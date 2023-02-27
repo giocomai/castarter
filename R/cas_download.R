@@ -54,6 +54,7 @@ cas_download <- function(download_df = NULL,
     pause_cap = pause_cap,
     pause_min = pause_min,
     terminate_on = terminate_on,
+    user_agent = user_agent,
     download_again_if_status_is_not = download_again_if_status_is_not,
     ...
   )
