@@ -1,6 +1,6 @@
 Package: castarter
 Title: Content Analysis Starter Toolkit
-Version: 0.0.2.9009
+Version: 0.0.2.9010
 Authors@R: 
     c(person(given = "Giorgio",
              family = "Comai",
@@ -44,7 +44,8 @@ Imports:
     ellipsis,
     rvest,
     xml2,
-    cli
+    cli,
+    dbplyr
 Suggests: 
     testthat (>= 3.0.0),
     roxygen2,
