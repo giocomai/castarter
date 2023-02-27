@@ -374,7 +374,8 @@ cas_extract_links <- function(id = NULL,
         dplyr::anti_join(
           y = previous_links_df,
           by = "url"
-        )
+        ) %>% 
+        dplyr::distinct(url, .keep_all = TRUE)
 
       if (nrow(links_df) > 0) {
         end_id <- sum(start_id, nrow(links_df) - 1)
@@ -392,7 +393,7 @@ cas_extract_links <- function(id = NULL,
             "link_text",
             "source_index_id",
             "source_index_batch"
-          )
+          ) 
 
         if (output_index == TRUE) {
           cas_write_db_index(
