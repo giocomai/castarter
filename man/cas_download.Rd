@@ -18,6 +18,7 @@ cas_download(
   sample = FALSE,
   retry_times = 8,
   terminate_on = 404,
+  user_agent = NULL,
   download_again_if_status_is_not = NULL,
   ...
 )
@@ -41,6 +42,8 @@ given number of items is downloaded.}
 
 \item{retry_times}{Defaults to 10. Number of times to retry download in case
 of errors.}
+
+\item{user_agent}{Defaults to NULL. If given, passed to download method.}
 
 \item{...}{Passed to \code{cas_get_db_file()}.}
 
