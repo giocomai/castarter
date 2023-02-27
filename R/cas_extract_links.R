@@ -301,7 +301,7 @@ cas_extract_links <- function(id = NULL,
         links_df <- links_df %>%
           dplyr::filter(stringr::str_detect(
             string = url,
-            pattern = include_when
+            pattern = stringr::str_c(include_when, collapse = "|")
           ))
       }
 
@@ -309,7 +309,7 @@ cas_extract_links <- function(id = NULL,
         links_df <- links_df %>%
           dplyr::filter(!stringr::str_detect(
             string = url,
-            pattern = exclude_when
+            pattern = stringr::str_c(exclude_when, collapse = "|")
           ))
       }
 
@@ -374,7 +374,7 @@ cas_extract_links <- function(id = NULL,
         dplyr::anti_join(
           y = previous_links_df,
           by = "url"
-        ) %>% 
+        ) %>%
         dplyr::distinct(url, .keep_all = TRUE)
 
       if (nrow(links_df) > 0) {
@@ -393,7 +393,7 @@ cas_extract_links <- function(id = NULL,
             "link_text",
             "source_index_id",
             "source_index_batch"
-          ) 
+          )
 
         if (output_index == TRUE) {
           cas_write_db_index(
