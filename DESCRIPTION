@@ -1,6 +1,6 @@
 Package: castarter
 Title: Content Analysis Starter Toolkit
-Version: 0.0.2.9012
+Version: 0.0.2.9011
 Authors@R: 
     c(person(given = "Giorgio",
              family = "Comai",
