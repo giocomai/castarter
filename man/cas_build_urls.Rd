@@ -7,6 +7,7 @@
 cas_build_urls(
   url,
   url_ending = "",
+  glue = FALSE,
   start_page = NULL,
   end_page = NULL,
   increase_by = 1,
@@ -25,6 +26,12 @@ index pages.}
 
 \item{url_ending}{Part of index link appneded after the part of the link that
 varies. If not relevant, may be left empty.}
+
+\item{glue}{Logical, defaults to FALSE. If TRUE, the url is parsed with
+\code{glue}, enabling custom or repeated location for the variable part of the
+url. If \code{glue} is set to TRUE, it is expected that the url will include the
+string \code{{here}} within curly brackets, e.g.
+\verb{https://example.com/archive/?from_date=\{here\}&to_date=\{here\}}.}
 
 \item{start_page}{If the urls include a numerical component, define first
 number of the sequence. start_page defaults to 1.}
@@ -100,4 +107,14 @@ cas_build_urls(
   date_separator = "-"
 ) \%>\%
   head()
+
+cas_build_urls(
+  url = "https://example.com/archive/?from={here}&to={here}",
+  glue = TRUE,
+  start_date = "2011-01-01",
+  end_page = "2022-12-31",
+  date_separator = ".",
+  date_format = "dmY",
+  index_group = "news"
+)
 }

@@ -15,6 +15,11 @@
 #'
 #' @param url First part of index link that does not change in other
 #'   index pages.
+#' @param glue Logical, defaults to FALSE. If TRUE, the url is parsed with
+#'   `glue`, enabling custom or repeated location for the variable part of the
+#'   url. If `glue` is set to TRUE, it is expected that the url will include the
+#'   string `{here}` within curly brackets, e.g.
+#'   `https://example.com/archive/?from_date={here}&to_date={here}`.
 #' @param url_ending Part of index link appneded after the part of the link that
 #'   varies. If not relevant, may be left empty.
 #' @param start_page If the urls include a numerical component, define first
@@ -66,8 +71,19 @@
 #'   date_separator = "-"
 #' ) %>%
 #'   head()
+#'
+#' cas_build_urls(
+#'   url = "https://example.com/archive/?from={here}&to={here}",
+#'   glue = TRUE,
+#'   start_date = "2011-01-01",
+#'   end_page = "2022-12-31",
+#'   date_separator = ".",
+#'   date_format = "dmY",
+#'   index_group = "news"
+#' )
 cas_build_urls <- function(url,
                            url_ending = "",
+                           glue = FALSE,
                            start_page = NULL,
                            end_page = NULL,
                            increase_by = 1,
@@ -118,12 +134,16 @@ cas_build_urls <- function(url,
       stringr::str_trim()
   }
 
-
-  urls <- stringr::str_c(
-    url,
-    variable_part,
-    url_ending
-  )
+  if (glue == TRUE) {
+    here <- variable_part
+    urls <- glue::glue(url)
+  } else {
+    urls <- stringr::str_c(
+      url,
+      variable_part,
+      url_ending
+    )
+  }
 
   if (reversed_order == TRUE) {
     urls <- base::rev(urls)
