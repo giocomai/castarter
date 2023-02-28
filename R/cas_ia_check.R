@@ -64,7 +64,7 @@ cas_ia_check <- function(url = NULL,
       }
     }
 
-    if (is.null(url)) {
+    if (length(url) == 0) {
       url_df <- cas_read_db_contents_id(
         db_connection = db,
         disconnect_db = FALSE
@@ -86,7 +86,8 @@ cas_ia_check <- function(url = NULL,
         copy = TRUE
       )
   } else {
-    url_to_process_df <- tibble::tibble(url = unique(url))
+    url_v <- unique(url)
+    url_to_process_df <- tibble::tibble(url = url_v)
   }
 
   if (nrow(url_to_process_df) < 2) {
@@ -168,10 +169,9 @@ cas_ia_check <- function(url = NULL,
       )
       return(output_df)
     }
-    input_url <- url
 
     cas_read_db_ia() %>%
-      dplyr::filter(url %in% input_url) %>%
+      dplyr::filter(url %in% {{ url_v }}) %>%
       dplyr::group_by(url) %>%
       dplyr::slice_max(checked_at) %>%
       dplyr::ungroup()
