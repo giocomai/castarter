@@ -75,7 +75,7 @@ cas_download_chromote <- function(download_df = NULL,
     .f = function(x) {
       pb$tick()
       if (fs::file_exists(x$path) == FALSE | overwrite_file == TRUE) {
-        b <- ChromoteSession$new()
+        b <- chromote::ChromoteSession$new()
         b$Page$navigate(x$url)
         b$Page$loadEventFired()
         result <- b$Runtime$evaluate(
