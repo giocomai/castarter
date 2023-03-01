@@ -515,6 +515,8 @@ cas_extract_script <- function(html_document,
     .f = function(x) {
       x %>%
         rvest::html_text2() %>%
+        stringr::str_remove_all(pattern = stringr::fixed("\\")) %>% 
+        stringr::str_remove_all(pattern = stringr::fixed("\r")) %>% 
         jsonlite::parse_json()
     }
   )
