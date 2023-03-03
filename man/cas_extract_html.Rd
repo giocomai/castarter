@@ -12,6 +12,7 @@ cas_extract_html(
   container_name = NULL,
   container_property = NULL,
   container_itemprop = NULL,
+  container_instance = NULL,
   attribute = NULL,
   sub_element = NULL,
   no_children = NULL,
@@ -41,6 +42,11 @@ must be given (and \code{container_id} and \code{container_class} must be NULL o
 will be silently ignored). Only text found inside the provided combination
 of container/itemprop will be extracted.}
 
+\item{container_instance}{Defaults to NULL. If given, it must be an integer.
+If a given combination is found more than once in the same page, the
+relevant occurrence is kept. Use with caution, as not all pages always
+include the same number of elements of the same class/with the same id.}
+
 \item{attribute}{Defaults to NULL. If given, type of attribute to extract.
 Typically used in combination with container, as in
 \code{cas_extract_html(container = "time", attribute = "datetime")}.}
@@ -67,11 +73,6 @@ ignored and given CSSpath used instead.}
 
 \item{keep_everything}{Defaults to FALSE. If TRUE, all text included in the
 page is returned as a single string.}
-
-\item{container_instance}{Defaults to NULL. If given, it must be an integer.
-If a given combination is found more than once in the same page, the
-relevant occurrence is kept. Use with caution, as not all pages always
-include the same number of elements of the same class/with the same id.}
 }
 \value{
 A character vector of length one.
