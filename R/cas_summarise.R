@@ -49,6 +49,7 @@ cas_summarise <- function(count_df,
       dplyr::ungroup()
   } else {
     summarised <- count_df %>%
+      dplyr::mutate({{ date_column_name }} := lubridate::as_date({{ date_column_name }})) %>% 
       dplyr::mutate({{ date_column_name }} := lubridate::floor_date(
         x = {{ date_column_name }},
         unit = period
@@ -65,7 +66,16 @@ cas_summarise <- function(count_df,
         .before = before,
         .after = after
       )) %>%
-      dplyr::ungroup()
+      dplyr::ungroup() %>%
+      tidyr::complete(
+        {{ date_column_name }} := seq.Date(
+          from = min({{ date_column_name }}),
+          to = max({{ date_column_name }}),
+          by = period
+        ),
+        {{ string_column_name }},
+        fill = rlang::list2({{ n_column_name }} := 0)
+      )
   }
 
   if (auto_convert == TRUE) {
