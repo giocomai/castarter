@@ -25,13 +25,25 @@ cas_summarise(
 
 \item{f}{Defaults to \code{mean}. Function to be applied over n for all the values in a given time period. Common alterantives would be \code{mean} or \code{median}.}
 
-\item{every}{Check \code{?slider::slide_period()} for details.}
+\item{every}{\verb{[positive integer(1)]}
 
-\item{before}{Check \code{?slider::slide_period()} for details.}
+The number of periods to group together.
 
-\item{after}{Check \code{?slider::slide_period()} for details.}
+For example, if the period was set to \code{"year"} with an every value of \code{2},
+then the years 1970 and 1971 would be placed in the same group.}
 
-\item{complete}{Check \code{?slider::slide_period()} for details.}
+\item{before, after}{\verb{[integer(1) / Inf]}
+
+The number of values before or after the current element to
+include in the sliding window. Set to \code{Inf} to select all elements
+before or after the current element. Negative values are allowed, which
+allows you to "look forward" from the current element if used as the
+\code{.before} value, or "look backwards" if used as \code{.after}.}
+
+\item{complete}{\verb{[logical(1)]}
+
+Should the function be evaluated on complete windows only? If \code{FALSE},
+the default, then partial computations will be allowed.}
 
 \item{auto_convert}{Defaults to FALSE. If FALSE, the date column is returned using the same format as the input; the minimun vale in the given group is used for reference (e.g. all values for January 2022 are summarised as 2021-01-01 it the data were originally given as dates.). If TRUE, it tries to adapt the output to the most intuitive correspondent type; for year, a numeric column with only the year number, for quarter in the format 2022.1, for month in the format 2022-01.}
 
