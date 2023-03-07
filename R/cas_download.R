@@ -60,6 +60,48 @@ cas_download <- function(download_df = NULL,
   )
 }
 
+#' Downloads index files systematically, and stores details about the download
+#' in a local database
+#'
+#' @param index
+#'
+#' @return
+#' @export
+#'
+#' @examples
+cas_download_index <- function(download_df = NULL,
+                               index_group = NULL,
+                               file_format = "html",
+                               overwrite_file = FALSE,
+                               wait = 1,
+                               pause_base = 2,
+                               pause_cap = 256,
+                               pause_min = 4,
+                               sample = FALSE,
+                               retry_times = 8,
+                               terminate_on = 404,
+                               user_agent = NULL,
+                               download_again_if_status_is_not = NULL,
+                               ...) {
+  cas_download_httr(
+    download_df = download_df,
+    index = TRUE,
+    index_group = index_group,
+    overwrite_file = overwrite_file,
+    wait = wait,
+    sample = sample,
+    file_format = file_format,
+    retry_times = retry_times,
+    pause_base = pause_base,
+    pause_cap = pause_cap,
+    pause_min = pause_min,
+    terminate_on = terminate_on,
+    user_agent = user_agent,
+    download_again_if_status_is_not = download_again_if_status_is_not,
+    ...
+  )
+}
+
 #' Checks that a given input corresponds to the format expected of a download
 #' data frame, consistently returns expected format
 #'
