@@ -9,6 +9,7 @@ cas_extract(
   id = NULL,
   index = FALSE,
   store_as_character = TRUE,
+  check_previous = TRUE,
   db_connection = NULL,
   file_format = "html",
   sample = FALSE,
@@ -34,6 +35,11 @@ database, but it also means that you can consistently expect all columns to
 be character vectors, which in one form or another are consistently
 implemented across database backends. Set to FALSE if you want to remain in
 control of column types.}
+
+\item{check_previous}{Logical, defaults to TRUE. If FALSE, no check will be
+conducted to verify if the same content had been previously extracted. If
+FALSE, \code{write_to_db} must be set (or will be set) to FALSE, to prevent
+duplication of data.}
 
 \item{sample}{Defaults to FALSE. If TRUE, the download order is randomised.
 If a numeric is given, the download order is randomised and at most the

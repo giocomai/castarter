@@ -10,6 +10,10 @@
 #'   be character vectors, which in one form or another are consistently
 #'   implemented across database backends. Set to FALSE if you want to remain in
 #'   control of column types.
+#' @param check_previous Logical, defaults to TRUE. If FALSE, no check will be
+#'   conducted to verify if the same content had been previously extracted. If
+#'   FALSE, `write_to_db` must be set (or will be set) to FALSE, to prevent
+#'   duplication of data.
 #' @param keep_if_status Defaults to 200. Keep only if recorded download status
 #'   matches the given status.
 #' @inheritParams cas_download
@@ -22,6 +26,7 @@ cas_extract <- function(extractors,
                         id = NULL,
                         index = FALSE,
                         store_as_character = TRUE,
+                        check_previous = TRUE,
                         db_connection = NULL,
                         file_format = "html",
                         sample = FALSE,
@@ -63,33 +68,40 @@ cas_extract <- function(extractors,
       dplyr::mutate(id = as.character(id))
   }
 
-  # Do not process previously extracted
-  previously_extracted_df <- cas_read_db_contents_data(
-    db_connection = db,
-    disconnect_db = FALSE,
-    ...
-  )
 
-  if (is.null(previously_extracted_df) == FALSE) {
-    previously_extracted_df <- previously_extracted_df %>%
-      dplyr::select(id) %>%
-      dplyr::collect()
+  if (check_previous == TRUE) {
+    files_to_extract_pre_df <- stored_files_df
+    write_to_db <- FALSE
+  } else {
+    # Do not process previously extracted
+    previously_extracted_df <- cas_read_db_contents_data(
+      db_connection = db,
+      disconnect_db = FALSE,
+      ...
+    )
 
-    if (store_as_character == TRUE) {
+    if (is.null(previously_extracted_df) == FALSE) {
       previously_extracted_df <- previously_extracted_df %>%
-        dplyr::mutate(id = as.character(id))
+        dplyr::select(id) %>%
+        dplyr::collect()
+
+      if (store_as_character == TRUE) {
+        previously_extracted_df <- previously_extracted_df %>%
+          dplyr::mutate(id = as.character(id))
+      }
+    }
+
+    if (is.null(previously_extracted_df) == FALSE) {
+      files_to_extract_pre_df <- dplyr::anti_join(
+        x = stored_files_df,
+        y = previously_extracted_df,
+        by = "id"
+      )
+    } else {
+      files_to_extract_pre_df <- stored_files_df
     }
   }
 
-  if (is.null(previously_extracted_df) == FALSE) {
-    files_to_extract_pre_df <- dplyr::anti_join(
-      x = stored_files_df,
-      y = previously_extracted_df,
-      by = "id"
-    )
-  } else {
-    files_to_extract_pre_df <- stored_files_df
-  }
 
   if (nrow(files_to_extract_pre_df) == 0) {
     # TODO return consistently data frame or S3 object
@@ -516,8 +528,8 @@ cas_extract_script <- function(html_document,
     .f = function(x) {
       x %>%
         rvest::html_text2() %>%
-        stringr::str_remove_all(pattern = stringr::fixed("\\")) %>% 
-        stringr::str_remove_all(pattern = stringr::fixed("\r")) %>% 
+        stringr::str_remove_all(pattern = stringr::fixed("\\")) %>%
+        stringr::str_remove_all(pattern = stringr::fixed("\r")) %>%
         jsonlite::parse_json()
     }
   )
