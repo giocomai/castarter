@@ -30,6 +30,7 @@ cas_browse <- function(index = FALSE,
 
   if (remote == FALSE) {
     local_files <- cas_get_path_to_files(
+      id = id,
       index = index,
       file_format = file_format,
       db_connection = db,
