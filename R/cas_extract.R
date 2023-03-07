@@ -69,7 +69,7 @@ cas_extract <- function(extractors,
   }
 
 
-  if (check_previous == TRUE) {
+  if (check_previous == FALSE) {
     files_to_extract_pre_df <- stored_files_df
     write_to_db <- FALSE
   } else {
