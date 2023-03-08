@@ -79,12 +79,12 @@ cas_extract_links <- function(id = NULL,
                               reverse_order = FALSE,
                               db_connection = NULL,
                               ...) {
-  if (is.null(domain)==FALSE) {
-    if (domain == ""|is.na(domain)==TRUE) {
-      domain <- NULL  
+  if (is.null(domain) == FALSE) {
+    if (domain == "" | is.na(domain) == TRUE) {
+      domain <- NULL
     }
   }
-  
+
   db <- cas_connect_to_db(
     db_connection = db_connection,
     ...
@@ -363,7 +363,10 @@ cas_extract_links <- function(id = NULL,
 
       if (is.null(remove_string) == FALSE) {
         links_df <- links_df %>%
-          dplyr::mutate(url = stringr::str_remove(string = url, pattern = remove_string))
+          dplyr::mutate(url = stringr::str_remove_all(
+            string = url,
+            pattern = remove_string
+          ))
       }
 
       if (is.null(min_length) == FALSE) {
