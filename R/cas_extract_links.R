@@ -79,6 +79,12 @@ cas_extract_links <- function(id = NULL,
                               reverse_order = FALSE,
                               db_connection = NULL,
                               ...) {
+  if (is.null(domain)==FALSE) {
+    if (domain == ""|is.na(domain)==TRUE) {
+      domain <- NULL  
+    }
+  }
+  
   db <- cas_connect_to_db(
     db_connection = db_connection,
     ...
