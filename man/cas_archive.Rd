@@ -9,16 +9,22 @@ cas_archive(
   file_format = "tar.gz",
   index = TRUE,
   contents = TRUE,
-  remove_original = FALSE,
+  remove_original = TRUE,
   db_connection = NULL,
   db_folder = NULL,
   ...
 )
 }
 \arguments{
-\item{path}{Path to archive directory, defaults to NULL. If NULL, path is set to the project/website/archive folder.}
+\item{path}{Path to archive directory, defaults to NULL. If NULL, path is set
+to the project/website/archive folder.}
 
-\item{file_format}{Defaults to "tar.gz", to ensure cross-platform compatibility. No other formats are supported at this stage.}
+\item{file_format}{Defaults to "tar.gz", to ensure cross-platform
+compatibility. No other formats are supported at this stage.}
+
+\item{remove_original}{Defaults to TRUE. If TRUE, after local files have been
+confirmed to be stored in the relevant compressed file, they are removed
+from their original folders, and the empty folders deleted.}
 
 \item{db_connection}{Defaults to NULL. If NULL, uses local SQLite database.
 If given, must be a connection object or a list with relevant connection

@@ -1,7 +1,12 @@
 #' Archive originals of downloaded files in compressed folders
 #'
-#' @param path Path to archive directory, defaults to NULL. If NULL, path is set to the project/website/archive folder.
-#' @param file_format Defaults to "tar.gz", to ensure cross-platform compatibility. No other formats are supported at this stage.
+#' @param path Path to archive directory, defaults to NULL. If NULL, path is set
+#'   to the project/website/archive folder.
+#' @param file_format Defaults to "tar.gz", to ensure cross-platform
+#'   compatibility. No other formats are supported at this stage.
+#' @param remove_original Defaults to TRUE. If TRUE, after local files have been
+#'   confirmed to be stored in the relevant compressed file, they are removed
+#'   from their original folders, and the empty folders deleted.
 #' @inheritParams cas_read_from_db
 #' @return
 #' @export
@@ -11,7 +16,7 @@ cas_archive <- function(path = NULL,
                         file_format = "tar.gz",
                         index = TRUE,
                         contents = TRUE,
-                        remove_original = FALSE,
+                        remove_original = TRUE,
                         db_connection = NULL,
                         db_folder = NULL,
                         ...) {
@@ -51,12 +56,14 @@ cas_archive <- function(path = NULL,
   setwd(website_folder)
 
   if (index == TRUE) {
-    index_folders_v <- fs::dir_ls(
+    base_index_folders_v <- fs::dir_ls(
       path = ".",
       recurse = FALSE,
       type = "directory",
       glob = "*_index"
-    ) %>%
+    )
+
+    index_folders_v <- base_index_folders_v %>%
       fs::dir_ls(
         recurse = FALSE,
         type = "directory"
@@ -104,17 +111,38 @@ cas_archive <- function(path = NULL,
         }
       }
     )
+    # remove folders if empty
+    purrr::walk(
+      .x = base_index_folders_v,
+      .f = function(current_index_folder) {
+        files_in_folder_v <- fs::dir_ls(
+          path = current_index_folder,
+          all = TRUE,
+          recurse = TRUE
+        )
+        if (length(files_in_folder_v) == 0) {
+          fs::dir_delete(current_index_folder)
+        } else {
+          absolute_path <- fs::path_abs(current_index_folder)
+          cli::cli_inform(message = "Index folders have been archived, but some files or folder are still present in {.path {absolute_path}}")
+        }
+      }
+    )
   }
 
 
   if (contents == TRUE) {
-    contents_folders_v <- fs::dir_ls(
+    base_contents_folders_v <- fs::dir_ls(
       path = ".",
       recurse = FALSE,
       type = "directory",
       glob = "*_contents"
-    ) %>%
-      fs::dir_ls(recurse = FALSE, type = "directory")
+    )
+    contents_folders_v <- base_contents_folders_v %>%
+      fs::dir_ls(
+        recurse = FALSE,
+        type = "directory"
+      )
 
     pb <- progress::progress_bar$new(total = length(contents_folders_v))
 
@@ -154,6 +182,23 @@ cas_archive <- function(path = NULL,
               i = "Archiving process has been stopped."
             ))
           }
+        }
+      }
+    )
+    # remove folders if empty
+    purrr::walk(
+      .x = base_contents_folders_v,
+      .f = function(current_contents_folder) {
+        files_in_folder_v <- fs::dir_ls(
+          path = current_contents_folder,
+          all = TRUE,
+          recurse = TRUE
+        )
+        if (length(files_in_folder_v) == 0) {
+          fs::dir_delete(current_contents_folder)
+        } else {
+          absolute_path <- fs::path_abs(current_contents_folder)
+          cli::cli_inform(message = "Index folders have been archived, but some files or folder are still present in {.path {absolute_path}}")
         }
       }
     )
