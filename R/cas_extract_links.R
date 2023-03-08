@@ -102,7 +102,7 @@ cas_extract_links <- function(id = NULL,
     dplyr::collect()
 
   if (sum(local_files_df$available) < nrow(local_files_df)) {
-    cli::cli_warn(x = "Missing files: {nrow(local_files_df %>% dplyr::filter(!available))}")
+    cli::cli_warn(message =  "Missing files: {nrow(local_files_df %>% dplyr::filter(!available))}")
 
     local_files_df <- local_files_df %>%
       dplyr::filter(available) %>%
