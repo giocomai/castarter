@@ -45,7 +45,7 @@ beginning of each link found. If links in the page already include the full
 web address this should be ignored.}
 
 \item{output_index}{Defaults to FALSE. If FALSE, new links are added to the
-contents table. If FALSE, the links extracted will be stored again as
+contents table. If TRUE, the links extracted will be stored again as
 index, using \code{output_index_group} as \code{index_group}.}
 
 \item{output_index_group}{Defaults to NULL. Relevant only when \code{output_index}

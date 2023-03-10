@@ -18,7 +18,7 @@
 #'   property from where url is to be extracted. N.B. Only partly implemented,
 #'   please report issues along with specific example where it emerged.
 #' @param output_index Defaults to FALSE. If FALSE, new links are added to the
-#'   contents table. If FALSE, the links extracted will be stored again as
+#'   contents table. If TRUE, the links extracted will be stored again as
 #'   index, using `output_index_group` as `index_group`.
 #' @param output_index_group Defaults to NULL. Relevant only when `output_index`
 #'   is set to TRUE. Used to store new index urls in the database with reference
