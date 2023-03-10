@@ -150,20 +150,25 @@ cas_extract_links <- function(id = NULL,
     start_id <- sum(1, max(previous_links_df$id))
   }
 
-  local_files_df <- local_files_df %>%
-    dplyr::anti_join(
-      y = previous_links_df %>%
-        dplyr::select(-"id") %>%
-        dplyr::rename(
-          id = source_index_id,
-          batch = source_index_batch
-        ),
-      by = c(
-        "id",
-        "batch"
+  if (output_index == TRUE) {
+    # do nothing, as source is not kept for index urls
+  } else {
+    local_files_df <- local_files_df %>%
+      dplyr::anti_join(
+        y = previous_links_df %>%
+          dplyr::select(-"id") %>%
+          dplyr::rename(
+            id = source_index_id,
+            batch = source_index_batch
+          ),
+        by = c(
+          "id",
+          "batch"
+        )
       )
-    )
-
+    
+  }
+ 
   if (is.null(index_group) == FALSE) {
     previous_index_links_df <- cas_read_db_index(
       db_connection = db,
@@ -411,8 +416,6 @@ cas_extract_links <- function(id = NULL,
               dplyr::mutate(index_group = output_index_group),
             db_connection = db,
             disconnect_db = FALSE,
-            quiet = TRUE,
-            check_previous = FALSE,
             ...
           )
         } else {

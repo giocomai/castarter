@@ -32,6 +32,7 @@
 cas_write_db_index <- function(urls,
                                overwrite = FALSE,
                                db_connection = NULL,
+                               disconnect_db = TRUE,
                                ...) {
   if (is.data.frame(urls)) {
     if (identical(colnames(urls), colnames(casdb_empty_index_id)) & identical(sapply(urls, class), sapply(casdb_empty_index_id, class))) {

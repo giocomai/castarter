@@ -4,7 +4,13 @@
 \alias{cas_write_db_index}
 \title{Write index URLs to local database}
 \usage{
-cas_write_db_index(urls, overwrite = FALSE, db_connection = NULL, ...)
+cas_write_db_index(
+  urls,
+  overwrite = FALSE,
+  db_connection = NULL,
+  disconnect_db = TRUE,
+  ...
+)
 }
 \arguments{
 \item{urls}{A data frame with three columns, such as \code{casdb_empty_index_id}, or a character vector.}
