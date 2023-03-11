@@ -13,6 +13,7 @@ cas_kwic_single_string(
   same_sentence = TRUE,
   period_at_end_of_sentence = TRUE,
   ignore_case = TRUE,
+  regex = FALSE,
   full_words_only = FALSE,
   full_word_with_partial_match = TRUE,
   string_column_name = string

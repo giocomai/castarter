@@ -29,6 +29,7 @@ cas_kwic <- function(corpus,
                      same_sentence = TRUE,
                      period_at_end_of_sentence = TRUE,
                      ignore_case = TRUE,
+                     regex = FALSE,
                      full_words_only = FALSE,
                      full_word_with_partial_match = TRUE,
                      string_column_name = string) {
@@ -44,6 +45,7 @@ cas_kwic <- function(corpus,
         same_sentence = same_sentence,
         period_at_end_of_sentence = period_at_end_of_sentence,
         ignore_case = ignore_case,
+        regex = regex,
         full_words_only = full_words_only,
         full_word_with_partial_match = full_word_with_partial_match,
         string_column_name = {{ string_column_name }}
@@ -85,6 +87,7 @@ cas_kwic_single_string <- function(corpus,
                                    same_sentence = TRUE,
                                    period_at_end_of_sentence = TRUE,
                                    ignore_case = TRUE,
+                                   regex = FALSE,
                                    full_words_only = FALSE,
                                    full_word_with_partial_match = TRUE,
                                    string_column_name = string) {
@@ -103,15 +106,27 @@ cas_kwic_single_string <- function(corpus,
 
 
   if (length(string) == 1) {
-    corpus <- corpus %>%
-      dplyr::filter(stringr::str_detect(
-        string = {{ text }},
-        pattern = stringr::fixed(
-          pattern = string,
-          ignore_case = ignore_case
-        )
-      )) %>%
-      dplyr::filter(is.na({{ text }}) == FALSE)
+    if (regex == TRUE) {
+      corpus <- corpus %>%
+        dplyr::filter(stringr::str_detect(
+          string = {{ text }},
+          pattern = stringr::regex(
+            pattern = string,
+            ignore_case = ignore_case
+          )
+        )) %>%
+        dplyr::filter(is.na({{ text }}) == FALSE)
+    } else {
+      corpus <- corpus %>%
+        dplyr::filter(stringr::str_detect(
+          string = {{ text }},
+          pattern = stringr::fixed(
+            pattern = string,
+            ignore_case = ignore_case
+          )
+        )) %>%
+        dplyr::filter(is.na({{ text }}) == FALSE)
+    }
   } else {
     usethis::ui_stop("String must be a vector of length one. You may want to use `cas_kwic()` instead.")
   }
