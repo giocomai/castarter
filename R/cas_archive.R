@@ -99,12 +99,13 @@ cas_archive <- function(path = NULL,
 
   if (index == TRUE) {
 
-    pb <- progress::progress_bar$new(total = length(index_folders_v))
+    cli::cli_progress_bar(name = "Archiving index files",
+                          total = length(index_folders_v))
 
     purrr::walk(
       .x = index_folders_v,
       .f = function(current_folder) {
-        pb$tick()
+        cli::cli_progress_update()
         current_filename <- stringr::str_c(
           fs::path_dir(current_folder) %>%
             fs::path_file(),
@@ -174,12 +175,13 @@ cas_archive <- function(path = NULL,
         type = "directory"
       )
 
-    pb <- progress::progress_bar$new(total = length(contents_folders_v))
+    cli::cli_progress_bar(name = "Archiving contents files",
+                          total = length(contents_folders_v))
 
     purrr::walk(
       .x = contents_folders_v,
       .f = function(current_folder) {
-        pb$tick()
+        cli::cli_progress_update()
         current_filename <- stringr::str_c(
           fs::path_dir(current_folder) %>%
             fs::path_file(),
