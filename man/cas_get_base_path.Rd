@@ -5,6 +5,7 @@
 \title{Build full path to base working folder}
 \usage{
 cas_get_base_path(
+  create_if_missing = NULL,
   custom_path = NULL,
   custom_folder = NULL,
   index = FALSE,
@@ -13,6 +14,9 @@ cas_get_base_path(
 )
 }
 \arguments{
+\item{create_if_missing}{Logical, defaults to NULL. If NULL, it will ask
+before creating a new folder. If TRUE, it will create it without asking.}
+
 \item{custom_path}{Defaults to NULL. If given, all other parameters and settings are ignored, and folder is set to this value.}
 
 \item{file_format}{}
