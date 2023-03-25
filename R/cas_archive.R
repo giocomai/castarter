@@ -51,6 +51,10 @@ cas_archive <- function(path = NULL,
     )
   }
 
+  original_wd <- getwd()
+  on.exit(setwd(original_wd))
+  setwd(website_folder)
+  
   n_folders_to_archive <- 0
   
   if (index==TRUE) {
@@ -92,10 +96,6 @@ cas_archive <- function(path = NULL,
   }
   
   fs::dir_create(path = path)
-
-  original_wd <- getwd()
-  on.exit(setwd(original_wd))
-  setwd(website_folder)
 
   if (index == TRUE) {
 
