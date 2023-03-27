@@ -16,7 +16,9 @@ cas_extract_html(
   attribute = NULL,
   sub_element = NULL,
   no_children = NULL,
-  squish = TRUE,
+  trim = TRUE,
+  squish = FALSE,
+  no_match = "",
   custom_Xpath = NULL,
   custom_CSSpath = NULL,
   keep_everything = FALSE
@@ -61,9 +63,15 @@ selected combination (e.g. div with given class) are extracted. If TRUE,
 only text found under the given combination (but not its subelements) will
 be extracted. Corresponds to the xpath string \verb{/node()[not(self::div)]}.}
 
-\item{squish}{Defaults to TRUE. If TRUE, applies \code{stringr::str_squish()} to
+\item{trim}{Defaults to TRUE. If TRUE, applies \code{stringr::str_trim()} to
+output, removing whitespace from start and end of string.}
+
+\item{squish}{Defaults to FALSE. If TRUE, applies \code{stringr::str_squish()} to
 output, removing whitespace from start and end of string, and replacing
-repeated whitespace with a single space.}
+any whitespace (including new lines) with a single space.}
+
+\item{no_match}{Defaults to "". A common alternative would be NA. Value to
+return when the given container, selector or element is not found.}
 
 \item{custom_Xpath}{Defaults to NULL. If given, all other parameters are
 ignored and given Xpath used instead.}

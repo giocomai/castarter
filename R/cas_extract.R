@@ -247,9 +247,13 @@ cas_extract <- function(extractors,
 #'   ignored and given CSSpath used instead.
 #' @param keep_everything Defaults to FALSE. If TRUE, all text included in the
 #'   page is returned as a single string.
-#' @param squish Defaults to TRUE. If TRUE, applies `stringr::str_squish()` to
+#' @param trim Defaults to TRUE. If TRUE, applies `stringr::str_trim()` to
+#'   output, removing whitespace from start and end of string.
+#' @param squish Defaults to FALSE. If TRUE, applies `stringr::str_squish()` to
 #'   output, removing whitespace from start and end of string, and replacing
-#'   repeated whitespace with a single space.
+#'   any whitespace (including new lines) with a single space.
+#' @param no_match Defaults to "". A common alternative would be NA. Value to
+#'   return when the given container, selector or element is not found.
 #'
 #' @return A character vector of length one.
 #' @export
@@ -301,7 +305,9 @@ cas_extract_html <- function(html_document,
                              attribute = NULL,
                              sub_element = NULL,
                              no_children = NULL,
-                             squish = TRUE,
+                             trim = TRUE,
+                             squish = FALSE,
+                             no_match = "",
                              custom_Xpath = NULL,
                              custom_CSSpath = NULL,
                              keep_everything = FALSE) {
@@ -446,12 +452,17 @@ cas_extract_html <- function(html_document,
       output <- stringr::str_c(output, collapse = "\n")
     }
   } else if (length(output) == 0) {
-    output <- as.character(NA)
+    output <- as.character(no_match)
   }
 
+  if (trim == TRUE) {
+    output <- stringr::str_trim(string = output)
+  }
+  
   if (squish == TRUE) {
     output <- stringr::str_squish(string = output)
   }
+  
   output
 }
 
