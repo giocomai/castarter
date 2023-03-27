@@ -458,11 +458,11 @@ cas_extract_html <- function(html_document,
   if (trim == TRUE) {
     output <- stringr::str_trim(string = output)
   }
-  
+
   if (squish == TRUE) {
     output <- stringr::str_squish(string = output)
   }
-  
+
   output
 }
 

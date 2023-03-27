@@ -24,7 +24,7 @@ cas_archive <- function(path = NULL,
   #   cli::cli_abort(message = c(x = "Database not set.",
   #                              i = " Set the database connection with `cas_set_options()` or pass a database connection with the parameter `db_connection`."))
   # }
-  # 
+  #
   # db <- cas_connect_to_db(
   #   db_connection = db_connection,
   #   read_only = FALSE,
@@ -33,8 +33,10 @@ cas_archive <- function(path = NULL,
 
   cas_options_l <- cas_get_options(...)
 
-  website_folder <- cas_get_base_path(create_if_missing = FALSE,
-                                      ...) %>%
+  website_folder <- cas_get_base_path(
+    create_if_missing = FALSE,
+    ...
+  ) %>%
     fs::path_dir()
 
   if (is.null(path) == TRUE) {
@@ -54,26 +56,26 @@ cas_archive <- function(path = NULL,
   original_wd <- getwd()
   on.exit(setwd(original_wd))
   setwd(website_folder)
-  
+
   n_folders_to_archive <- 0
-  
-  if (index==TRUE) {
+
+  if (index == TRUE) {
     base_index_folders_v <- fs::dir_ls(
       path = ".",
       recurse = FALSE,
       type = "directory",
       glob = "*_index"
     )
-    
+
     index_folders_v <- base_index_folders_v %>%
       fs::dir_ls(
         recurse = FALSE,
         type = "directory"
       )
-    
+
     n_folders_to_archive <- sum(n_folders_to_archive, length(index_folders_v))
   }
-  
+
   if (contents == TRUE) {
     base_contents_folders_v <- fs::dir_ls(
       path = ".",
@@ -86,19 +88,18 @@ cas_archive <- function(path = NULL,
         recurse = FALSE,
         type = "directory"
       )
-    
+
     n_folders_to_archive <- sum(n_folders_to_archive, length(contents_folders_v))
   }
-  
-  if (n_folders_to_archive==0) {
+
+  if (n_folders_to_archive == 0) {
     cli::cli_inform(message = c(v = "No new files to archive for the current website."))
     return(invisible(NULL))
   }
-  
+
   fs::dir_create(path = path)
 
   if (index == TRUE) {
-
     purrr::walk(
       .progress = "Archiving index files",
       .x = index_folders_v,

@@ -41,21 +41,23 @@ cas_get_base_path <- function(create_if_missing = NULL,
   }
 
   if (fs::file_exists(path) == FALSE) {
-    cli::cli_inform(message = c(i = "Folder for {.field {type}} files with file format {.field {file_format}} does not exist:",
-                                i = "{.path {path}}"))
+    cli::cli_inform(message = c(
+      i = "Folder for {.field {type}} files with file format {.field {file_format}} does not exist:",
+      i = "{.path {path}}"
+    ))
     if (is.null(create_if_missing)) {
       create_if_missing <- usethis::ui_yeah(x = "Do you want to create it?")
-    } 
-    
+    }
+
     if (create_if_missing) {
       fs::dir_create(path = path)
       usethis::ui_info(stringr::str_c("The folder",
-                                      usethis::ui_path(path),
-                                      "has been created.",
-                                      sep = " "
+        usethis::ui_path(path),
+        "has been created.",
+        sep = " "
       ))
     } else {
-     cli::cli_warn(message = c(`!` = "Base path returned, but the folder does not exist and has not been created"))
+      cli::cli_warn(message = c(`!` = "Base path returned, but the folder does not exist and has not been created"))
     }
   }
   fs::path(path)
