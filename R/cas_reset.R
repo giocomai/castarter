@@ -112,3 +112,51 @@ cas_reset_db_index_id <- function(db_connection = NULL,
     ...
   )
 }
+
+
+#' Delete all files and database records for the index pages of the current
+#' website
+#'
+#' @param batch Defaults to NULL. If given, only files and records related to
+#'   the given batch are removed. If not given, all index files are removed.
+#' @inheritParams cas_reset_db
+#'
+#' @return
+#' @export
+#'
+#' @examples
+cas_reset_download_index <- function(batch = NULL,
+                                     file_format = "html",
+                                     db_connection = NULL,
+                                     db_folder = NULL,
+                                     ask = TRUE,
+                                     ...) {
+  if (is.null(batch) == TRUE) {
+    if (usethis::ui_yeah("Do you wish to delete all files and all {usethis::ui_field('index')} download files and records in the database for the the website {usethis::ui_field(cas_get_options(...)$website)}?")) {
+      folder_path <- cas_get_base_path(index = TRUE, file_format = file_format)
+      n_folders <- fs::dir_ls(
+        path = folder_path,
+        recurse = FALSE,
+        type = "directory"
+      ) %>%
+        length()
+      n_files <- fs::dir_ls(
+        path = folder_path,
+        recurse = TRUE,
+        type = "file"
+      ) %>%
+        length()
+      cli::cli_alert_danger(c("All files and folder within {.path {folder_path}} will be deleted. More specifically, {scales::number(n_folders)} {ifelse(n_folders==1, 'folder', 'folders')} and {scales::number(n_files)} {ifelse(n_files==1, 'file', 'files')} will be deleted, and all records of the download will be removed from the local database"))
+      if (usethis::ui_yeah("Do you really wish to delete all {usethis::ui_field('index')} download files and records in the database for the the website {usethis::ui_field(cas_get_options(...)$website)}?")) {
+        fs::dir_delete(path = folder_path)
+        cas_reset_db(
+          table = "index_download",
+          db_connection = db_connection,
+          db_folder = db_folder,
+          ask = FALSE,
+          ...
+        )
+      }
+    }
+  }
+}
