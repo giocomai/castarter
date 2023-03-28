@@ -221,13 +221,12 @@ cas_extract_links <- function(id = NULL,
   }
 
   pb <- progress::progress_bar$new(total = nrow(local_files_df))
-
+  
   purrr::reduce(
     .x = purrr::transpose(local_files_df),
     .init = start_id,
     .f = function(start_id, x) {
       pb$tick()
-
       if (file_format == "json") {
         temp <- jsonlite::read_json(path = x$path)
 
@@ -383,6 +382,31 @@ cas_extract_links <- function(id = NULL,
           dplyr::filter(nchar(url) < max_length)
       }
 
+      if (check_previous == FALSE & write_to_db == FALSE) {
+        if (output_index == TRUE) {
+          previous_links_df <- casdb_empty_index_id
+        } else {
+          previous_links_df <- casdb_empty_contents_id
+        }
+      } else {
+        if (output_index == TRUE) {
+          previous_links_df <- cas_read_db_index(
+            index_group = output_index_group,
+            db_connection = db,
+            disconnect_db = FALSE,
+            ...
+          ) %>%
+            dplyr::collect()
+        } else {
+          previous_links_df <- cas_read_db_contents_id(
+            db_connection = db,
+            disconnect_db = FALSE,
+            ...
+          ) %>%
+            dplyr::collect()
+        }
+      }
+      
       links_df <- links_df %>%
         dplyr::anti_join(
           y = previous_links_df,
