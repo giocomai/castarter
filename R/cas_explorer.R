@@ -9,7 +9,7 @@
 #' @importFrom golem with_golem_options
 cas_explorer <- function(corpus = castarter::cas_demo_corpus,
                          default_string = NULL,
-                         custom_head_html = "",
+                         custom_head_html = '<meta name="referrer" content="no-referrer" />',
                          onStart = NULL,
                          options = list(),
                          enableBookmarking = NULL,
