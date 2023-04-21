@@ -55,11 +55,6 @@ cas_backup_gd <- function(glob = c(
         project = cas_get_options(...)$project,
         glob = current_glob
       )
-    },
-    .progress = list(
-      type = "tasks",
-      format = "Backup of {current_glob} files in progress",
-      clear = FALSE
-    )
+    }
   )
 }
