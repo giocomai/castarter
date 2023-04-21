@@ -1,6 +1,6 @@
 Package: castarter
 Title: Content Analysis Starter Toolkit
-Version: 0.0.2.9017
+Version: 0.0.2.9018
 Authors@R: 
     c(person(given = "Giorgio",
              family = "Comai",
@@ -52,7 +52,8 @@ Suggests:
     spelling,
     knitr,
     rmarkdown,
-    marker (>= 0.1.1)
+    marker (>= 0.1.1),
+    arrow
 Remotes:
     JohnCoene/marker
 Config/testthat/edition: 3
