@@ -1,6 +1,6 @@
-#' Export all database table to another format such as csv
+#' Export database tables to another format such as csv
 #'
-#' @param path Defaults to NULL. If NULL, path is set to the project/website/export folder.
+#' @param path Defaults to NULL. If NULL, path is set to the project/website/export/file_format folder.
 #' @param file_format Defaults to "csv.gz", i.e. compressed csv files. All formats supported by `readr::write_csv()` are valid.
 #' @param tables Defaults to NULL. If NULL, all database tables are exported. If given, names of the database tables to export. See `vignette("castarter-database")` for details.
 #' @inheritParams cas_read_from_db
@@ -8,12 +8,12 @@
 #' @export
 #'
 #' @examples
-cas_export <- function(path = NULL,
-                       file_format = "csv.gz",
-                       tables = NULL,
-                       db_connection = NULL,
-                       db_folder = NULL,
-                       ...) {
+cas_export_tables <- function(path = NULL,
+                              file_format = "csv.gz",
+                              tables = NULL,
+                              db_connection = NULL,
+                              db_folder = NULL,
+                              ...) {
   if (cas_check_use_db(...) == FALSE) {
     usethis::ui_stop("Database not set. Set the database connection with `cas_set_options()` or pass database connection with the parameter `db_connection`.")
   }
@@ -31,6 +31,11 @@ cas_export <- function(path = NULL,
       cas_get_base_path(...) %>%
         fs::path_dir(),
       "export",
+      file_format %>%
+        stringr::str_replace(
+          pattern = stringr::fixed("."),
+          replacement = "_"
+        ),
       fs::path_sanitize(Sys.time(),
         replacement = "_"
       ) %>%
@@ -41,6 +46,10 @@ cas_export <- function(path = NULL,
     )
   }
 
+  if (fs::file_exists(path)) {
+    cli::cli_abort("The folder {.path {path}} already exists. Please remove or rename it before exporting.")
+  }
+  
   fs::dir_create(path = path)
 
   if (is.null(tables) == TRUE) {
