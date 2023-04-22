@@ -54,7 +54,7 @@ cas_count <- function(corpus,
     )
   }
 
-  purrr::map_dfr(
+  purrr::map(
     .x = pattern,
     .f = function(x) {
       cas_count_single(
@@ -69,10 +69,11 @@ cas_count <- function(corpus,
         locale = locale
       )
     }
-  )
+  ) %>% 
+    purrr::list_rbind()
 }
 
-# Actually does the counting, but accepts only vectors of length 1 as words
+# Actually does the counting, but accepts only vectors of length 1 as pattern
 cas_count_single <- function(corpus,
                              pattern,
                              text = text,
@@ -83,7 +84,6 @@ cas_count_single <- function(corpus,
                              pattern_column_name = word,
                              n_column_name = n,
                              locale = "en") {
-
   if (ignore_case == TRUE) {
     corpus <- corpus %>%
       dplyr::mutate({{ text }} := {{ text }} %>%
@@ -94,24 +94,23 @@ cas_count_single <- function(corpus,
   }
 
   output_df <- corpus %>%
-    dplyr::group_by({{ group_by }}) %>%
+    dplyr::mutate({{ n_column_name }} := stringr::str_count(
+      string = {{ text }},
+      pattern = !!pattern
+    )) %>% 
+    dplyr::group_by({{ group_by }}) %>% 
     dplyr::summarise(
-      {{ n_column_name }} := stringr::str_count(
-        string = {{ text }},
-        pattern = pattern
-      ) %>%
-        sum(na.rm = TRUE),
+      {{ n_column_name }} := sum({{ n_column_name }}, na.rm = TRUE),
       .groups = "drop"
     )
 
   output_df %>%
     dplyr::transmute(
       {{ group_by }},
-      {{ pattern_column_name }} := stringr::str_c(pattern,
-        collapse = ", "
-      ),
+      {{ pattern_column_name }} := pattern,
       {{ n_column_name }}
-    )
+    ) %>% 
+    dplyr::collect()
 }
 
 
