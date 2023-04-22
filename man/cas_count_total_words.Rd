@@ -6,7 +6,7 @@
 \usage{
 cas_count_total_words(
   corpus,
-  string = "[\\\\w']+",
+  pattern = "[\\\\w']+",
   text = text,
   group_by = date,
   ignore_case = TRUE,

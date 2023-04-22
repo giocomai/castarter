@@ -1,7 +1,7 @@
 #' Count strings in a corpus
 #'
 #' @param corpus A textual corpus as a data frame.
-#' @param string A character vector of one or more words or strings to be counted.
+#' @param pattern A character vector of one or more words or strings to be counted.
 #' @param text Defaults to text. The unquoted name of the column of the corpus data frame to be used for matching.
 #' @param group_by Defaults to NULL. If given, the unquoted name of the column to be used for grouping (e.g. date, or doc_id, or source, etc.)
 #' @param ignore_case Defaults to TRUE.
@@ -18,7 +18,7 @@
 #' \dontrun{
 #' cas_count(
 #'   corpus = corpus,
-#'   string = c("dogs", "cats", "horses"),
+#'   pattern = c("dogs", "cats", "horses"),
 #'   text = text,
 #'   group_by = date,
 #'   n_column_name = n
@@ -26,14 +26,14 @@
 #' }
 #'
 cas_count <- function(corpus,
-                      string,
+                      pattern,
                       text = text,
                       group_by = date,
                       ignore_case = TRUE,
                       drop_na = TRUE,
                       fixed = FALSE,
                       full_words_only = FALSE,
-                      string_column_name = string,
+                      pattern_column_name = pattern,
                       n_column_name = n,
                       locale = "en") {
   if (drop_na == TRUE) {
@@ -42,8 +42,8 @@ cas_count <- function(corpus,
   }
 
   if (isTRUE(full_words_only)) {
-    string <- purrr::map_chr(
-      .x = string,
+    pattern <- purrr::map_chr(
+      .x = pattern,
       .f = function(x) {
         stringr::str_c(
           "\\b",
@@ -55,16 +55,16 @@ cas_count <- function(corpus,
   }
 
   purrr::map_dfr(
-    .x = string,
+    .x = pattern,
     .f = function(x) {
       cas_count_single(
         corpus = corpus,
-        string = x,
+        pattern = x,
         text = {{ text }},
         group_by = {{ group_by }},
         ignore_case = ignore_case,
         full_words_only = full_words_only,
-        string_column_name = {{ string_column_name }},
+        pattern_column_name = {{ pattern_column_name }},
         n_column_name = {{ n_column_name }},
         locale = locale
       )
@@ -74,16 +74,15 @@ cas_count <- function(corpus,
 
 # Actually does the counting, but accepts only vectors of length 1 as words
 cas_count_single <- function(corpus,
-                             string,
+                             pattern,
                              text = text,
                              group_by = date,
                              ignore_case = TRUE,
                              fixed = FALSE,
                              full_words_only = FALSE,
-                             string_column_name = word,
+                             pattern_column_name = word,
                              n_column_name = n,
                              locale = "en") {
-  pattern <- string
 
   if (ignore_case == TRUE) {
     corpus <- corpus %>%
@@ -108,7 +107,7 @@ cas_count_single <- function(corpus,
   output_df %>%
     dplyr::transmute(
       {{ group_by }},
-      {{ string_column_name }} := stringr::str_c(string,
+      {{ pattern_column_name }} := stringr::str_c(pattern,
         collapse = ", "
       ),
       {{ n_column_name }}
@@ -119,7 +118,7 @@ cas_count_single <- function(corpus,
 #' Count total words in a dataset
 #'
 #' @param corpus A textual corpus as a data frame.
-#' @param string
+#' @param pattern
 #' @param text
 #' @param group_by
 #' @param ignore_case
@@ -131,7 +130,7 @@ cas_count_single <- function(corpus,
 #'
 #' @examples
 cas_count_total_words <- function(corpus,
-                                  string = "[\\w\']+",
+                                  pattern = "[\\w\']+",
                                   text = text,
                                   group_by = date,
                                   ignore_case = TRUE,
@@ -139,15 +138,15 @@ cas_count_total_words <- function(corpus,
                                   locale = "en") {
   cas_count_single(
     corpus = corpus,
-    string = string,
+    pattern = pattern,
     text = {{ text }},
     group_by = {{ group_by }},
     ignore_case = FALSE,
     fixed = FALSE,
     full_words_only = FALSE,
-    string_column_name = cas_string,
+    pattern_column_name = cas_pattern,
     n_column_name = {{ n_column_name }},
     locale = locale
   ) %>%
-    dplyr::select(-cas_string)
+    dplyr::select(-cas_pattern)
 }

@@ -6,14 +6,14 @@
 \usage{
 cas_count(
   corpus,
-  string,
+  pattern,
   text = text,
   group_by = date,
   ignore_case = TRUE,
   drop_na = TRUE,
   fixed = FALSE,
   full_words_only = FALSE,
-  string_column_name = string,
+  pattern_column_name = pattern,
   n_column_name = n,
   locale = "en"
 )
@@ -21,7 +21,7 @@ cas_count(
 \arguments{
 \item{corpus}{A textual corpus as a data frame.}
 
-\item{string}{A character vector of one or more words or strings to be counted.}
+\item{pattern}{A character vector of one or more words or strings to be counted.}
 
 \item{text}{Defaults to text. The unquoted name of the column of the corpus data frame to be used for matching.}
 
@@ -33,11 +33,11 @@ cas_count(
 
 \item{full_words_only}{Defaults to FALSE. If FALSE, string is counted even when the it is found in the middle of a word (e.g. if FALSE, "ratio" would be counted as match in the word "irrational").}
 
-\item{string_column_name}{Defaults to 'word'. The unquoted name of the column to be used for the word in the output (if \code{include_string} is set to TRUE, as per default).}
-
 \item{n_column_name}{Defaults to 'n'. The unquoted name of the column to be used for the count in the output.}
 
 \item{locale}{Locale to be used when ignore_case is set to TRUE. Passed to \code{stringr::str_to_lower}, defaults to "en".}
+
+\item{string_column_name}{Defaults to 'word'. The unquoted name of the column to be used for the word in the output (if \code{include_string} is set to TRUE, as per default).}
 }
 \value{
 A data frame
@@ -49,7 +49,7 @@ Count strings in a corpus
 \dontrun{
 cas_count(
   corpus = corpus,
-  string = c("dogs", "cats", "horses"),
+  pattern = c("dogs", "cats", "horses"),
   text = text,
   group_by = date,
   n_column_name = n
