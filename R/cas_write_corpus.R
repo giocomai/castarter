@@ -8,11 +8,11 @@
 #' @export
 #'
 #' @examples
-cas_write_dataset <- function(path = NULL,
-                              file_format = "parquet",
-                              db_connection = NULL,
-                              db_folder = NULL,
-                              ...) {
+cas_write_corpus <- function(path = NULL,
+                             file_format = "parquet",
+                             db_connection = NULL,
+                             db_folder = NULL,
+                             ...) {
   rlang::check_installed("arrow")
 
   if (cas_check_use_db(...) == FALSE) {
