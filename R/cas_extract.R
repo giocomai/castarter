@@ -339,14 +339,26 @@ cas_extract_html <- function(html_document,
         rvest::html_text2()
     }
   } else if (is.null(container_itemprop) == FALSE) {
-    output <- html_document %>%
-      rvest::html_nodes(xpath = stringr::str_c(
-        "//",
-        container,
-        "[@property='",
-        container_itemprop, "']"
-      )) %>%
-      rvest::html_text2()
+    if (is.null(attribute)) {
+      output <- html_document %>%
+        rvest::html_nodes(xpath = stringr::str_c(
+          "//",
+          container,
+          "[@itemprop='",
+          container_itemprop, "']"
+        )) %>%
+        rvest::html_text2()
+    } else {
+      output <- html_document %>%
+        rvest::html_nodes(xpath = stringr::str_c(
+          "//",
+          container,
+          "[@itemprop='",
+          container_itemprop, "']"
+        )) %>%
+        rvest::html_attr(name = attribute)
+    }
+
   } else if (is.null(container_class) == TRUE & is.null(container_id) == TRUE) {
     if (is.null(sub_element) == TRUE) {
       if (is.null(container_name) == TRUE) {
