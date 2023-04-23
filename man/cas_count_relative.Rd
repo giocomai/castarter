@@ -6,7 +6,7 @@
 \usage{
 cas_count_relative(
   corpus,
-  string,
+  pattern,
   text = text,
   group_by = date,
   ignore_case = TRUE,
@@ -20,7 +20,7 @@ cas_count_relative(
 \arguments{
 \item{corpus}{A textual corpus as a data frame.}
 
-\item{string}{A character vector of one or more words or strings to be counted.}
+\item{pattern}{A character vector of one or more words or strings to be counted.}
 
 \item{text}{Defaults to text. The unquoted name of the column of the corpus data frame to be used for matching.}
 

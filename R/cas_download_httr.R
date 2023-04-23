@@ -31,7 +31,7 @@ cas_download_httr <- function(download_df = NULL,
     true = "index",
     false = "contents"
   )
-  
+
   db <- cas_connect_to_db(
     db_connection = db_connection,
     ...

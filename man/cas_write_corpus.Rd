@@ -5,17 +5,55 @@
 \title{Export the textual dataset for the current website}
 \usage{
 cas_write_corpus(
+  tif_compliant = TRUE,
+  arrange_by_date = TRUE,
+  to_lower = FALSE,
+  date = date,
+  text = text,
   path = NULL,
   file_format = "parquet",
+  partition = NULL,
+  token = "full_text",
+  corpus_folder = "corpus",
   db_connection = NULL,
   db_folder = NULL,
   ...
 )
 }
 \arguments{
-\item{path}{Defaults to NULL. If NULL, path is set to the project/website/export/dataset/file_format folder.}
+\item{tif_compliant}{Defaults to TRUE. If TRUE, it ensures that the first
+column is a character vector named "doc_id" and that the second column is a
+character vector named "text". See \url{https://docs.ropensci.org/tif/} for
+details}
 
-\item{file_format}{Defaults to "parquet". Currently, other options are not implemented.}
+\item{arrange_by_date}{Defaults to TRUE. If TRUE, arranges rows by date,
+irrespective of id.}
+
+\item{to_lower}{Whether to convert tokens to lowercase, passed to \code{tidytext} if token is not \code{full_text}.}
+
+\item{date}{Unquoted date column, defaults to \code{date}.}
+
+\item{text}{Unquoted text column, defaults to \code{text}. If \code{tif_compliant} is
+set to TRUE, it will be renamed to "text" even if originally it had a
+different name.}
+
+\item{path}{Defaults to NULL. If NULL, path is set to the
+project/website/export/dataset/file_format folder.}
+
+\item{file_format}{Defaults to "parquet". Currently, other options are not
+implemented.}
+
+\item{partition}{Defaults to NULL. If NULL, the parquet file is not
+partitioned. "year" is a common alternative: if set to "year", the parquet
+file is partitioned by year. If a \code{year} column does not exist, it is
+created based on the assumption that a \code{date} column exists and it is (or
+can be coerced to) a vector of class \code{Date}.}
+
+\item{token}{Defaults to "full_text", which does not tokenise the text
+column. If different from \code{full_text}, it is passed to
+\code{tidytext::unnest_tokens} (see its help for details). Accepted values
+include "words", "sentences", and "paragraphs". See
+\code{?tidytext::unnest_tokens()} for details.}
 
 \item{db_connection}{Defaults to NULL. If NULL, uses local SQLite database.
 If given, must be a connection object or a list with relevant connection

@@ -1,7 +1,7 @@
 #' Count strings in a corpus relative to the number of words
 #'
 #' @param corpus A textual corpus as a data frame.
-#' @param string A character vector of one or more words or strings to be counted.
+#' @param pattern A character vector of one or more words or strings to be counted.
 #' @param text Defaults to text. The unquoted name of the column of the corpus data frame to be used for matching.
 #' @param group_by Defaults to NULL. If given, the unquoted name of the column to be used for grouping (e.g. date, or doc_id, or source, etc.)
 #' @param ignore_case Defaults to TRUE.
@@ -25,7 +25,7 @@
 #' }
 #'
 cas_count_relative <- function(corpus,
-                               string,
+                               pattern,
                                text = text,
                                group_by = date,
                                ignore_case = TRUE,
@@ -43,7 +43,7 @@ cas_count_relative <- function(corpus,
 
   count_df <- cas_count(
     corpus = corpus,
-    string = string,
+    pattern = pattern,
     text = {{ text }},
     ignore_case = ignore_case,
     fixed = fixed,

@@ -221,7 +221,7 @@ cas_extract_links <- function(id = NULL,
   }
 
   pb <- progress::progress_bar$new(total = nrow(local_files_df))
-  
+
   purrr::reduce(
     .x = purrr::transpose(local_files_df),
     .init = start_id,
@@ -406,7 +406,7 @@ cas_extract_links <- function(id = NULL,
             dplyr::collect()
         }
       }
-      
+
       links_df <- links_df %>%
         dplyr::anti_join(
           y = previous_links_df,

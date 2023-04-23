@@ -358,7 +358,6 @@ cas_extract_html <- function(html_document,
         )) %>%
         rvest::html_attr(name = attribute)
     }
-
   } else if (is.null(container_class) == TRUE & is.null(container_id) == TRUE) {
     if (is.null(sub_element) == TRUE) {
       if (is.null(container_name) == TRUE) {

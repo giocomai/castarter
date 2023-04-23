@@ -69,7 +69,7 @@ cas_count <- function(corpus,
         locale = locale
       )
     }
-  ) %>% 
+  ) %>%
     purrr::list_rbind()
 }
 
@@ -97,8 +97,8 @@ cas_count_single <- function(corpus,
     dplyr::mutate({{ n_column_name }} := stringr::str_count(
       string = {{ text }},
       pattern = !!pattern
-    )) %>% 
-    dplyr::group_by({{ group_by }}) %>% 
+    )) %>%
+    dplyr::group_by({{ group_by }}) %>%
     dplyr::summarise(
       {{ n_column_name }} := sum({{ n_column_name }}, na.rm = TRUE),
       .groups = "drop"
@@ -109,7 +109,7 @@ cas_count_single <- function(corpus,
       {{ group_by }},
       {{ pattern_column_name }} := pattern,
       {{ n_column_name }}
-    ) %>% 
+    ) %>%
     dplyr::collect()
 }
 
