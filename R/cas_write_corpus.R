@@ -1,5 +1,6 @@
 #' Export the textual dataset for the current website
 #'
+#' @param corpus Defaults to NULL. If NULL, retrieves corpus from the current website with `cas_read_db_contents_data()`. If given, it is expected to be a corresponding data frame.
 #' @param tif_compliant Defaults to TRUE. If TRUE, it ensures that the first
 #'   column is a character vector named "doc_id" and that the second column is a
 #'   character vector named "text". See \url{https://docs.ropensci.org/tif/} for
@@ -31,7 +32,8 @@
 #' @export
 #'
 #' @examples
-cas_write_corpus <- function(tif_compliant = TRUE,
+cas_write_corpus <- function(corpus = NUll,
+                             tif_compliant = TRUE,
                              arrange_by = id,
                              to_lower = FALSE,
                              date = date,
@@ -46,22 +48,25 @@ cas_write_corpus <- function(tif_compliant = TRUE,
                              ...) {
   rlang::check_installed("arrow")
 
-  if (cas_check_use_db(...) == FALSE) {
-    usethis::ui_stop("Database not set. Set the database connection with `cas_set_options()` or pass database connection with the parameter `db_connection`.")
+  if (is.null(corpus)) {
+    if (cas_check_use_db(...) == FALSE) {
+      usethis::ui_stop("Database not set. Set the database connection with `cas_set_options()` or pass database connection with the parameter `db_connection`.")
+    }
+    
+    db <- cas_connect_to_db(
+      db_connection = db_connection,
+      read_only = TRUE,
+      ...
+    )
+    corpus_df <- cas_read_db_contents_data(
+      db_connection = db,
+      db_folder = db_folder,
+      ...
+    ) %>%
+      dplyr::collect()
+  } else {
+    corpus_df <- corpus
   }
-
-  db <- cas_connect_to_db(
-    db_connection = db_connection,
-    read_only = TRUE,
-    ...
-  )
-
-  corpus_df <- cas_read_db_contents_data(
-    db_connection = db,
-    db_folder = db_folder,
-    ...
-  ) %>%
-    dplyr::collect()
 
   cas_options_l <- cas_get_options(...)
 

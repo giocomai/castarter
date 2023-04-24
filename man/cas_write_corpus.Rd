@@ -5,6 +5,7 @@
 \title{Export the textual dataset for the current website}
 \usage{
 cas_write_corpus(
+  corpus = NUll,
   tif_compliant = TRUE,
   arrange_by = id,
   to_lower = FALSE,
@@ -21,6 +22,8 @@ cas_write_corpus(
 )
 }
 \arguments{
+\item{corpus}{Defaults to NULL. If NULL, retrieves corpus from the current website with \code{cas_read_db_contents_data()}. If given, it is expected to be a corresponding data frame.}
+
 \item{tif_compliant}{Defaults to TRUE. If TRUE, it ensures that the first
 column is a character vector named "doc_id" and that the second column is a
 character vector named "text". See \url{https://docs.ropensci.org/tif/} for
