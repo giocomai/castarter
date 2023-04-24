@@ -29,7 +29,8 @@ column is a character vector named "doc_id" and that the second column is a
 character vector named "text". See \url{https://docs.ropensci.org/tif/} for
 details}
 
-\item{to_lower}{Whether to convert tokens to lowercase, passed to \code{tidytext} if token is not \code{full_text}.}
+\item{to_lower}{Defaults to FALSE. Whether to convert tokens to lowercase.
+Passed to \code{tidytext} if token is not \code{full_text}.}
 
 \item{date}{Unquoted date column, defaults to \code{date}.}
 

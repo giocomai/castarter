@@ -25,7 +25,8 @@
 #'   `tidytext::unnest_tokens` (see its help for details). Accepted values
 #'   include "words", "sentences", and "paragraphs". See
 #'   `?tidytext::unnest_tokens()` for details.
-#' @param to_lower Whether to convert tokens to lowercase, passed to `tidytext` if token is not `full_text`.
+#' @param to_lower Defaults to FALSE. Whether to convert tokens to lowercase.
+#'   Passed to `tidytext` if token is not `full_text`.
 #' @inheritParams cas_read_from_db
 #'
 #' @return
