@@ -32,7 +32,7 @@
 #'
 #' @examples
 cas_write_corpus <- function(tif_compliant = TRUE,
-                             arrange_by_date = TRUE,
+                             arrange_by = id,
                              to_lower = FALSE,
                              date = date,
                              text = text,
@@ -90,11 +90,9 @@ cas_write_corpus <- function(tif_compliant = TRUE,
       dplyr::select("doc_id", "text", dplyr::everything())
   }
 
-  if (arrange_by_date == TRUE) {
+
     corpus_df <- corpus_df %>%
-      dplyr::mutate({{ date }} := {{ date }} %>% lubridate::as_date()) %>%
-      dplyr::arrange({{ date }})
-  }
+      dplyr::arrange({{ arrange_by }})
 
   if (token == "full_text") {
     # do nothing
@@ -113,6 +111,7 @@ cas_write_corpus <- function(tif_compliant = TRUE,
       arrow::write_dataset(path = path)
   } else if (partition == "year") {
     corpus_df %>%
+      dplyr::mutate({{ date }} := {{ date }} %>% lubridate::as_date()) %>%
       dplyr::mutate(year = lubridate::year({{ date }})) %>%
       dplyr::group_by(year) %>%
       arrow::write_dataset(path = path)

@@ -6,7 +6,7 @@
 \usage{
 cas_write_corpus(
   tif_compliant = TRUE,
-  arrange_by_date = TRUE,
+  arrange_by = id,
   to_lower = FALSE,
   date = date,
   text = text,
@@ -25,9 +25,6 @@ cas_write_corpus(
 column is a character vector named "doc_id" and that the second column is a
 character vector named "text". See \url{https://docs.ropensci.org/tif/} for
 details}
-
-\item{arrange_by_date}{Defaults to TRUE. If TRUE, arranges rows by date,
-irrespective of id.}
 
 \item{to_lower}{Whether to convert tokens to lowercase, passed to \code{tidytext} if token is not \code{full_text}.}
 
@@ -60,6 +57,9 @@ If given, must be a connection object or a list with relevant connection
 settings (see example).}
 
 \item{...}{Passed to \code{cas_get_db_file()}.}
+
+\item{arrange_by_date}{Defaults to TRUE. If TRUE, arranges rows by date,
+irrespective of id.}
 }
 \description{
 Export the textual dataset for the current website
