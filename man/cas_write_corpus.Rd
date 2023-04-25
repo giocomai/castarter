@@ -5,7 +5,7 @@
 \title{Export the textual dataset for the current website}
 \usage{
 cas_write_corpus(
-  corpus = NUll,
+  corpus = NULL,
   tif_compliant = TRUE,
   arrange_by = id,
   to_lower = FALSE,

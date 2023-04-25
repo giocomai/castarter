@@ -33,7 +33,7 @@
 #' @export
 #'
 #' @examples
-cas_write_corpus <- function(corpus = NUll,
+cas_write_corpus <- function(corpus = NULL,
                              tif_compliant = TRUE,
                              arrange_by = id,
                              to_lower = FALSE,
