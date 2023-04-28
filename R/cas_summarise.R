@@ -53,7 +53,7 @@ cas_summarise <- function(count_df,
         unit = period
       )) %>%
       dplyr::group_by({{ string_column_name }}, {{ date_column_name }}) %>%
-      dplyr::summarise({{ n_column_name }} := sum({{ n_column_name }}),
+      dplyr::summarise({{ n_column_name }} := sum({{ n_column_name }}, na.rm = TRUE),
         .groups = "drop_last"
       ) %>%
       dplyr::mutate(n = slider::slide_period_dbl(
