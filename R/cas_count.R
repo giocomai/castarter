@@ -117,19 +117,16 @@ cas_count_single <- function(corpus,
 #' Count total words in a dataset
 #'
 #' @param corpus A textual corpus as a data frame.
-#' @param pattern
-#' @param text
-#' @param group_by
-#' @param ignore_case
-#' @param n_column_name
-#' @param locale
+#' @param pattern Defaults to pattern commonly used to count words. 
+#'
+#' @inheritParams cas_count
 #'
 #' @return
 #' @export
 #'
 #' @examples
 cas_count_total_words <- function(corpus,
-                                  pattern = "[\\w\']+",
+                                  pattern = "\\w+",
                                   text = text,
                                   group_by = date,
                                   ignore_case = TRUE,
