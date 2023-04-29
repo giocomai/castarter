@@ -13,17 +13,17 @@
 #' @examples
 #' \dontrun{
 #' if (interactive) {
-#'   cas_delete(table = "contents_data", id = id_to_delete)
+#'   cas_delete_from_db(table = "contents_data", id = id_to_delete)
 #' }
 #' }
-cas_delete <- function(table,
-                       id = NULL,
-                       batch = NULL,
-                       index_group = NULL,
-                       ask = TRUE,
-                       db_folder = NULL,
-                       db_connection = NULL,
-                       ...) {
+cas_delete_from_db <- function(table,
+                               id = NULL,
+                               batch = NULL,
+                               index_group = NULL,
+                               ask = TRUE,
+                               db_folder = NULL,
+                               db_connection = NULL,
+                               ...) {
   if (cas_check_use_db(...) == FALSE) {
     cli::cli_abort("Database not set. Set the database connection with `cas_set_options()` or pass database connection with the parameter `db_connection`.")
   }
@@ -114,7 +114,7 @@ cas_delete <- function(table,
             conn = db,
             statement = current_statement
           )
-          
+
           result
         }
       )
@@ -154,7 +154,7 @@ cas_delete <- function(table,
             conn = db,
             statement = current_statement
           )
-          
+
           result
         }
       )
