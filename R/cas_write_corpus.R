@@ -53,7 +53,7 @@ cas_write_corpus <- function(corpus = NULL,
     if (cas_check_use_db(...) == FALSE) {
       usethis::ui_stop("Database not set. Set the database connection with `cas_set_options()` or pass database connection with the parameter `db_connection`.")
     }
-    
+
     db <- cas_connect_to_db(
       db_connection = db_connection,
       read_only = TRUE,
@@ -97,8 +97,8 @@ cas_write_corpus <- function(corpus = NULL,
   }
 
 
-    corpus_df <- corpus_df %>%
-      dplyr::arrange({{ arrange_by }})
+  corpus_df <- corpus_df %>%
+    dplyr::arrange({{ arrange_by }})
 
   if (token == "full_text") {
     # do nothing

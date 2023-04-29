@@ -23,13 +23,15 @@ cas_read_corpus <- function(path = NULL,
       token = token,
       ...
     ) %>%
-      fs::path_dir() 
-    
-    if (fs::dir_exists(base_path)==FALSE) {
-      cli::cli_abort(message = c(x = "No relevant corpus has yet been created; folder {.path {base_path}} does not exist.",
-                                 i = "You can store a corpus with {.code cas_write_corpus()}"))
+      fs::path_dir()
+
+    if (fs::dir_exists(base_path) == FALSE) {
+      cli::cli_abort(message = c(
+        x = "No relevant corpus has yet been created; folder {.path {base_path}} does not exist.",
+        i = "You can store a corpus with {.code cas_write_corpus()}"
+      ))
     }
-    
+
     path <- base_path %>%
       fs::dir_ls(type = "directory") %>%
       tail(1)

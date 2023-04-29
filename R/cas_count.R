@@ -117,7 +117,7 @@ cas_count_single <- function(corpus,
 #' Count total words in a dataset
 #'
 #' @param corpus A textual corpus as a data frame.
-#' @param pattern Defaults to pattern commonly used to count words. 
+#' @param pattern Defaults to pattern commonly used to count words.
 #'
 #' @inheritParams cas_count
 #'
