@@ -33,11 +33,7 @@ cas_archive <- function(path = NULL,
 
   cas_options_l <- cas_get_options(...)
 
-  website_folder <- cas_get_base_path(
-    create_if_missing = FALSE,
-    ...
-  ) %>%
-    fs::path_dir()
+  website_folder <- cas_get_base_folder(level = "website")
 
   if (is.null(path) == TRUE) {
     path <- fs::path(
