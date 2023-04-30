@@ -37,6 +37,7 @@ cas_restore <- function(restore_to = NULL,
                                          type = "file", 
                                          glob = stringr::str_c("*.",
                                                                file_format))
+  
   file_types <- available_backup_files_v %>% 
     stringr::str_remove(pattern = stringr::str_c("_",
                                                  "[[:digit:]]+",
@@ -61,12 +62,15 @@ cas_restore <- function(restore_to = NULL,
   }
   
   if (is.null(restore_to)) {
-    restore_to <- fs::path(
-      fs::path_temp(), 
-      "castarter",
-      cas_options_l$website
-      )
-  }
+    restore_to <- cas_get_base_folder(level = "website",
+                                      custom_path = restore_to)
+  } 
+  
+  # restore_to <- fs::path(
+  #   fs::path_temp(), 
+  #   "castarter",
+  #   cas_options_l$website
+  # )
   
   if (index == TRUE) {
     purrr::walk(
