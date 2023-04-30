@@ -7,6 +7,7 @@
 cas_extract(
   extractors,
   id = NULL,
+  custom_path = NULL,
   index = FALSE,
   store_as_character = TRUE,
   check_previous = TRUE,

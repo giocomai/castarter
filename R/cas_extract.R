@@ -24,6 +24,7 @@
 #' @examples
 cas_extract <- function(extractors,
                         id = NULL,
+                        custom_path = NULL,
                         index = FALSE,
                         store_as_character = TRUE,
                         check_previous = TRUE,
@@ -41,7 +42,25 @@ cas_extract <- function(extractors,
     ...
   )
 
-  path <- cas_get_base_path(...)
+  type <- dplyr::if_else(condition = index,
+                         true = "index",
+                         false = "contents"
+  )
+  
+  if (is.null(custom_path)) {
+    path <- cas_get_base_path(...)
+  } else {
+    path_ending <- stringr::str_c(file_format, type, sep = "_")
+    
+    custom_path_ending <- fs::path_file(custom_path)
+    
+    if (path_ending==custom_path_ending) {
+      path <- fs::path(custom_path)
+    } else {
+      path <- fs::path(custom_path,
+                       path_ending)
+    }
+  }
 
   previous_download_df <- cas_read_db_download(
     index = index,
@@ -153,10 +172,21 @@ cas_extract <- function(extractors,
     db <- duckdb::dbConnect(duckdb::duckdb(), ":memory:")
   }
 
-  pb <- progress::progress_bar$new(total = nrow(files_to_extract_df))
+  available_files_to_extract_df <- files_to_extract_df %>% 
+    dplyr::mutate(available = fs::file_exists(path)) %>% 
+    dplyr::filter(available)
+  
+  if (nrow(available_files_to_extract_df)!=nrow(files_to_extract_df)) {
+    cli::cli_warn(c( `x` = glue::glue("Not all downloaded files are currently available in their expected location."),
+                     `*` = glue::glue("Total files expected:  {scales::number(nrow(files_to_extract_df))}"),
+                     `*` = glue::glue("Total files available: {scales::number(nrow(available_files_to_extract_df))}"),
+                     `i` = glue::glue("Only available files will be processed. Consider running `cas_restore()` or otherwise deal with missing files as needed.")))
+  }
+  
+  pb <- progress::progress_bar$new(total = nrow(available_files_to_extract_df))
 
   purrr::walk(
-    .x = purrr::transpose(files_to_extract_df),
+    .x = purrr::transpose(available_files_to_extract_df),
     function(x) {
       pb$tick()
 
