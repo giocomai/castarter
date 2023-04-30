@@ -43,12 +43,22 @@ cas_browse <- function(index = FALSE,
   } else {
     if (index == TRUE) {
       if (is.null(index_group)) {
-        url_to_open_v <- cas_read_db_index(
-          db_connection = db,
-          ...
-        ) %>%
-          dplyr::slice_sample(n = sample) %>%
-          dplyr::pull("url")
+        if (is.null(id)==FALSE)  {
+          url_to_open_v <- cas_read_db_index(
+            db_connection = db,
+            ...
+          ) %>%
+            dplyr::slice_sample(n = sample) %>%
+            dplyr::pull("url")
+        } else {
+          current_id <- id
+          url_to_open_v <- cas_read_db_index(
+            db_connection = db,
+            ...
+          ) %>%
+            dplyr::filter(id == as.numeric(current_id)) %>%
+            dplyr::pull("url")
+        }
       } else {
         index_group_to_filter <- index_group
 
@@ -61,12 +71,22 @@ cas_browse <- function(index = FALSE,
           dplyr::pull("url")
       }
     } else {
-      url_to_open_v <- cas_read_db_contents_id(
-        db_connection = db,
-        ...
-      ) %>%
-        dplyr::slice_sample(n = sample) %>%
-        dplyr::pull("url")
+      if (is.null(id)==FALSE)  {
+        current_id = id
+        url_to_open_v <- cas_read_db_contents_id(
+          db_connection = db,
+          ...
+        ) %>%
+          dplyr::filter(id == current_id) %>%
+          dplyr::pull("url")       
+      } else {
+        url_to_open_v <- cas_read_db_contents_id(
+          db_connection = db,
+          ...
+        ) %>%
+          dplyr::slice_sample(n = sample) %>%
+          dplyr::pull("url")
+      }
     }
   }
 
