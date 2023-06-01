@@ -212,21 +212,33 @@ cas_extract_links <- function(id = NULL,
     return(invisible(NULL))
   }
 
-  if (write_to_db == FALSE) {
-    cas_disconnect_from_db(
-      db_connection = db,
-      ...
-    )
-    db <- duckdb::dbConnect(duckdb::duckdb(), ":memory:")
-  }
+  # if (write_to_db == FALSE) {
+  #   cas_disconnect_from_db(
+  #     db_connection = db,
+  #     ...
+  #   )
+  #   db <- duckdb::dbConnect(duckdb::duckdb(), ":memory:")
+  # }
 
   pb <- progress::progress_bar$new(total = nrow(local_files_df))
 
-  purrr::reduce(
+  new_links_df <- purrr::reduce(
     .x = purrr::transpose(local_files_df),
     .init = start_id,
-    .f = function(start_id, x) {
+    .f = function(new_links_df, x) {
       pb$tick()
+
+      if (is.data.frame(new_links_df)) {
+        start_id <- sum(max(new_links_df[["id"]]), 1)
+      } else {
+        start_id <- new_links_df
+        if (output_index == TRUE) {
+          new_links_df <- casdb_empty_index_id
+        } else {
+          new_links_df <- casdb_empty_contents_id
+        }
+      }
+
       if (file_format == "json") {
         temp <- jsonlite::read_json(path = x$path)
 
@@ -382,37 +394,18 @@ cas_extract_links <- function(id = NULL,
           dplyr::filter(nchar(url) < max_length)
       }
 
-      if (check_previous == FALSE & write_to_db == FALSE) {
-        if (output_index == TRUE) {
-          previous_links_df <- casdb_empty_index_id
-        } else {
-          previous_links_df <- casdb_empty_contents_id
-        }
-      } else {
-        if (output_index == TRUE) {
-          previous_links_df <- cas_read_db_index(
-            index_group = output_index_group,
-            db_connection = db,
-            disconnect_db = FALSE,
-            ...
+      if (check_previous == TRUE) {
+        links_df <- links_df %>%
+          dplyr::anti_join(
+            y = previous_links_df,
+            by = "url"
           ) %>%
-            dplyr::collect()
-        } else {
-          previous_links_df <- cas_read_db_contents_id(
-            db_connection = db,
-            disconnect_db = FALSE,
-            ...
+          dplyr::anti_join(
+            y = new_links_df,
+            by = "url"
           ) %>%
-            dplyr::collect()
-        }
+          dplyr::distinct(url, .keep_all = TRUE)
       }
-
-      links_df <- links_df %>%
-        dplyr::anti_join(
-          y = previous_links_df,
-          by = "url"
-        ) %>%
-        dplyr::distinct(url, .keep_all = TRUE)
 
       if (nrow(links_df) > 0) {
         end_id <- sum(start_id, nrow(links_df) - 1)
@@ -432,41 +425,50 @@ cas_extract_links <- function(id = NULL,
             "source_index_batch"
           )
 
-        if (output_index == TRUE) {
-          cas_write_db_index(
-            urls = links_to_store_df %>%
-              dplyr::select("id", "url") %>%
-              dplyr::mutate(index_group = output_index_group),
-            db_connection = db,
-            disconnect_db = FALSE,
-            ...
-          )
-        } else {
-          cas_write_db_contents_id(
-            contents_id_df = links_to_store_df,
-            db_connection = db,
-            disconnect_db = FALSE,
-            quiet = TRUE,
-            check_previous = FALSE,
-            ...
-          )
+        if (write_to_db == TRUE) {
+          if (output_index == TRUE) {
+            cas_write_db_index(
+              urls = links_to_store_df %>%
+                dplyr::select("id", "url") %>%
+                dplyr::mutate(index_group = output_index_group),
+              db_connection = db,
+              disconnect_db = FALSE,
+              ...
+            )
+          } else {
+            cas_write_db_contents_id(
+              contents_id_df = links_to_store_df,
+              db_connection = db,
+              disconnect_db = FALSE,
+              quiet = TRUE,
+              check_previous = FALSE,
+              ...
+            )
+          }
         }
 
-        sum(end_id, 1)
+        return(dplyr::bind_rows(
+          new_links_df,
+          links_to_store_df
+        ))
       } else {
-        start_id
+        if (nrow(new_links_df) > 0) {
+          return(new_links_df)
+        } else {
+          return(start_id)
+        }
       }
     }
   )
 
-  all_links_df <- cas_read_db_contents_id(
-    db_connection = db,
-    ...
-  )
+  # all_links_df <- cas_read_db_contents_id(
+  #   db_connection = db,
+  #   ...
+  # )
 
-  if (write_to_db == TRUE) {
-    usethis::ui_done("Urls added to {usethis::ui_field('contents_id')} table: {usethis::ui_value(nrow(all_links_df)-nrow(previous_links_df))}")
-  }
+  # if (write_to_db == TRUE) {
+  #   usethis::ui_done("Urls added to {usethis::ui_field('contents_id')} table: {usethis::ui_value(nrow(all_links_df)-nrow(previous_links_df))}")
+  # }
 
-  all_links_df
+  new_links_df
 }
