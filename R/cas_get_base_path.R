@@ -40,7 +40,7 @@ cas_get_base_path <- function(create_if_missing = NULL,
     }
   }
 
-  if (fs::file_exists(path) == FALSE) {
+  if (fs::dir_exists(path) == FALSE) {
     cli::cli_inform(message = c(
       i = "Folder for {.field {type}} files with file format {.field {file_format}} does not exist:",
       i = "{.path {path}}"
