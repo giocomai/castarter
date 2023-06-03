@@ -16,11 +16,10 @@ cas_get_corpus_path <- function(corpus_folder = "corpus",
   }
 
   fs::path(
-    cas_get_base_path(
+    cas_get_base_folder(
       create_if_missing = FALSE,
       ...
-    ) %>%
-      fs::path_dir(),
+    ),
     corpus_folder,
     file_format %>%
       stringr::str_replace(
