@@ -21,8 +21,6 @@ cas_generate_metadata <- function(corpus = NULL,
 
   metadata_l <- list()
 
-  metadata_l$website <- cas_get_options(...)$website
-
   corpus_distinct_date_df <- corpus_df %>%
     dplyr::distinct(date) %>%
     dplyr::collect()
