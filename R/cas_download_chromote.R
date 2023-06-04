@@ -36,7 +36,7 @@ cas_download_chromote <- function(download_df = NULL,
       db_connection = db,
       disconnect_db = FALSE,
       file_format = file_format,
-      download_again_if_status_is_not = download_again_if_status_is_not,
+      #download_again_if_status_is_not = download_again_if_status_is_not,
       ...
     ) %>%
       dplyr::collect()
@@ -93,7 +93,7 @@ cas_download_chromote <- function(download_df = NULL,
           id = x$id,
           batch = x$batch,
           datetime = Sys.time(),
-          status = NA_integer_,
+          status = 200L,
           size = fs::file_size(x$path)
         )
 
