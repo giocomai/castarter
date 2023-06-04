@@ -43,7 +43,7 @@ cas_browse <- function(index = FALSE,
   } else {
     if (index == TRUE) {
       if (is.null(index_group)) {
-        if (is.null(id) == FALSE) {
+        if (is.null(id)) {
           url_to_open_v <- cas_read_db_index(
             db_connection = db,
             ...
