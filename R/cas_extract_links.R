@@ -470,5 +470,13 @@ cas_extract_links <- function(id = NULL,
   #   usethis::ui_done("Urls added to {usethis::ui_field('contents_id')} table: {usethis::ui_value(nrow(all_links_df)-nrow(previous_links_df))}")
   # }
 
+  if (is.data.frame(new_links_df)==FALSE) {
+    if (output_index == TRUE) {
+      new_links_df <- casdb_empty_index_id
+    } else {
+      new_links_df <- casdb_empty_contents_id
+    }
+  }
+  
   new_links_df
 }
