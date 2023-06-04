@@ -27,7 +27,7 @@ settings (see example).}
 \item{quiet}{Defaults to FALSE. If set to TRUE, messages on number of lines
 added are not shown.}
 
-\item{check_previous}{Defaulst to TRUE. If set to FALSE, the given input is
+\item{check_previous}{Defaults to TRUE. If set to FALSE, the given input is
 stored in the database without checking if the same url had already been
 stored.}
 

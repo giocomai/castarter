@@ -7,7 +7,7 @@
 #'   \code{casdb_empty_contents_id}, or a character vector.
 #' @param quiet Defaults to FALSE. If set to TRUE, messages on number of lines
 #'   added are not shown.
-#' @param check_previous Defaulst to TRUE. If set to FALSE, the given input is
+#' @param check_previous Defaults to TRUE. If set to FALSE, the given input is
 #'   stored in the database without checking if the same url had already been
 #'   stored.
 #'
@@ -57,24 +57,23 @@ cas_write_db_contents_id <- function(contents_id_df,
   )
 
   if (check_previous == TRUE) {
-    # TODO check what happens when check_previous is actually set to TRUE
-    # the following is likely legacy code
 
     previous_contents_df <- cas_read_db_contents_id(
       ...,
       disconnect_db = FALSE
-    )
+    ) %>%
+      dplyr::collect()
 
     if (nrow(previous_contents_df) > 0) {
       links_to_add_df <- contents_id_df %>%
         dplyr::anti_join(
           y = previous_contents_df,
-          by = c("url", "source_index_id", "source_index_batch")
+          by = c("url")
         )
 
-      if (sum(is.element(links_to_add_df$id, previous_contents_df$id)) > 0) {
+      if (nrow(links_to_add_df) > 0) {
         if (quiet == FALSE) {
-          usethis::ui_info("Introducing new {usethis::ui_code('id')} to ensure unique values")
+          cli::cli_inform(c(i = "Introducing new {.value id} to ensure unique values"))
         }
         links_to_add_df$id <- seq(
           sum(max(previous_contents_df$id), 1),
