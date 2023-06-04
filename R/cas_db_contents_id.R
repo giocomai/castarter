@@ -105,11 +105,11 @@ cas_write_db_contents_id <- function(contents_id_df,
       ...
     )
     if (quiet == FALSE) {
-      usethis::ui_done("Urls added to {usethis::ui_field('contents_id')} table: {usethis::ui_value(links_to_add_n)}")
+      cli::cli_inform(c(v = "Urls added to {.field contents_id} table: {.val {links_to_add_n}}"))
     }
   } else {
     if (quiet == FALSE) {
-      usethis::ui_info("No new url added to {usethis::ui_field('contents_id')} table.")
+      cli::cli_inform(c(v = "No new url added to {.field contents_id} table."))
     }
   }
 
