@@ -43,20 +43,13 @@ cas_download_internal <- function(download_df = NULL,
   }
 
   if (nrow(download_df) == 0) {
-    usethis::ui_info("No new files or pages to download.")
+    cli::cli_inform(c(i = "No new files or pages to download."))
     return(invisible(NULL))
   } else {
     current_batch_folder <- fs::path_dir(path = download_df[["path"]][1])
     if (fs::file_exists(current_batch_folder) == FALSE) {
       fs::dir_create(path = current_batch_folder)
-      usethis::ui_info(
-        stringr::str_c(
-          "The folder",
-          usethis::ui_path(current_batch_folder),
-          "for the current download batch has been created.",
-          sep = " "
-        )
-      )
+      cli::cli_inform(c(i = "The folder {.path {current_batch_folder}} for the current download batch has been created."))
     }
   }
 
@@ -101,25 +94,12 @@ cas_download_internal <- function(download_df = NULL,
             disconnect_db = FALSE,
             ...
           )
+        } else {
+          cli::cli_alert_danger(c(x = raw))
+          cli::cli_warn("Error while downloading page with id {.val {x$id}} and url {.url {x$url}}. The process will proceed with other pages.")
         }
+        Sys.sleep(time = wait)
       }
-
-      info_df <- tibble::tibble(
-        id = x$id,
-        batch = x$batch,
-        datetime = Sys.time(),
-        status = 200L,
-        size = fs::file_size(x$path)
-      )
-
-      cas_write_to_db(
-        df = info_df,
-        table = stringr::str_c(type, "_", "download"),
-        db_connection = db,
-        disconnect_db = FALSE,
-        ...
-      )
-      Sys.sleep(time = wait)
     }
   )
 
