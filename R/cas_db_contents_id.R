@@ -57,7 +57,6 @@ cas_write_db_contents_id <- function(contents_id_df,
   )
 
   if (check_previous == TRUE) {
-
     previous_contents_df <- cas_read_db_contents_id(
       ...,
       disconnect_db = FALSE

@@ -51,12 +51,14 @@ cas_write_corpus <- function(corpus = NULL,
                              ...) {
   rlang::check_installed("arrow")
 
-  corpus_df <- cas_check_read_db_contents_data(corpus = NULL,
-                                               collect = TRUE,
-                                               db_connection = NULL,
-                                               db_folder = NULL,
-                                               ...)
-  
+  corpus_df <- cas_check_read_db_contents_data(
+    corpus = NULL,
+    collect = TRUE,
+    db_connection = NULL,
+    db_folder = NULL,
+    ...
+  )
+
   cas_options_l <- cas_get_options(...)
 
   if (is.null(path) == TRUE) {
@@ -79,8 +81,9 @@ cas_write_corpus <- function(corpus = NULL,
     corpus_df <- corpus_df %>%
       dplyr::group_by(id) %>%
       dplyr::mutate(doc_id = stringr::str_c(cas_options_l$website,
-                                            id,
-                                            sep = "-")) %>%
+        id,
+        sep = "-"
+      )) %>%
       dplyr::ungroup() %>%
       dplyr::rename(text = {{ text }}) %>%
       dplyr::select("doc_id", "text", dplyr::everything())

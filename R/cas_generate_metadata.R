@@ -42,7 +42,7 @@ cas_generate_metadata <- function(corpus = NULL,
   metadata_l$total_items <- corpus_df %>%
     dplyr::distinct(id) %>%
     dplyr::tally(name = "n") %>%
-    dplyr::collect() %>% 
+    dplyr::collect() %>%
     dplyr::pull(n)
 
   metadata_l$columns <- colnames(corpus_df)
