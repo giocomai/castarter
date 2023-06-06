@@ -347,32 +347,30 @@ cas_extract_html <- function(html_document,
       rvest::html_text2()
   } else if (is.null(custom_Xpath) == FALSE) {
     nodes <- html_document %>%
-      rvest::html_nodes(xpath = custom_Xpath)
+      rvest::html_elements(xpath = custom_Xpath)
     if (is.null(sub_element) == TRUE) {
       output <- nodes %>%
-        rvest::html_nodes(sub_element) %>%
         rvest::html_text2()
     } else {
       output <- output %>%
-        rvest::html_nodes(sub_element) %>%
+        rvest::html_elements(sub_element) %>%
         rvest::html_text2()
     }
   } else if (is.null(custom_CSSpath) == FALSE) {
     nodes <- html_document %>%
-      rvest::html_nodes(css = custom_CSSpath)
+      rvest::html_elements(css = custom_CSSpath)
     if (is.null(sub_element) == TRUE) {
       output <- nodes %>%
-        rvest::html_nodes(sub_element) %>%
         rvest::html_text2()
     } else {
       output <- nodes %>%
-        rvest::html_nodes(sub_element) %>%
+        rvest::html_elements(sub_element) %>%
         rvest::html_text2()
     }
   } else if (is.null(container_itemprop) == FALSE) {
     if (is.null(attribute)) {
       output <- html_document %>%
-        rvest::html_nodes(xpath = stringr::str_c(
+        rvest::html_elements(xpath = stringr::str_c(
           "//",
           container,
           "[@itemprop='",
@@ -381,7 +379,7 @@ cas_extract_html <- function(html_document,
         rvest::html_text2()
     } else {
       output <- html_document %>%
-        rvest::html_nodes(xpath = stringr::str_c(
+        rvest::html_elements(xpath = stringr::str_c(
           "//",
           container,
           "[@itemprop='",
@@ -394,11 +392,11 @@ cas_extract_html <- function(html_document,
       if (is.null(container_name) == TRUE) {
         if (is.null(container_property)) {
           output <- html_document %>%
-            rvest::html_nodes(container) %>%
+            rvest::html_elements(container) %>%
             rvest::html_text2()
         } else {
           output <- html_document %>%
-            rvest::html_nodes(xpath = stringr::str_c(
+            rvest::html_elements(xpath = stringr::str_c(
               "//",
               container,
               "[@property='",
@@ -409,7 +407,7 @@ cas_extract_html <- function(html_document,
       } else {
         if (is.null(attribute)) {
           output <- html_document %>%
-            rvest::html_nodes(xpath = stringr::str_c(
+            rvest::html_elements(xpath = stringr::str_c(
               "//",
               container,
               "[@name='",
@@ -417,7 +415,7 @@ cas_extract_html <- function(html_document,
             ))
         } else {
           output <- html_document %>%
-            rvest::html_nodes(xpath = stringr::str_c(
+            rvest::html_elements(xpath = stringr::str_c(
               "//",
               container,
               "[@name='",
@@ -428,21 +426,21 @@ cas_extract_html <- function(html_document,
       }
     } else {
       output <- html_document %>%
-        rvest::html_nodes(container) %>%
-        rvest::html_nodes(sub_element) %>%
+        rvest::html_elements(container) %>%
+        rvest::html_elements(sub_element) %>%
         rvest::html_text2()
     }
   } else if (is.null(container_class) == FALSE & is.null(attribute) == FALSE) {
     if (is.null(container_name)) {
       output <- html_document %>%
-        rvest::html_nodes(xpath = stringr::str_c(
+        rvest::html_elements(xpath = stringr::str_c(
           "//",
           container
         )) %>%
         rvest::html_attr(name = attribute)
     } else {
       output <- html_document %>%
-        rvest::html_nodes(xpath = stringr::str_c(
+        rvest::html_elements(xpath = stringr::str_c(
           "//",
           container,
           "[@name='",
@@ -453,7 +451,7 @@ cas_extract_html <- function(html_document,
   } else if (is.null(container_class) == FALSE & is.null(container_id) == TRUE) {
     if (is.null(sub_element) == TRUE) {
       output <- html_document %>%
-        rvest::html_nodes(xpath = stringr::str_c(
+        rvest::html_elements(xpath = stringr::str_c(
           "//",
           container,
           "[@class='",
@@ -462,26 +460,26 @@ cas_extract_html <- function(html_document,
         rvest::html_text2()
     } else {
       output <- html_document %>%
-        rvest::html_nodes(xpath = stringr::str_c(
+        rvest::html_elements(xpath = stringr::str_c(
           "//",
           container,
           "[@class='",
           container_class,
           "']"
         )) %>%
-        rvest::html_nodes(sub_element) %>%
+        rvest::html_elements(sub_element) %>%
         rvest::html_text2() %>%
         stringr::str_c(collapse = "\n")
     }
   } else if (is.null(container_class) == TRUE & is.null(container_id) == FALSE) {
     if (is.null(sub_element) == TRUE) {
       output <- html_document %>%
-        rvest::html_nodes(xpath = stringr::str_c("//", container, "[@id='", container_id, "']")) %>%
+        rvest::html_elements(xpath = stringr::str_c("//", container, "[@id='", container_id, "']")) %>%
         rvest::html_text2()
     } else {
       output <- html_document %>%
-        rvest::html_nodes(xpath = stringr::str_c("//", container, "[@id='", container_id, "']")) %>%
-        rvest::html_nodes(sub_element) %>%
+        rvest::html_elements(xpath = stringr::str_c("//", container, "[@id='", container_id, "']")) %>%
+        rvest::html_elements(sub_element) %>%
         rvest::html_text2()
     }
   }
