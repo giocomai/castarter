@@ -43,6 +43,27 @@ A list object with the given or previously set options.
 \description{
 Get key project parameters that determine the folder used for storing project files
 }
+\examples{
+# it is possible to set only a few options, and let others be added when calling functions
+cas_set_options(base_folder = fs::path(fs::path_temp(), "castarter_data"))
+cas_options_list <- cas_get_options()
+cas_options_list
+
+cas_options_list2 <- cas_get_options(project = "test_project")
+cas_options_list2
+
+cas_set_options(base_folder = fs::path(fs::path_temp(), "castarter_data"), 
+                project = "test_project",
+                website = "test_website")
+
+cas_options_list3 <- cas_get_options()
+cas_options_list3
+
+# Passing an argument overwrites the arguments set with options
+cas_options_list4 <- cas_get_options(website = "test_website4")
+cas_options_list4
+
+}
 \seealso{
 Other settings: 
 \code{\link{cas_set_options}()}
