@@ -14,6 +14,7 @@ cas_download_chromote <- function(download_df = NULL,
                                   db_connection = NULL,
                                   sample = FALSE,
                                   file_format = "html",
+                                  disconnect_db = FALSE,
                                   ...) {
   if (requireNamespace("chromote", quietly = TRUE) == FALSE) {
     cli::cli_abort("You need to install the {.pkg chromote} package to download pages with headless chrome/chromium.")
@@ -116,6 +117,6 @@ cas_download_chromote <- function(download_df = NULL,
 
   cas_disconnect_from_db(
     db_connection = db,
-    ...
+    disconnect_db = disconnect_db
   )
 }

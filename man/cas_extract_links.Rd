@@ -33,6 +33,7 @@ cas_extract_links(
   encoding = "UTF-8",
   reverse_order = FALSE,
   db_connection = NULL,
+  disconnect_db = FALSE,
   ...
 )
 }
@@ -107,6 +108,8 @@ has no substantive impact either way.}
 \item{db_connection}{Defaults to NULL. If NULL, uses local SQLite database.
 If given, must be a connection object or a list with relevant connection
 settings (see example).}
+
+\item{disconnect_db}{Defaults to TRUE. If FALSE, leaves the connection to database open.}
 
 \item{...}{Passed to \code{cas_get_db_file()}.}
 }

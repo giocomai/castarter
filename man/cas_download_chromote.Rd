@@ -13,6 +13,7 @@ cas_download_chromote(
   db_connection = NULL,
   sample = FALSE,
   file_format = "html",
+  disconnect_db = FALSE,
   ...
 )
 }
@@ -36,6 +37,8 @@ settings (see example).}
 \item{sample}{Defaults to FALSE. If TRUE, the download order is randomised.
 If a numeric is given, the download order is randomised and at most the
 given number of items is downloaded.}
+
+\item{disconnect_db}{Defaults to TRUE. If FALSE, leaves the connection to database open.}
 
 \item{...}{Passed to \code{cas_get_db_file()}.}
 }

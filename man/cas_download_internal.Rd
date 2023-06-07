@@ -11,6 +11,7 @@ cas_download_internal(
   overwrite_file = FALSE,
   wait = 1,
   db_connection = NULL,
+  disconnect_db = FALSE,
   sample = FALSE,
   file_format = "html",
   ...
@@ -32,6 +33,8 @@ page and the next. Can be increased to reduce server load, or can be set to
 \item{db_connection}{Defaults to NULL. If NULL, uses local SQLite database.
 If given, must be a connection object or a list with relevant connection
 settings (see example).}
+
+\item{disconnect_db}{Defaults to TRUE. If FALSE, leaves the connection to database open.}
 
 \item{sample}{Defaults to FALSE. If TRUE, the download order is randomised.
 If a numeric is given, the download order is randomised and at most the

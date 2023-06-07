@@ -26,6 +26,7 @@ cas_ia_check <- function(url = NULL,
                          pause_cap = 512,
                          pause_min = 4,
                          db_connection = NULL,
+                         disconnect_db = FALSE,
                          check_db = TRUE,
                          write_db = TRUE,
                          output_only_newly_checked = FALSE,
@@ -165,7 +166,7 @@ cas_ia_check <- function(url = NULL,
     if (output_only_newly_checked == TRUE) {
       cas_disconnect_from_db(
         db_connection = db,
-        ...
+        disconnect_db = disconnect_db
       )
       return(output_df)
     }

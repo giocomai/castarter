@@ -12,6 +12,7 @@ cas_delete_from_db(
   ask = TRUE,
   db_folder = NULL,
   db_connection = NULL,
+  disconnect_db = disconnect_db,
   ...
 )
 }
@@ -29,6 +30,8 @@ cas_delete_from_db(
 \item{db_connection}{Defaults to NULL. If NULL, uses local SQLite database.
 If given, must be a connection object or a list with relevant connection
 settings (see example).}
+
+\item{disconnect_db}{Defaults to TRUE. If FALSE, leaves the connection to database open.}
 
 \item{...}{Passed to \code{cas_get_db_file()}.}
 }

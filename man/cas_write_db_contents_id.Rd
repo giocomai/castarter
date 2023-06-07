@@ -8,7 +8,7 @@ cas_write_db_contents_id(
   contents_id_df,
   overwrite = FALSE,
   db_connection = NULL,
-  disconnect_db = TRUE,
+  disconnect_db = FALSE,
   quiet = FALSE,
   check_previous = TRUE,
   ...
@@ -23,6 +23,8 @@ cas_write_db_contents_id(
 \item{db_connection}{Defaults to NULL. If NULL, uses local SQLite database.
 If given, must be a connection object or a list with relevant connection
 settings (see example).}
+
+\item{disconnect_db}{Defaults to TRUE. If FALSE, leaves the connection to database open.}
 
 \item{quiet}{Defaults to FALSE. If set to TRUE, messages on number of lines
 added are not shown.}

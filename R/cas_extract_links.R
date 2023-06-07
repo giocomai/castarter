@@ -78,6 +78,7 @@ cas_extract_links <- function(id = NULL,
                               encoding = "UTF-8",
                               reverse_order = FALSE,
                               db_connection = NULL,
+                              disconnect_db = FALSE,
                               ...) {
   if (is.null(domain) == FALSE) {
     if (domain == "" | is.na(domain) == TRUE) {
@@ -207,7 +208,7 @@ cas_extract_links <- function(id = NULL,
   if (nrow(local_files_df) == 0) {
     cas_disconnect_from_db(
       db_connection = db,
-      ...
+      disconnect_db = disconnect_db
     )
     return(invisible(NULL))
   }

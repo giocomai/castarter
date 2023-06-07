@@ -201,8 +201,10 @@ cas_get_db_settings <- function() {
 #' db_file_location
 cas_get_db_file <- function(db_folder = NULL,
                             ...) {
-  db_folder <- cas_get_db_folder(path = db_folder,
-                                 ...)
+  db_folder <- cas_get_db_folder(
+    path = db_folder,
+    ...
+  )
 
   cas_options_l <- cas_get_options(...)
 
@@ -387,8 +389,10 @@ cas_connect_to_db <- function(db_connection = NULL,
   }
 
   if (is.null(db_connection)) {
-    db_file <- cas_get_db_file(db_type = db_type,
-                               ...)
+    db_file <- cas_get_db_file(
+      db_type = db_type,
+      ...
+    )
     if (fs::file_exists(db_file) == FALSE) {
       cas_create_db_folder(
         path = fs::dir_create(
@@ -566,6 +570,7 @@ cas_write_to_db <- function(df,
                             table,
                             overwrite = FALSE,
                             db_connection = NULL,
+                            disconnect_db = FALSE,
                             ...) {
   if (cas_check_use_db(...) == FALSE) {
     return(invisible(NULL))
@@ -616,7 +621,7 @@ cas_write_to_db <- function(df,
 
   cas_disconnect_from_db(
     db_connection = db,
-    ...
+    disconnect_db = disconnect_db
   )
 }
 
@@ -654,6 +659,7 @@ cas_write_to_db <- function(df,
 cas_read_from_db <- function(table,
                              db_folder = NULL,
                              db_connection = NULL,
+                             disconnect_db = FALSE,
                              ...) {
   if (cas_check_use_db(...) == FALSE) {
     usethis::ui_stop("Database not set. Set the database connection with `cas_set_options()` or pass database connection with the parameter `db_connection`.")
@@ -674,7 +680,7 @@ cas_read_from_db <- function(table,
 
   cas_disconnect_from_db(
     db_connection = db,
-    ...
+    disconnect_db = disconnect_db
   )
 
   output_df

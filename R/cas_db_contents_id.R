@@ -39,7 +39,7 @@
 cas_write_db_contents_id <- function(contents_id_df,
                                      overwrite = FALSE,
                                      db_connection = NULL,
-                                     disconnect_db = TRUE,
+                                     disconnect_db = FALSE,
                                      quiet = FALSE,
                                      check_previous = TRUE,
                                      ...) {
@@ -113,8 +113,7 @@ cas_write_db_contents_id <- function(contents_id_df,
 
   cas_disconnect_from_db(
     db_connection = db,
-    disconnect_db = disconnect_db,
-    ...
+    disconnect_db = disconnect_db
   )
 
   invisible(links_to_add_df)

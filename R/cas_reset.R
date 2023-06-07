@@ -14,6 +14,7 @@
 #' @examples
 cas_reset_db <- function(table,
                          db_connection = NULL,
+                         disconnect_db = FALSE,
                          db_folder = NULL,
                          ask = TRUE,
                          ...) {
@@ -41,7 +42,7 @@ cas_reset_db <- function(table,
 
   cas_disconnect_from_db(
     db_connection = db,
-    ...
+    disconnect_db = disconnect_db
   )
 }
 

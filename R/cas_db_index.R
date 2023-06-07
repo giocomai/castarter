@@ -32,7 +32,7 @@
 cas_write_db_index <- function(urls,
                                overwrite = FALSE,
                                db_connection = NULL,
-                               disconnect_db = TRUE,
+                               disconnect_db = FALSE,
                                ...) {
   if (is.data.frame(urls)) {
     if (identical(colnames(urls), colnames(casdb_empty_index_id)) & identical(sapply(urls, class), sapply(casdb_empty_index_id, class))) {
@@ -105,7 +105,7 @@ cas_write_db_index <- function(urls,
 
   cas_disconnect_from_db(
     db_connection = db,
-    ...
+    disconnect_db = disconnect_db
   )
 
   invisible(urls_to_add_df)

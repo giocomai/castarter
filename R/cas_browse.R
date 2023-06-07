@@ -17,6 +17,7 @@ cas_browse <- function(index = FALSE,
                        index_group = NULL,
                        file_format = "html",
                        sample = 1,
+                       disconnect_db = FALSE,
                        ...) {
   type <- dplyr::if_else(condition = index,
     true = "index",
@@ -91,8 +92,8 @@ cas_browse <- function(index = FALSE,
   }
 
   cas_disconnect_from_db(
-    db_connection = DB,
-    ...
+    db_connection = db,
+    disconnect_db = disconnect_db
   )
 
   browseURL(url_to_open_v)

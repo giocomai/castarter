@@ -17,6 +17,7 @@ cas_download_internal <- function(download_df = NULL,
                                   overwrite_file = FALSE,
                                   wait = 1,
                                   db_connection = NULL,
+                                  disconnect_db = FALSE,
                                   sample = FALSE,
                                   file_format = "html",
                                   ...) {
@@ -105,6 +106,6 @@ cas_download_internal <- function(download_df = NULL,
 
   cas_disconnect_from_db(
     db_connection = db,
-    ...
+    disconnect_db = disconnect_db
   )
 }

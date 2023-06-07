@@ -168,7 +168,7 @@ cas_extract <- function(extractors,
   if (write_to_db == FALSE) {
     cas_disconnect_from_db(
       db_connection = db,
-      ...
+      disconnect_db = TRUE
     )
 
     db <- duckdb::dbConnect(duckdb::duckdb(), ":memory:")

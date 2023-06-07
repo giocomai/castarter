@@ -9,6 +9,7 @@ cas_export_tables(
   file_format = "csv.gz",
   tables = NULL,
   db_connection = NULL,
+  disconnect_db = FALSE,
   db_folder = NULL,
   ...
 )
@@ -23,6 +24,8 @@ cas_export_tables(
 \item{db_connection}{Defaults to NULL. If NULL, uses local SQLite database.
 If given, must be a connection object or a list with relevant connection
 settings (see example).}
+
+\item{disconnect_db}{Defaults to TRUE. If FALSE, leaves the connection to database open.}
 
 \item{...}{Passed to \code{cas_get_db_file()}.}
 }

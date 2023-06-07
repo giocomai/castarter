@@ -4,7 +4,13 @@
 \alias{cas_read_from_db}
 \title{Reads data from local database}
 \usage{
-cas_read_from_db(table, db_folder = NULL, db_connection = NULL, ...)
+cas_read_from_db(
+  table,
+  db_folder = NULL,
+  db_connection = NULL,
+  disconnect_db = FALSE,
+  ...
+)
 }
 \arguments{
 \item{table}{Name of the table. See readme for details.}
@@ -12,6 +18,8 @@ cas_read_from_db(table, db_folder = NULL, db_connection = NULL, ...)
 \item{db_connection}{Defaults to NULL. If NULL, uses local SQLite database.
 If given, must be a connection object or a list with relevant connection
 settings (see example).}
+
+\item{disconnect_db}{Defaults to TRUE. If FALSE, leaves the connection to database open.}
 
 \item{...}{Passed to \code{cas_get_db_file()}.}
 }

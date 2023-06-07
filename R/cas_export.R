@@ -12,6 +12,7 @@ cas_export_tables <- function(path = NULL,
                               file_format = "csv.gz",
                               tables = NULL,
                               db_connection = NULL,
+                              disconnect_db = FALSE,
                               db_folder = NULL,
                               ...) {
   if (cas_check_use_db(...) == FALSE) {
@@ -79,7 +80,7 @@ cas_export_tables <- function(path = NULL,
 
   cas_disconnect_from_db(
     db_connection = db,
-    ...
+    disconnect_db = disconnect_db
   )
 
   cli::cli_inform(c(

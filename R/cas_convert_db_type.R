@@ -9,6 +9,7 @@
 #' @examples
 cas_convert_db_type <- function(source_db_type,
                                 destination_db_type,
+                                disconnect_db = FALSE,
                                 ...) {
   if (fs::file_exists(cas_get_db_file(db_type = source_db_type)) == FALSE) {
     cli::cli_abort(c("Source database does not exist or cannot be found.",
@@ -51,11 +52,11 @@ cas_convert_db_type <- function(source_db_type,
 
   cas_disconnect_from_db(
     db_connection = source_db,
-    ...
+    disconnect_db = disconnect_db
   )
 
   cas_disconnect_from_db(
     db_connection = destination_db,
-    ...
+    disconnect_db = disconnect_db
   )
 }

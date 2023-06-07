@@ -22,6 +22,7 @@ cas_download_httr <- function(download_df = NULL,
                               terminate_on = 404,
                               retry_times = 16,
                               db_connection = NULL,
+                              disconnect_db = FALSE,
                               sample = FALSE,
                               file_format = "html",
                               user_agent = NULL,
@@ -137,6 +138,6 @@ cas_download_httr <- function(download_df = NULL,
 
   cas_disconnect_from_db(
     db_connection = db,
-    ...
+    disconnect_db = disconnect_db
   )
 }

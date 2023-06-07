@@ -12,6 +12,7 @@ cas_ia_check(
   pause_cap = 512,
   pause_min = 4,
   db_connection = NULL,
+  disconnect_db = FALSE,
   check_db = TRUE,
   write_db = TRUE,
   output_only_newly_checked = FALSE,

@@ -12,6 +12,7 @@ cas_browse(
   index_group = NULL,
   file_format = "html",
   sample = 1,
+  disconnect_db = FALSE,
   ...
 )
 }

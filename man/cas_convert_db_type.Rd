@@ -4,7 +4,12 @@
 \alias{cas_convert_db_type}
 \title{Convert database type, e.g. from DuckDB to SQLite}
 \usage{
-cas_convert_db_type(source_db_type, destination_db_type, ...)
+cas_convert_db_type(
+  source_db_type,
+  destination_db_type,
+  disconnect_db = FALSE,
+  ...
+)
 }
 \arguments{
 \item{source_db_type}{A database type, such as "DuckDB" or "SQLite". Must be declared explicitly.}

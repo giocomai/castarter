@@ -4,7 +4,14 @@
 \alias{cas_reset_db}
 \title{Delete a specific table from database}
 \usage{
-cas_reset_db(table, db_connection = NULL, db_folder = NULL, ask = TRUE, ...)
+cas_reset_db(
+  table,
+  db_connection = NULL,
+  disconnect_db = FALSE,
+  db_folder = NULL,
+  ask = TRUE,
+  ...
+)
 }
 \arguments{
 \item{table}{Name of the table. Yuu can use
@@ -15,6 +22,8 @@ contents and structure of each table.}
 \item{db_connection}{Defaults to NULL. If NULL, uses local SQLite database.
 If given, must be a connection object or a list with relevant connection
 settings (see example).}
+
+\item{disconnect_db}{Defaults to TRUE. If FALSE, leaves the connection to database open.}
 
 \item{ask}{Logical, defaults to TRUE. If set to FALSE, the relevant table
 will be deleted without asking for confirmation from the user.}
