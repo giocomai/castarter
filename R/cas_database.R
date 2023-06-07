@@ -201,7 +201,8 @@ cas_get_db_settings <- function() {
 #' db_file_location
 cas_get_db_file <- function(db_folder = NULL,
                             ...) {
-  db_folder <- cas_get_db_folder(path = db_folder)
+  db_folder <- cas_get_db_folder(path = db_folder,
+                                 ...)
 
   cas_options_l <- cas_get_options(...)
 
@@ -386,7 +387,8 @@ cas_connect_to_db <- function(db_connection = NULL,
   }
 
   if (is.null(db_connection)) {
-    db_file <- cas_get_db_file(db_type = db_type)
+    db_file <- cas_get_db_file(db_type = db_type,
+                               ...)
     if (fs::file_exists(db_file) == FALSE) {
       cas_create_db_folder(
         path = fs::dir_create(
