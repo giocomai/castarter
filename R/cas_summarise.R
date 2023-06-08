@@ -1,12 +1,26 @@
-#' Summarise for a given time period word counts, typically calculatd with `cas_count()`
+#' Summarise for a given time period word counts, typically calculatd with
+#' `cas_count()`
 #'
-#' @param count_df A data frame. Must include at least a column with a date or date-time column and a column with number of occurrences for the given time.
-#' @param date Defaults to `date`. Unquoted name of a column having either date or date-time as class.
-#' @param n Unquoted to `n`.  Unquoted name of a column having number of occurrences per time unit.
-#' @param period Defaults to NULL. A string describing the time unit to be used for summarising. Possible values include "year", "quarter", "month", "day", "hour", "minute", "second", "millisecond".
-#' @param f Defaults to `mean`. Function to be applied over n for all the values in a given time period. Common alterantives would be `mean` or `median`.
-#' @param auto_convert Defaults to FALSE. If FALSE, the date column is returned using the same format as the input; the minimun vale in the given group is used for reference (e.g. all values for January 2022 are summarised as 2021-01-01 it the data were originally given as dates.). If TRUE, it tries to adapt the output to the most intuitive correspondent type; for year, a numeric column with only the year number, for quarter in the format 2022.1, for month in the format 2022-01.
-#'
+#' @param count_df A data frame. Must include at least a column with a date or
+#'   date-time column and a column with number of occurrences for the given
+#'   time.
+#' @param date Defaults to `date`. Unquoted name of a column having either date
+#'   or date-time as class.
+#' @param n Unquoted to `n`.  Unquoted name of a column having number of
+#'   occurrences per time unit.
+#' @param period Defaults to NULL. A string describing the time unit to be used
+#'   for summarising. Possible values include "year", "quarter", "month", "day",
+#'   "hour", "minute", "second", "millisecond".
+#' @param f Defaults to `mean`. Function to be applied over n for all the values
+#'   in a given time period. Common alterantives would be `mean` or `median`.
+#' @param auto_convert Defaults to FALSE. If FALSE, the date column is returned
+#'   using the same format as the input; the minimun vale in the given group is
+#'   used for reference (e.g. all values for January 2022 are summarised as
+#'   2021-01-01 it the data were originally given as dates.). If TRUE, it tries
+#'   to adapt the output to the most intuitive correspondent type; for year, a
+#'   numeric column with only the year number, for quarter in the format 2022.1,
+#'   for month in the format 2022-01.
+#' 
 #' @inheritParams slider::slide_period
 #'
 #' @return A data frame with two columns: the name of the period, and the same name originally used for `n`.
@@ -17,7 +31,7 @@
 #' # this assumes dates are provided in a column called date
 #' corpus_df %>%
 #'   cas_count(
-#'     string = "example",
+#'     pattern = "example",
 #'     group_by = date
 #'   ) %>%
 #'   cas_summarise(period = "year")
@@ -26,7 +40,7 @@
 cas_summarise <- function(count_df,
                           date_column_name = date,
                           n_column_name = n,
-                          string_column_name = string,
+                          pattern_column_name = pattern,
                           period = NULL,
                           f = mean,
                           every = 1L,
@@ -36,7 +50,7 @@ cas_summarise <- function(count_df,
                           auto_convert = FALSE) {
   if (is.null(period)) {
     summarised <- count_df %>%
-      dplyr::group_by({{ string_column_name }}, .drop = TRUE) %>%
+      dplyr::group_by({{ pattern_column_name }}, .drop = TRUE) %>%
       dplyr::mutate({{ n_column_name }} := slider::slide_index_dbl(
         .x = {{ n_column_name }},
         .i = {{ date_column_name }},
@@ -52,7 +66,7 @@ cas_summarise <- function(count_df,
         x = {{ date_column_name }},
         unit = period
       )) %>%
-      dplyr::group_by({{ string_column_name }}, {{ date_column_name }}) %>%
+      dplyr::group_by({{ pattern_column_name }}, {{ date_column_name }}) %>%
       dplyr::summarise({{ n_column_name }} := sum({{ n_column_name }}, na.rm = TRUE),
         .groups = "drop_last"
       ) %>%
@@ -71,7 +85,7 @@ cas_summarise <- function(count_df,
           to = max({{ date_column_name }}),
           by = period
         ),
-        {{ string_column_name }},
+        {{ pattern_column_name }},
         fill = rlang::list2({{ n_column_name }} := 0)
       )
   }
@@ -81,7 +95,7 @@ cas_summarise <- function(count_df,
       summarised %>%
         dplyr::transmute(
           {{ date_column_name }} := lubridate::year({{ date_column_name }}),
-          {{ string_column_name }},
+          {{ pattern_column_name }},
           {{ n_column_name }}
         )
     } else if (period == "quarter") {
@@ -92,24 +106,24 @@ cas_summarise <- function(count_df,
             with_year = TRUE
           ) %>%
             as.character(),
-          {{ string_column_name }},
+          {{ pattern_column_name }},
           {{ n_column_name }}
         )
     } else if (period == "month") {
       summarised %>%
         dplyr::transmute(
           {{ date_column_name }} := stringr::str_extract(
-            string = {{ date_column_name }},
+            pattern = {{ date_column_name }},
             pattern = "[:digit:]{4}-[:digit:]{2}"
           ),
-          {{ string_column_name }},
+          {{ pattern_column_name }},
           {{ n_column_name }}
         )
     } else if (period == "day") {
       summarised %>%
         dplyr::transmute(
           {{ date_column_name }} := as.Date({{ date_column_name }}),
-          {{ string_column_name }},
+          {{ pattern_column_name }},
           {{ n_column_name }}
         )
     } else {

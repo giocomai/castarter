@@ -2,13 +2,14 @@
 % Please edit documentation in R/cas_summarise.R
 \name{cas_summarise}
 \alias{cas_summarise}
-\title{Summarise for a given time period word counts, typically calculatd with \code{cas_count()}}
+\title{Summarise for a given time period word counts, typically calculatd with
+\code{cas_count()}}
 \usage{
 cas_summarise(
   count_df,
   date_column_name = date,
   n_column_name = n,
-  string_column_name = string,
+  pattern_column_name = pattern,
   period = NULL,
   f = mean,
   every = 1L,
@@ -19,11 +20,16 @@ cas_summarise(
 )
 }
 \arguments{
-\item{count_df}{A data frame. Must include at least a column with a date or date-time column and a column with number of occurrences for the given time.}
+\item{count_df}{A data frame. Must include at least a column with a date or
+date-time column and a column with number of occurrences for the given
+time.}
 
-\item{period}{Defaults to NULL. A string describing the time unit to be used for summarising. Possible values include "year", "quarter", "month", "day", "hour", "minute", "second", "millisecond".}
+\item{period}{Defaults to NULL. A string describing the time unit to be used
+for summarising. Possible values include "year", "quarter", "month", "day",
+"hour", "minute", "second", "millisecond".}
 
-\item{f}{Defaults to \code{mean}. Function to be applied over n for all the values in a given time period. Common alterantives would be \code{mean} or \code{median}.}
+\item{f}{Defaults to \code{mean}. Function to be applied over n for all the values
+in a given time period. Common alterantives would be \code{mean} or \code{median}.}
 
 \item{every}{\verb{[positive integer(1)]}
 
@@ -45,24 +51,33 @@ allows you to "look forward" from the current element if used as the
 Should the function be evaluated on complete windows only? If \code{FALSE},
 the default, then partial computations will be allowed.}
 
-\item{auto_convert}{Defaults to FALSE. If FALSE, the date column is returned using the same format as the input; the minimun vale in the given group is used for reference (e.g. all values for January 2022 are summarised as 2021-01-01 it the data were originally given as dates.). If TRUE, it tries to adapt the output to the most intuitive correspondent type; for year, a numeric column with only the year number, for quarter in the format 2022.1, for month in the format 2022-01.}
+\item{auto_convert}{Defaults to FALSE. If FALSE, the date column is returned
+using the same format as the input; the minimun vale in the given group is
+used for reference (e.g. all values for January 2022 are summarised as
+2021-01-01 it the data were originally given as dates.). If TRUE, it tries
+to adapt the output to the most intuitive correspondent type; for year, a
+numeric column with only the year number, for quarter in the format 2022.1,
+for month in the format 2022-01.}
 
-\item{date}{Defaults to \code{date}. Unquoted name of a column having either date or date-time as class.}
+\item{date}{Defaults to \code{date}. Unquoted name of a column having either date
+or date-time as class.}
 
-\item{n}{Unquoted to \code{n}.  Unquoted name of a column having number of occurrences per time unit.}
+\item{n}{Unquoted to \code{n}.  Unquoted name of a column having number of
+occurrences per time unit.}
 }
 \value{
 A data frame with two columns: the name of the period, and the same name originally used for \code{n}.
 }
 \description{
-Summarise for a given time period word counts, typically calculatd with \code{cas_count()}
+Summarise for a given time period word counts, typically calculatd with
+\code{cas_count()}
 }
 \examples{
 \dontrun{
 # this assumes dates are provided in a column called date
 corpus_df \%>\%
   cas_count(
-    string = "example",
+    pattern = "example",
     group_by = date
   ) \%>\%
   cas_summarise(period = "year")
