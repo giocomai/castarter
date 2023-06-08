@@ -116,7 +116,7 @@ cas_kwic_single_pattern <- function(corpus,
     if (regex == TRUE) {
       corpus <- corpus %>%
         dplyr::filter(stringr::str_detect(
-          pattern = {{ text }},
+          string = {{ text }},
           pattern = stringr::regex(
             pattern = pattern,
             ignore_case = ignore_case
