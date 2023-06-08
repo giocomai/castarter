@@ -113,7 +113,7 @@ cas_summarise <- function(count_df,
       summarised %>%
         dplyr::transmute(
           {{ date_column_name }} := stringr::str_extract(
-            pattern = {{ date_column_name }},
+            string = {{ date_column_name }},
             pattern = "[:digit:]{4}-[:digit:]{2}"
           ),
           {{ pattern_column_name }},
