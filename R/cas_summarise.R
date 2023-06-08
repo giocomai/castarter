@@ -20,7 +20,7 @@
 #'   to adapt the output to the most intuitive correspondent type; for year, a
 #'   numeric column with only the year number, for quarter in the format 2022.1,
 #'   for month in the format 2022-01.
-#' 
+#'
 #' @inheritParams slider::slide_period
 #'
 #' @return A data frame with two columns: the name of the period, and the same name originally used for `n`.
