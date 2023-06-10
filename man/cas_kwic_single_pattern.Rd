@@ -13,7 +13,7 @@ cas_kwic_single_pattern(
   same_sentence = TRUE,
   period_at_end_of_sentence = TRUE,
   ignore_case = TRUE,
-  regex = FALSE,
+  regex = TRUE,
   full_words_only = FALSE,
   full_word_with_partial_match = TRUE,
   pattern_column_name = pattern
@@ -43,13 +43,15 @@ include only words found in the sentence including the matched pattern.}
 
 \item{ignore_case}{Defaults to TRUE.}
 
+\item{regex}{Defaults to TRUE. Treat pattern as regex.}
+
 \item{full_words_only}{Defaults to FALSE. If FALSE, pattern is counted even
 when it is found in the middle of a word (e.g. if FALSE, "ratio" would be
 counted as match in the word "irrational").}
 
 \item{full_word_with_partial_match}{Defaults to TRUE. If TRUE, if there is a
 partial match of the pattern, the \code{pattern} column still includes the full
-word where the match has been found. and Relevant only when
+word where the match has been found. Relevant only when
 \code{full_words_only} is set to FALSE.}
 
 \item{pattern_column_name}{Defaults to 'pattern'. The unquoted name of the

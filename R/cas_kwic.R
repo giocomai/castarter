@@ -16,12 +16,13 @@
 #'   (".") is always included at the end of a sentence. Relevant only if
 #'   `same_sentence` is set to TRUE.
 #' @param ignore_case Defaults to TRUE.
+#' @param regex Defaults to TRUE. Treat pattern as regex.
 #' @param full_words_only Defaults to FALSE. If FALSE, pattern is counted even
 #'   when it is found in the middle of a word (e.g. if FALSE, "ratio" would be
 #'   counted as match in the word "irrational").
 #' @param full_word_with_partial_match Defaults to TRUE. If TRUE, if there is a
 #'   partial match of the pattern, the `pattern` column still includes the full
-#'   word where the match has been found. and Relevant only when
+#'   word where the match has been found. Relevant only when
 #'   `full_words_only` is set to FALSE.
 #' @param pattern_column_name Defaults to 'pattern'. The unquoted name of the
 #'   column to be used for the word in the output.
@@ -45,7 +46,7 @@ cas_kwic <- function(corpus,
                      same_sentence = TRUE,
                      period_at_end_of_sentence = TRUE,
                      ignore_case = TRUE,
-                     regex = FALSE,
+                     regex = TRUE,
                      full_words_only = FALSE,
                      full_word_with_partial_match = TRUE,
                      pattern_column_name = pattern) {
@@ -94,7 +95,7 @@ cas_kwic_single_pattern <- function(corpus,
                                     same_sentence = TRUE,
                                     period_at_end_of_sentence = TRUE,
                                     ignore_case = TRUE,
-                                    regex = FALSE,
+                                    regex = TRUE,
                                     full_words_only = FALSE,
                                     full_word_with_partial_match = TRUE,
                                     pattern_column_name = pattern) {
