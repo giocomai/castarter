@@ -19,15 +19,19 @@ cas_count_total_words(
 
 \item{pattern}{Defaults to pattern commonly used to count words.}
 
-\item{text}{Defaults to text. The unquoted name of the column of the corpus data frame to be used for matching.}
+\item{text}{Defaults to \code{text}. The unquoted name of the column of the corpus
+data frame to be used for matching.}
 
-\item{group_by}{Defaults to NULL. If given, the unquoted name of the column to be used for grouping (e.g. date, or doc_id, or source, etc.)}
+\item{group_by}{Defaults to NULL. If given, the unquoted name of the column
+to be used for grouping (e.g. date, or doc_id, or source, etc.)}
 
 \item{ignore_case}{Defaults to TRUE.}
 
-\item{n_column_name}{Defaults to 'n'. The unquoted name of the column to be used for the count in the output.}
+\item{n_column_name}{Defaults to \code{n}. The unquoted name of the column to be
+used for the count in the output.}
 
-\item{locale}{Locale to be used when ignore_case is set to TRUE. Passed to \code{stringr::str_to_lower}, defaults to "en".}
+\item{locale}{Locale to be used when ignore_case is set to TRUE. Passed to
+\code{stringr::str_to_lower}, defaults to "en".}
 }
 \description{
 Count total words in a dataset

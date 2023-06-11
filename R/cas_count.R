@@ -1,15 +1,24 @@
 #' Count strings in a corpus
 #'
 #' @param corpus A textual corpus as a data frame.
-#' @param pattern A character vector of one or more words or strings to be counted.
-#' @param text Defaults to text. The unquoted name of the column of the corpus data frame to be used for matching.
-#' @param group_by Defaults to NULL. If given, the unquoted name of the column to be used for grouping (e.g. date, or doc_id, or source, etc.)
+#' @param pattern A character vector of one or more words or strings to be
+#'   counted.
+#' @param text Defaults to `text`. The unquoted name of the column of the corpus
+#'   data frame to be used for matching.
+#' @param group_by Defaults to NULL. If given, the unquoted name of the column
+#'   to be used for grouping (e.g. date, or doc_id, or source, etc.)
 #' @param ignore_case Defaults to TRUE.
-#' @param drop_na Defaults to TRUE. If TRUE, all rows where either date or text is NA are removed before further processing.
-#' @param full_words_only Defaults to FALSE. If FALSE, string is counted even when the it is found in the middle of a word (e.g. if FALSE, "ratio" would be counted as match in the word "irrational").
-#' @param locale Locale to be used when ignore_case is set to TRUE. Passed to `stringr::str_to_lower`, defaults to "en".
-#' @param n_column_name Defaults to 'n'. The unquoted name of the column to be used for the count in the output.
-#' @param string_column_name Defaults to 'word'. The unquoted name of the column to be used for the word in the output (if `include_string` is set to TRUE, as per default).
+#' @param drop_na Defaults to TRUE. If TRUE, all rows where either `text` or
+#'   `group_by` column is NA are removed before further processing.
+#' @param full_words_only Defaults to FALSE. If FALSE, string is counted even
+#'   when the it is found in the middle of a word (e.g. if FALSE, "ratio" would
+#'   be counted as match in the word "irrational").
+#' @param locale Locale to be used when ignore_case is set to TRUE. Passed to
+#'   `stringr::str_to_lower`, defaults to "en".
+#' @param n_column_name Defaults to `n`. The unquoted name of the column to be
+#'   used for the count in the output.
+#' @param pattern_column_name Defaults to `word`. The unquoted name of the
+#'   column to be used for the word in the output.
 #'
 #' @return A data frame
 #' @export
@@ -24,7 +33,7 @@
 #'   n_column_name = n
 #' )
 #' }
-#'
+#' 
 cas_count <- function(corpus,
                       pattern,
                       text = text,

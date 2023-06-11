@@ -21,23 +21,32 @@ cas_count(
 \arguments{
 \item{corpus}{A textual corpus as a data frame.}
 
-\item{pattern}{A character vector of one or more words or strings to be counted.}
+\item{pattern}{A character vector of one or more words or strings to be
+counted.}
 
-\item{text}{Defaults to text. The unquoted name of the column of the corpus data frame to be used for matching.}
+\item{text}{Defaults to \code{text}. The unquoted name of the column of the corpus
+data frame to be used for matching.}
 
-\item{group_by}{Defaults to NULL. If given, the unquoted name of the column to be used for grouping (e.g. date, or doc_id, or source, etc.)}
+\item{group_by}{Defaults to NULL. If given, the unquoted name of the column
+to be used for grouping (e.g. date, or doc_id, or source, etc.)}
 
 \item{ignore_case}{Defaults to TRUE.}
 
-\item{drop_na}{Defaults to TRUE. If TRUE, all rows where either date or text is NA are removed before further processing.}
+\item{drop_na}{Defaults to TRUE. If TRUE, all rows where either \code{text} or
+\code{group_by} column is NA are removed before further processing.}
 
-\item{full_words_only}{Defaults to FALSE. If FALSE, string is counted even when the it is found in the middle of a word (e.g. if FALSE, "ratio" would be counted as match in the word "irrational").}
+\item{full_words_only}{Defaults to FALSE. If FALSE, string is counted even
+when the it is found in the middle of a word (e.g. if FALSE, "ratio" would
+be counted as match in the word "irrational").}
 
-\item{n_column_name}{Defaults to 'n'. The unquoted name of the column to be used for the count in the output.}
+\item{pattern_column_name}{Defaults to \code{word}. The unquoted name of the
+column to be used for the word in the output.}
 
-\item{locale}{Locale to be used when ignore_case is set to TRUE. Passed to \code{stringr::str_to_lower}, defaults to "en".}
+\item{n_column_name}{Defaults to \code{n}. The unquoted name of the column to be
+used for the count in the output.}
 
-\item{string_column_name}{Defaults to 'word'. The unquoted name of the column to be used for the word in the output (if \code{include_string} is set to TRUE, as per default).}
+\item{locale}{Locale to be used when ignore_case is set to TRUE. Passed to
+\code{stringr::str_to_lower}, defaults to "en".}
 }
 \value{
 A data frame
