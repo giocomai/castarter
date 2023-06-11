@@ -6,16 +6,17 @@
 \usage{
 cas_write_corpus(
   corpus = NULL,
-  tif_compliant = TRUE,
-  arrange_by = id,
+  arrange_by = NULL,
   to_lower = FALSE,
+  drop_na = TRUE,
   date = date,
   text = text,
-  path = NULL,
+  tif_compliant = TRUE,
   file_format = "parquet",
   partition = NULL,
   token = "full_text",
   corpus_folder = "corpus",
+  path = NULL,
   db_connection = NULL,
   db_folder = NULL,
   ...
@@ -26,13 +27,15 @@ cas_write_corpus(
 website with \code{cas_read_db_contents_data()}. If given, it is expected to be
 a corresponding data frame.}
 
-\item{tif_compliant}{Defaults to TRUE. If TRUE, it ensures that the first
-column is a character vector named "doc_id" and that the second column is a
-character vector named "text". See \url{https://docs.ropensci.org/tif/} for
-details}
+\item{arrange_by}{Defaults to NULL. If given, expected to be an unquoted
+column name, such as \code{date} or \code{id}.}
 
 \item{to_lower}{Defaults to FALSE. Whether to convert tokens to lowercase.
 Passed to \code{tidytext} if token is not \code{full_text}.}
+
+\item{drop_na}{Defaults to TRUE. If TRUE, items that have NA in their \code{text}
+or \code{date} columns are dropped. This is often useful, as in many cases these
+may have other issues and/or cause inconsistencies in further analyses.}
 
 \item{date}{Unquoted date column, defaults to \code{date}.}
 
@@ -40,8 +43,10 @@ Passed to \code{tidytext} if token is not \code{full_text}.}
 set to TRUE, it will be renamed to "text" even if originally it had a
 different name.}
 
-\item{path}{Defaults to NULL. If NULL, path is set to the
-project/website/export/dataset/file_format folder.}
+\item{tif_compliant}{Defaults to TRUE. If TRUE, it ensures that the first
+column is a character vector named "doc_id" and that the second column is a
+character vector named "text". See \url{https://docs.ropensci.org/tif/} for
+details}
 
 \item{file_format}{Defaults to "parquet". Currently, other options are not
 implemented.}
@@ -58,14 +63,14 @@ column. If different from \code{full_text}, it is passed to
 include "words", "sentences", and "paragraphs". See
 \code{?tidytext::unnest_tokens()} for details.}
 
+\item{path}{Defaults to NULL. If NULL, path is set to the
+project/website/export/dataset/file_format folder.}
+
 \item{db_connection}{Defaults to NULL. If NULL, uses local SQLite database.
 If given, must be a connection object or a list with relevant connection
 settings (see example).}
 
 \item{...}{Passed to \code{cas_get_db_file()}.}
-
-\item{arrange_by_date}{Defaults to TRUE. If TRUE, arranges rows by date,
-irrespective of id.}
 }
 \description{
 Export the textual dataset for the current website

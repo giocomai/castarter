@@ -7,8 +7,8 @@
 #'   column is a character vector named "doc_id" and that the second column is a
 #'   character vector named "text". See \url{https://docs.ropensci.org/tif/} for
 #'   details
-#' @param arrange_by_date Defaults to TRUE. If TRUE, arranges rows by date,
-#'   irrespective of id.
+#' @param arrange_by Defaults to NULL. If given, expected to be an unquoted
+#'   column name, such as `date` or `id`.
 #' @param text Unquoted text column, defaults to `text`. If `tif_compliant` is
 #'   set to TRUE, it will be renamed to "text" even if originally it had a
 #'   different name.
@@ -29,6 +29,9 @@
 #'   `?tidytext::unnest_tokens()` for details.
 #' @param to_lower Defaults to FALSE. Whether to convert tokens to lowercase.
 #'   Passed to `tidytext` if token is not `full_text`.
+#' @param drop_na Defaults to TRUE. If TRUE, items that have NA in their `text`
+#'   or `date` columns are dropped. This is often useful, as in many cases these
+#'   may have other issues and/or cause inconsistencies in further analyses.
 #' @inheritParams cas_read_from_db
 #'
 #' @return
@@ -36,16 +39,17 @@
 #'
 #' @examples
 cas_write_corpus <- function(corpus = NULL,
-                             tif_compliant = TRUE,
-                             arrange_by = id,
+                             arrange_by = NULL,
                              to_lower = FALSE,
+                             drop_na = TRUE,
                              date = date,
                              text = text,
-                             path = NULL,
+                             tif_compliant = TRUE,
                              file_format = "parquet",
                              partition = NULL,
                              token = "full_text",
                              corpus_folder = "corpus",
+                             path = NULL,
                              db_connection = NULL,
                              db_folder = NULL,
                              ...) {
@@ -58,6 +62,11 @@ cas_write_corpus <- function(corpus = NULL,
     db_folder = NULL,
     ...
   )
+
+  if (drop_na == TRUE) {
+    corpus_df <- corpus_df %>%
+      dplyr::filter(is.na({{ text }}) == FALSE, is.na({{ date }}) == FALSE)
+  }
 
   cas_options_l <- cas_get_options(...)
 
@@ -89,9 +98,10 @@ cas_write_corpus <- function(corpus = NULL,
       dplyr::select("doc_id", "text", dplyr::everything())
   }
 
-
-  corpus_df <- corpus_df %>%
-    dplyr::arrange({{ arrange_by }})
+  if (is.null(arrange_by) == FALSE) {
+    corpus_df <- corpus_df %>%
+      dplyr::arrange({{ arrange_by }})
+  }
 
   if (token == "full_text") {
     # do nothing
