@@ -159,6 +159,34 @@ cas_reset_download_index <- function(batch = NULL,
         )
       }
     }
+  } else {
+    cas_delete_from_db(
+      table = "index_download",
+      batch = batch,
+      ask = ask,
+      db_folder = db_folder,
+      db_connection = db_connection,
+      ...
+    )
+    index_folder_path <- cas_get_base_path(
+      index = TRUE,
+      file_format = file_format
+    )
+
+    if (fs::file_exists(path = index_folder_path)) {
+      batch_folder_to_remove <- fs::path(index_folder_path, batch)
+
+      n_files <- fs::dir_ls(
+        path = batch_folder_to_remove,
+        recurse = TRUE,
+        type = "file"
+      ) %>%
+        length()
+
+      if (usethis::ui_yeah(glue::glue("Do you really wish to delete all {usethis::ui_field('index')} downloaded files in the batch {usethis::ui_value(batch)} for the the website {usethis::ui_field(cas_get_options(...)$website)}? If you confirm the folder {usethis::ui_path(batch_folder_to_remove)} and all the {scales::number(n_files)} files it contains will be removed."))) {
+        fs::dir_delete(path = batch_folder_to_remove)
+      }
+    }
   }
 }
 
@@ -195,7 +223,7 @@ cas_reset_download_contents <- function(batch = NULL,
         type = "file"
       ) %>%
         length()
-      cli::cli_alert_danger(c("All files and folder within {.path {folder_path}} will be deleted. More specifically, {scales::number(n_folders)} {ifelse(n_folders==1, 'folder', 'folders')} and {scales::number(n_files)} {ifelse(n_files==1, 'file', 'files')} will be deleted, and all records of the download will be removed from the local database"))
+      cli::cli_alert_danger(c("All files and folder within {.path {folder_path}} will be deleted. More specifically, {scales::number(n_folders)} {ifelse(n_folders==1, 'folder', 'folders')} and {scales::number(n_files)} {ifelse(n_files==1, 'file', 'files')} will be deleted, and all records of the download will be removed from the local database."))
       if (usethis::ui_yeah("Do you really wish to delete all {usethis::ui_field('contents')} download files and records in the database for the the website {usethis::ui_field(cas_get_options(...)$website)}?")) {
         fs::dir_delete(path = folder_path)
         cas_reset_db(
@@ -205,6 +233,34 @@ cas_reset_download_contents <- function(batch = NULL,
           ask = FALSE,
           ...
         )
+      }
+    }
+  } else {
+    cas_delete_from_db(
+      table = "contents_download",
+      batch = batch,
+      ask = ask,
+      db_folder = db_folder,
+      db_connection = db_connection,
+      ...
+    )
+    index_folder_path <- cas_get_base_path(
+      index = FALSE,
+      file_format = file_format
+    )
+    
+    if (fs::file_exists(path = contents_folder_path)) {
+      batch_folder_to_remove <- fs::path(contents_folder_path, batch)
+      
+      n_files <- fs::dir_ls(
+        path = batch_folder_to_remove,
+        recurse = TRUE,
+        type = "file"
+      ) %>%
+        length()
+      
+      if (usethis::ui_yeah(glue::glue("Do you really wish to delete all {usethis::ui_field('contents')} downloaded files in the batch {usethis::ui_value(batch)} for the the website {usethis::ui_field(cas_get_options(...)$website)}? If you confirm the folder {usethis::ui_path(batch_folder_to_remove)} and all the {scales::number(n_files)} files it contains will be removed."))) {
+        fs::dir_delete(path = batch_folder_to_remove)
       }
     }
   }

@@ -12,7 +12,7 @@ cas_delete_from_db(
   ask = TRUE,
   db_folder = NULL,
   db_connection = NULL,
-  disconnect_db = disconnect_db,
+  disconnect_db = FALSE,
   ...
 )
 }

@@ -23,7 +23,7 @@ cas_delete_from_db <- function(table,
                                ask = TRUE,
                                db_folder = NULL,
                                db_connection = NULL,
-                               disconnect_db = disconnect_db,
+                               disconnect_db = FALSE,
                                ...) {
   if (cas_check_use_db(...) == FALSE) {
     cli::cli_abort("Database not set. Set the database connection with `cas_set_options()` or pass database connection with the parameter `db_connection`.")
