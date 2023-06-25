@@ -244,21 +244,22 @@ cas_reset_download_contents <- function(batch = NULL,
       db_connection = db_connection,
       ...
     )
-    index_folder_path <- cas_get_base_path(
+
+    contents_folder_path <- cas_get_base_path(
       index = FALSE,
       file_format = file_format
     )
-    
+
     if (fs::file_exists(path = contents_folder_path)) {
       batch_folder_to_remove <- fs::path(contents_folder_path, batch)
-      
+
       n_files <- fs::dir_ls(
         path = batch_folder_to_remove,
         recurse = TRUE,
         type = "file"
       ) %>%
         length()
-      
+
       if (usethis::ui_yeah(glue::glue("Do you really wish to delete all {usethis::ui_field('contents')} downloaded files in the batch {usethis::ui_value(batch)} for the the website {usethis::ui_field(cas_get_options(...)$website)}? If you confirm the folder {usethis::ui_path(batch_folder_to_remove)} and all the {scales::number(n_files)} files it contains will be removed."))) {
         fs::dir_delete(path = batch_folder_to_remove)
       }
