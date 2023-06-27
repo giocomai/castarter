@@ -33,7 +33,7 @@
 #'   n_column_name = n
 #' )
 #' }
-#' 
+#'
 cas_count <- function(corpus,
                       pattern,
                       text = text,
