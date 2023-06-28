@@ -126,4 +126,5 @@ cas_write_corpus <- function(corpus = NULL,
       arrow::write_dataset(path = path)
   }
   cli::cli_inform(message = c(i = "Corpus stored in {.path {path}}."))
+  invisible(path)
 }
