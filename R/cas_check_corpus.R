@@ -10,25 +10,28 @@
 #' @return Path to corpus. NULL, if no corpus is found and update is set to
 #'   FALSE.
 #' @inheritParams cas_write_corpus
+#' @inheritParams rlang::args_dots_used
 #'
 #' @export
 #'
 #' @examples
-cas_check_corpus <- function(update = FALSE,
+cas_check_corpus <- function(...,
+                             update = FALSE,
                              keep_only_latest = FALSE,
                              path = NULL,
                              file_format = "parquet",
                              partition = NULL,
                              token = "full_text",
-                             corpus_folder = "corpus",
-                             ...) {
+                             corpus_folder = "corpus") {
+  rlang::check_dots_used()
+
   if (is.null(path) == TRUE) {
     base_path <- cas_get_corpus_path(
+      ...,
       corpus_folder = corpus_folder,
       file_format = file_format,
       partition = partition,
-      token = token,
-      ...
+      token = token
     ) %>%
       fs::path_dir()
 

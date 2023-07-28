@@ -1,24 +1,30 @@
 #' Get path to folder where the corpus is stored.
 #'
 #' @inheritParams cas_write_corpus
+#' @inheritParams rlang::args_dots_used
 #'
 #' @return
 #' @export
 #'
 #' @examples
-cas_get_corpus_path <- function(corpus_folder = "corpus",
+#' \dontrun{
+#' cas_get_corpus_path()
+#' }
+cas_get_corpus_path <- function(...,
+                                corpus_folder = "corpus",
                                 file_format = "parquet",
                                 partition = NULL,
-                                token = "full_text",
-                                ...) {
+                                token = "full_text") {
+  rlang::check_dots_used()
+
   if (is.null(partition)) {
     partition <- "single_file"
   }
 
   fs::path(
     cas_get_base_folder(
-      create_if_missing = FALSE,
-      ...
+      ...,
+      create_if_missing = FALSE
     ),
     corpus_folder,
     file_format %>%

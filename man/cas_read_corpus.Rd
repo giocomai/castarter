@@ -5,17 +5,21 @@
 \title{Read datasets created with \code{cas_write_dataset}}
 \usage{
 cas_read_corpus(
+  ...,
   update = FALSE,
   path = NULL,
   file_format = "parquet",
   partition = NULL,
   token = "full_text",
-  corpus_folder = "corpus",
-  ...
+  corpus_folder = "corpus"
 )
 }
 \arguments{
-\item{update}{Logical, defaults to FALSE. If FALSE, just checks if relevant corpus has been previously stored. If TRUE, it checks if more recent contents are available in the local database.}
+\item{...}{Passed to \code{cas_get_db_file()}.}
+
+\item{update}{Logical, defaults to FALSE. If FALSE, just checks if relevant
+corpus has been previously stored. If TRUE, it checks if more recent
+contents are available in the local database.}
 
 \item{path}{Defaults to NULL. If NULL, path is set to the
 project/website/export/dataset/file_format folder.}
@@ -34,8 +38,6 @@ column. If different from \code{full_text}, it is passed to
 \code{tidytext::unnest_tokens} (see its help for details). Accepted values
 include "words", "sentences", and "paragraphs". See
 \code{?tidytext::unnest_tokens()} for details.}
-
-\item{...}{Passed to \code{cas_get_db_file()}.}
 }
 \value{
 A dataset as \code{ArrowObject}

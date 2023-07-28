@@ -74,9 +74,11 @@ cass_combine_into_pattern <- function(words,
 #' @export
 #'
 #' @examples
-cas_get_base_folder <- function(level = "website",
-                                custom_path = NULL,
-                                ...) {
+cas_get_base_folder <- function(...,
+                                level = "website",
+                                custom_path = NULL) {
+  rlang::check_dots_used()
+
   if (is.null(custom_path) == FALSE) {
     return(custom_path)
   }

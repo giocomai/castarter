@@ -4,14 +4,14 @@
 \alias{cas_get_base_folder}
 \title{Get base folder under which files will be stored.}
 \usage{
-cas_get_base_folder(level = "website", custom_path = NULL, ...)
+cas_get_base_folder(..., level = "website", custom_path = NULL)
 }
 \arguments{
+\item{...}{Passed to \code{cas_get_options()}.}
+
 \item{level}{Defaults to "website". Valid values are "website", "project", and "base".}
 
 \item{custom_path}{Defaults to NULL. If given, all other parameters and settings are ignored, and folder is set to this value.}
-
-\item{...}{Passed to \code{cas_get_options()}.}
 }
 \description{
 Get base folder under which files will be stored.

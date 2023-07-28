@@ -5,14 +5,16 @@
 \title{Get path to folder where the corpus is stored.}
 \usage{
 cas_get_corpus_path(
+  ...,
   corpus_folder = "corpus",
   file_format = "parquet",
   partition = NULL,
-  token = "full_text",
-  ...
+  token = "full_text"
 )
 }
 \arguments{
+\item{...}{Passed to \code{cas_get_db_file()}.}
+
 \item{file_format}{Defaults to "parquet". Currently, other options are not
 implemented.}
 
@@ -27,9 +29,12 @@ column. If different from \code{full_text}, it is passed to
 \code{tidytext::unnest_tokens} (see its help for details). Accepted values
 include "words", "sentences", and "paragraphs". See
 \code{?tidytext::unnest_tokens()} for details.}
-
-\item{...}{Passed to \code{cas_get_db_file()}.}
 }
 \description{
 Get path to folder where the corpus is stored.
+}
+\examples{
+\dontrun{
+cas_get_corpus_path()
+}
 }

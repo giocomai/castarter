@@ -1,7 +1,10 @@
 #' Read datasets created with `cas_write_dataset`
 #'
-#' @param update Logical, defaults to FALSE. If FALSE, just checks if relevant corpus has been previously stored. If TRUE, it checks if more recent contents are available in the local database.
+#' @param update Logical, defaults to FALSE. If FALSE, just checks if relevant
+#'   corpus has been previously stored. If TRUE, it checks if more recent
+#'   contents are available in the local database.
 #' @inheritParams cas_write_corpus
+#' @inheritParams rlang::args_dots_used
 #'
 #' @return A dataset as `ArrowObject`
 #' @export
@@ -10,21 +13,23 @@
 #' \dontrun{
 #' cas_read_corpus()
 #' }
-cas_read_corpus <- function(update = FALSE,
+cas_read_corpus <- function(...,
+                            update = FALSE,
                             path = NULL,
                             file_format = "parquet",
                             partition = NULL,
                             token = "full_text",
-                            corpus_folder = "corpus",
-                            ...) {
+                            corpus_folder = "corpus") {
+  rlang::check_dots_used()
+
   path <- cas_check_corpus(
+    ...,
     update = update,
     path = path,
     file_format = file_format,
     partition = partition,
     token = token,
-    corpus_folder = corpus_folder,
-    ...
+    corpus_folder = corpus_folder
   )
 
   arrow::open_dataset(sources = path)

@@ -5,17 +5,19 @@
 \title{Checks if given corpus exists, and, optionally updates it}
 \usage{
 cas_check_corpus(
+  ...,
   update = FALSE,
   keep_only_latest = FALSE,
   path = NULL,
   file_format = "parquet",
   partition = NULL,
   token = "full_text",
-  corpus_folder = "corpus",
-  ...
+  corpus_folder = "corpus"
 )
 }
 \arguments{
+\item{...}{Passed to \code{cas_get_db_file()}.}
+
 \item{update}{Logical, defaults to FALSE. If set to TRUE, it checks if the
 local database has contents with a higher content id than is currently
 available in previously exported corpus, if any. If so, it writes a new,
@@ -41,8 +43,6 @@ column. If different from \code{full_text}, it is passed to
 \code{tidytext::unnest_tokens} (see its help for details). Accepted values
 include "words", "sentences", and "paragraphs". See
 \code{?tidytext::unnest_tokens()} for details.}
-
-\item{...}{Passed to \code{cas_get_db_file()}.}
 }
 \value{
 Path to corpus. NULL, if no corpus is found and update is set to
