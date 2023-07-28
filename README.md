@@ -94,9 +94,10 @@ gathering contents from different websites, e.g. “european_commission”,
 
 ``` r
 library("castarter")
-cas_set_options(base_folder = fs::path(fs::path_temp(), "castarter_data"),
-                project = "european_union",
-                website = "european_commission"
+cas_set_options(
+  base_folder = fs::path(fs::path_temp(), "castarter_data"),
+  project = "european_union",
+  website = "european_commission"
 )
 ```
 
@@ -104,7 +105,7 @@ Assuming that my project on the European Union involves text mining the
 website of the European Council, the European Commission, and the
 European Parliament, the folder structure may look something like this:
 
-    #> /tmp/RtmpVgNgDJ/castarter_data
+    #> /tmp/Rtmp0XeWXw/castarter_data
     #> └── european_union
     #>     ├── european_commission
     #>     ├── european_council
@@ -174,8 +175,10 @@ Check out `castarter`’s interactive web interface for exploring corpora.
 ``` r
 library("castarter")
 remotes::install_github("giocomai/tifkremlinen")
-cas_explorer(corpus = tifkremlinen::kremlin_en,
-             default_string = "Syria, Crimea")
+cas_explorer(
+  corpus = tifkremlinen::kremlin_en,
+  default_string = "Syria, Crimea"
+)
 ```
 
 ## Vignettes
@@ -202,6 +205,34 @@ See `vignette("castarter-shiny-modules")`
 - make `castarter` download files in the background (e.g. with callr, or
   rstudio jobs)
 - more options for analysis: peaks, periods, etc.
+
+## Coding conventions and package design principles
+
+Function naming conventions:
+
+- functions should start with the prefix `cas_` and should be followed
+  my a verb
+- functions that call Shiny apps start with the prefix `cass_`, with the
+  additional *s* referring to Shiny
+- empty datasets demonstrating the expected output of functions
+  retrieving data from databases start with `casdb_empty_`
+
+Long term, the package should follow best practices as described in
+[*Tidy Design Principles*](https://design.tidyverse.org/), including in
+particular:
+
+- [most important arguments should be
+  first](https://design.tidyverse.org/important-args-first.html)
+
+- [required args shouldn’t have
+  defaults](https://design.tidyverse.org/required-no-defaults.html)
+
+- [… should come after required
+  arguments](https://design.tidyverse.org/dots-after-required.html)
+
+- informative messages are given in functions relying on `cli`,
+  e.g. `cli::cli_inform()` (code relying on `usethis` for this purpose
+  is hence to be considered legacy code to be fixed)
 
 ## License
 
