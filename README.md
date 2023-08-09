@@ -29,6 +29,22 @@ You can install `castarter` with:
 remotes::install_github("giocomai/castarter")
 ```
 
+For its corpus-processing functions, `castarter` effectively depends on
+the `arrow` package, which allows for memory-efficient processing of
+datasets. It is however only included among suggested packages, as its
+installation may not be straightforward on some systems. `arrow`’s own
+documentation has a dedicated page for [troubleshooting its
+installation](https://arrow.apache.org/docs/r/articles/install.html). In
+my experience, the more consistently successful approach relies on [a
+custom install script advertised in the above
+page](https://arrow.apache.org/docs/r/articles/install.html#using-install_arrow)
+by the package developers. It can be run as follows:
+
+``` r
+source("https://raw.githubusercontent.com/apache/arrow/main/r/R/install-arrow.R")
+install_arrow()
+```
+
 ## Key features
 
 `castarter` aims to streamline the process of aquiring textual contents
@@ -105,7 +121,7 @@ Assuming that my project on the European Union involves text mining the
 website of the European Council, the European Commission, and the
 European Parliament, the folder structure may look something like this:
 
-    #> /tmp/Rtmp0XeWXw/castarter_data
+    #> /tmp/RtmpVumn3r/castarter_data
     #> └── european_union
     #>     ├── european_commission
     #>     ├── european_council

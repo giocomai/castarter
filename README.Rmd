@@ -31,6 +31,16 @@ You can install `castarter` with:
 remotes::install_github("giocomai/castarter")
 ```
 
+For its corpus-processing functions, `castarter` effectively depends on the `arrow` package, which allows for memory-efficient processing of datasets. It is however only included among suggested packages, as its installation may not be straightforward on some systems. `arrow`'s own documentation has a dedicated page for [troubleshooting its installation](https://arrow.apache.org/docs/r/articles/install.html). In my experience, the more consistently successful approach relies on [a custom install script advertised in the above page](https://arrow.apache.org/docs/r/articles/install.html#using-install_arrow) by the package developers. It can be run as follows:
+
+```{r eval=FALSE}
+source("https://raw.githubusercontent.com/apache/arrow/main/r/R/install-arrow.R")
+install_arrow()
+```
+
+
+
+
 ## Key features
 
 `castarter` aims to streamline the process of aquiring textual contents retrieved online and transforming them into a structured format ready to be analysed.
