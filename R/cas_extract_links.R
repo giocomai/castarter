@@ -96,7 +96,6 @@ cas_extract_links <- function(id = NULL,
     batch = batch,
     index = index,
     db_connection = db,
-    disconnect_db = FALSE,
     file_format = file_format,
     ...
   ) %>%
