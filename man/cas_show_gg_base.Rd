@@ -8,7 +8,7 @@ cas_show_gg_base(
   count_df,
   group_by = date,
   n_column_name = n,
-  string_column_name = string,
+  pattern_column_name = pattern,
   group_as_factor = FALSE
 )
 }
@@ -17,7 +17,7 @@ cas_show_gg_base(
 
 \item{n_column_name}{Defaults to 'n'. The unquoted name of the column to be used for the count in the output.}
 
-\item{string_column_name}{Defaults to 'string'. The unquoted name of the column to be used for the word in the output.}
+\item{pattern_column_name}{Defaults to 'pattern'. The unquoted name of the column to be used for the word in the output.}
 
 \item{group_as_factor}{Defaults to FALSE. If TRUE, the grouping column is forced into a factor, otherwise it is kept in its current format (e.g. date, or numeric).}
 }

@@ -16,7 +16,7 @@
 cas_show_ts_dygraph <- function(count_df,
                                 date_column_name = date,
                                 n_column_name = n,
-                                string_column_name = string,
+                                pattern_column_name = pattern,
                                 range_selector = TRUE) {
   if (is.data.frame(count_df) == FALSE) {
     return(NULL)
@@ -24,7 +24,7 @@ cas_show_ts_dygraph <- function(count_df,
   xts_df <- count_df %>%
     tidyr::pivot_wider(
       id_cols = {{ date_column_name }},
-      names_from = {{ string_column_name }},
+      names_from = {{ pattern_column_name }},
       values_from = {{ n_column_name }}
     ) %>%
     tbl2xts::tbl_xts()

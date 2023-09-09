@@ -40,10 +40,10 @@ mod_cass_show_barchart_ggiraph_server <- function(id, count_df) {
 
 cass_show_barchart_ggiraph_app <- function(count_df) {
   ui <- fluidPage(
-    castarter:::mod_cass_show_barchart_ggiraph_ui("cass_show_barchart_ggiraph_ui_1")
+    mod_cass_show_barchart_ggiraph_ui("cass_show_barchart_ggiraph_ui_1")
   )
   server <- function(input, output, session) {
-    castarter:::mod_cass_show_barchart_ggiraph_server("cass_show_barchart_ggiraph_ui_1",
+    mod_cass_show_barchart_ggiraph_server("cass_show_barchart_ggiraph_ui_1",
       count_df = count_df
     )
   }

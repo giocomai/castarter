@@ -45,7 +45,7 @@ test_that("cas_count sets custom column names as expected", {
       df <- cas_count(
         corpus = cas_demo_corpus,
         string = c("Europe"),
-        string_column_name = pattern,
+        pattern_column_name = pattern,
         n_column_name = value
       )
 

@@ -5,98 +5,107 @@
 #' @import shiny
 #' @noRd
 cass_explorer_app_ui <- function(request) {
-  tagList(
-    # Leave this function for adding external resources
-    golem_add_external_resources(),
-    # Your application UI logic
-    fluidPage(
-      theme = bslib::bs_theme(
-        version = 4,
-        bootswatch = "journal",
-        primary = "#3B9AB2"
+  bslib::page_navbar(
+    title = "castarter",
+    theme = bslib::bs_theme(
+      version = "5",
+      preset = "sandstone",
+    ) %>%
+      bslib::bs_add_rules(rules = "
+.navbar.navbar-inverse {
+  background-color: $dark !important;
+}"),
+    header = shiny::tagList(
+      ### headers ####
+      waiter::waiter_preloader(
+        html = waiter::spin_fading_circles(),
+        fadeout = TRUE
       ),
-      tags$head(tags$style(
-        ".red{background-color:#FFB8C3;}.blue{background-color:#6ECFEA;}.green{background-color:#a6ce39;}"
-      )),
+      golem_add_external_resources(),
       tags$head(shiny::HTML(golem::get_golem_options("custom_head_html"))),
       tags$head(tags$script(HTML('$(document).keyup(function(e) {
     if (e.key == "Enter") {
     $("#go").click();
-}});'))),
-      waiter::waiter_preloader(html = waiter::spin_fading_circles()),
-      sidebarLayout(
-        sidebarPanel(
-          shiny::textInput(
-            inputId = "string",
-            label = "String to be matched",
-            value = ifelse(test = is.null(golem::get_golem_options("default_string")),
-              yes = "",
-              no = golem::get_golem_options("default_string")
-            )
-          ),
-          shiny::actionButton(
-            inputId = "go",
-            label = "Go!",
-            icon = shiny::icon("search"),
-            width = "100%"
-          ),
-          shiny::h3("Additional settings"),
-          shiny::uiOutput(outputId = "column_selector_UI"),
-          shiny::radioButtons(
-            inputId = "freq",
-            label = NULL,
-            choices = c(
-              "Absolute frequency",
-              "Relative frequency"
-            )
-          ),
-          shiny::uiOutput(outputId = "moving_type_selector_UI"),
-          conditionalPanel(condition = "input.moving_type_selector != 'Keep as is'", {
-            shiny::uiOutput(outputId = "moving_selector_UI")
-          }),
-          shiny::uiOutput(outputId = "date_range_input_UI"),
-          shiny::uiOutput(outputId = "pre_submit_help_text_UI"),
-          shiny::uiOutput(outputId = "summary_tables_left_UI")
-        ),
-        mainPanel(
-          fluidRow(
-            column(
-              4,
-              h3("Select graph type"),
-              inputPanel(shiny::radioButtons(
-                inputId = "graph_type",
-                label = "Type of graph",
-                choices = c(
-                  "Line chart",
-                  "Bar chart"
-                )
-              )),
-              h3("About"),
-              shiny::actionButton(
-                inputId = "cicerone",
-                label = "Click for a guided tour",
-                icon = icon("info-circle"),
-                width = "100%"
-              ),
-            ),
-            column(
-              8,
-              h3("Graph"),
-              shiny::conditionalPanel(condition = "input.graph_type == 'Line chart'", {
-                castarter:::mod_cass_show_ts_dygraph_ui("cass_show_ts_dygraph_ui_1")
-              }),
-              shiny::conditionalPanel(condition = "input.graph_type == 'Bar chart'", {
-                castarter:::mod_cass_show_barchart_ggiraph_ui("cass_show_barchart_ggiraph_ui_1")
-              })
-            )
-          ),
-          # shiny::plotOutput("word_frequency_gg"),
-          DT::dataTableOutput("kwic_DT")
+}});')))
+    ),
+    sidebar = bslib::sidebar(
+      width = 300,
+      shiny::textInput(
+        inputId = "string",
+        label = "String to be matched",
+        value = ifelse(test = is.null(golem::get_golem_options("default_string")),
+          yes = "",
+          no = golem::get_golem_options("default_string")
         )
+      ),
+      shiny::actionButton(
+        inputId = "go",
+        label = "Go!",
+        icon = shiny::icon("search"),
+        width = "100%"
+      ),
+      shiny::uiOutput(outputId = "date_range_input_UI"),
+      shiny::tagList({
+        if (golem::get_golem_options("advanced")) {
+          shiny::tagList(
+            shiny::h3("Additional settings"),
+            shiny::uiOutput(outputId = "column_selector_UI")
+          )
+        }
+      })
+    ),
+
+    ### Barchart ####
+
+    bslib::nav_panel(
+      title = "Barcharts",
+      bslib::card(
+        full_screen = TRUE,
+        bslib::card_header("Word frequency"),
+        bslib::layout_sidebar(
+          sidebar = bslib::sidebar(
+            # title = "Local controls",
+            position = "right",
+            shiny::selectInput(
+              inputId = "summarise_by",
+              label = "Aggregate by:",
+              choices = c("", "year", "quarter", "month", "day"),
+              selected = "year"
+            ),
+            shiny::radioButtons(
+              inputId = "freq",
+              label = NULL,
+              choices = c(
+                "Absolute frequency",
+                "Relative frequency"
+              )
+            ),
+          ),
+          mod_cass_show_barchart_wordcount_ui("cass_show_barchart_wordcount_ui_1")
+          # ,
+          # mod_cass_show_barchart_ggiraph_ui("cass_show_barchart_ggiraph_ui_1")
+        )
+      )
+    ),
+
+    ### Time series ####
+
+    bslib::nav_panel(
+      title = "Time series",
+      "Time series goes here"
+    ),
+    bslib::nav_spacer(),
+    bslib::nav_item(
+      shiny::actionLink(
+        inputId = "cicerone",
+        label = "Click for a guided tour",
+        icon = icon("info-circle"),
+        width = "100%"
       )
     )
   )
 }
+
 
 #' Add external Resources to the Application
 #'
@@ -117,7 +126,6 @@ golem_add_external_resources <- function() {
       path = app_sys("app/www"),
       app_title = "castarter"
     ),
-    marker::useMarker(), # include marker dependencies
     waiter::use_waiter(), # include waiter dependencies
     cicerone::use_cicerone(), # include cicerone dependencies
     # Add here other external resources

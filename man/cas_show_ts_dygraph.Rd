@@ -8,7 +8,7 @@ cas_show_ts_dygraph(
   count_df,
   date_column_name = date,
   n_column_name = n,
-  string_column_name = string,
+  pattern_column_name = pattern,
   range_selector = TRUE
 )
 }

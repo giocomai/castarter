@@ -21,7 +21,7 @@ cas_show_barchart_ggiraph(
 \item{position}{Defaults to "stack". Available values include "dodge".}
 }
 \value{
-A girage/htmlwidget object
+A girafe/htmlwidget object
 }
 \description{
 For detail on parameters, see https://davidgohel.github.io/ggiraph/articles/offcran/using_ggiraph.html

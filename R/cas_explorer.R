@@ -9,12 +9,18 @@
 #' @importFrom golem with_golem_options
 cas_explorer <- function(corpus = castarter::cas_demo_corpus,
                          default_string = NULL,
+                         advanced = FALSE,
                          custom_head_html = '<meta name="referrer" content="no-referrer" />',
                          onStart = NULL,
                          options = list(),
                          enableBookmarking = NULL,
                          uiPattern = "/",
                          ...) {
+  if ("date" %in% colnames(corpus)) {
+    corpus <- corpus %>%
+      dplyr::filter(is.na(date) == FALSE)
+  }
+
   with_golem_options(
     app = shinyApp(
       ui = cass_explorer_app_ui,
@@ -27,6 +33,7 @@ cas_explorer <- function(corpus = castarter::cas_demo_corpus,
     golem_opts = list(
       corpus = corpus,
       default_string = default_string,
+      advanced = advanced,
       custom_head_html = custom_head_html
     )
   )
