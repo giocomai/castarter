@@ -39,11 +39,33 @@ cass_explorer_app_server <- function(input, output, session) {
       input$go
     ),
     valueExpr = ({
-      golem::get_golem_options("corpus") %>%
+      active_corpus_df <- golem::get_golem_options("corpus") %>%
         dplyr::filter(
           date >= lubridate::as_date(input$date_range[[1]]),
           date <= lubridate::as_date(input$date_range[[2]])
         )
+
+      if (is.null(input$pattern) == FALSE) {
+        if (input$pattern != "") {
+          current_pattern <- stringr::str_flatten(c(
+            "(?i)",
+            cass_split_string(
+              string = input$pattern,
+              to_regex = TRUE
+            )
+          ))
+
+          active_corpus_df <- active_corpus_df %>%
+            dplyr::collect() %>%
+            dplyr::filter(
+              stringr::str_detect(
+                string = text,
+                pattern = current_pattern
+              )
+            )
+        }
+      }
+      active_corpus_df
     })
   )
 
@@ -92,6 +114,7 @@ cass_explorer_app_server <- function(input, output, session) {
     kwic_df_r() %>%
       dplyr::mutate(source = paste0("<a target='_blank' href='", url, "'>", title, "</a><br />")) %>%
       dplyr::select(date, source, before, pattern, after) %>%
+      dplyr::arrange(Date) %>%
       reactable::reactable(
         resizable = TRUE,
         filterable = TRUE,
@@ -112,14 +135,83 @@ cass_explorer_app_server <- function(input, output, session) {
   })
 
 
-  kwic_sentences_df_r <- shiny::eventReactive(input$go, {
-    corpus_active_r() %>%
-      dplyr::mutate(Source = paste0("<a target='_blank' href='", url, "'>", title, "</a><br />")) %>%
-      dplyr::rename(Sentence = sentence, Date = date) %>%
-      dplyr::select(Date, Source, Sentence) %>%
-      dplyr::arrange(dplyr::desc(Date))
-  })
+  kwic_sentences_df_r <- shiny::eventReactive(
+    eventExpr = list(
+      input$go,
+      input$kwic_switch
+    ),
+    valueExpr = {
+      if (is.null(input$pattern)) {
+        return(NULL)
+      }
 
+      if (input$kwic_switch == FALSE) {
+        return(NULL)
+      }
+
+      corpus_active_r() %>%
+        dplyr::collect() %>%
+        tidytext::unnest_tokens(
+          output = sentence,
+          input = text,
+          to_lower = FALSE,
+          token = "sentences"
+        ) %>%
+        dplyr::filter(stringr::str_detect(
+          string = sentence,
+          pattern = stringr::regex(
+            cass_split_string(input$pattern,
+              to_regex = TRUE
+            ),
+            ignore_case = TRUE
+          )
+        )) %>%
+        dplyr::mutate(Source = paste0("<a target='_blank' href='", url, "'>", title, "</a><br />")) %>%
+        dplyr::mutate(sentence = cass_highlight(
+          sentence,
+          cass_split_string(input$pattern,
+            to_regex = TRUE
+          )
+        )) %>%
+        dplyr::rename(Sentence = sentence, Date = date) %>%
+        dplyr::select(Date, Source, Sentence) %>%
+        dplyr::arrange(Date)
+    }
+  )
+
+  output$kwic_sentences_reactable <- reactable::renderReactable({
+    if (is.null(kwic_sentences_df_r())) {
+      return(NULL)
+    }
+
+    if (is.null(input$pattern)) {
+      return(NULL)
+    }
+
+    if (input$pattern == "") {
+      return(NULL)
+    }
+
+
+
+    kwic_sentences_df_r() %>%
+      reactable::reactable(
+        resizable = TRUE,
+        filterable = TRUE,
+        showSortIcon = TRUE,
+        showSortable = TRUE,
+        defaultPageSize = 5,
+        showPageSizeOptions = TRUE,
+        wrap = TRUE,
+        pageSizeOptions = c(5, 10, 20, 50, 100, 500),
+        compact = TRUE,
+        columns = list(
+          Date = reactable::colDef(maxWidth = 110),
+          Source = reactable::colDef(html = TRUE, maxWidth = 300),
+          Sentence = reactable::colDef(html = TRUE)
+        )
+      )
+  })
 
   ### Barchart main card
 

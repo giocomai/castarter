@@ -66,11 +66,24 @@ cass_explorer_app_ui <- function(request) {
       title = "Barcharts",
       shiny::uiOutput(outputId = "barchart_main_card_UI"),
       shiny::conditionalPanel(condition = "input.kwic_switch == 1", {
-        bslib::card(
-          full_screen = TRUE,
-          fill = TRUE,
-          bslib::card_header("Key word in context"),
-          reactable::reactableOutput("kwic_reactable")
+        bslib::navset_card_tab(
+          title = "In context",
+          bslib::nav_panel(
+            title = "Full sentences",
+            bslib::card(
+              full_screen = TRUE,
+              fill = TRUE,
+              reactable::reactableOutput("kwic_sentences_reactable")
+            )
+          ),
+          bslib::nav_panel(
+            title = "Key word in context",
+            bslib::card(
+              full_screen = TRUE,
+              fill = TRUE,
+              reactable::reactableOutput("kwic_reactable")
+            )
+          )
         )
       })
     ),
