@@ -27,6 +27,7 @@ cas_show_gg_base <- function(count_df,
       fill = {{ pattern_column_name }}
     )) +
     ggplot2::scale_y_continuous(name = NULL, labels = scales::number) +
+    PrettyCols::scale_fill_pretty_d(name = "Lively") +
     ggplot2::theme_minimal(base_size = font_base_size) +
     ggplot2::theme(
       legend.title = ggplot2::element_blank(),
