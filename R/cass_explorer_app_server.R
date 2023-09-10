@@ -31,6 +31,19 @@ cass_explorer_app_server <- function(input, output, session) {
     )
   })
 
+  ### Corpus ####
+  
+  corpus_active_r <- shiny::eventReactive(
+    eventExpr = list(
+      input$date_range
+    ),
+    valueExpr = ({
+      golem::get_golem_options("corpus") %>% 
+        dplyr::filter(date>=lubridate::as_date(input$date_range[[1]]),
+                      date<=lubridate::as_date(input$date_range[[2]]))
+  })
+  )
+  
   ### Barchart main card
   
   output$barchart_main_card_UI <- renderUI({
@@ -136,7 +149,7 @@ cass_explorer_app_server <- function(input, output, session) {
     ),
     {
       if (input$string == "") {
-        return(cas_count_total_words(corpus = golem::get_golem_options("corpus")) %>%
+        return(cas_count_total_words(corpus = corpus_active_r()) %>%
           dplyr::mutate(pattern = "") %>%
           cas_summarise(
             period = input$summarise_by,
