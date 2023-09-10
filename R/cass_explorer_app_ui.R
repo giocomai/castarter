@@ -31,11 +31,11 @@ cass_explorer_app_ui <- function(request) {
     sidebar = bslib::sidebar(
       width = 300,
       shiny::textInput(
-        inputId = "string",
-        label = "String to be matched",
-        value = ifelse(test = is.null(golem::get_golem_options("default_string")),
+        inputId = "pattern",
+        label = "Pattern to be matched",
+        value = ifelse(test = is.null(golem::get_golem_options("default_pattern")),
           yes = "",
-          no = golem::get_golem_options("default_string")
+          no = golem::get_golem_options("default_pattern")
         )
       ),
       shiny::actionButton(
@@ -45,6 +45,9 @@ cass_explorer_app_ui <- function(request) {
         width = "100%"
       ),
       shiny::uiOutput(outputId = "date_range_input_UI"),
+      bslib::input_switch(id = "kwic_switch",
+                          label = "Show pattern in context",
+                          value = FALSE),
       shiny::tagList({
         if (golem::get_golem_options("advanced")) {
           shiny::tagList(

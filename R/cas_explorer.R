@@ -8,7 +8,7 @@
 #' @importFrom shiny shinyApp
 #' @importFrom golem with_golem_options
 cas_explorer <- function(corpus = castarter::cas_demo_corpus,
-                         default_string = NULL,
+                         default_pattern = NULL,
                          advanced = FALSE,
                          custom_head_html = '<meta name="referrer" content="no-referrer" />',
                          onStart = NULL,
@@ -32,7 +32,7 @@ cas_explorer <- function(corpus = castarter::cas_demo_corpus,
     ),
     golem_opts = list(
       corpus = corpus,
-      default_string = default_string,
+      default_pattern = default_pattern,
       advanced = advanced,
       custom_head_html = custom_head_html
     )

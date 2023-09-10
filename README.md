@@ -193,7 +193,7 @@ library("castarter")
 remotes::install_github("giocomai/tifkremlinen")
 cas_explorer(
   corpus = tifkremlinen::kremlin_en,
-  default_string = "Syria, Crimea"
+  default_pattern = "Syria, Crimea"
 )
 ```
 

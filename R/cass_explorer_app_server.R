@@ -35,7 +35,8 @@ cass_explorer_app_server <- function(input, output, session) {
   
   corpus_active_r <- shiny::eventReactive(
     eventExpr = list(
-      input$date_range
+      input$date_range,
+      input$pattern
     ),
     valueExpr = ({
       golem::get_golem_options("corpus") %>% 
@@ -43,6 +44,41 @@ cass_explorer_app_server <- function(input, output, session) {
                       date<=lubridate::as_date(input$date_range[[2]]))
   })
   )
+  
+  kwic_r <- shiny::eventReactive(
+    eventExpr = list(
+      input$date_range,
+      input$pattern
+    ),
+    valueExpr = ({
+      if (is.null(input$pattern)) {
+        return(NULL)
+      } else if (input$pattern=="") {
+        return(NULL)
+      }
+      
+      corpus_active_r() %>% 
+        dplyr::collect()  %>% 
+        dplyr::select(date, url, title, text) %>% 
+        dplyr::collect() %>% 
+        cas_kwic(pattern = input$pattern) 
+    })
+  )
+  
+  #### KWIC #####
+  
+  
+  kwic_df_r <- shiny::eventReactive(input$go, {
+    corpus_active_r() %>%
+      
+      dplyr::mutate(Source = paste0("<a target='_blank' href='", url, "'>", title, "</a><br />")) %>%
+      dplyr::rename(Sentence = sentence, Date = date) %>%
+      dplyr::select(Date, Source, Sentence) %>%
+      dplyr::arrange(dplyr::desc(Date))
+    
+    temp
+  })
+  
   
   ### Barchart main card
   
@@ -130,10 +166,10 @@ cass_explorer_app_server <- function(input, output, session) {
 
     if (input$freq == "Absolute frequency") {
       count_df <- corpus_df %>%
-        castarter::cas_count(string = castarter:::cass_split(input$string))
+        cas_count(pattern = castarter:::cass_split(input$pattern))
     } else if (input$freq == "Relative frequency") {
       count_df <- corpus_df %>%
-        castarter::cas_count_relative(string = castarter:::cass_split(input$string))
+        cas_count_relative(pattern = castarter:::cass_split(input$pattern))
     }
     count_df
   })
@@ -148,7 +184,7 @@ cass_explorer_app_server <- function(input, output, session) {
       input$moving_units_after
     ),
     {
-      if (input$string == "") {
+      if (input$pattern == "") {
         return(cas_count_total_words(corpus = corpus_active_r()) %>%
           dplyr::mutate(pattern = "") %>%
           cas_summarise(
