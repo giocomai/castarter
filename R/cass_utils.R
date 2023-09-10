@@ -3,14 +3,15 @@
 #' @param string A text string, typically a user input in a shiny app.
 #'
 #' @return A character vector
+#' @export
 #'
 #' @examples
 #' if (interactive()) {
 #'   cass_split("dogs, cats, horses")
 #' }
-cass_split <- function(string,
-                       squish = TRUE,
-                       to_lower = TRUE) {
+cass_split_string <- function(string,
+                              squish = TRUE,
+                              to_lower = TRUE) {
   v <- string %>%
     stringr::str_split(
       pattern = ",",
