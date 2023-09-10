@@ -23,16 +23,40 @@ mod_cass_show_barchart_wordcount_server <- function(id,
   moduleServer(id, function(input, output, session) {
     ns <- session$ns
 
-    gg_base_year_gg <- count_df %>%
-      dplyr::mutate(date = factor(date)) %>%
-      cas_show_gg_base() +
-      ggplot2::scale_x_discrete(name = NULL) +
-      ggplot2::scale_fill_manual(values = NA) +
-      ggplot2::guides(fill = "none") +
-      ggplot2::labs(title = stringr::str_c("Total number of words per ", period))
+    if (is.null(count_df)) {
+      return(NULL)
+    }
 
-      output$ggplot2_barchart <- shiny::renderPlot(cas_show_barchart_ggplot2(ggobj = gg_base_year_gg))
+    counted_patterns <- unique(count_df$pattern)
+    
+    if (length(counted_patterns) == 1) {
+      if (counted_patterns == "") {
+        empty_pattern <- TRUE
+      } else {
+        empty_pattern <- FALSE
+      }
+    } else {
+      empty_pattern <- FALSE
+    }
 
+    if (empty_pattern == TRUE) {
+      gg_base_year_gg <- count_df %>%
+        dplyr::mutate(date = factor(date)) %>%
+        cas_show_gg_base() +
+        ggplot2::scale_x_discrete(name = NULL) +
+        ggplot2::scale_fill_manual(values = NA) +
+        ggplot2::guides(fill = "none") +
+        ggplot2::labs(title = stringr::str_c("Total number of words per ", period))
+    } else {
+      gg_base_year_gg <- count_df %>%
+        dplyr::mutate(date = factor(date)) %>%
+        cas_show_gg_base() +
+        ggplot2::scale_x_discrete(name = NULL) +
+        ggplot2::labs(title = stringr::str_c("Total number of words per ", period))
+    }
+
+
+    output$ggplot2_barchart <- shiny::renderPlot(cas_show_barchart_ggplot2(ggobj = gg_base_year_gg))
   })
 }
 

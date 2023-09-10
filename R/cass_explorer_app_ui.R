@@ -45,9 +45,11 @@ cass_explorer_app_ui <- function(request) {
         width = "100%"
       ),
       shiny::uiOutput(outputId = "date_range_input_UI"),
-      bslib::input_switch(id = "kwic_switch",
-                          label = "Show pattern in context",
-                          value = FALSE),
+      bslib::input_switch(
+        id = "kwic_switch",
+        label = "Show pattern in context",
+        value = FALSE
+      ),
       shiny::tagList({
         if (golem::get_golem_options("advanced")) {
           shiny::tagList(

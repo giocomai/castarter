@@ -18,10 +18,10 @@ cass_explorer_app_server <- function(input, output, session) {
   ### Date range ####
 
   output$date_range_input_UI <- renderUI({
-    date_range_s <- golem::get_golem_options("corpus") %>% 
-      dplyr::distinct(date) %>% 
-      dplyr::pull(date, as_vector = FALSE) 
-    
+    date_range_s <- golem::get_golem_options("corpus") %>%
+      dplyr::distinct(date) %>%
+      dplyr::pull(date, as_vector = FALSE)
+
     shiny::dateRangeInput(
       inputId = "date_range",
       label = "Date range",
@@ -32,19 +32,21 @@ cass_explorer_app_server <- function(input, output, session) {
   })
 
   ### Corpus ####
-  
+
   corpus_active_r <- shiny::eventReactive(
     eventExpr = list(
       input$date_range,
       input$pattern
     ),
     valueExpr = ({
-      golem::get_golem_options("corpus") %>% 
-        dplyr::filter(date>=lubridate::as_date(input$date_range[[1]]),
-                      date<=lubridate::as_date(input$date_range[[2]]))
-  })
+      golem::get_golem_options("corpus") %>%
+        dplyr::filter(
+          date >= lubridate::as_date(input$date_range[[1]]),
+          date <= lubridate::as_date(input$date_range[[2]])
+        )
+    })
   )
-  
+
   kwic_r <- shiny::eventReactive(
     eventExpr = list(
       input$date_range,
@@ -53,37 +55,35 @@ cass_explorer_app_server <- function(input, output, session) {
     valueExpr = ({
       if (is.null(input$pattern)) {
         return(NULL)
-      } else if (input$pattern=="") {
+      } else if (input$pattern == "") {
         return(NULL)
       }
-      
-      corpus_active_r() %>% 
-        dplyr::collect()  %>% 
-        dplyr::select(date, url, title, text) %>% 
-        dplyr::collect() %>% 
-        cas_kwic(pattern = input$pattern) 
+
+      corpus_active_r() %>%
+        dplyr::collect() %>%
+        dplyr::select(date, url, title, text) %>%
+        dplyr::collect() %>%
+        cas_kwic(pattern = input$pattern)
     })
   )
-  
+
   #### KWIC #####
-  
-  
+
+
   kwic_df_r <- shiny::eventReactive(input$go, {
     corpus_active_r() %>%
-      
       dplyr::mutate(Source = paste0("<a target='_blank' href='", url, "'>", title, "</a><br />")) %>%
       dplyr::rename(Sentence = sentence, Date = date) %>%
       dplyr::select(Date, Source, Sentence) %>%
       dplyr::arrange(dplyr::desc(Date))
-    
+
     temp
   })
-  
-  
+
+
   ### Barchart main card
-  
+
   output$barchart_main_card_UI <- renderUI({
-    
     bslib::card(
       full_screen = TRUE,
       max_height = "400px",
@@ -95,7 +95,7 @@ cass_explorer_app_server <- function(input, output, session) {
           shiny::selectInput(
             inputId = "summarise_by",
             label = "Aggregate by:",
-            choices = c("", "year", "quarter", "month", "day"),
+            choices = c("year", "quarter", "month", "day"),
             selected = "year"
           )
         ),
@@ -105,9 +105,10 @@ cass_explorer_app_server <- function(input, output, session) {
       )
     )
   })
-  
+
 
   ### Advanced UI ####
+
 
   ##### Column selector UI   ######
 
@@ -155,81 +156,36 @@ cass_explorer_app_server <- function(input, output, session) {
 
   ### Word counting  reactives ####
 
-  word_count_df_r <- shiny::eventReactive(input$go, {
-    if (golem::get_golem_options("advanced")) {
-      corpus_df <- corpus_df %>%
-        dplyr::rename(
-          text = .data[[input$text_column]],
-          date = .data[[input$group_by_column]]
-        )
-    }
-
-    if (input$freq == "Absolute frequency") {
-      count_df <- corpus_df %>%
-        cas_count(pattern = castarter:::cass_split(input$pattern))
-    } else if (input$freq == "Relative frequency") {
-      count_df <- corpus_df %>%
-        cas_count_relative(pattern = castarter:::cass_split(input$pattern))
-    }
-    count_df
-  })
-
-
   word_count_summarised_df_r <- shiny::eventReactive(
     list(
       input$go,
-      input$moving_type_selector,
-      input$moving_units_total,
-      input$moving_units_before,
-      input$moving_units_after
+      input$summarise_by
     ),
     {
+      if (is.null(input$pattern) | is.null(input$summarise_by)) {
+        return(NULL)
+      }
+
       if (input$pattern == "") {
-        return(cas_count_total_words(corpus = corpus_active_r()) %>%
+        count_summarised_df <- cas_count_total_words(
+          corpus = corpus_active_r()
+        ) %>%
           dplyr::mutate(pattern = "") %>%
           cas_summarise(
             period = input$summarise_by,
             f = sum,
-            # before = units_before,
-            # after = units_after,
-            # f = foo,
             auto_convert = TRUE
-          ))
-      }
-
-
-      if (is.null(input$summarise_by) == FALSE & input$summarise_by != "") {
-        if (input$moving_type_selector == "average") {
-          foo <- mean
-        } else if (input$moving_type_selector == "median") {
-          foo <- median
-        } else if (input$moving_type_selector == "sum") {
-          foo <- sum
-        } else {
-          return(NULL)
-        }
-
-
-        if (input$moving_length_type_selector == "centred") {
-          units_before <- units_after <- round((input$moving_units_total - 1) / 2)
-        } else {
-          units_before <- input$moving_units_before
-          units_after <- input$moving_units_after
-        }
-
-
-        count_summarised_df <- word_count_df_r() %>%
-          castarter::cas_summarise(
-            period = input$summarise_by,
-            before = units_before,
-            after = units_after,
-            f = foo,
-            auto_convert = input$summarise_auto_convert_checkbox
-          ) %>%
-          dplyr::rename(!!input$group_by_column := date)
+          )
       } else {
-        count_summarised_df <- count_df %>%
-          dplyr::rename(!!input$group_by_column := date)
+        count_summarised_df <- cas_count(
+          corpus = corpus_active_r(),
+          pattern = cass_split_string(input$pattern)
+        ) %>%
+          cas_summarise(
+            period = input$summarise_by,
+            f = sum,
+            auto_convert = TRUE
+          )
       }
       count_summarised_df
     },
@@ -250,12 +206,21 @@ cass_explorer_app_server <- function(input, output, session) {
 
 
   shiny::observeEvent(
-    input$go,
-    mod_cass_show_barchart_wordcount_server("cass_show_barchart_wordcount_ui_1",
-      count_df = word_count_summarised_df_r(),
-      period = "year"
+    eventExpr = list(
+      input$go,
+      input$summarise_by
     ),
+    {
+      if (is.null(input$summarise_by)) {
+        return(NULL)
+      }
+
+      mod_cass_show_barchart_wordcount_server("cass_show_barchart_wordcount_ui_1",
+        count_df = word_count_summarised_df_r(),
+        period = input$summarise_by
+      )
+    },
     ignoreInit = TRUE,
-    ignoreNULL = FALSE
+    ignoreNULL = TRUE
   )
 }
