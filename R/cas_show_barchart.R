@@ -14,7 +14,8 @@ cas_show_gg_base <- function(count_df,
                              group_by = date,
                              n_column_name = n,
                              pattern_column_name = pattern,
-                             group_as_factor = FALSE) {
+                             group_as_factor = FALSE,
+                             font_base_size = 14) {
   if (isTRUE(group_as_factor)) {
     count_df <- count_df %>%
       dplyr::mutate({{ group_by }} := factor({{ group_by }}))
@@ -26,7 +27,7 @@ cas_show_gg_base <- function(count_df,
       fill = {{ pattern_column_name }}
     )) +
     ggplot2::scale_y_continuous(name = NULL, labels = scales::number) +
-    ggplot2::theme_minimal() +
+    ggplot2::theme_minimal(base_size = font_base_size) +
     ggplot2::theme(
       legend.title = ggplot2::element_blank(),
       legend.position = "bottom"

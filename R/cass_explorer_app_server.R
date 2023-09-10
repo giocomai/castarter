@@ -31,6 +31,32 @@ cass_explorer_app_server <- function(input, output, session) {
     )
   })
 
+  ### Barchart main card
+  
+  output$barchart_main_card_UI <- renderUI({
+    
+    bslib::card(
+      full_screen = TRUE,
+      max_height = "400px",
+      fill = TRUE,
+      bslib::card_header("Word count"),
+      bslib::layout_sidebar(
+        sidebar = bslib::sidebar(
+          position = "right",
+          shiny::selectInput(
+            inputId = "summarise_by",
+            label = "Aggregate by:",
+            choices = c("", "year", "quarter", "month", "day"),
+            selected = "year"
+          )
+        ),
+        mod_cass_show_barchart_wordcount_ui("cass_show_barchart_wordcount_ui_1")
+        # ,
+        # mod_cass_show_barchart_ggiraph_ui("cass_show_barchart_ggiraph_ui_1")
+      )
+    )
+  })
+  
 
   ### Advanced UI ####
 
@@ -178,7 +204,6 @@ cass_explorer_app_server <- function(input, output, session) {
     input$go,
     mod_cass_show_barchart_wordcount_server("cass_show_barchart_wordcount_ui_1",
       count_df = word_count_summarised_df_r(),
-      type = "ggplot2",
       period = "year"
     ),
     ignoreInit = TRUE,

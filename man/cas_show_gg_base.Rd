@@ -9,7 +9,8 @@ cas_show_gg_base(
   group_by = date,
   n_column_name = n,
   pattern_column_name = pattern,
-  group_as_factor = FALSE
+  group_as_factor = FALSE,
+  font_base_size = 14
 )
 }
 \arguments{

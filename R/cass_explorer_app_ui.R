@@ -59,33 +59,7 @@ cass_explorer_app_ui <- function(request) {
 
     bslib::nav_panel(
       title = "Barcharts",
-      bslib::card(
-        full_screen = TRUE,
-        bslib::card_header("Word frequency"),
-        bslib::layout_sidebar(
-          sidebar = bslib::sidebar(
-            # title = "Local controls",
-            position = "right",
-            shiny::selectInput(
-              inputId = "summarise_by",
-              label = "Aggregate by:",
-              choices = c("", "year", "quarter", "month", "day"),
-              selected = "year"
-            ),
-            shiny::radioButtons(
-              inputId = "freq",
-              label = NULL,
-              choices = c(
-                "Absolute frequency",
-                "Relative frequency"
-              )
-            ),
-          ),
-          mod_cass_show_barchart_wordcount_ui("cass_show_barchart_wordcount_ui_1")
-          # ,
-          # mod_cass_show_barchart_ggiraph_ui("cass_show_barchart_ggiraph_ui_1")
-        )
-      )
+      shiny::uiOutput(outputId = "barchart_main_card_UI")
     ),
 
     ### Time series ####

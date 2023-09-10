@@ -10,8 +10,7 @@
 mod_cass_show_barchart_wordcount_ui <- function(id) {
   ns <- NS(id)
   tagList(
-    shiny::plotOutput(ns("ggplot2_barchart")),
-    ggiraph::girafeOutput(ns("ggiraph_barchart"))
+    shiny::plotOutput(ns("ggplot2_barchart"))
   )
 }
 
@@ -20,7 +19,6 @@ mod_cass_show_barchart_wordcount_ui <- function(id) {
 #' @noRd
 mod_cass_show_barchart_wordcount_server <- function(id,
                                                     count_df,
-                                                    type = "ggplot2",
                                                     period = "year") {
   moduleServer(id, function(input, output, session) {
     ns <- session$ns
@@ -33,13 +31,8 @@ mod_cass_show_barchart_wordcount_server <- function(id,
       ggplot2::guides(fill = "none") +
       ggplot2::labs(title = stringr::str_c("Total number of words per ", period))
 
-    if (type == "ggplot2") {
       output$ggplot2_barchart <- shiny::renderPlot(cas_show_barchart_ggplot2(ggobj = gg_base_year_gg))
-    } else if (type == "ggiraph") {
-      output$ggiraph_barchart <- ggiraph::renderGirafe({
-        cas_show_barchart_ggiraph(gg_base_year_gg)
-      })
-    }
+
   })
 }
 
