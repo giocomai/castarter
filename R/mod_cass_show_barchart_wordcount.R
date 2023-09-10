@@ -28,7 +28,7 @@ mod_cass_show_barchart_wordcount_server <- function(id,
     }
 
     counted_patterns <- unique(count_df$pattern)
-    
+
     if (length(counted_patterns) == 1) {
       if (counted_patterns == "") {
         empty_pattern <- TRUE
@@ -52,7 +52,7 @@ mod_cass_show_barchart_wordcount_server <- function(id,
         dplyr::mutate(date = factor(date)) %>%
         cas_show_gg_base() +
         ggplot2::scale_x_discrete(name = NULL) +
-        ggplot2::labs(title = stringr::str_c("Total number of words per ", period))
+        ggplot2::labs(title = stringr::str_c("Total number of mentions per ", period))
     }
 
 

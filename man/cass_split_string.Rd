@@ -4,10 +4,13 @@
 \alias{cass_split_string}
 \title{Split string into multiple inputs}
 \usage{
-cass_split_string(string, squish = TRUE, to_lower = TRUE)
+cass_split_string(string, squish = TRUE, to_lower = TRUE, to_regex = FALSE)
 }
 \arguments{
 \item{string}{A text string, typically a user input in a shiny app.}
+
+\item{to_regex}{Defaults to FALSE. If TRUE collapses the split string,
+separating each element with \code{|}.}
 }
 \value{
 A character vector
@@ -16,7 +19,6 @@ A character vector
 Split string into multiple inputs
 }
 \examples{
-if (interactive()) {
-  cass_split("dogs, cats, horses")
-}
+cass_split("dogs, cats, horses")
+cass_split(string = "dogs, cats, horses", to_regex = TRUE)
 }

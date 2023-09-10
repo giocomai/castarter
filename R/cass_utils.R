@@ -1,17 +1,19 @@
 #' Split string into multiple inputs
 #'
 #' @param string A text string, typically a user input in a shiny app.
+#' @param to_regex Defaults to FALSE. If TRUE collapses the split string,
+#'   separating each element with `|`.
 #'
 #' @return A character vector
 #' @export
 #'
 #' @examples
-#' if (interactive()) {
-#'   cass_split("dogs, cats, horses")
-#' }
+#' cass_split("dogs, cats, horses")
+#' cass_split(string = "dogs, cats, horses", to_regex = TRUE)
 cass_split_string <- function(string,
                               squish = TRUE,
-                              to_lower = TRUE) {
+                              to_lower = TRUE,
+                              to_regex = FALSE) {
   v <- string %>%
     stringr::str_split(
       pattern = ",",
@@ -23,9 +25,15 @@ cass_split_string <- function(string,
     v <- v %>%
       stringr::str_squish()
   }
+
   if (to_lower == TRUE) {
     v <- v %>%
       stringr::str_to_lower()
+  }
+
+  if (to_regex == TRUE) {
+    v <- v %>%
+      stringr::str_c(collapse = "|")
   }
   v
 }

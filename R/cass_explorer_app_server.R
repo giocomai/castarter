@@ -36,7 +36,7 @@ cass_explorer_app_server <- function(input, output, session) {
   corpus_active_r <- shiny::eventReactive(
     eventExpr = list(
       input$date_range,
-      input$pattern
+      input$go
     ),
     valueExpr = ({
       golem::get_golem_options("corpus") %>%
@@ -47,10 +47,12 @@ cass_explorer_app_server <- function(input, output, session) {
     })
   )
 
-  kwic_r <- shiny::eventReactive(
+  #### KWIC #####
+
+  kwic_df_r <- shiny::eventReactive(
     eventExpr = list(
       input$date_range,
-      input$pattern
+      input$go
     ),
     valueExpr = ({
       if (is.null(input$pattern)) {
@@ -67,17 +69,55 @@ cass_explorer_app_server <- function(input, output, session) {
     })
   )
 
-  #### KWIC #####
+  output$kwic_reactable <- reactable::renderReactable({
+    if (is.null(kwic_df_r())) {
+      return(NULL)
+    }
+
+    if (is.null(input$pattern)) {
+      return(NULL)
+    }
+
+    if (input$pattern == "") {
+      return(NULL)
+    }
+
+    max_pattern_length <- kwic_df_r() %>%
+      dplyr::distinct(pattern) %>%
+      dplyr::filter(is.na(pattern) == FALSE) %>%
+      dplyr::mutate(nchar_pattern = nchar(pattern)) %>%
+      dplyr::slice_max(nchar_pattern, with_ties = FALSE) %>%
+      dplyr::pull(nchar_pattern)
+
+    kwic_df_r() %>%
+      dplyr::mutate(source = paste0("<a target='_blank' href='", url, "'>", title, "</a><br />")) %>%
+      dplyr::select(date, source, before, pattern, after) %>%
+      reactable::reactable(
+        resizable = TRUE,
+        filterable = TRUE,
+        showSortIcon = TRUE,
+        showSortable = TRUE,
+        defaultPageSize = 5,
+        showPageSizeOptions = TRUE,
+        wrap = FALSE,
+        pageSizeOptions = c(5, 10, 20, 50, 100, 500),
+        compact = TRUE,
+        columns = list(
+          date = reactable::colDef(maxWidth = 110),
+          source = reactable::colDef(html = TRUE),
+          before = reactable::colDef(align = "right"),
+          pattern = reactable::colDef(maxWidth = max_pattern_length * 10)
+        )
+      )
+  })
 
 
-  kwic_df_r <- shiny::eventReactive(input$go, {
+  kwic_sentences_df_r <- shiny::eventReactive(input$go, {
     corpus_active_r() %>%
       dplyr::mutate(Source = paste0("<a target='_blank' href='", url, "'>", title, "</a><br />")) %>%
       dplyr::rename(Sentence = sentence, Date = date) %>%
       dplyr::select(Date, Source, Sentence) %>%
       dplyr::arrange(dplyr::desc(Date))
-
-    temp
   })
 
 

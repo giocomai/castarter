@@ -47,7 +47,7 @@ cass_explorer_app_ui <- function(request) {
       shiny::uiOutput(outputId = "date_range_input_UI"),
       bslib::input_switch(
         id = "kwic_switch",
-        label = "Show pattern in context",
+        label = "Show key words in context",
         value = FALSE
       ),
       shiny::tagList({
@@ -64,7 +64,15 @@ cass_explorer_app_ui <- function(request) {
 
     bslib::nav_panel(
       title = "Barcharts",
-      shiny::uiOutput(outputId = "barchart_main_card_UI")
+      shiny::uiOutput(outputId = "barchart_main_card_UI"),
+      shiny::conditionalPanel(condition = "input.kwic_switch == 1", {
+        bslib::card(
+          full_screen = TRUE,
+          fill = TRUE,
+          bslib::card_header("Key word in context"),
+          reactable::reactableOutput("kwic_reactable")
+        )
+      })
     ),
 
     ### Time series ####
