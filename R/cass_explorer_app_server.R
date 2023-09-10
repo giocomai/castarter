@@ -18,11 +18,15 @@ cass_explorer_app_server <- function(input, output, session) {
   ### Date range ####
 
   output$date_range_input_UI <- renderUI({
+    date_range_s <- golem::get_golem_options("corpus") %>% 
+      dplyr::distinct(date) %>% 
+      dplyr::pull(date, as_vector = FALSE) 
+    
     shiny::dateRangeInput(
       inputId = "date_range",
       label = "Date range",
-      start = min(golem::get_golem_options("corpus")[["date"]]),
-      end = max(golem::get_golem_options("corpus")[["date"]]),
+      start = as.character(min(date_range_s)),
+      end = as.character(max(date_range_s)),
       weekstart = 1
     )
   })
