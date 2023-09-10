@@ -23,6 +23,9 @@ cas_backup_gd <- function(glob = c(
                           scopes = "https://www.googleapis.com/auth/drive.file",
                           client = cas_google_client,
                           ...) {
+  if (requireNamespace("rbackupr", quietly = TRUE) == FALSE) {
+    cli::cli_abort(x = "To use this function you need to install the package `rbackupr`. See https://github.com/giocomai/rbackupr")
+  }
   googledrive::drive_auth_configure(client = cas_google_client)
 
   googledrive::drive_auth(
