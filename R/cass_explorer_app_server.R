@@ -56,7 +56,6 @@ cass_explorer_app_server <- function(input, output, session) {
           ))
 
           active_corpus_df <- active_corpus_df %>%
-            dplyr::collect() %>%
             dplyr::filter(
               stringr::str_detect(
                 string = text,

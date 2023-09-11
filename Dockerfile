@@ -40,6 +40,7 @@ RUN Rscript -e 'remotes::install_version("DT",upgrade="never", version = "0.29")
 RUN Rscript -e 'remotes::install_version("tidytext",upgrade="never", version = "0.4.1")'
 RUN Rscript -e 'remotes::install_version("slider",upgrade="never", version = "0.3.0")'
 RUN Rscript -e 'source("https://raw.githubusercontent.com/apache/arrow/main/r/R/install-arrow.R");install_arrow()'
+RUN Rscript -e 'remotes::install_github("apache/arrow/r", build = FALSE)'
 RUN mkdir /build_zone
 ADD . /build_zone
 WORKDIR /build_zone
