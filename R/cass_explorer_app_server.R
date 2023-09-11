@@ -84,7 +84,7 @@ cass_explorer_app_server <- function(input, output, session) {
 
       corpus_active_r() %>%
         dplyr::collect() %>%
-        dplyr::select(date, url, title, text) %>%
+        dplyr::select(id, date, url, title, text) %>%
         dplyr::collect() %>%
         cas_kwic(pattern = input$pattern)
     })
@@ -113,7 +113,7 @@ cass_explorer_app_server <- function(input, output, session) {
     kwic_df_r() %>%
       dplyr::mutate(source = paste0("<a target='_blank' href='", url, "'>", title, "</a><br />")) %>%
       dplyr::select(date, source, before, pattern, after) %>%
-      dplyr::arrange(Date) %>%
+      dplyr::arrange(date) %>%
       reactable::reactable(
         resizable = TRUE,
         filterable = TRUE,
@@ -228,7 +228,15 @@ cass_explorer_app_server <- function(input, output, session) {
             label = "Aggregate by:",
             choices = c("year", "quarter", "month", "day"),
             selected = "year"
-          )
+          ),
+          shiny::tagList({
+            if (length(cass_split_string(string = input$pattern))>1) {
+              shiny::radioButtons(inputId = "barchart_position",
+                                  label = "Bars should be:",
+                                  choices = c(stacked = "stack", 
+                                              dodged = "dodge"))
+            }
+          }),
         ),
         mod_cass_show_barchart_wordcount_ui("cass_show_barchart_wordcount_ui_1")
         # ,
@@ -339,7 +347,8 @@ cass_explorer_app_server <- function(input, output, session) {
   shiny::observeEvent(
     eventExpr = list(
       input$go,
-      input$summarise_by
+      input$summarise_by,
+      input$barchart_position
     ),
     {
       if (is.null(input$summarise_by)) {
@@ -348,7 +357,8 @@ cass_explorer_app_server <- function(input, output, session) {
 
       mod_cass_show_barchart_wordcount_server("cass_show_barchart_wordcount_ui_1",
         count_df = word_count_summarised_df_r(),
-        period = input$summarise_by
+        period = input$summarise_by,
+        position = input$barchart_position
       )
     },
     ignoreInit = TRUE,

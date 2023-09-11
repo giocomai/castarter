@@ -19,9 +19,14 @@ mod_cass_show_barchart_wordcount_ui <- function(id) {
 #' @noRd
 mod_cass_show_barchart_wordcount_server <- function(id,
                                                     count_df,
-                                                    period = "year") {
+                                                    period = "year",
+                                                    position = "stack") {
   moduleServer(id, function(input, output, session) {
     ns <- session$ns
+    
+    if (is.null(position)) {
+      position <- "stack"
+    }
 
     if (is.null(count_df)) {
       return(NULL)
@@ -56,7 +61,8 @@ mod_cass_show_barchart_wordcount_server <- function(id,
     }
 
 
-    output$ggplot2_barchart <- shiny::renderPlot(cas_show_barchart_ggplot2(ggobj = gg_base_year_gg))
+    output$ggplot2_barchart <- shiny::renderPlot(cas_show_barchart_ggplot2(ggobj = gg_base_year_gg,
+                                                                           position = position))
   })
 }
 
