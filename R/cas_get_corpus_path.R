@@ -34,7 +34,8 @@ cas_get_corpus_path <- function(...,
       ),
     token,
     partition,
-    fs::path_sanitize(Sys.time(),
+    fs::path_sanitize(Sys.time() %>% 
+                        as.character(digits = 0L),
       replacement = "_"
     ) %>%
       stringr::str_replace(
