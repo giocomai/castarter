@@ -42,6 +42,7 @@ RUN Rscript -e 'remotes::install_version("slider",upgrade="never", version = "0.
 RUN Rscript -e 'source("https://raw.githubusercontent.com/apache/arrow/main/r/R/install-arrow.R");install_arrow()'
 RUN Rscript -e 'remotes::install_github("apache/arrow/r", build = FALSE)'
 RUN Rscript -e 'remotes::install_version("reactable",upgrade="never", version = "0.4.4")'
+RUN Rscript -e 'remotes::install_version("progress",upgrade="never", version = "1.2.2")'
 RUN mkdir /build_zone
 ADD . /build_zone
 WORKDIR /build_zone

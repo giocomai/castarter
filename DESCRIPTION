@@ -46,7 +46,8 @@ Imports:
     cli,
     dbplyr,
     PrettyCols,
-    reactable
+    reactable,
+    progress
 Suggests: 
     testthat (>= 3.0.0),
     roxygen2,
