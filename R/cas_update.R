@@ -30,7 +30,9 @@
 #'
 cas_update <- function(extract_links_partial,
                        extractors,
-                       wait = 3) {
+                       wait = 3, 
+                       user_agent = NULL,
+                       ...) {
   index_to_update_df <- cas_get_files_to_download(
     index = TRUE,
     download_again = TRUE
@@ -68,7 +70,8 @@ cas_update <- function(extract_links_partial,
 
         cas_download_index(
           download_df = current_download_df,
-          wait = wait
+          wait = wait,
+          user_agent = user_agent
         )
 
         new_links_df <- extract_links_partial(
@@ -92,6 +95,7 @@ cas_update <- function(extract_links_partial,
 
   cas_download(
     wait = wait,
+    user_agent = user_agent,
     ...
   )
 
