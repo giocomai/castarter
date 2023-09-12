@@ -7,6 +7,7 @@
 cas_explorer(
   corpus = castarter::cas_demo_corpus,
   default_pattern = NULL,
+  title = "castarter",
   advanced = FALSE,
   custom_head_html = "<meta name=\\"referrer\\" content=\\"no-referrer\\" />",
   onStart = NULL,

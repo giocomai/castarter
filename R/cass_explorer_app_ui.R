@@ -6,7 +6,7 @@
 #' @noRd
 cass_explorer_app_ui <- function(request) {
   bslib::page_navbar(
-    title = "castarter",
+    title = golem::get_golem_options("title"),
     theme = bslib::bs_theme(
       version = "5",
       preset = "sandstone",

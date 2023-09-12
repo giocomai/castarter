@@ -56,7 +56,7 @@ cas_write_corpus <- function(corpus = NULL,
   rlang::check_installed("arrow")
 
   corpus_df <- cas_check_read_db_contents_data(
-    corpus = NULL,
+    corpus = corpus,
     collect = TRUE,
     db_connection = NULL,
     db_folder = NULL,

@@ -4,7 +4,7 @@
 \alias{cas_update}
 \title{Update corpus}
 \usage{
-cas_update(extract_links_partial, extractors, wait = 3)
+cas_update(extract_links_partial, extractors, wait = 3, user_agent = NULL, ...)
 }
 \arguments{
 \item{extract_links_partial}{A partial function, typically created with
@@ -16,6 +16,10 @@ originally used by \code{cas_extract_links()}. See examples.}
 \item{wait}{Defaults to 1. Number of seconds to wait between downloading one
 page and the next. Can be increased to reduce server load, or can be set to
 0 when this is not an issue.}
+
+\item{user_agent}{Defaults to NULL. If given, passed to download method.}
+
+\item{...}{Passed to \code{cas_get_db_file()}.}
 }
 \description{
 Currently supports only update when re-downloading index urls is expected to
