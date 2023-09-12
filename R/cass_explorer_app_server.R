@@ -86,7 +86,13 @@ cass_explorer_app_server <- function(input, output, session) {
         dplyr::collect() %>%
         dplyr::select(id, date, url, title, text) %>%
         dplyr::collect() %>%
-        cas_kwic(pattern = input$pattern)
+        cas_kwic(pattern = stringr::str_flatten(c(
+          "(?i)",
+          cass_split_string(
+            string = input$pattern,
+            to_regex = TRUE
+          )
+        )))
     })
   )
 
