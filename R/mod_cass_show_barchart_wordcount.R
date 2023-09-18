@@ -43,8 +43,13 @@ mod_cass_show_barchart_wordcount_server <- function(id,
     } else {
       empty_pattern <- FALSE
     }
-
-    if (empty_pattern == TRUE) {
+    
+    if (length(counted_patterns) == 0) {
+      gg_base_year_gg <- cas_show_gg_base(count_df = count_df) +
+        ggplot2::theme(axis.title.x = ggplot2::element_blank(),
+                       title = ggplot2::element_text(colour = "#800000")) +
+        ggplot2::labs(title = "No match found in this corpus.\nCheck your pattern and try again.")
+    } else if (empty_pattern == TRUE) {
       gg_base_year_gg <- count_df %>%
         dplyr::mutate(date = factor(date)) %>%
         cas_show_gg_base() +
