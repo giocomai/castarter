@@ -1,5 +1,5 @@
 library("testthat")
-library("castarter2")
+library("castarter")
 
 
 test_that("If empty database, return data frame with zero row with cas_read_db_index", {

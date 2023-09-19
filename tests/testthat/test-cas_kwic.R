@@ -30,7 +30,7 @@ corpus <- tibble::tibble(
 
 test_that("cas_kwic works with one string", {
   expect_equal(
-    castarter2::cas_kwic(
+    castarter::cas_kwic(
       corpus = tibble::tibble(text = "The quick brown fox jumps over the lazy dog."),
       string = "fox"
     ),
@@ -44,7 +44,7 @@ test_that("cas_kwic works with one string", {
 
 test_that("cas_kwic works when match is the last word", {
   expect_equal(
-    castarter2::cas_kwic(
+    castarter::cas_kwic(
       corpus = tibble::tibble(text = "The quick brown fox jumps over the lazy dog."),
       string = "dog"
     ),
@@ -59,7 +59,7 @@ test_that("cas_kwic works when match is the last word", {
 
 test_that("cas_kwic works with two strings", {
   expect_equal(
-    castarter2::cas_kwic(
+    castarter::cas_kwic(
       corpus = tibble::tibble(text = "The quick brown fox jumps over the lazy dog."),
       string = c("fox", "dog")
     ),

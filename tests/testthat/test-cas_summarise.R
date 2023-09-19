@@ -2,8 +2,8 @@ library("testthat")
 test_that("cas_summarise works when single word given", {
   expect_equal(
     object = {
-      castarter2::cas_count(
-        corpus = castarter2::cas_demo_corpus,
+      castarter::cas_count(
+        corpus = castarter::cas_demo_corpus,
         words = c("moscow")
       ) %>%
         cas_summarise(f = sum) %>%
@@ -11,8 +11,8 @@ test_that("cas_summarise works when single word given", {
         sum()
     },
     expected = {
-      castarter2::cas_count(
-        corpus = castarter2::cas_demo_corpus,
+      castarter::cas_count(
+        corpus = castarter::cas_demo_corpus,
         words = c("moscow")
       ) %>%
         #  cas_summarise(f = sum) %>%
@@ -25,8 +25,8 @@ test_that("cas_summarise works when single word given", {
 test_that("cas_summarise works when more than one word given", {
   expect_equal(
     object = {
-      castarter2::cas_count(
-        corpus = castarter2::cas_demo_corpus,
+      castarter::cas_count(
+        corpus = castarter::cas_demo_corpus,
         words = c("moscow", "russia")
       ) %>%
         cas_summarise(f = sum) %>%
@@ -34,8 +34,8 @@ test_that("cas_summarise works when more than one word given", {
         sum()
     },
     expected = {
-      castarter2::cas_count(
-        corpus = castarter2::cas_demo_corpus,
+      castarter::cas_count(
+        corpus = castarter::cas_demo_corpus,
         words = c("moscow", "russia")
       ) %>%
         #  cas_summarise(f = sum) %>%
@@ -49,8 +49,8 @@ test_that("cas_summarise works when more than one word given", {
 test_that("cas_summarise works when more than one word given and period is not NULL", {
   expect_equal(
     object = {
-      castarter2::cas_count(
-        corpus = castarter2::cas_demo_corpus,
+      castarter::cas_count(
+        corpus = castarter::cas_demo_corpus,
         words = c("moscow", "russia")
       ) %>%
         cas_summarise(f = sum, period = "month") %>%
@@ -58,8 +58,8 @@ test_that("cas_summarise works when more than one word given and period is not N
         sum()
     },
     expected = {
-      castarter2::cas_count(
-        corpus = castarter2::cas_demo_corpus,
+      castarter::cas_count(
+        corpus = castarter::cas_demo_corpus,
         words = c("moscow", "russia")
       ) %>%
         # cas_summarise(f = sum, period = "month") %>%
@@ -72,16 +72,16 @@ test_that("cas_summarise works when more than one word given and period is not N
 
 test_that("cas_summarise works when one word given, rolling mean, and period is not NULL", {
   expect_false(object = {
-    summurised_sum <- castarter2::cas_count(
-      corpus = castarter2::cas_demo_corpus,
+    summurised_sum <- castarter::cas_count(
+      corpus = castarter::cas_demo_corpus,
       words = c("moscow", "russia")
     ) %>%
       cas_summarise(f = sum, period = "month", before = 3, after = 3) %>%
       dplyr::pull(n) %>%
       sum()
 
-    counted_sum <- castarter2::cas_count(
-      corpus = castarter2::cas_demo_corpus,
+    counted_sum <- castarter::cas_count(
+      corpus = castarter::cas_demo_corpus,
       words = c("moscow", "russia")
     ) %>%
       dplyr::pull(n) %>%
@@ -95,16 +95,16 @@ test_that("cas_summarise works when one word given, rolling mean, and period is 
 
 test_that("cas_summarise works when one word given, rolling mean, and period is NULL", {
   expect_false(object = {
-    summurised_sum <- castarter2::cas_count(
-      corpus = castarter2::cas_demo_corpus,
+    summurised_sum <- castarter::cas_count(
+      corpus = castarter::cas_demo_corpus,
       words = c("moscow", "russia")
     ) %>%
       cas_summarise(f = sum, before = 3, after = 3) %>%
       dplyr::pull(n) %>%
       sum()
 
-    counted_sum <- castarter2::cas_count(
-      corpus = castarter2::cas_demo_corpus,
+    counted_sum <- castarter::cas_count(
+      corpus = castarter::cas_demo_corpus,
       words = c("moscow", "russia")
     ) %>%
       dplyr::pull(n) %>%

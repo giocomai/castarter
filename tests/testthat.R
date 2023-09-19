@@ -1,4 +1,4 @@
 library(testthat)
-library(castarter2)
+library(castarter)
 
-test_check("castarter2")
+test_check("castarter")

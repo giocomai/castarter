@@ -2,8 +2,8 @@ library("testthat")
 
 test_that("actually outputs girage object", {
   expect_equal(object = {
-    count_df <- castarter2::cas_count(
-      corpus = castarter2::cas_demo_corpus,
+    count_df <- castarter::cas_count(
+      corpus = castarter::cas_demo_corpus,
       words = c("moscow", "russia")
     ) %>%
       cas_summarise(period = "quarter", f = sum)
@@ -30,8 +30,8 @@ test_that("actually outputs girage object", {
       ))
 
 
-    castarter2::cas_count(
-      corpus = castarter2::cas_demo_corpus,
+    castarter::cas_count(
+      corpus = castarter::cas_demo_corpus,
       words = c("moscow")
     ) %>%
       cas_summarise(period = "quarter", f = sum) %>%
