@@ -48,12 +48,14 @@ cas_summarise <- function(count_df,
                           after = 0L,
                           complete = FALSE,
                           auto_convert = FALSE) {
-  if (nrow(count_df)==0) {
-    return(tibble::tibble({{ date_column_name }} := character(), 
-                          {{ pattern_column_name }} := character(), 
-                          {{ n_column_name }} := double()))
+  if (nrow(count_df) == 0) {
+    return(tibble::tibble(
+      {{ date_column_name }} := character(),
+      {{ pattern_column_name }} := character(),
+      {{ n_column_name }} := double()
+    ))
   }
-  
+
   if (is.null(period)) {
     summarised <- count_df %>%
       dplyr::group_by({{ pattern_column_name }}, .drop = TRUE) %>%

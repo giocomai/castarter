@@ -30,7 +30,7 @@
 #'
 cas_update <- function(extract_links_partial,
                        extractors,
-                       wait = 3, 
+                       wait = 3,
                        user_agent = NULL,
                        ...) {
   index_to_update_df <- cas_get_files_to_download(

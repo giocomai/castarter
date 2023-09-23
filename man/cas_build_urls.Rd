@@ -13,7 +13,7 @@ cas_build_urls(
   increase_by = 1,
   date_format = "Ymd",
   start_date = NULL,
-  end_date = Sys.Date(),
+  end_date = Sys.Date() - 1,
   date_separator = NULL,
   increase_date_by = "day",
   reversed_order = FALSE,

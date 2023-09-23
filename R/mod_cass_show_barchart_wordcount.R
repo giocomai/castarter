@@ -23,7 +23,7 @@ mod_cass_show_barchart_wordcount_server <- function(id,
                                                     position = "stack") {
   moduleServer(id, function(input, output, session) {
     ns <- session$ns
-    
+
     if (is.null(position)) {
       position <- "stack"
     }
@@ -43,11 +43,13 @@ mod_cass_show_barchart_wordcount_server <- function(id,
     } else {
       empty_pattern <- FALSE
     }
-    
+
     if (length(counted_patterns) == 0) {
       gg_base_year_gg <- cas_show_gg_base(count_df = count_df) +
-        ggplot2::theme(axis.title.x = ggplot2::element_blank(),
-                       title = ggplot2::element_text(colour = "#800000")) +
+        ggplot2::theme(
+          axis.title.x = ggplot2::element_blank(),
+          title = ggplot2::element_text(colour = "#800000")
+        ) +
         ggplot2::labs(title = "No match found in this corpus.\nCheck your pattern and try again.")
     } else if (empty_pattern == TRUE) {
       gg_base_year_gg <- count_df %>%
@@ -66,8 +68,10 @@ mod_cass_show_barchart_wordcount_server <- function(id,
     }
 
 
-    output$ggplot2_barchart <- shiny::renderPlot(cas_show_barchart_ggplot2(ggobj = gg_base_year_gg,
-                                                                           position = position))
+    output$ggplot2_barchart <- shiny::renderPlot(cas_show_barchart_ggplot2(
+      ggobj = gg_base_year_gg,
+      position = position
+    ))
   })
 }
 

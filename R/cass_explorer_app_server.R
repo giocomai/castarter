@@ -236,11 +236,15 @@ cass_explorer_app_server <- function(input, output, session) {
             selected = "year"
           ),
           shiny::tagList({
-            if (length(cass_split_string(string = input$pattern))>1) {
-              shiny::radioButtons(inputId = "barchart_position",
-                                  label = "Bars should be:",
-                                  choices = c(stacked = "stack", 
-                                              dodged = "dodge"))
+            if (length(cass_split_string(string = input$pattern)) > 1) {
+              shiny::radioButtons(
+                inputId = "barchart_position",
+                label = "Bars should be:",
+                choices = c(
+                  stacked = "stack",
+                  dodged = "dodge"
+                )
+              )
             }
           }),
         ),
