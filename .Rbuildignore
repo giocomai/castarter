@@ -1,3 +1,5 @@
+^renv$
+^renv\.lock$
 ^castarter2\.Rproj$
 ^\.Rproj\.user$
 ^README\.Rmd$
@@ -10,3 +12,4 @@
 ^pkgdown$
 ^doc$
 ^Meta$
+^deploy$

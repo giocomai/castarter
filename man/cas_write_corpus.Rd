@@ -13,7 +13,7 @@ cas_write_corpus(
   text = text,
   tif_compliant = TRUE,
   file_format = "parquet",
-  partition = NULL,
+  partition = "year",
   token = "full_text",
   corpus_folder = "corpus",
   path = NULL,
