@@ -100,8 +100,13 @@ cas_write_db_index(urls = index_df)
 cas_read_db_index()
 ```
 
+```{r eval=TRUE}
+cas_get_base_path(create_folder_if_missing = TRUE)
+```
+
+
 ```{r}
-cas_get_files_to_download(index = TRUE)
+# cas_get_files_to_download(index = TRUE)
 ```
 
 ## Download files
@@ -110,7 +115,7 @@ cas_get_files_to_download(index = TRUE)
 
 
 ```{r}
-cas_download(index = TRUE)
+cas_download(index = TRUE, create_folder_if_missing = TRUE)
 ```
 
 ## Check how the download is going

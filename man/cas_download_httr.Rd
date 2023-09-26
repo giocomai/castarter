@@ -10,6 +10,7 @@ cas_download_httr(
   index_group = NULL,
   overwrite_file = FALSE,
   wait = 1,
+  create_folder_if_missing = NULL,
   pause_base = 2,
   pause_cap = 256,
   pause_min = 4,

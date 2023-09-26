@@ -24,7 +24,7 @@ cas_get_corpus_path <- function(...,
   fs::path(
     cas_get_base_folder(
       ...,
-      create_if_missing = FALSE
+      create_folder_if_missing = FALSE
     ),
     corpus_folder,
     file_format %>%

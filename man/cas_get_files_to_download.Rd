@@ -10,6 +10,7 @@ cas_get_files_to_download(
   index_group = NULL,
   desc_id = FALSE,
   batch = NULL,
+  create_folder_if_missing = NULL,
   custom_folder = NULL,
   custom_path = NULL,
   file_format = "html",

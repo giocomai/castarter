@@ -10,6 +10,7 @@ cas_download_index(
   index_group = NULL,
   file_format = "html",
   overwrite_file = FALSE,
+  create_folder_if_missing = NULL,
   wait = 1,
   pause_base = 2,
   pause_cap = 256,
