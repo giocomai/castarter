@@ -46,19 +46,27 @@ cass_explorer_app_server <- function(input, output, session) {
           date <= lubridate::as_date(input$date_range[[2]])
         )
 
+
       if (is.null(input$pattern) == FALSE) {
         if (input$pattern != "") {
+          if (golem::get_golem_options("collect") == TRUE) {
+            active_corpus_df <- active_corpus_df %>%
+              dplyr::collect()
+          }
+
           current_pattern <- cass_split_string(
             string = input$pattern,
             to_regex = TRUE
           )
-          
+
           active_corpus_df <- active_corpus_df %>%
             dplyr::filter(
               stringr::str_detect(
                 string = text,
-                pattern = stringr::regex(pattern = current_pattern,
-                                         ignore_case = TRUE)
+                pattern = stringr::regex(
+                  pattern = current_pattern,
+                  ignore_case = TRUE
+                )
               )
             )
         }
