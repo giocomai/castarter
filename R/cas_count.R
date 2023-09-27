@@ -112,7 +112,8 @@ cas_count_single <- function(corpus,
       {{ group_by }},
       {{ pattern_column_name }} := pattern,
       {{ n_column_name }}
-    )
+    ) %>% 
+    dplyr::collect()
 }
 
 
