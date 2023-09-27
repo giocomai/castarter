@@ -93,19 +93,13 @@ cas_count_single <- function(corpus,
                              pattern_column_name = word,
                              n_column_name = n,
                              locale = "en") {
-  if (ignore_case == TRUE) {
-    corpus <- corpus %>%
-      dplyr::mutate({{ text }} := {{ text }} %>%
-        stringr::str_to_lower(locale = locale))
-
-    pattern <- pattern %>%
-      stringr::str_to_lower(locale = locale)
-  }
-
   output_df <- corpus %>%
     dplyr::mutate({{ n_column_name }} := stringr::str_count(
       string = {{ text }},
-      pattern = !!pattern
+      pattern = stringr::regex(
+        pattern = !!pattern,
+        ignore_case = ignore_case
+      )
     )) %>%
     dplyr::group_by({{ group_by }}) %>%
     dplyr::summarise(
@@ -118,8 +112,7 @@ cas_count_single <- function(corpus,
       {{ group_by }},
       {{ pattern_column_name }} := pattern,
       {{ n_column_name }}
-    ) %>%
-    dplyr::collect()
+    )
 }
 
 
