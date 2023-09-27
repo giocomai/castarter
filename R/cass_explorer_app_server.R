@@ -41,25 +41,24 @@ cass_explorer_app_server <- function(input, output, session) {
     valueExpr = ({
       active_corpus_df <- golem::get_golem_options("corpus") %>%
         dplyr::filter(
+          is.na(date) == FALSE,
           date >= lubridate::as_date(input$date_range[[1]]),
           date <= lubridate::as_date(input$date_range[[2]])
         )
 
       if (is.null(input$pattern) == FALSE) {
         if (input$pattern != "") {
-          current_pattern <- stringr::str_flatten(c(
-            "(?i)",
-            cass_split_string(
-              string = input$pattern,
-              to_regex = TRUE
-            )
-          ))
-
+          current_pattern <- cass_split_string(
+            string = input$pattern,
+            to_regex = TRUE
+          )
+          
           active_corpus_df <- active_corpus_df %>%
             dplyr::filter(
               stringr::str_detect(
                 string = text,
-                pattern = current_pattern
+                pattern = stringr::regex(pattern = current_pattern,
+                                         ignore_case = TRUE)
               )
             )
         }
