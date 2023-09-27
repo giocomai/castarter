@@ -1,0 +1,29 @@
+golem::add_dockerfile_with_renv(
+  source_folder = ".",
+  lockfile = "renv.lock",
+  output_dir = fs::path("deploy"),
+  distro = "focal",
+  from = "rocker/shiny",
+  port = 3838,
+  update_tar_gz = TRUE,
+  dockerfile_cmd = ""
+)
+
+### at the beginning of base
+RUN apt-get update -y && apt-get install -y fonts-roboto fonts-roboto-fontface libfontconfig1-dev libcairo2-dev libxt6 && rm -rf /var/lib/apt/lists/*
+
+### before renv
+RUN R -e 'install.packages(c("MASS"))'
+
+  
+### at the end of base
+RUN R -e 'install.packages(c("extrafont"))'
+RUN R -e 'extrafont::font_import(prompt=FALSE)'
+RUN R -e 'extrafont::loadfonts()'
+RUN R -e 'install.packages("arrow")'
+RUN Rscript -e 'remotes::install_github("apache/arrow/r", build = FALSE)'
+
+## build
+docker build -f Dockerfile_base --progress=plain -t castarter_base .
+docker build -f Dockerfile --progress=plain -t giocomai/castarter:2023-09-19 .
+docker push giocomai/castarter:2023-09-19

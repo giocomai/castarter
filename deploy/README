@@ -1,0 +1,4 @@
+docker build -f Dockerfile_base --progress=plain -t castarter_base .
+docker build -f Dockerfile --progress=plain -t castarter:latest .
+docker run -p 3838:3838 castarter:latest
+# then go to 127.0.0.1:3838
