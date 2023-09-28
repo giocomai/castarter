@@ -437,7 +437,7 @@ cas_extract_links <- function(id = NULL,
             )
           } else {
             cas_write_db_contents_id(
-              contents_id_df = links_to_store_df,
+              urls = links_to_store_df,
               db_connection = db,
               disconnect_db = FALSE,
               quiet = TRUE,

@@ -13,7 +13,8 @@ cas_write_db_index(
 )
 }
 \arguments{
-\item{urls}{A data frame with three columns, such as \code{casdb_empty_index_id}, or a character vector.}
+\item{urls}{A data frame with three columns, with the same name and type as
+\code{casdb_empty_index_id}, or a character vector.}
 
 \item{overwrite}{Logical, defaults to FALSE. If TRUE, checks if matching data are previously held in the table and overwrites them. This should be used with caution, as it may overwrite completely the selected table.}
 
@@ -29,7 +30,8 @@ settings (see example).}
 Invisibly returns only new rows added.
 }
 \description{
-If some URLs are already included in the database, it appends only the new ones: URLs are expected to be unique.
+If some URLs are already included in the database, it appends only the new
+ones: URLs are expected to be unique.
 }
 \examples{
 

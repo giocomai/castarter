@@ -1,8 +1,10 @@
 #' Write index URLs to local database
 #'
-#' If some URLs are already included in the database, it appends only the new ones: URLs are expected to be unique.
+#' If some URLs are already included in the database, it appends only the new
+#' ones: URLs are expected to be unique.
 #'
-#' @param urls A data frame with three columns, such as \code{casdb_empty_index_id}, or a character vector.
+#' @param urls A data frame with three columns, with the same name and type as
+#'   \code{casdb_empty_index_id}, or a character vector.
 #'
 #' @inheritParams cas_write_to_db
 #'
@@ -38,7 +40,7 @@ cas_write_db_index <- function(urls,
     if (identical(colnames(urls), colnames(casdb_empty_index_id)) & identical(sapply(urls, class), sapply(casdb_empty_index_id, class))) {
       urls_df <- urls
     } else {
-      usethis::ui_stop("urls data frame must match exactly the column names and types of {usethis::ui_code('casdb_empty_index_id')}")
+      cli::cli_abort("{.var urls} data frame must match exactly the column names and types of {.code casdb_empty_index_id}")
     }
   } else {
     urls_df <- cas_build_urls(
@@ -139,8 +141,8 @@ cas_write_db_index <- function(urls,
 #' cas_write_db_index(urls = urls_df)
 #'
 #' cas_read_db_index()
-cas_read_db_index <- function(db_folder = NULL,
-                              db_connection = NULL,
+cas_read_db_index <- function(db_connection = NULL,
+                              db_folder = NULL,
                               index_group = NULL,
                               ...) {
   db_result <- tryCatch(

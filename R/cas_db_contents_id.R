@@ -3,7 +3,7 @@
 #' If some URLs are already included in the database, it appends only the new
 #' ones: URLs are expected to be unique.
 #'
-#' @param contents_id_df A data frame with five columns, such as
+#' @param urls A data frame with five columns, such as
 #'   \code{casdb_empty_contents_id}, or a character vector.
 #' @param quiet Defaults to FALSE. If set to TRUE, messages on number of lines
 #'   added are not shown.
@@ -36,7 +36,7 @@
 #' cas_write_db_contents_id(urls = urls_df)
 #'
 #' cas_read_db_contents_id()
-cas_write_db_contents_id <- function(contents_id_df,
+cas_write_db_contents_id <- function(urls,
                                      overwrite = FALSE,
                                      db_connection = NULL,
                                      disconnect_db = FALSE,
@@ -47,7 +47,7 @@ cas_write_db_contents_id <- function(contents_id_df,
     return(invisible(NULL))
   }
 
-  if (nrow(contents_id_df) == 0) {
+  if (nrow(urls) == 0) {
     return(invisible(NULL))
   }
 
@@ -64,7 +64,7 @@ cas_write_db_contents_id <- function(contents_id_df,
       dplyr::collect()
 
     if (nrow(previous_contents_df) > 0) {
-      links_to_add_df <- contents_id_df %>%
+      links_to_add_df <- urls %>%
         dplyr::anti_join(
           y = previous_contents_df,
           by = c("url")
@@ -84,10 +84,10 @@ cas_write_db_contents_id <- function(contents_id_df,
           as.numeric()
       }
     } else {
-      links_to_add_df <- contents_id_df
+      links_to_add_df <- urls
     }
   } else {
-    links_to_add_df <- contents_id_df %>%
+    links_to_add_df <- urls %>%
       dplyr::collect()
   }
 
@@ -118,6 +118,7 @@ cas_write_db_contents_id <- function(contents_id_df,
 
   invisible(links_to_add_df)
 }
+
 
 #' Read contents from local database
 #'

@@ -5,8 +5,8 @@
 \title{Read index from local database}
 \usage{
 cas_read_db_index(
-  db_folder = NULL,
   db_connection = NULL,
+  db_folder = NULL,
   index_group = NULL,
   ...
 )
