@@ -44,6 +44,10 @@
 #'   are previously stored in database, and if they are, it discards them. If
 #'   FALSE, and `write_to_db` is also set to FALSE, it does not check for
 #'   previously stored links.
+#' @param check_again Defaults to FALSE. If FALSE, files from where are at least
+#'   a link has been extracted are not re-processed. If TRUE, they are processed
+#'   again. By default, only new links are then actually included in the output
+#'   or stored in the local database.
 #' @param write_to_db Logical, defaults to FALSE. If TRUE stored newly extracted
 #'   links in the database, associates each of them with an id, and records the
 #'   source for each link.
@@ -78,6 +82,7 @@ cas_extract_links <- function(id = NULL,
                               keep_only_within_domain = TRUE,
                               sample = FALSE,
                               check_previous = TRUE,
+                              check_again = TRUE,
                               encoding = "UTF-8",
                               reverse_order = FALSE,
                               db_connection = NULL,
@@ -156,19 +161,23 @@ cas_extract_links <- function(id = NULL,
   if (output_index == TRUE) {
     # do nothing, as source is not kept for index urls
   } else {
-    local_files_df <- local_files_df %>%
-      dplyr::anti_join(
-        y = previous_links_df %>%
-          dplyr::select(-"id") %>%
-          dplyr::rename(
-            id = source_index_id,
-            batch = source_index_batch
-          ),
-        by = c(
-          "id",
-          "batch"
+    if (check_again == TRUE) {
+      # do nothing, as all index files should be read
+    } else {
+      local_files_df <- local_files_df %>%
+        dplyr::anti_join(
+          y = previous_links_df %>%
+            dplyr::select(-"id") %>%
+            dplyr::rename(
+              id = source_index_id,
+              batch = source_index_batch
+            ),
+          by = c(
+            "id",
+            "batch"
+          )
         )
-      )
+    }
   }
 
   if (is.null(index_group) == FALSE) {
