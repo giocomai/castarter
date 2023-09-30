@@ -44,6 +44,9 @@
 #'   are previously stored in database, and if they are, it discards them. If
 #'   FALSE, and `write_to_db` is also set to FALSE, it does not check for
 #'   previously stored links.
+#' @param write_to_db Logical, defaults to FALSE. If TRUE stored newly extracted
+#'   links in the database, associates each of them with an id, and records the
+#'   source for each link.
 #' @return A data frame.
 #' @export
 #' @examples
@@ -70,7 +73,7 @@ cas_extract_links <- function(id = NULL,
                               attribute_type = "href",
                               append_string = NULL,
                               remove_string = NULL,
-                              write_to_db = TRUE,
+                              write_to_db = FALSE,
                               file_format = "html",
                               keep_only_within_domain = TRUE,
                               sample = FALSE,

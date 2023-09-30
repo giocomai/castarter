@@ -25,7 +25,7 @@ cas_extract_links(
   attribute_type = "href",
   append_string = NULL,
   remove_string = NULL,
-  write_to_db = TRUE,
+  write_to_db = FALSE,
   file_format = "html",
   keep_only_within_domain = TRUE,
   sample = FALSE,
@@ -91,6 +91,10 @@ the extracted page.}
 
 \item{remove_string}{If provided, remove given string (or strings) from
 links.}
+
+\item{write_to_db}{Logical, defaults to FALSE. If TRUE stored newly extracted
+links in the database, associates each of them with an id, and records the
+source for each link.}
 
 \item{keep_only_within_domain}{Logical, defaults to TRUE. If TRUE, and domain
 given, links to external websites are dropped.}
