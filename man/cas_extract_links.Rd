@@ -30,7 +30,7 @@ cas_extract_links(
   keep_only_within_domain = TRUE,
   sample = FALSE,
   check_previous = TRUE,
-  check_again = TRUE,
+  check_again = FALSE,
   encoding = "UTF-8",
   reverse_order = FALSE,
   db_connection = NULL,
