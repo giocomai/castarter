@@ -16,7 +16,9 @@ cas_write_db_index(
 \item{urls}{A data frame with three columns, with the same name and type as
 \code{casdb_empty_index_id}, or a character vector.}
 
-\item{overwrite}{Logical, defaults to FALSE. If TRUE, checks if matching data are previously held in the table and overwrites them. This should be used with caution, as it may overwrite completely the selected table.}
+\item{overwrite}{Logical, defaults to FALSE. If TRUE, checks if matching data
+are previously held in the table and overwrites them. This should be used
+with caution, as it may overwrite completely the selected table.}
 
 \item{db_connection}{Defaults to NULL. If NULL, uses local SQLite database.
 If given, must be a connection object or a list with relevant connection

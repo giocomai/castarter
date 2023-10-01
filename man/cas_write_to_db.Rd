@@ -14,11 +14,14 @@ cas_write_to_db(
 )
 }
 \arguments{
-\item{df}{A data frame. Must correspond with the type of data expected for each table.}
+\item{df}{A data frame. Must correspond with the type of data expected for
+each table.}
 
 \item{table}{Name of the table. See readme for details.}
 
-\item{overwrite}{Logical, defaults to FALSE. If TRUE, checks if matching data are previously held in the table and overwrites them. This should be used with caution, as it may overwrite completely the selected table.}
+\item{overwrite}{Logical, defaults to FALSE. If TRUE, checks if matching data
+are previously held in the table and overwrites them. This should be used
+with caution, as it may overwrite completely the selected table.}
 
 \item{db_connection}{Defaults to NULL. If NULL, uses local SQLite database.
 If given, must be a connection object or a list with relevant connection
@@ -29,7 +32,9 @@ settings (see example).}
 \item{...}{Passed to \code{cas_get_db_file()}.}
 }
 \value{
-If successful, returns silently the same data frame provided as input and written to the database. Returns silently NULL, if nothing is added, e.g. because \code{use_db} is set to FALSE.
+If successful, returns invisibly the same data frame provided as
+input and written to the database. Returns silently NULL, if nothing is
+added, e.g. because \code{use_db} is set to FALSE.
 }
 \description{
 Generic function for writing to database

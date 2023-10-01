@@ -534,16 +534,21 @@ cas_disconnect_from_db <- function(db_connection = NULL,
 
 #' Generic function for writing to database
 #'
-#' @param df A data frame. Must correspond with the type of data expected for each table.
+#' @param df A data frame. Must correspond with the type of data expected for
+#'   each table.
 #' @param table Name of the table. See readme for details.
-#' @param overwrite Logical, defaults to FALSE. If TRUE, checks if matching data are previously held in the table and overwrites them. This should be used with caution, as it may overwrite completely the selected table.
+#' @param overwrite Logical, defaults to FALSE. If TRUE, checks if matching data
+#'   are previously held in the table and overwrites them. This should be used
+#'   with caution, as it may overwrite completely the selected table.
 #'
 #' @family database functions
 #'
 #' @inheritParams cas_connect_to_db
 #' @inheritParams cas_disconnect_from_db
 #'
-#' @return If successful, returns silently the same data frame provided as input and written to the database. Returns silently NULL, if nothing is added, e.g. because `use_db` is set to FALSE.
+#' @return If successful, returns invisibly the same data frame provided as
+#'   input and written to the database. Returns silently NULL, if nothing is
+#'   added, e.g. because `use_db` is set to FALSE.
 #' @export
 #'
 #' @examples
@@ -623,6 +628,7 @@ cas_write_to_db <- function(df,
     db_connection = db,
     disconnect_db = disconnect_db
   )
+  invisible(df)
 }
 
 
@@ -662,7 +668,10 @@ cas_read_from_db <- function(table,
                              disconnect_db = FALSE,
                              ...) {
   if (cas_check_use_db(...) == FALSE) {
-    usethis::ui_stop("Database not set. Set the database connection with `cas_set_options()` or pass database connection with the parameter `db_connection`.")
+    cli::cli_abort(c(
+      x = "Database not set.",
+      i = "Set the database connection with {.fun cas_set_options} or pass database connection with the parameter {.field db_connection}."
+    ))
   }
 
   db <- cas_connect_to_db(
