@@ -9,7 +9,7 @@
 #' @param quiet Defaults to FALSE. If set to TRUE, messages on number of lines
 #'   added are not shown.
 #' @param check_previous Defaults to TRUE. If set to FALSE, the given input is
-#'   stored in the database without checking if the same url had already been
+#'   stored in the database without checking if the same id had already been
 #'   stored.
 #'
 #' @inheritParams cas_write_to_db
@@ -39,38 +39,48 @@ cas_write_db_contents_data <- function(contents_df,
   )
 
   if (check_previous == TRUE) {
-    previous_contents_df <- cas_read_db_contents_data(
+    previous_contents_original_df <- cas_read_db_contents_data(
       ...,
       disconnect_db = FALSE
     )
 
-    if (is.null(previous_contents_df) == TRUE) {
+    if (is.null(previous_contents_original_df) == TRUE) {
       contents_to_add_df <- contents_df %>%
         dplyr::collect()
-    } else if (nrow(previous_contents_df) > 0) {
-      if (identical(colnames(contents_to_add_df), colnames(previous_contents_df)) &
-        identical(sapply(contents_to_add_df, class), sapply(
-          contents_to_add_df,
-          class
-        ))) {
-        # do nothing, columns are cosistent
-      } else {
-        cli::cli_abort(c(
-          x = "One or more column names or types in {.var contents_df} do not match those of previously stored contents.",
-          i = "You can retrieve previously stored contents with {.fun cas_read_db_contents_data}"
-        ))
-      }
-
-      contents_to_add_df <- contents_df %>%
-        dplyr::anti_join(
-          y = previous_contents_df |>
-            dplyr::select(id) |>
-            dplyr::collect(),
-          by = c("id")
-        )
     } else {
-      contents_to_add_df <- contents_df %>%
+      previous_contents_df <- previous_contents_original_df |>
+        dplyr::select(id) |>
         dplyr::collect()
+
+      previous_contents_reference_df <- previous_contents_original_df |>
+        head(0) |>
+        dplyr::collect()
+
+      if (nrow(previous_contents_df) > 0) {
+        if (identical(
+          colnames(contents_df),
+          colnames(previous_contents_reference_df)
+        ) &
+          identical(
+            sapply(contents_df, class),
+            sapply(previous_contents_reference_df, class)
+          )) {
+          # do nothing, columns are cosistent
+        } else {
+          cli::cli_abort(c(
+            x = "One or more column names or types in {.var contents_df} do not match those of previously stored contents.",
+            i = "You can retrieve previously stored contents with {.fun cas_read_db_contents_data}"
+          ))
+        }
+        contents_to_add_df <- contents_df %>%
+          dplyr::anti_join(
+            y = previous_contents_df,
+            by = c("id")
+          )
+      } else {
+        contents_to_add_df <- contents_df %>%
+          dplyr::collect()
+      }
     }
   } else {
     contents_to_add_df <- contents_df %>%
@@ -79,7 +89,7 @@ cas_write_db_contents_data <- function(contents_df,
 
   contents_to_add_n <- nrow(contents_to_add_df)
 
-  if (links_to_add_n > 0) {
+  if (contents_to_add_n > 0) {
     added_contents_df <- cas_write_to_db(
       df = contents_to_add_df,
       table = "contents_data",
@@ -89,7 +99,7 @@ cas_write_db_contents_data <- function(contents_df,
       ...
     )
     if (quiet == FALSE) {
-      cli::cli_inform(c(v = "Contents added to {.field contents_data} table: {.val {links_to_add_n}}"))
+      cli::cli_inform(c(v = "Contents added to {.field contents_data} table: {.val {contents_to_add_n}}"))
     }
   } else {
     if (quiet == FALSE) {

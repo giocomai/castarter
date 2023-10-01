@@ -29,7 +29,7 @@ settings (see example).}
 added are not shown.}
 
 \item{check_previous}{Defaults to TRUE. If set to FALSE, the given input is
-stored in the database without checking if the same url had already been
+stored in the database without checking if the same id had already been
 stored.}
 
 \item{...}{Passed to \code{cas_get_db_file()}.}
