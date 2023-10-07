@@ -210,7 +210,7 @@ cas_reset_download_contents <- function(batch = NULL,
                                         ...) {
   if (is.null(batch) == TRUE) {
     if (usethis::ui_yeah("Do you wish to delete all files and all {usethis::ui_field('contents')} download files and records in the database for the the website {usethis::ui_field(cas_get_options(...)$website)}?")) {
-      folder_path <- cas_get_base_path(contents = TRUE, file_format = file_format)
+      folder_path <- cas_get_base_path(index = FALSE, file_format = file_format)
       n_folders <- fs::dir_ls(
         path = folder_path,
         recurse = FALSE,
