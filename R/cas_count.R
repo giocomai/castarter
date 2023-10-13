@@ -98,7 +98,7 @@ cas_count_single <- function(corpus,
       string = {{ text }},
       pattern = stringr::regex(
         pattern = !!pattern,
-        ignore_case = ignore_case
+        ignore_case = !!ignore_case
       )
     )) %>%
     dplyr::group_by({{ group_by }}) %>%
