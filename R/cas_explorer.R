@@ -1,10 +1,11 @@
 #' Run the Shiny Application
 #'
-#' @param collect Defaults to TRUE. If TRUE, retrieves the corpus in memory,
-#'   even if is originally read from a parquet file or a database. Default may
-#'   change when versoin 14.0 of `arrow` will have full support of using stringr
-#'   in context (currently, depending on the arrow version, there may be issues
-#'   were case is not ignored).
+#' @param collect Defaults to FALSE. If TRUE, retrieves the corpus in memory,
+#'   even if is originally read from a parquet file or a database. With
+#'   `arrow` version before 14 that do not have full support of using stringr
+#'   in context, setting this to TRUE is probably advisable (currently,
+#'   depending on the arrow version, there may be issues where upper/lower case 
+#'   is not ignored).
 #' @param ... arguments to pass to golem_opts. See `?golem::get_golem_options`
 #'   for more details.
 #' @inheritParams shiny::shinyApp
@@ -15,7 +16,7 @@
 cas_explorer <- function(corpus = castarter::cas_demo_corpus,
                          default_pattern = NULL,
                          title = "castarter",
-                         collect = TRUE,
+                         collect = FALSE,
                          advanced = FALSE,
                          custom_head_html = '<meta name="referrer" content="no-referrer" />',
                          onStart = NULL,
