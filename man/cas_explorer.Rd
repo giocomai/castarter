@@ -8,7 +8,7 @@ cas_explorer(
   corpus = castarter::cas_demo_corpus,
   default_pattern = NULL,
   title = "castarter",
-  collect = TRUE,
+  collect = FALSE,
   advanced = FALSE,
   custom_head_html = "<meta name=\\"referrer\\" content=\\"no-referrer\\" />",
   onStart = NULL,
@@ -19,11 +19,12 @@ cas_explorer(
 )
 }
 \arguments{
-\item{collect}{Defaults to TRUE. If TRUE, retrieves the corpus in memory,
-even if is originally read from a parquet file or a database. Default may
-change when versoin 14.0 of \code{arrow} will have full support of using stringr
-in context (currently, depending on the arrow version, there may be issues
-were case is not ignored).}
+\item{collect}{Defaults to FALSE. If TRUE, retrieves the corpus in memory,
+even if is originally read from a parquet file or a database. With
+\code{arrow} version before 14 that do not have full support of using stringr
+in context, setting this to TRUE is probably advisable (currently,
+depending on the arrow version, there may be issues where upper/lower case
+is not ignored).}
 
 \item{onStart}{A function that will be called before the app is actually run.
 This is only needed for \code{shinyAppObj}, since in the \code{shinyAppDir}

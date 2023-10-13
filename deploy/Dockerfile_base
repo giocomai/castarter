@@ -11,5 +11,5 @@ RUN R -e 'install.packages(c("extrafont"))'
 RUN R -e 'extrafont::font_import(prompt=FALSE)'
 RUN R -e 'extrafont::loadfonts()'
 
-RUN R -e 'install.packages("arrow")'
+RUN R -e 'source("https://raw.githubusercontent.com/apache/arrow/main/r/R/install-arrow.R");install_arrow(nightly = FALSE)'
 RUN Rscript -e 'remotes::install_github("apache/arrow/r", build = FALSE)'
