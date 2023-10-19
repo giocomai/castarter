@@ -142,7 +142,7 @@ cas_extract <- function(extractors,
   }
 
   files_to_extract_df <- files_to_extract_pre_df %>%
-    dplyr::left_join(
+    dplyr::inner_join(
       y = contents_id_df,
       by = "id"
     )
