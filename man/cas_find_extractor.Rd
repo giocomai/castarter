@@ -8,7 +8,8 @@
 cas_find_extractor(
   html_document,
   pattern,
-  containers = c("h1", "h2", "h3", "h4", "span", "td", "div")
+  containers = c("h1", "h2", "h3", "h4", "span", "td", "p", "div"),
+  exclude_CSSpath = NULL
 )
 }
 \arguments{
@@ -18,9 +19,13 @@ cas_find_extractor(
 \item{pattern}{A text string to be matched.}
 
 \item{containers}{Containers to be parsed for best matches. By default:
-\verb{c("h1", "h2", "h3", "h4", "span", "td", div", "span")}. The order matters,
+\code{c("h1", "h2", "h3", "h4", "span", "td", "p", "div")}. The order matters,
 as results are returned in this order (e.g. if a match of the same length
 is found both in a "h1" and in a "div", "h1" is returned first).}
+
+\item{exclude_CSSpath}{Defaults to NULL. To remove script, for example, use
+\code{script}, which is transformed to \verb{:not(script)}. May cause issues, use
+with caution.}
 }
 \value{
 A data frame list with container and class or id of values that
@@ -34,7 +39,7 @@ best.
 \examples{
 \dontrun{
 if (interactive) {
-  # not ideal example, but you'll get the gist
+  # not ideal example, but you'll get the gist, see additonal example below
   library("castarter")
   url <- "https://www.nasa.gov/news-release/nasa-sets-coverage-for-roscosmos-spacewalk-outside-space-station/"
 
@@ -58,6 +63,80 @@ if (interactive) {
   cas_find_extractor(
     html_document = html_page,
     pattern = "RELEASE"
+  )
+
+  ## Use this information to extract contents
+
+
+  library("castarter")
+  url <- "https://www.state.gov/designating-russian-virtual-currency-money-launderer/"
+
+  html_page <- rvest::read_html(url)
+
+  cas_find_extractor(
+    html_document = html_page,
+    pattern = "Designating Russian Virtual Currency Money Launderer"
+  )
+
+  cas_extract_html(
+    html_document = html_page,
+    container = "span",
+    container_class = "bc_current collapse"
+  )
+
+  cas_extract_html(
+    html_document = html_page,
+    container = "h1",
+    container_class = "featured-content__headline stars-above"
+  )
+
+
+  cas_find_extractor(
+    html_document = html_page,
+    pattern = "Press Statement"
+  )
+
+  cas_extract_html(
+    html_document = html_page,
+    container = "p",
+    container_class = "article-meta doctype-meta"
+  )
+
+
+  cas_find_extractor(
+    html_document = html_page,
+    pattern = "Matthew Miller, Department Spokesperson"
+  )
+
+  cas_extract_html(
+    html_document = html_page,
+    container = "p",
+    container_class = "article-meta__author-bureau"
+  )
+
+  cas_find_extractor(
+    html_document = html_page,
+    pattern = "November 3, 2023"
+  )
+
+  cas_extract_html(
+    html_document = html_page,
+    container = "p",
+    container_class = "article-meta__publish-date"
+  )
+
+  cas_find_extractor(
+    html_document = html_page,
+    pattern = "The United States is sanctioning Ekaterina Zhdanova",
+    exclude_CSSpath = "script"
+  )
+
+
+  cas_extract_html(
+    html_document = html_page,
+    container = "div",
+    container_class = "entry-content",
+    exclude_CSSpath = "script"
   )
 }
 }
