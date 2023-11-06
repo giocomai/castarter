@@ -12,7 +12,8 @@ cas_extract_script(
 )
 }
 \arguments{
-\item{html_document}{An html document parsed with \code{xml2::read_html()}.}
+\item{html_document}{An html document parsed with \code{xml2::read_html()} or
+\code{rvest::read_html()}.}
 
 \item{script_type}{Defaults to NULL. Type of script. Common script types
 include \code{application/ld+json}, \code{text/template}, etc.}

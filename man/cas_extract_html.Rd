@@ -29,7 +29,8 @@ cas_extract_html(
 )
 }
 \arguments{
-\item{html_document}{An html document parsed with \code{xml2::read_html()}.}
+\item{html_document}{An html document parsed with \code{xml2::read_html()} or
+\code{rvest::read_html()}.}
 
 \item{container}{Defaults to NULL. Type of html container from where links
 are to be extracted, such as "div", "ul", and others. Either

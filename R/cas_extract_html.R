@@ -1,6 +1,7 @@
 #' Facilitates extraction of contents from an html file
 #'
-#' @param html_document An html document parsed with `xml2::read_html()`.
+#' @param html_document An html document parsed with `xml2::read_html()` or
+#'   `rvest::read_html()`.
 #' @param container Defaults to NULL. Type of html container from where links
 #'   are to be extracted, such as "div", "ul", and others. Either
 #'   `container_class` or `container_id` must also be provided.
