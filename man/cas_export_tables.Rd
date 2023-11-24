@@ -15,11 +15,15 @@ cas_export_tables(
 )
 }
 \arguments{
-\item{path}{Defaults to NULL. If NULL, path is set to the project/website/export/file_format folder.}
+\item{path}{Defaults to NULL. If NULL, path is set to the
+project/website/export/file_format folder.}
 
-\item{file_format}{Defaults to "csv.gz", i.e. compressed csv files. All formats supported by \code{readr::write_csv()} are valid.}
+\item{file_format}{Defaults to "csv.gz", i.e. compressed csv files. All
+formats supported by \code{readr::write_csv()} are valid.}
 
-\item{tables}{Defaults to NULL. If NULL, all database tables are exported. If given, names of the database tables to export. See \code{vignette("castarter-database")} for details.}
+\item{tables}{Defaults to NULL. If NULL, all database tables are exported. If
+given, names of the database tables to export. See
+\code{vignette("castarter-database")} for details.}
 
 \item{db_connection}{Defaults to NULL. If NULL, uses local SQLite database.
 If given, must be a connection object or a list with relevant connection
@@ -31,4 +35,11 @@ settings (see example).}
 }
 \description{
 Export database tables to another format such as csv
+}
+\examples{
+\dontrun{
+if (interactive) {
+  cas_export_tables(file_format = "csv")
+}
+}
 }

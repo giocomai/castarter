@@ -1,13 +1,22 @@
 #' Export database tables to another format such as csv
 #'
-#' @param path Defaults to NULL. If NULL, path is set to the project/website/export/file_format folder.
-#' @param file_format Defaults to "csv.gz", i.e. compressed csv files. All formats supported by `readr::write_csv()` are valid.
-#' @param tables Defaults to NULL. If NULL, all database tables are exported. If given, names of the database tables to export. See `vignette("castarter-database")` for details.
+#' @param path Defaults to NULL. If NULL, path is set to the
+#'   project/website/export/file_format folder.
+#' @param file_format Defaults to "csv.gz", i.e. compressed csv files. All
+#'   formats supported by `readr::write_csv()` are valid.
+#' @param tables Defaults to NULL. If NULL, all database tables are exported. If
+#'   given, names of the database tables to export. See
+#'   `vignette("castarter-database")` for details.
 #' @inheritParams cas_read_from_db
 #' @return
 #' @export
 #'
 #' @examples
+#' \dontrun{
+#' if (interactive) {
+#'   cas_export_tables(file_format = "csv")
+#' }
+#' }
 cas_export_tables <- function(path = NULL,
                               file_format = "csv.gz",
                               tables = NULL,
@@ -16,12 +25,12 @@ cas_export_tables <- function(path = NULL,
                               db_folder = NULL,
                               ...) {
   if (cas_check_use_db(...) == FALSE) {
-    usethis::ui_stop("Database not set. Set the database connection with `cas_set_options()` or pass database connection with the parameter `db_connection`.")
+    cli::cli_abort("Database not set. Set the database connection with `cas_set_options()` or pass database connection with the parameter `db_connection`.")
   }
 
   db <- cas_connect_to_db(
     db_connection = db_connection,
-    read_only = FALSE,
+    read_only = TRUE,
     ...
   )
 
@@ -64,6 +73,7 @@ cas_export_tables <- function(path = NULL,
     .x = tables_v,
     .f = function(current_table) {
       DBI::dbReadTable(conn = db, name = current_table) %>%
+        dplyr::collect() |>
         readr::write_csv(file = fs::path(
           path,
           stringr::str_c(
@@ -72,9 +82,9 @@ cas_export_tables <- function(path = NULL,
             cas_options_l$website,
             ".",
             file_format
-          )
-        ) %>%
-          fs::path_sanitize())
+          ) %>%
+            fs::path_sanitize()
+        ))
     }
   )
 
