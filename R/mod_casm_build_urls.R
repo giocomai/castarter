@@ -53,7 +53,10 @@ mod_casm_build_urls_server <- function(id){
                                 value = 10),
             shiny::numericInput(inputId = ns("increase_by"),
                                 label = "Increase by",
-                                value = 1)
+                                value = 1),
+            shiny::textInput(inputId = ns("index_group"),
+                             label = "Index group",
+                             value = "index")
           )
         )
       } else if (input$url_type=="Date-based") {
@@ -66,11 +69,23 @@ mod_casm_build_urls_server <- function(id){
             shiny::textInput(inputId = ns("url_ending"),
                              label = "Url ending",
                              value = ""),
-            shiny::dateRangeInput(inputId = ns("date_range"), label = "Date range",
+            shiny::dateRangeInput(inputId = ns("date_range"),
+                                  label = "Date range",
                                   start = Sys.Date()-31,
                                   end = Sys.Date()-1,
                                   format = "yyyy-mm-dd",
-                                  weekstart = 1)
+                                  weekstart = 1),
+            shiny::selectInput(inputId = ns("increase_date_by"),
+                               label = "Increase date by",
+                               choices = c("day",
+                                           "week",
+                                           "month",
+                                           "quarter",
+                                           "year")),
+            shiny::textInput(inputId = ns("index_group"),
+                             label = "Index group",
+                             value = "index")
+            
           )
         )
       }
@@ -87,7 +102,8 @@ mod_casm_build_urls_server <- function(id){
                      start_page = input$start_page,
                      end_page = input$end_page,
                      increase_by = input$increase_by,
-                     date_format = input$date_format)
+                     date_format = input$date_format,
+                     increase_date_by = input$increase_date_by)
     })
     
     output$urls_table <- reactable::renderReactable({
