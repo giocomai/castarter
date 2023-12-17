@@ -26,6 +26,11 @@ in context, setting this to TRUE is probably advisable (currently,
 depending on the arrow version, there may be issues where upper/lower case
 is not ignored).}
 
+\item{custom_head_html}{Chunk of code to be included in the app's \verb{<head>}.
+This can be used, e.g., for custom analytics snippets. The default value,
+\verb{<meta name="referrer" content="no-referrer" />} asks the browser not to
+include the source website when following links to external websites.}
+
 \item{onStart}{A function that will be called before the app is actually run.
 This is only needed for \code{shinyAppObj}, since in the \code{shinyAppDir}
 case, a \code{global.R} file can be used for this purpose.}
