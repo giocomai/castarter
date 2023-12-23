@@ -1,0 +1,14 @@
+---
+title: "1. Getting index files"
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+```{r setup}
+library(castarter)
+```

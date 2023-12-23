@@ -1,20 +1,40 @@
 url: ~
+
+home:
+  title: Content Analysis Starter Toolkit for the R programming language 
+
 template:
   bootstrap: 5
+  bootswatch: lux
+  bslib:
+    pkgdown-nav-height: 100px
+
 reference:
-- title: Basic functions
+- title: Compress, archive, and backup files
 - contents:
-  - starts_with("cas_")
+  - cas_archive
+  - cas_backup_gd
+- title: Settings
+- description: Set and retrieve parameters that are valid throughout the current session
+- contents:
+  - cas_set_options
+  - cas_set_db
+  - cas_set_db_folder
+  - cas_get_db_folder
+  - cas_get_db_settings
 - title: Caching
 - contents:
   - has_concept("database functions")
   - starts_with("casdb_")
-- title: Functions interacting with the Internet Archive's Wayback Machine
-- description: Check availability of URLs in the Wayback machine, and store them if needed
-- contents:
-  - starts_with("cas_ia_")
 - title: Shiny modules
 - description: These are shiny modules used in the main Shiny app. Some of them can be used for illustrative purposes elsewhere, or integrated in other Shiny apps
 - contents:
   - starts_with("cass_")
-
+- title: Other functions
+- contents:
+  - starts_with("cas_")
+- title: Functions interacting with the Internet Archive's Wayback Machine
+- description: Check availability of URLs in the Wayback machine, and store them if needed
+- contents:
+  - starts_with("cas_ia_")
+  
