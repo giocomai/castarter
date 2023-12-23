@@ -46,6 +46,11 @@
 #'   in the output.
 #' @param index_group A character vector, defaults to "index". Used for
 #'   differentiating among different types of index or links in local databases.
+#' @param index Defaults to TRUE. Relevant only if `write_to_db` is also set to
+#'   TRUE. If TRUE, urls are stored in the local database in the index table,
+#'   otherwise they are stored in the contents table.
+#' @param write_to_db Defaults to FALSE. If set to TRUE, stores the newly
+#'   created URLs to the local database.
 #' @return A data frame with three columns, `id`, `url`, and `index_group`.
 #'   Typically, `url` corresponds to a vector of unique urls.
 #' @export
@@ -93,7 +98,10 @@ cas_build_urls <- function(url,
                            date_separator = NULL,
                            increase_date_by = "day",
                            reversed_order = FALSE,
-                           index_group = "index") {
+                           index_group = "index",
+                           index = TRUE,
+                           write_to_db = FALSE,
+                           ...) {
   if (is.null(start_date) == FALSE) {
     # allow for simplified date_format
     if (stringr::str_detect(string = date_format, pattern = "%", negate = TRUE)) {
@@ -149,7 +157,7 @@ cas_build_urls <- function(url,
     urls <- base::rev(urls)
   }
 
-  tibble::tibble(url = as.character(urls %>%
+  output_df <- tibble::tibble(url = as.character(urls %>%
     base::unique() %>%
     stringr::str_trim())) %>%
     dplyr::mutate(
@@ -161,4 +169,11 @@ cas_build_urls <- function(url,
       "url",
       "index_group"
     )
+  
+  if (write_to_db == TRUE) {
+    cas_write_db_urls(urls = output_df,
+                      index = index,
+                      ...)
+  }
+  output_df
 }

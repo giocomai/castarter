@@ -17,7 +17,9 @@ cas_build_urls(
   date_separator = NULL,
   increase_date_by = "day",
   reversed_order = FALSE,
-  index_group = "index"
+  index_group = "index",
+  index = TRUE,
+  write_to_db = FALSE
 )
 }
 \arguments{
@@ -65,6 +67,13 @@ in the output.}
 
 \item{index_group}{A character vector, defaults to "index". Used for
 differentiating among different types of index or links in local databases.}
+
+\item{index}{Defaults to TRUE. Relevant only if \code{write_to_db} is also set to
+TRUE. If TRUE, urls are stored in the local database in the index table,
+otherwise they are stored in the contents table.}
+
+\item{write_to_db}{Defaults to FALSE. If set to TRUE, stores the newly
+created URLs to the local database.}
 }
 \value{
 A data frame with three columns, \code{id}, \code{url}, and \code{index_group}.
