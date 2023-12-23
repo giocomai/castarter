@@ -86,7 +86,7 @@ cas_extract_links <- function(id = NULL,
                               encoding = "UTF-8",
                               reverse_order = FALSE,
                               db_connection = NULL,
-                              disconnect_db = FALSE,
+                              disconnect_db = TRUE,
                               ...) {
   if (is.null(domain) == FALSE) {
     if (domain == "" | is.na(domain) == TRUE) {
@@ -119,7 +119,7 @@ cas_extract_links <- function(id = NULL,
     if (nrow(local_files_df) == 0) {
       return(NULL)
     } else {
-      cli::cli_inform(c(i = "Links will be extracted from the {nrow(local_files_df)} files available."))
+      cli::cli_inform(c(i = "Links will be extracted from the {scales::number(nrow(local_files_df))} files available."))
     }
   } else {
     local_files_df <- local_files_df %>%
@@ -223,14 +223,6 @@ cas_extract_links <- function(id = NULL,
     )
     return(invisible(NULL))
   }
-
-  # if (write_to_db == FALSE) {
-  #   cas_disconnect_from_db(
-  #     db_connection = db,
-  #     ...
-  #   )
-  #   db <- duckdb::dbConnect(duckdb::duckdb(), ":memory:")
-  # }
 
   pb <- progress::progress_bar$new(total = nrow(local_files_df))
 
@@ -473,15 +465,6 @@ cas_extract_links <- function(id = NULL,
     }
   )
 
-  # all_links_df <- cas_read_db_contents_id(
-  #   db_connection = db,
-  #   ...
-  # )
-
-  # if (write_to_db == TRUE) {
-  #   usethis::ui_done("Urls added to {usethis::ui_field('contents_id')} table: {usethis::ui_value(nrow(all_links_df)-nrow(previous_links_df))}")
-  # }
-
   if (is.data.frame(new_links_df) == FALSE) {
     if (output_index == TRUE) {
       new_links_df <- casdb_empty_index_id
@@ -490,5 +473,11 @@ cas_extract_links <- function(id = NULL,
     }
   }
 
+  cas_disconnect_from_db(
+    db_connection = db,
+    disconnect_db = disconnect_db,
+    ...
+  )
+  
   new_links_df
 }
