@@ -1,7 +1,9 @@
-url: ~
+url: https://castarter.tadadit.xyz/
 
 home:
   title: Content Analysis Starter Toolkit for the R programming language 
+
+lang: en
 
 template:
   bootstrap: 5
@@ -9,11 +11,22 @@ template:
   bslib:
     pkgdown-nav-height: 100px
 
+
+articles:
+- title: Step by step
+  navbar: ~
+  contents:
+  - '`articles/0-key-concepts`'
+  - '`articles/1-getting-index`'
+  - '`articles/9-data-quality`'
+  - '`articles/castarter-workflow`'
+- title: Technical details
+  navbar: Technical details
+  contents:
+  - '`castarter-database`'
+  - '`castarter-shiny-modules`'
+
 reference:
-- title: Compress, archive, and backup files
-- contents:
-  - cas_archive
-  - cas_backup_gd
 - title: Settings
 - description: Set and retrieve parameters that are valid throughout the current session
 - contents:
@@ -22,6 +35,11 @@ reference:
   - cas_set_db_folder
   - cas_get_db_folder
   - cas_get_db_settings
+- title: Compress, archive, and backup files
+- contents:
+  - cas_archive
+  - cas_backup_gd
+
 - title: Caching
 - contents:
   - has_concept("database functions")

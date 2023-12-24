@@ -2,7 +2,7 @@
 title: "Shiny modules included in castarter"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{shiny_modules}
+  %\VignetteIndexEntry{Shiny modules included in castarter}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---

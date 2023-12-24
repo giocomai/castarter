@@ -2,7 +2,7 @@
 title: "Database structure in castarter"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{castarter_database}
+  %\VignetteIndexEntry{Database structure in castarter}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---

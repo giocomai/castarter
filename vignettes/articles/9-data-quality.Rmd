@@ -1,10 +1,5 @@
 ---
-title: "Check the integrity of textual datasets"
-output: rmarkdown::html_vignette
-vignette: >
-  %\VignetteIndexEntry{Check the integrity of textual datasets}
-  %\VignetteEngine{knitr::rmarkdown}
-  %\VignetteEncoding{UTF-8}
+title: "9. Data quality checks"
 ---
 
 ```{r, include = FALSE}
