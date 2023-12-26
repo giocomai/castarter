@@ -19,7 +19,8 @@ cas_build_urls(
   reversed_order = FALSE,
   index_group = "index",
   index = TRUE,
-  write_to_db = FALSE
+  write_to_db = FALSE,
+  ...
 )
 }
 \arguments{

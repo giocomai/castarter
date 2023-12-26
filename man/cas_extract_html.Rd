@@ -83,10 +83,11 @@ return when the given container, selector or element is not found.}
 with caution.}
 
 \item{remove_Xpath}{Defaults to NULL. A common pattern when extracting text
-would be \verb{//script|//iframe|//img}, as it is assumed that these containers
-(javascript contents, iframes, and images) are most likely undesirable when
-extracting text. Customise as needed. For example, if besides the above you
-also want to remove a \code{div} of class \code{related-articles}, you may use
+would be \verb{//script|//iframe|//img|//style}, as it is assumed that these
+containers (javascript contents, iframes, css blocks, and images) are most
+likely undesirable when extracting text. Customise as needed. For example,
+if besides the above you also want to remove a \code{div} of class
+\code{related-articles}, you may use
 \verb{//script|//iframe|//img|//div[@class='related-articles']}Be careful when
 using \code{remove_Xpath} as the relevant Xpath is removed from the original
 objext passed to \code{cas_extract_html()}. To be clear, the input object is

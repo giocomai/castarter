@@ -34,7 +34,7 @@ cas_extract_links(
   encoding = "UTF-8",
   reverse_order = FALSE,
   db_connection = NULL,
-  disconnect_db = FALSE,
+  disconnect_db = TRUE,
   ...
 )
 }
