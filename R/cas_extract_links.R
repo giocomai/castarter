@@ -478,6 +478,6 @@ cas_extract_links <- function(id = NULL,
     disconnect_db = disconnect_db,
     ...
   )
-  
+
   new_links_df
 }

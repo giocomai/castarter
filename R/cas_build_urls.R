@@ -169,11 +169,13 @@ cas_build_urls <- function(url,
       "url",
       "index_group"
     )
-  
+
   if (write_to_db == TRUE) {
-    cas_write_db_urls(urls = output_df,
-                      index = index,
-                      ...)
+    cas_write_db_urls(
+      urls = output_df,
+      index = index,
+      ...
+    )
   }
   output_df
 }

@@ -263,7 +263,7 @@ mod_cass_build_urls_server <- function(id) {
 
 #' Helps you define the parameters you need for building index urls
 #'
-#' @return Nothing, called for interactive use.
+#' @return Nothing, but prints to the console the function call as created in the Shiny app.
 #' @export
 #'
 #' @examples
