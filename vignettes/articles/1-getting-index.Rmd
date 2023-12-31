@@ -1,14 +1,147 @@
 ---
-title: "1. Getting index files"
+title: "1. Getting index pages"
 ---
 
 ```{r, include = FALSE}
 knitr::opts_chunk$set(
   collapse = TRUE,
-  comment = "#>"
+  comment = "#>",
+  eval = FALSE
 )
 ```
 
-```{r setup}
-library(castarter)
+## What are index pages?
+
+As outlined in the in the article on [key concepts](0-key-concepts.html), __index pages__ are 
+
+> pages that usually include some form of list of the pages with actual contents we are interested in (or, possibly, a second layer of index pages). They can be immutable, but they are often expected to change.
+
+Index pages can take many forms, but these are the most common:
+
+- incremental index pages, such as:
+  - https://example.com/news/1
+  - https://example.com/news/2
+  - https://example.com/news/3
+  - ...
+- dated archive pages such as:
+  - https://example.com/archive/2023/01/01
+  - https://example.com/archive/2023/01/02
+  - https://example.com/archive/2023/01/03
+  - ...
+  
+As an alternative, website's sitemaps (specifically, `sitemap.xml` files) can be used as index pages. 
+
+We'll consider these options one by one.
+
+## Interactive url-builder helper
+
+Before continuing with a more details exploration of parameters, you may want to check out an interactive interface that helps in finding the right parameters for your case and shows the relevant function call in `castarter`
+
+```{r shiny url builder, eval = FALSE}
+library("castarter")
+cass_build_urls()
 ```
+
+
+## Creating index urls
+
+[TODO]
+
+## Storing index urls in a local database
+
+[TODO]
+
+## Downloading index urls
+
+[TODO]
+
+## How a typical script would look after this step
+
+[TODO]
+
+## Sitemaps
+
+Using sitemaps makes it very easy to get urls to all pages of a website, but the apparent ease may be misleading, as they may include too many or too few urls for the task at hand. 
+
+For example, sitemaps may include links to *all* pages of a website, while you may be interested only in the "news" section, or some other subset of articles. 
+
+On the other hand, sitemap files are often not complete; for example, they may include only recent publications. 
+
+In brief, sitemaps may be an easy way to get access to all urls of a websites, but you should make sure they are fit for your purpose. 
+
+### Finding a sitemap file
+
+Sitemap files are a machine readable files in xml format. They can mostly be found at one of the following locations:
+
+- https://example.com/sitemap.xml
+- at a location defined in the robots.txt files, which is commonly found at the root of the website, https://example.com/robots.txt
+
+This may all sound exceedingly technical if you are not familiar with some component parts of how the internet works. You may dig deeper (Wikipedia has a page on [robots.txt](https://en.wikipedia.org/wiki/Robots.txt) as well as on [sitemaps](https://en.wikipedia.org/wiki/Sitemaps)), or you may simply try to add "sitemap.xml" or "robots.txt" to the domain of your interest and see if something relevant pops up. 
+
+If a sitemap is there, the following option may be of help:
+
+```{r}
+library("castarter")
+
+cas_set_options(base_folder = fs::path(fs::path_home_r(), 
+                                       "R",
+                                       "castarter"),
+                project = "example_project",
+                website = "example_website"
+)
+
+cas_build_urls(url = "https://example.com/sitemap.xml",
+               write_to_db = TRUE)
+
+cas_download_index(file_format = "xml") # as html is default, you must explicitly set xml as file_format 
+
+cas_extract_links(index = TRUE,
+                  file_format = "xml",
+                  custom_css = "loc",
+                  output_index = TRUE,
+                  output_index_group = "sitemap",
+                  write_to_db = TRUE)
+
+# cas_read_db_contents_id() |> dplyr::collect() |> View()
+```
+
+In some instances, sitemaps may have multiple level, e.g. there is a sitemap with only links to other sitemaps, e.g. a base sitemap linking to a one sitemap for each month of archived articles. In such cases you would want to extract links from the base sitemap, add the monthly sitemaps to index pages, and then extract from these monthly sitemaps the direct urls of articles.
+
+A relevant script may look as follows:
+
+```{r}
+library("castarter")
+
+cas_set_options(base_folder = fs::path(fs::path_home_r(), 
+                                       "R",
+                                       "castarter"),
+                project = "example_project",
+                website = "example_website"
+)
+
+cas_build_urls(url = "https://example.com/sitemap.xml",
+               index_group = "base_sitemap",
+               write_to_db = TRUE)
+
+cas_download_index(file_format = "xml") # as html is default, you must explicitly set xml as file_format 
+
+cas_extract_links(index = TRUE,
+                  file_format = "xml",
+                  custom_css = "loc",
+                  output_index = TRUE,
+                  output_index_group = "monthly_sitemap",
+                  write_to_db = TRUE)
+
+# cas_read_db_index() |> dplyr::collect() |> View()
+
+cas_download_index(file_format = "xml", wait = 3)
+
+cas_extract_links(file_format = "xml",
+                  custom_css = "loc",
+                  index_group = "monthly_sitemap", # exclude the base sitemap
+                  write_to_db = TRUE) 
+
+# cas_read_db_contents_id() |> dplyr::collect() |> View()
+```
+
+

@@ -90,6 +90,60 @@
       ],
       "Hash": "954acced25e8d2385fd46fa117e9f7d2"
     },
+    "R.cache": {
+      "Package": "R.cache",
+      "Version": "0.16.0",
+      "Source": "Repository",
+      "Repository": "CRAN",
+      "Requirements": [
+        "R",
+        "R.methodsS3",
+        "R.oo",
+        "R.utils",
+        "digest",
+        "utils"
+      ],
+      "Hash": "fe539ca3f8efb7410c3ae2cf5fe6c0f8"
+    },
+    "R.methodsS3": {
+      "Package": "R.methodsS3",
+      "Version": "1.8.2",
+      "Source": "Repository",
+      "Repository": "CRAN",
+      "Requirements": [
+        "R",
+        "utils"
+      ],
+      "Hash": "278c286fd6e9e75d0c2e8f731ea445c8"
+    },
+    "R.oo": {
+      "Package": "R.oo",
+      "Version": "1.25.0",
+      "Source": "Repository",
+      "Repository": "CRAN",
+      "Requirements": [
+        "R",
+        "R.methodsS3",
+        "methods",
+        "utils"
+      ],
+      "Hash": "a0900a114f4f0194cf4aa8cd4a700681"
+    },
+    "R.utils": {
+      "Package": "R.utils",
+      "Version": "2.12.3",
+      "Source": "Repository",
+      "Repository": "CRAN",
+      "Requirements": [
+        "R",
+        "R.methodsS3",
+        "R.oo",
+        "methods",
+        "tools",
+        "utils"
+      ],
+      "Hash": "3dc2829b790254bfba21e60965787651"
+    },
     "R6": {
       "Package": "R6",
       "Version": "2.5.1",
@@ -209,24 +263,6 @@
       ],
       "Hash": "543776ae6848fde2f48ff3816d0628bc"
     },
-    "bench": {
-      "Package": "bench",
-      "Version": "1.1.3",
-      "Source": "Repository",
-      "Repository": "CRAN",
-      "Requirements": [
-        "R",
-        "glue",
-        "methods",
-        "pillar",
-        "profmem",
-        "rlang",
-        "stats",
-        "tibble",
-        "utils"
-      ],
-      "Hash": "d3920bdeb09b0dd8562c5ca24da562b7"
-    },
     "bit": {
       "Package": "bit",
       "Version": "4.0.5",
@@ -320,14 +356,14 @@
     },
     "castarter": {
       "Package": "castarter",
-      "Version": "0.1.0.9004",
+      "Version": "0.1.0.9007",
       "Source": "GitHub",
       "RemoteType": "github",
       "RemoteHost": "api.github.com",
       "RemoteRepo": "castarter",
       "RemoteUsername": "giocomai",
       "RemoteRef": "HEAD",
-      "RemoteSha": "7f22d07c9f36a64789e20b4e62698df20cde2298",
+      "RemoteSha": "d69192a8a6d4e213aafe18cc94bebb5bcb9b92ea",
       "Requirements": [
         "DBI",
         "DT",
@@ -355,6 +391,7 @@
         "rlang",
         "rvest",
         "shiny",
+        "shinymeta",
         "slider",
         "stringr",
         "tbl2xts",
@@ -365,7 +402,7 @@
         "waiter",
         "xml2"
       ],
-      "Hash": "c9102fd8e9ec3270f66d5dc19cbc4d6a"
+      "Hash": "65d373fa787fe89b2be8241a117d5a59"
     },
     "chromote": {
       "Package": "chromote",
@@ -1337,23 +1374,6 @@
       ],
       "Hash": "2a0dc8c6adfb6f032e4d4af82d258ab5"
     },
-    "piggyback": {
-      "Package": "piggyback",
-      "Version": "0.1.5",
-      "Source": "Repository",
-      "Repository": "RSPM",
-      "Requirements": [
-        "cli",
-        "fs",
-        "gh",
-        "glue",
-        "httr",
-        "jsonlite",
-        "lubridate",
-        "memoise"
-      ],
-      "Hash": "8bb22d293b2f482257d396883cfb2821"
-    },
     "pillar": {
       "Package": "pillar",
       "Version": "1.9.0",
@@ -1499,16 +1519,6 @@
         "utils"
       ],
       "Hash": "82d48b1aec56084d9438dbf98087a7e9"
-    },
-    "profmem": {
-      "Package": "profmem",
-      "Version": "0.6.0",
-      "Source": "Repository",
-      "Repository": "CRAN",
-      "Requirements": [
-        "utils"
-      ],
-      "Hash": "4974ce1d5ab22f266af90826f295f6c7"
     },
     "progress": {
       "Package": "progress",
@@ -1836,6 +1846,24 @@
       ],
       "Hash": "3a1f41807d648a908e3c7f0334bf85e6"
     },
+    "shinymeta": {
+      "Package": "shinymeta",
+      "Version": "0.2.0.3",
+      "Source": "Repository",
+      "Repository": "CRAN",
+      "Requirements": [
+        "callr",
+        "fastmap",
+        "fs",
+        "htmltools",
+        "rlang",
+        "shiny",
+        "sourcetools",
+        "styler",
+        "utils"
+      ],
+      "Hash": "cbc8508b3ac4355bdd489be167bbe984"
+    },
     "slider": {
       "Package": "slider",
       "Version": "0.3.1",
@@ -1902,6 +1930,25 @@
         "vctrs"
       ],
       "Hash": "960e2ae9e09656611e0b8214ad543207"
+    },
+    "styler": {
+      "Package": "styler",
+      "Version": "1.10.2",
+      "Source": "Repository",
+      "Repository": "CRAN",
+      "Requirements": [
+        "R",
+        "R.cache",
+        "cli",
+        "magrittr",
+        "purrr",
+        "rlang",
+        "rprojroot",
+        "tools",
+        "vctrs",
+        "withr"
+      ],
+      "Hash": "d61238fd44fc63c8adf4565efe8eb682"
     },
     "sys": {
       "Package": "sys",
