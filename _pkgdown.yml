@@ -24,6 +24,7 @@ articles:
   - '`articles/5-data-exploration-analysis`'
   - '`articles/6-data-quality`'
   - '`articles/7-archiving-file-management`'
+  - '`articles/8-updating-datasets`'
   - '`articles/castarter-workflow`'
 - title: Technical details
   navbar: Technical details

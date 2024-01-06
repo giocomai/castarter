@@ -92,6 +92,7 @@ To get an idea of how `castarter` works you should check out the [Key concepts](
 - [5. Data exploration and analysis](articles/5-data-exploration-analysis.html)
 - [6. Data quality](articles/6-data-quality.html)
 - [7. File management and archiving](articles/7-archiving-file-management.html)
+- [8. Updating datasets](articles/8-updating-datasets.html)
 
 The section on key concepts is also included in this readme below. 
 

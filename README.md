@@ -124,6 +124,7 @@ reference) and have a look at one of the workflow examples.
 - [6. Data quality](articles/6-data-quality.html)
 - [7. File management and
   archiving](articles/7-archiving-file-management.html)
+- [8. Updating datasets](articles/8-updating-datasets.html)
 
 The section on key concepts is also included in this readme below.
 
@@ -168,7 +169,7 @@ Assuming that my project on the European Union involves text mining the
 website of the European Council, the European Commission, and the
 European Parliament, the folder structure may look something like this:
 
-    #> /tmp/Rtmp5TSS8d/castarter_data
+    #> /tmp/RtmpU9kVLn/castarter_data
     #> └── european_union
     #>     ├── european_commission
     #>     ├── european_council
