@@ -144,4 +144,4 @@ cas_extract_links(file_format = "xml",
 # cas_read_db_contents_id() |> dplyr::collect() |> View()
 ```
 
-
+Notice that in some cases the first-level sitemap may be linking to second-level sitemaps in the compressed "xml.gz" format, rather than plain "xml". In that case, just set "xml.gz" as "file_format" for proper processing. 
