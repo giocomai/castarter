@@ -30,6 +30,7 @@ beginners and are unnecessarily time consuming even for experienced
 users:
 
 - creating list of URLs from sections of a website
+- extracting links from index pages
 - managing the download process by
   - ensuring pages are downloaded only once
   - managing the creation of folders and subfolders
@@ -111,10 +112,20 @@ reference) and have a look at one of the workflow examples.
 - an [additional example](articles/castarter-workflow.html), with full
   code but only partial explanation of the process
 
-### Step-by-step
+## Step-by-step
 
 - [0. Key concepts](articles/0-key-concepts.html)
 - [1. Getting index files](articles/1-getting-index.html)
+- [2. Extracting links](articles/2-extracting-links.html)
+- [3. Downloading files](articles/3-downloading-files.html)
+- [4. Extracting contents](articles/4-extracting-contents.html)
+- [5. Data exploration and
+  analysis](articles/5-data-exploration-analysis.html)
+- [6. Data quality](articles/6-data-quality.html)
+- [7. File management and
+  archiving](articles/7-archiving-file-management.html)
+
+The section on key concepts is also included in this readme below.
 
 ## Key concepts
 
@@ -157,7 +168,7 @@ Assuming that my project on the European Union involves text mining the
 website of the European Council, the European Commission, and the
 European Parliament, the folder structure may look something like this:
 
-    #> /tmp/RtmppTZ5A6/castarter_data
+    #> /tmp/Rtmp5TSS8d/castarter_data
     #> └── european_union
     #>     ├── european_commission
     #>     ├── european_council

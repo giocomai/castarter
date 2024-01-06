@@ -18,7 +18,12 @@ articles:
   contents:
   - '`articles/0-key-concepts`'
   - '`articles/1-getting-index`'
-  - '`articles/9-data-quality`'
+  - '`articles/2-extracting-links`'
+  - '`articles/3-downloading-files`'
+  - '`articles/4-extracting-contents`'
+  - '`articles/5-data-exploration-analysis`'
+  - '`articles/6-data-quality`'
+  - '`articles/7-archiving-file-management`'
   - '`articles/castarter-workflow`'
 - title: Technical details
   navbar: Technical details

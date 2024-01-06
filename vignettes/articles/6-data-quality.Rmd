@@ -1,5 +1,5 @@
 ---
-title: "9. Data quality checks"
+title: "6. Data quality checks"
 ---
 
 ```{r, include = FALSE}

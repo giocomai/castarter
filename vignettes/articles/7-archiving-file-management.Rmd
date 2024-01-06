@@ -1,0 +1,11 @@
+---
+title: "7. Archiving and file management"
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>",
+  eval = FALSE
+)
+```
