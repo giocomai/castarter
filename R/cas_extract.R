@@ -1,6 +1,9 @@
 #' Extract fields and contents from downloaded files
 #'
 #' @param extractors A named list of functions. See examples for details.
+#' @param post_processing Defaults to NULL. If given, it must be a function that
+#'   takes a data frame as input (logically, a row of the dataset) and returns
+#'   it with additional or modified columns.
 #' @param store_as_character Logical, defaults to TRUE. If TRUE, it converts to
 #'   character all extracted contents before writing them to database. This
 #'   reduces issues of type conversions with the default database backend (for
@@ -23,6 +26,7 @@
 #'
 #' @examples
 cas_extract <- function(extractors,
+                        post_processing = NULL,
                         id = NULL,
                         custom_path = NULL,
                         index = FALSE,
@@ -212,6 +216,13 @@ cas_extract <- function(extractors,
           url = as.character(x[["url"]])
         ) %>%
         dplyr::select("id", "url", dplyr::everything())
+      
+      if (is.null(post_processing)==FALSE) {
+        if (is.function(post_processing)==FALSE) {
+          cli::cli_abort("When given, {.val post_processing} must be a function.")
+        }
+        current_df <- post_processing(current_df)
+      }
 
       if (store_as_character == TRUE) {
         current_df <- current_df %>%

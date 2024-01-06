@@ -6,6 +6,7 @@
 \usage{
 cas_extract(
   extractors,
+  post_processing = NULL,
   id = NULL,
   custom_path = NULL,
   index = FALSE,
@@ -22,6 +23,10 @@ cas_extract(
 }
 \arguments{
 \item{extractors}{A named list of functions. See examples for details.}
+
+\item{post_processing}{Defaults to NULL. If given, it must be a function that
+takes a data frame as input (logically, a row of the dataset) and returns
+it with additional or modified columns.}
 
 \item{index}{Logical, defaults to FALSE. If TRUE, downloaded files will be
 considered \code{index} files. If not, they will be considered \code{contents} files.
