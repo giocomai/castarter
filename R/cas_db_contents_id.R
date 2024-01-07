@@ -47,6 +47,18 @@ cas_write_db_contents_id <- function(urls,
     return(invisible(NULL))
   }
 
+  if (is.data.frame(urls)==FALSE) {
+    if (is.character(urls)==FALSE) {
+      cli::cli_abort("{.arg url} must either be a data frame or a charcter vector.")
+    }
+    urls <- tibble::tibble(url = urls) |> 
+      dplyr::mutate(link_text = NA_character_,
+                    source_index_id = NA_real_,
+                    source_index_batch = NA_real_, 
+                    id = as.numeric(dplyr::row_number())) |> 
+      dplyr::relocate(id, url, link_text, source_index_id, source_index_batch)
+  }
+  
   if (nrow(urls) == 0) {
     return(invisible(NULL))
   }
