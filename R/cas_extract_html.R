@@ -33,14 +33,14 @@
 #' @param exclude_CSSpath Defaults to NULL. To remove script, for example, use
 #'    `script`, which is transformed to `:not(script)`. May cause issues, use
 #'    with caution.
-#' @param remove_Xpath Defaults to NULL. A common pattern when extracting text
+#' @param exclude_Xpath Defaults to NULL. A common pattern when extracting text
 #'   would be `//script|//iframe|//img|//style`, as it is assumed that these
 #'   containers (javascript contents, iframes, css blocks, and images) are most
 #'   likely undesirable when extracting text. Customise as needed. For example,
 #'   if besides the above you also want to remove a `div` of class
 #'   `related-articles`, you may use
 #'   `//script|//iframe|//img|//div[@class='related-articles']`Be careful when
-#'   using `remove_Xpath` as the relevant Xpath is removed from the original
+#'   using `exclude_Xpath` as the relevant Xpath is removed from the original
 #'   objext passed to `cas_extract_html()`. To be clear, the input object is
 #'   changed, and, for example, if used once in one of the extractors these
 #'   containers won't be available to other extractors.
@@ -115,7 +115,7 @@ cas_extract_html <- function(html_document,
                              squish = FALSE,
                              no_match = "",
                              exclude_CSSpath = NULL,
-                             remove_Xpath = NULL,
+                             exclude_Xpath = NULL,
                              custom_Xpath = NULL,
                              custom_CSSpath = NULL,
                              keep_everything = FALSE,
@@ -209,8 +209,8 @@ cas_extract_html <- function(html_document,
       rvest::html_elements(xpath = stringr::str_c("//", container, "[@id='", container_id, "']"))
   }
 
-  if (is.null(remove_Xpath) == FALSE) {
-    xml2::xml_remove(output %>% xml2::xml_find_all(xpath = remove_Xpath))
+  if (is.null(exclude_Xpath) == FALSE) {
+    xml2::xml_remove(output %>% xml2::xml_find_all(xpath = exclude_Xpath))
   }
 
   if (is.null(attribute) == FALSE) {
