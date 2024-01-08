@@ -108,7 +108,7 @@
 #'   cas_find_extractor(
 #'     html_document = html_page,
 #'     pattern = "The United States is sanctioning Ekaterina Zhdanova",
-#'     exclude_CSSpath = "script"
+#'     exclude_css_path = "script"
 #'   )
 #'
 #'
@@ -116,7 +116,7 @@
 #'     html_document = html_page,
 #'     container = "div",
 #'     container_class = "entry-content",
-#'     exclude_CSSpath = "script"
+#'     exclude_css_path = "script"
 #'   )
 #' }
 #' }
@@ -133,12 +133,12 @@ cas_find_extractor <- function(html_document,
                                  "p",
                                  "div"
                                ),
-                               exclude_CSSpath = NULL) {
-  if (is.null(exclude_CSSpath) == FALSE) {
+                               exclude_css_path = NULL) {
+  if (is.null(exclude_css_path) == FALSE) {
     html_document <- html_document %>%
       rvest::html_elements(css = stringr::str_c(
         ":not(",
-        exclude_CSSpath,
+        exclude_css_path,
         ")"
       ))
   }

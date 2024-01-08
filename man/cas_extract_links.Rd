@@ -73,6 +73,9 @@ provided combination of container/class will be extracted.}
 given (and \code{container_id} must be NULL). Only text found inside the
 provided combination of container/class will be extracted.}
 
+\item{custom_xpath}{Defaults to NULL. If given, all other parameters are
+ignored and given Xpath used instead.}
+
 \item{match}{Defaults to NULL. Used when extracting json files. Name of
 property from where url is to be extracted. N.B. Only partly implemented,
 please report issues along with specific example where it emerged.}

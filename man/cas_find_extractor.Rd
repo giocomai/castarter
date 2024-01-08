@@ -9,7 +9,7 @@ cas_find_extractor(
   html_document,
   pattern,
   containers = c("h1", "h2", "h3", "h4", "span", "td", "p", "div"),
-  exclude_CSSpath = NULL
+  exclude_css_path = NULL
 )
 }
 \arguments{
@@ -23,7 +23,7 @@ cas_find_extractor(
 as results are returned in this order (e.g. if a match of the same length
 is found both in a "h1" and in a "div", "h1" is returned first).}
 
-\item{exclude_CSSpath}{Defaults to NULL. To remove script, for example, use
+\item{exclude_css_path}{Defaults to NULL. To remove script, for example, use
 \code{script}, which is transformed to \verb{:not(script)}. May cause issues, use
 with caution.}
 }
@@ -128,7 +128,7 @@ if (interactive) {
   cas_find_extractor(
     html_document = html_page,
     pattern = "The United States is sanctioning Ekaterina Zhdanova",
-    exclude_CSSpath = "script"
+    exclude_css_path = "script"
   )
 
 
@@ -136,7 +136,7 @@ if (interactive) {
     html_document = html_page,
     container = "div",
     container_class = "entry-content",
-    exclude_CSSpath = "script"
+    exclude_css_path = "script"
   )
 }
 }

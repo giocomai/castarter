@@ -19,10 +19,10 @@ cas_extract_html(
   trim = TRUE,
   squish = FALSE,
   no_match = "",
-  exclude_CSSpath = NULL,
-  exclude_Xpath = NULL,
-  custom_Xpath = NULL,
-  custom_CSSpath = NULL,
+  exclude_css_path = NULL,
+  exclude_xpath = NULL,
+  custom_xpath = NULL,
+  custom_css_path = NULL,
   keep_everything = FALSE,
   extract_text = TRUE,
   as_character = TRUE
@@ -78,26 +78,26 @@ any whitespace (including new lines) with a single space.}
 \item{no_match}{Defaults to "". A common alternative would be NA. Value to
 return when the given container, selector or element is not found.}
 
-\item{exclude_CSSpath}{Defaults to NULL. To remove script, for example, use
+\item{exclude_css_path}{Defaults to NULL. To remove script, for example, use
 \code{script}, which is transformed to \verb{:not(script)}. May cause issues, use
 with caution.}
 
-\item{exclude_Xpath}{Defaults to NULL. A common pattern when extracting text
+\item{exclude_xpath}{Defaults to NULL. A common pattern when extracting text
 would be \verb{//script|//iframe|//img|//style}, as it is assumed that these
 containers (javascript contents, iframes, css blocks, and images) are most
 likely undesirable when extracting text. Customise as needed. For example,
 if besides the above you also want to remove a \code{div} of class
 \code{related-articles}, you may use
 \verb{//script|//iframe|//img|//div[@class='related-articles']}Be careful when
-using \code{exclude_Xpath} as the relevant Xpath is removed from the original
+using \code{exclude_xpath} as the relevant Xpath is removed from the original
 objext passed to \code{cas_extract_html()}. To be clear, the input object is
 changed, and, for example, if used once in one of the extractors these
 containers won't be available to other extractors.}
 
-\item{custom_Xpath}{Defaults to NULL. If given, all other parameters are
+\item{custom_xpath}{Defaults to NULL. If given, all other parameters are
 ignored and given Xpath used instead.}
 
-\item{custom_CSSpath}{Defaults to NULL. If given, all other parameters are
+\item{custom_css_path}{Defaults to NULL. If given, all other parameters are
 ignored and given CSSpath used instead.}
 
 \item{keep_everything}{Defaults to FALSE. If TRUE, all text included in the

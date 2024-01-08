@@ -30,23 +30,23 @@
 #' @param attribute Defaults to NULL. If given, type of attribute to extract.
 #'   Typically used in combination with container, as in
 #'   `cas_extract_html(container = "time", attribute = "datetime")`.
-#' @param exclude_CSSpath Defaults to NULL. To remove script, for example, use
+#' @param exclude_css_path Defaults to NULL. To remove script, for example, use
 #'    `script`, which is transformed to `:not(script)`. May cause issues, use
 #'    with caution.
-#' @param exclude_Xpath Defaults to NULL. A common pattern when extracting text
+#' @param exclude_xpath Defaults to NULL. A common pattern when extracting text
 #'   would be `//script|//iframe|//img|//style`, as it is assumed that these
 #'   containers (javascript contents, iframes, css blocks, and images) are most
 #'   likely undesirable when extracting text. Customise as needed. For example,
 #'   if besides the above you also want to remove a `div` of class
 #'   `related-articles`, you may use
 #'   `//script|//iframe|//img|//div[@class='related-articles']`Be careful when
-#'   using `exclude_Xpath` as the relevant Xpath is removed from the original
+#'   using `exclude_xpath` as the relevant Xpath is removed from the original
 #'   objext passed to `cas_extract_html()`. To be clear, the input object is
 #'   changed, and, for example, if used once in one of the extractors these
 #'   containers won't be available to other extractors.
-#' @param custom_Xpath Defaults to NULL. If given, all other parameters are
+#' @param custom_xpath Defaults to NULL. If given, all other parameters are
 #'   ignored and given Xpath used instead.
-#' @param custom_CSSpath Defaults to NULL. If given, all other parameters are
+#' @param custom_css_path Defaults to NULL. If given, all other parameters are
 #'   ignored and given CSSpath used instead.
 #' @param keep_everything Defaults to FALSE. If TRUE, all text included in the
 #'   page is returned as a single string.
@@ -114,21 +114,21 @@ cas_extract_html <- function(html_document,
                              trim = TRUE,
                              squish = FALSE,
                              no_match = "",
-                             exclude_CSSpath = NULL,
-                             exclude_Xpath = NULL,
-                             custom_Xpath = NULL,
-                             custom_CSSpath = NULL,
+                             exclude_css_path = NULL,
+                             exclude_xpath = NULL,
+                             custom_xpath = NULL,
+                             custom_css_path = NULL,
                              keep_everything = FALSE,
                              extract_text = TRUE,
                              as_character = TRUE) {
   if (keep_everything == TRUE) {
     output <- html_document
-  } else if (is.null(custom_Xpath) == FALSE) {
+  } else if (is.null(custom_xpath) == FALSE) {
     output <- html_document %>%
-      rvest::html_elements(xpath = custom_Xpath)
-  } else if (is.null(custom_CSSpath) == FALSE) {
+      rvest::html_elements(xpath = custom_xpath)
+  } else if (is.null(custom_css_path) == FALSE) {
     output <- html_document %>%
-      rvest::html_elements(css = custom_CSSpath)
+      rvest::html_elements(css = custom_css_path)
   } else if (is.null(container_itemprop) == FALSE) {
     if (is.null(attribute)) {
       output <- html_document %>%
@@ -209,19 +209,19 @@ cas_extract_html <- function(html_document,
       rvest::html_elements(xpath = stringr::str_c("//", container, "[@id='", container_id, "']"))
   }
 
-  if (is.null(exclude_Xpath) == FALSE) {
-    xml2::xml_remove(output %>% xml2::xml_find_all(xpath = exclude_Xpath))
+  if (is.null(exclude_xpath) == FALSE) {
+    xml2::xml_remove(output %>% xml2::xml_find_all(xpath = exclude_xpath))
   }
 
   if (is.null(attribute) == FALSE) {
     output <- output %>%
       rvest::html_attr(name = attribute)
   } else {
-    if (is.null(exclude_CSSpath) == FALSE) {
+    if (is.null(exclude_css_path) == FALSE) {
       output <- output %>%
         rvest::html_elements(css = stringr::str_c(
           ":not(",
-          exclude_CSSpath,
+          exclude_css_path,
           ")"
         ))
     }
