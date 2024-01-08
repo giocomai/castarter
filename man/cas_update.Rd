@@ -4,7 +4,14 @@
 \alias{cas_update}
 \title{Update corpus}
 \usage{
-cas_update(extract_links_partial, extractors, wait = 3, user_agent = NULL, ...)
+cas_update(
+  extract_links_partial,
+  extractors,
+  post_processing = NULL,
+  wait = 3,
+  user_agent = NULL,
+  ...
+)
 }
 \arguments{
 \item{extract_links_partial}{A partial function, typically created with
@@ -12,6 +19,10 @@ cas_update(extract_links_partial, extractors, wait = 3, user_agent = NULL, ...)
 originally used by \code{cas_extract_links()}. See examples.}
 
 \item{extractors}{A named list of functions. See examples for details.}
+
+\item{post_processing}{Defaults to NULL. If given, it must be a function that
+takes a data frame as input (logically, a row of the dataset) and returns
+it with additional or modified columns.}
 
 \item{wait}{Defaults to 1. Number of seconds to wait between downloading one
 page and the next. Can be increased to reduce server load, or can be set to

@@ -30,6 +30,7 @@
 #'
 cas_update <- function(extract_links_partial,
                        extractors,
+                       post_processing = NULL,
                        wait = 3,
                        user_agent = NULL,
                        ...) {
@@ -101,6 +102,7 @@ cas_update <- function(extract_links_partial,
 
   cas_extract(
     extractors = extractors,
+    post_processing = post_processing,
     ...
   )
 }
