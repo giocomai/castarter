@@ -216,9 +216,9 @@ cas_extract <- function(extractors,
           url = as.character(x[["url"]])
         ) %>%
         dplyr::select("id", "url", dplyr::everything())
-      
-      if (is.null(post_processing)==FALSE) {
-        if (is.function(post_processing)==FALSE) {
+
+      if (is.null(post_processing) == FALSE) {
+        if (is.function(post_processing) == FALSE) {
           cli::cli_abort("When given, {.val post_processing} must be a function.")
         }
         current_df <- post_processing(current_df)
