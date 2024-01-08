@@ -20,7 +20,7 @@ cas_extract_html(
   squish = FALSE,
   no_match = "",
   exclude_CSSpath = NULL,
-  remove_Xpath = NULL,
+  exclude_Xpath = NULL,
   custom_Xpath = NULL,
   custom_CSSpath = NULL,
   keep_everything = FALSE,
@@ -82,14 +82,14 @@ return when the given container, selector or element is not found.}
 \code{script}, which is transformed to \verb{:not(script)}. May cause issues, use
 with caution.}
 
-\item{remove_Xpath}{Defaults to NULL. A common pattern when extracting text
+\item{exclude_Xpath}{Defaults to NULL. A common pattern when extracting text
 would be \verb{//script|//iframe|//img|//style}, as it is assumed that these
 containers (javascript contents, iframes, css blocks, and images) are most
 likely undesirable when extracting text. Customise as needed. For example,
 if besides the above you also want to remove a \code{div} of class
 \code{related-articles}, you may use
 \verb{//script|//iframe|//img|//div[@class='related-articles']}Be careful when
-using \code{remove_Xpath} as the relevant Xpath is removed from the original
+using \code{exclude_Xpath} as the relevant Xpath is removed from the original
 objext passed to \code{cas_extract_html()}. To be clear, the input object is
 changed, and, for example, if used once in one of the extractors these
 containers won't be available to other extractors.}
