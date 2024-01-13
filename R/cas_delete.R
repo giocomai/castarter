@@ -1,13 +1,17 @@
 #' Delete rows from selected database table
 #'
 #' @param table Name of the table from where rows should be deleted.
-#' @param id Defaults to NULL. A vector of id. Rows with the given id will be removed from the database.
-#' @param batch  Defaults to NULL. A vector of batch identigiers. Rows with the given batch id will be removed from the database.
-#' @param index_group  Defaults to NULL. A vector of "index_group" names. Rows with the given "index_group" will be removed from the database.
-#' @param ask Defaults to TRUE. If TRUE, it runs a query checking how many rows would be deleted, and actually deletes them only after confirming.
+#' @param id Defaults to NULL. A vector of id. Rows with the given id will be
+#'   removed from the database.
+#' @param batch  Defaults to NULL. A vector of batch identigiers. Rows with the
+#'   given batch id will be removed from the database.
+#' @param index_group  Defaults to NULL. A vector of "index_group" names. Rows
+#'   with the given "index_group" will be removed from the database.
+#' @param ask Defaults to TRUE. If TRUE, it runs a query checking how many rows
+#'   would be deleted, and actually deletes them only after confirming.
 #' @inheritParams cas_read_from_db
 #'
-#' @return
+#' @return Nothing, used for its side effects.
 #' @export
 #'
 #' @examples
@@ -35,12 +39,9 @@ cas_delete_from_db <- function(table,
     ...
   )
 
-  # DBI::dbListTables(db)
-
   if (DBI::dbExistsTable(conn = db, name = table) == FALSE) {
     cli::cli_abort(message = "Table {.var {table}} does not exist.")
   }
-
 
   if (is.null(id) == FALSE) {
     if (ask == TRUE) {

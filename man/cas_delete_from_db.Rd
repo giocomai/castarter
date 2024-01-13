@@ -19,13 +19,17 @@ cas_delete_from_db(
 \arguments{
 \item{table}{Name of the table from where rows should be deleted.}
 
-\item{id}{Defaults to NULL. A vector of id. Rows with the given id will be removed from the database.}
+\item{id}{Defaults to NULL. A vector of id. Rows with the given id will be
+removed from the database.}
 
-\item{batch}{Defaults to NULL. A vector of batch identigiers. Rows with the given batch id will be removed from the database.}
+\item{batch}{Defaults to NULL. A vector of batch identigiers. Rows with the
+given batch id will be removed from the database.}
 
-\item{index_group}{Defaults to NULL. A vector of "index_group" names. Rows with the given "index_group" will be removed from the database.}
+\item{index_group}{Defaults to NULL. A vector of "index_group" names. Rows
+with the given "index_group" will be removed from the database.}
 
-\item{ask}{Defaults to TRUE. If TRUE, it runs a query checking how many rows would be deleted, and actually deletes them only after confirming.}
+\item{ask}{Defaults to TRUE. If TRUE, it runs a query checking how many rows
+would be deleted, and actually deletes them only after confirming.}
 
 \item{db_connection}{Defaults to NULL. If NULL, uses local SQLite database.
 If given, must be a connection object or a list with relevant connection
@@ -34,6 +38,9 @@ settings (see example).}
 \item{disconnect_db}{Defaults to TRUE. If FALSE, leaves the connection to database open.}
 
 \item{...}{Passed to \code{cas_get_db_file()}.}
+}
+\value{
+Nothing, used for its side effects.
 }
 \description{
 Delete rows from selected database table
