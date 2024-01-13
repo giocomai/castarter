@@ -33,7 +33,7 @@
 #'   # a function such as the following would be passed to cas_extract
 #'   pp <- function(df) {
 #'     df |>
-#'       dplyr::mutate(internal_id = stringr::str_extract(url, "[[:digit:]]+"))
+#'       dplyr::mutate(internal_id = stringr::str_extract(url, "[[:digit:]]+$"))
 #'   }
 #' }
 #'

@@ -60,18 +60,21 @@ matches the given status.}
 Extract fields and contents from downloaded files
 }
 \examples{
-
 \dontrun{
 if (interactive) {
-### Post-processing example ####
-#For example, in order to add a column called `internal_id`
-#that takes the ending digits of the url (assuming the url ends with digits)
-#a function such as the following would be passed to cas_extract
-pp <- function(df) {df |>
- dplyr::mutate(internal_id = stringr::str_extract(url, "[[:digit:]]+"))}
+  ### Post-processing example ####
+  # For example, in order to add a column called `internal_id`
+  # that takes the ending digits of the url (assuming the url ends with digits)
+  # a function such as the following would be passed to cas_extract
+  pp <- function(df) {
+    df |>
+      dplyr::mutate(internal_id = stringr::str_extract(url, "[[:digit:]]+$"))
+  }
 }
 
-cas_extract(extractors = extractors_l, # assuming it has already been set
-            post_processing = pp)
+cas_extract(
+  extractors = extractors_l, # assuming it has already been set
+  post_processing = pp
+)
 }
 }
