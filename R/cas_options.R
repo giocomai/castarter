@@ -44,7 +44,7 @@ cas_set_options <- function(project = NULL,
   }
 
   if (is.null(db_folder) == FALSE) {
-    Sys.setenv(castarter_database_folder = db_folder) <- Sys.getenv("castarter_database_folder")
+    Sys.setenv(castarter_database_folder = db_folder)
   }
 
   if (is.null(project) == FALSE) {
