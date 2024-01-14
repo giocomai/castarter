@@ -11,11 +11,11 @@
 #' @export
 #'
 #' @examples
-cas_ignore_id <- function(id,
-                          db_folder = NULL,
-                          db_connection = NULL,
-                          disconnect_db = FALSE,
-                          ...) {
+cas_write_db_ignore_id <- function(id,
+                                   db_folder = NULL,
+                                   db_connection = NULL,
+                                   disconnect_db = FALSE,
+                                   ...) {
   if (NROW(id) == 0) {
     return(invisible(NULL))
   }
@@ -72,3 +72,8 @@ cas_ignore_id <- function(id,
     cli::cli_inform(c(v = "All given identifiers already incldued in ignore table."))
   }
 }
+
+
+#' @rdname cas_write_db_ignore_id
+#' @export
+cas_ignore_id <- cas_write_db_ignore_id
