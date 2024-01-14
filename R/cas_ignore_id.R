@@ -122,7 +122,7 @@ cas_read_db_ignore_id <- function(db_connection = NULL,
     read_only = TRUE,
     ...
   )
-  
+
   db_result <- tryCatch(
     cas_read_from_db(
       table = "contents_ignore",
@@ -134,20 +134,20 @@ cas_read_db_ignore_id <- function(db_connection = NULL,
       logical(1L)
     }
   )
-  
+
   if (is.null(db_result)) {
     output_df <- tibble::tibble(id = double())
   } else if (isFALSE(db_result)) {
     output_df <- tibble::tibble(id = double())
   } else {
-    output_df <- db_result |> 
-      dplyr::collect() 
+    output_df <- db_result |>
+      dplyr::collect()
   }
-  
+
   cas_disconnect_from_db(
     db_connection = db,
     disconnect_db = disconnect_db
   )
-  
+
   output_df
 }

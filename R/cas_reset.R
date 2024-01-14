@@ -114,6 +114,42 @@ cas_reset_db_index_id <- function(db_connection = NULL,
   )
 }
 
+#' Removes from the local database all identifiers included in the ignore list
+#'
+#' @inheritParams cas_reset_db
+#'
+#' @return
+#' @export
+#'
+#' @examples
+#' cas_set_options(
+#'   base_folder = fs::path(tempdir(), "R", "cas_reset_db_ignore_id"),
+#'   db_folder = fs::path(tempdir(), "R", "cas_reset_db_ignore_id"),
+#'   project = "example_project",
+#'   website = "example_website"
+#' )
+#' cas_enable_db()
+#'
+#'
+#' cas_write_db_ignore_id(id = sample(x = 1:100, size = 10))
+#'
+#' cas_read_db_ignore_id()
+#'
+#' cas_reset_db_ignore_id(ask = FALSE)
+#'
+#' cas_read_db_ignore_id()
+cas_reset_db_ignore_id <- function(db_connection = NULL,
+                                   db_folder = NULL,
+                                   ask = TRUE,
+                                   ...) {
+  cas_reset_db(
+    table = "contents_ignore",
+    db_connection = db_connection,
+    db_folder = db_folder,
+    ask = ask,
+    ...
+  )
+}
 
 #' Delete all files and database records for the index pages of the current
 #' website
