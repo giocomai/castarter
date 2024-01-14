@@ -8,6 +8,7 @@ cas_extract(
   extractors,
   post_processing = NULL,
   id = NULL,
+  ignore_id = TRUE,
   custom_path = NULL,
   index = FALSE,
   store_as_character = TRUE,
@@ -27,6 +28,16 @@ cas_extract(
 \item{post_processing}{Defaults to NULL. If given, it must be a function that
 takes a data frame as input (logically, a row of the dataset) and returns
 it with additional or modified columns.}
+
+\item{id}{Defaults to NULL, identifiers to process when extracting. If given,
+must be a numeric vector, logically corresponding to the identifiers in the
+\code{id} column, e.g. as returned by \code{ cas_read_db_contents_id()}}
+
+\item{ignore_id}{Defaults to TRUE. If TRUE, it checks if identifiers have
+been added to the local ignore list, typically with \code{cas_ignore_id()}, and
+as retrieved with \code{cas_read_db_ignore_id()}. It can also be a numeric
+vector of identifiers: the given identifiers will not be processed. If
+FALSE, items will be processed normally.}
 
 \item{index}{Logical, defaults to FALSE. If TRUE, downloaded files will be
 considered \code{index} files. If not, they will be considered \code{contents} files.

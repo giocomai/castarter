@@ -4,6 +4,14 @@
 #' @param post_processing Defaults to NULL. If given, it must be a function that
 #'   takes a data frame as input (logically, a row of the dataset) and returns
 #'   it with additional or modified columns.
+#' @param id Defaults to NULL, identifiers to process when extracting. If given,
+#'   must be a numeric vector, logically corresponding to the identifiers in the
+#'   `id` column, e.g. as returned by ` cas_read_db_contents_id()`
+#' @param ignore_id Defaults to TRUE. If TRUE, it checks if identifiers have
+#'   been added to the local ignore list, typically with `cas_ignore_id()`, and
+#'   as retrieved with `cas_read_db_ignore_id()`. It can also be a numeric
+#'   vector of identifiers: the given identifiers will not be processed. If
+#'   FALSE, items will be processed normally.
 #' @param store_as_character Logical, defaults to TRUE. If TRUE, it converts to
 #'   character all extracted contents before writing them to database. This
 #'   reduces issues of type conversions with the default database backend (for
@@ -45,6 +53,7 @@
 cas_extract <- function(extractors,
                         post_processing = NULL,
                         id = NULL,
+                        ignore_id = TRUE,
                         custom_path = NULL,
                         index = FALSE,
                         store_as_character = TRUE,
@@ -144,7 +153,6 @@ cas_extract <- function(extractors,
     }
   }
 
-
   if (nrow(files_to_extract_pre_df) == 0) {
     # TODO return consistently data frame or S3 object
     return(invisible(NULL))
@@ -172,6 +180,20 @@ cas_extract <- function(extractors,
     id_to_keep <- id
     files_to_extract_df <- files_to_extract_df %>%
       dplyr::filter(id %in% id_to_keep)
+  }
+
+  if (isTRUE(ignore_id)) {
+    ignore_id <- cas_read_db_ignore_id(
+      db_connection = db,
+      disconnect_db = FALSE
+    ) |>
+      dplyr::pull(id)
+
+    files_to_extract_df <- files_to_extract_df %>%
+      dplyr::filter(!(id %in% ignore_id))
+  } else if (is.numeric(ignore_id)) {
+    files_to_extract_df <- files_to_extract_df %>%
+      dplyr::filter(!(id %in% ignore_id))
   }
 
   if (is.numeric(sample) == TRUE) {
