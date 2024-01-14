@@ -11,19 +11,31 @@
 #' @export
 #'
 #' @examples
+#' cas_set_options(
+#'   base_folder = fs::path(tempdir(), "R", "cas_write_db_ignore_id"),
+#'   db_folder = fs::path(tempdir(), "R", "cas_write_db_ignore_id"),
+#'   project = "example_project",
+#'   website = "example_website"
+#' )
+#' cas_enable_db()
+#'
+#'
+#' cas_write_db_ignore_id(id = sample(x = 1:100, size = 10))
+#'
+#' cas_read_db_ignore_id()
 cas_write_db_ignore_id <- function(id,
                                    db_folder = NULL,
                                    db_connection = NULL,
                                    disconnect_db = FALSE,
                                    ...) {
   if (NROW(id) == 0) {
-    return(invisible(NULL))
+    return(tibble::tibble(id = double()))
   }
 
   if (is.data.frame(id)) {
-    ignore_df <- tibble::tibble(id = as.numeric(id[[1]]))
+    ignore_df <- tibble::tibble(id = unique(as.numeric(id[[1]])))
   } else {
-    ignore_df <- tibble::tibble(id = as.numeric(id))
+    ignore_df <- tibble::tibble(id = unique(as.numeric(id)))
   }
 
   if (sum(is.na(ignore_df[["id"]])) > 0) {
@@ -77,3 +89,65 @@ cas_write_db_ignore_id <- function(id,
 #' @rdname cas_write_db_ignore_id
 #' @export
 cas_ignore_id <- cas_write_db_ignore_id
+
+
+
+#' Read identifiers to be ignored from the local database
+#'
+#' @inheritParams cas_write_db_ignore_id
+#'
+#' @return A data frame with a single column, `id`
+#' @export
+#'
+#' @examples
+#' cas_set_options(
+#'   base_folder = fs::path(tempdir(), "R", "cas_read_db_ignore_id"),
+#'   db_folder = fs::path(tempdir(), "R", "cas_read_db_ignore_id"),
+#'   project = "example_project",
+#'   website = "example_website"
+#' )
+#' cas_enable_db()
+#'
+#'
+#' cas_write_db_ignore_id(id = sample(x = 1:100, size = 10))
+#'
+#' cas_read_db_ignore_id()
+cas_read_db_ignore_id <- function(db_connection = NULL,
+                                  db_folder = NULL,
+                                  index_group = NULL,
+                                  disconnect_db = TRUE,
+                                  ...) {
+  db <- cas_connect_to_db(
+    db_connection = db_connection,
+    read_only = TRUE,
+    ...
+  )
+  
+  db_result <- tryCatch(
+    cas_read_from_db(
+      table = "contents_ignore",
+      db_connection = db,
+      disconnect_db = FALSE,
+      ...
+    ),
+    error = function(e) {
+      logical(1L)
+    }
+  )
+  
+  if (is.null(db_result)) {
+    output_df <- tibble::tibble(id = double())
+  } else if (isFALSE(db_result)) {
+    output_df <- tibble::tibble(id = double())
+  } else {
+    output_df <- db_result |> 
+      dplyr::collect() 
+  }
+  
+  cas_disconnect_from_db(
+    db_connection = db,
+    disconnect_db = disconnect_db
+  )
+  
+  output_df
+}

@@ -32,3 +32,17 @@ There are two main use cases for this function:
 \item urls originally included for download, but not yet downloaded, should be ignored and not downloaded. This may or may not be a temporary arrangement, but it is considered useful to keep the urls in the database.
 }
 }
+\examples{
+cas_set_options(
+  base_folder = fs::path(tempdir(), "R", "cas_write_db_ignore_id"),
+  db_folder = fs::path(tempdir(), "R", "cas_write_db_ignore_id"),
+  project = "example_project",
+  website = "example_website"
+)
+cas_enable_db()
+
+
+cas_write_db_ignore_id(id = sample(x = 1:100, size = 10))
+
+cas_read_db_ignore_id()
+}
