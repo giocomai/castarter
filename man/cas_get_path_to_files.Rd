@@ -17,6 +17,7 @@ cas_get_path_to_files(
   sample = FALSE,
   db_connection = NULL,
   db_folder = NULL,
+  disconnect_db = TRUE,
   ...
 )
 }

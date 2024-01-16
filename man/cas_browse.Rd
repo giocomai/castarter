@@ -2,7 +2,7 @@
 % Please edit documentation in R/cas_browse.R
 \name{cas_browse}
 \alias{cas_browse}
-\title{Open in a browser a URL}
+\title{Open in a browser a URL stored in the local database}
 \usage{
 cas_browse(
   index = FALSE,
@@ -12,7 +12,7 @@ cas_browse(
   index_group = NULL,
   file_format = "html",
   sample = 1,
-  disconnect_db = FALSE,
+  disconnect_db = TRUE,
   ...
 )
 }
@@ -21,13 +21,14 @@ cas_browse(
 considered \code{index} files. If not, they will be considered \code{contents} files.
 See Readme for a more extensive explanation.}
 
-\item{remote}{Defaults to TRUE. If TRUE, open relevant url online. If FALSE,
+\item{remote}{Defaults to TRUE. If TRUE, opens relevant url online. If FALSE,
 it opens the locally stored file.}
 
-\item{sample}{Defaults to 1. By defaults, it opens one random url.}
+\item{sample}{Defaults to 1. By default, it opens one random url.}
 
 \item{...}{Passed to \code{cas_get_db_file()}.}
 }
 \description{
-Open in a browser a URL
+This function is typically used to check a web page when extracting links
+from index, or contents from contents pages.
 }

@@ -92,8 +92,7 @@ cas_reset_db_contents_id <- function(db_connection = NULL,
 }
 
 
-#' Removes from the local database the folder where links to index associated
-#' with their id are stored
+#' Removes from the local database the table where links to index urls are stored
 #'
 #' @inheritParams cas_reset_db
 #'

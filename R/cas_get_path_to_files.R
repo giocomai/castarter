@@ -22,10 +22,16 @@ cas_get_path_to_files <- function(urls = NULL,
                                   sample = FALSE,
                                   db_connection = NULL,
                                   db_folder = NULL,
+                                  disconnect_db = TRUE,
                                   ...) {
   type <- dplyr::if_else(condition = index,
     true = "index",
     false = "contents"
+  )
+
+  db <- cas_connect_to_db(
+    read_only = TRUE,
+    ...
   )
 
   available_files_df <- cas_read_db_download(
@@ -33,16 +39,15 @@ cas_get_path_to_files <- function(urls = NULL,
     batch = batch,
     status = status,
     index = index,
-    db_connection = db_connection,
-    db_folder = db_folder,
+    db_connection = db,
+    disconnect_db = FALSE,
     ...
   )
 
   if (isTRUE(index)) {
     if (is.null(index_group) == FALSE) {
       index_group_id_v <- cas_read_db_index(
-        db_folder = db_folder,
-        db_connection = db_connection,
+        db_connection = db,
         index_group = index_group,
         ...
       ) %>%
@@ -53,6 +58,11 @@ cas_get_path_to_files <- function(urls = NULL,
         dplyr::filter(id %in% {{ index_group_id_v }})
     }
   }
+
+  cas_disconnect_from_db(
+    db_connection = db,
+    disconnect_db = disconnect_db
+  )
 
   if (nrow(available_files_df) == 0) {
     return(invisible(NULL))

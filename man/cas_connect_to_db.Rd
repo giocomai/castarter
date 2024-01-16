@@ -8,6 +8,7 @@ cas_connect_to_db(
   db_connection = NULL,
   use_db = NULL,
   db_type = NULL,
+  db_folder = NULL,
   read_only = FALSE,
   ...
 )
