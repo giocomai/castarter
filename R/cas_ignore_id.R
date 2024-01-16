@@ -28,14 +28,18 @@ cas_write_db_ignore_id <- function(id,
                                    db_connection = NULL,
                                    disconnect_db = FALSE,
                                    ...) {
-  if (NROW(id) == 0) {
-    return(tibble::tibble(id = double()))
+  if (inherits(id, "tbl_lazy")) {
+    id <- dplyr::collect(id)
   }
 
   if (is.data.frame(id)) {
     ignore_df <- tibble::tibble(id = unique(as.numeric(id[[1]])))
   } else {
     ignore_df <- tibble::tibble(id = unique(as.numeric(id)))
+  }
+
+  if (NROW(id) == 0) {
+    return(tibble::tibble(id = double()))
   }
 
   if (sum(is.na(ignore_df[["id"]])) > 0) {
@@ -79,7 +83,7 @@ cas_write_db_ignore_id <- function(id,
       value = new_df,
       append = TRUE
     )
-    cli::cli_inform(c(v = "{nrow(new_df)} identifiers added to ignore table."))
+    cli::cli_inform(c(v = "{scales::number(nrow(new_df))} identifiers added to ignore table."))
   } else {
     cli::cli_inform(c(v = "All given identifiers already incldued in ignore table."))
   }
