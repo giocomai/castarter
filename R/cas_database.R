@@ -189,7 +189,7 @@ cas_get_db_settings <- function() {
 
 #' Gets location of database file
 #'
-#' @params db_type Defaults to "DuckDB". Valid values include "SQLite".
+#' @params db_type Defaults to "SQLite". Valid values include "DuckDB".
 #'
 #' @return A character vector of length one with location of the SQLite database file.
 #' @export
