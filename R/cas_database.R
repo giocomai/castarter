@@ -366,6 +366,7 @@ cas_check_db_folder <- function() {
 cas_connect_to_db <- function(db_connection = NULL,
                               use_db = NULL,
                               db_type = NULL,
+                              db_folder = NULL,
                               read_only = FALSE,
                               ...) {
   if (isFALSE(x = cas_check_use_db(use_db))) {
@@ -390,6 +391,7 @@ cas_connect_to_db <- function(db_connection = NULL,
 
   if (is.null(db_connection)) {
     db_file <- cas_get_db_file(
+      db_folder = db_folder,
       db_type = db_type,
       ...
     )
@@ -406,7 +408,7 @@ cas_connect_to_db <- function(db_connection = NULL,
 
     if (stringr::str_to_lower(db_type) == "duckdb") {
       if (requireNamespace("duckdb", quietly = TRUE) == FALSE) {
-        usethis::ui_stop(x = "To use DuckDB databases you need to install the package `duckdb`.")
+        cli::cli_abort(message = "To use DuckDB databases you need to install the package {.pkg duckdb}.")
       }
       db <- DBI::dbConnect(
         drv = duckdb::duckdb(),
@@ -416,7 +418,7 @@ cas_connect_to_db <- function(db_connection = NULL,
       return(db)
     } else if (stringr::str_to_lower(db_type) == "sqlite") {
       if (requireNamespace("RSQLite", quietly = TRUE) == FALSE) {
-        usethis::ui_stop(x = "To use SQLite databases you need to install the package `RSQLite`.")
+        cli::cli_abort(message = "To use SQLite databases you need to install the package {.pkg RSQLite}.")
       }
       db <- DBI::dbConnect(
         drv = RSQLite::SQLite(),
@@ -430,7 +432,7 @@ cas_connect_to_db <- function(db_connection = NULL,
         drv <- RSQLite::SQLite()
       } else {
         if (requireNamespace("odbc", quietly = TRUE) == FALSE) {
-          usethis::ui_stop(x = "To use custom databases you need to install the package `odbc`, or provide your connection directly to all functions.")
+          cli::cli_abort(message = "To use custom databases you need to install the package {.pkg odbc}, or provide your connection directly to all functions.")
         }
         drv <- odbc::odbc()
       }
@@ -450,12 +452,12 @@ cas_connect_to_db <- function(db_connection = NULL,
     if (is.list(db_connection)) {
       if (db_connection[["driver"]] == "SQLite") {
         if (requireNamespace("RSQLite", quietly = TRUE) == FALSE) {
-          usethis::ui_stop(x = "To use SQLite databases you need to install the package `RSQLite`.")
+          cli::cli_abort(message = "To use SQLite databases you need to install the package {.pkg RSQLite}.")
         }
         drv <- RSQLite::SQLite()
       } else {
         if (requireNamespace("odbc", quietly = TRUE) == FALSE) {
-          usethis::ui_stop(x = "To use custom databases you need to install the package `odbc`, or provide your connection directly to all functions.")
+          cli::cli_abort(message = "To use custom databases you need to install the package {.pkg odbc}, or provide your connection directly to all functions.")
         }
         drv <- odbc::odbc()
       }
@@ -602,7 +604,7 @@ cas_write_to_db <- function(df,
         append = TRUE
       )
     } else {
-      usethis::ui_stop("Incompatible data frame passed to `index_id`. `df` should have a numeric `id` column, and a character `url` and `type` column.")
+      cli::cli_abort("Incompatible data frame passed to `index_id`. `df` should have a numeric `id` column, and a character `url` and `type` column.")
     }
   } else if (table == "contents_id") {
     if (identical(colnames(df), colnames(casdb_empty_contents_id)) & identical(sapply(df, class), sapply(casdb_empty_contents_id, class))) {
@@ -612,7 +614,7 @@ cas_write_to_db <- function(df,
         append = TRUE
       )
     } else {
-      usethis::ui_stop("Incompatible data frame passed to `contents_id`.")
+      cli::cli_abort("Incompatible data frame passed to `contents_id`.")
     }
   } else {
     # Write generic table without additional checks
