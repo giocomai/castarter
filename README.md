@@ -14,9 +14,7 @@ language - facilitates text mining and web scraping by taking care of
 many of the most common file management and parsing issues. It keeps
 tracks of download advancement in a local database, facilitates
 extraction through dedicated convenience functions, and allows for basic
-exploration of textual corpora through a Shiny interface. `castarter` is
-a more modern, fully-featured, and consistent iteration of
-[`castarter.legacy`](https://github.com/giocomai/castarter.legacy)
+exploration of textual corpora through a Shiny interface.
 
 ## Key features
 
@@ -54,6 +52,27 @@ still opinionated about how a typical workflow looks like and about the
 likely user preferences. More broadly, a core idea is that reliability
 is more important than speed, as more advanced users can process or
 export data with their own custom solutions.
+
+## Funding and disclaimers
+
+`castarter` is a more modern, fully-featured, and consistent iteration
+of a previous package with the same name, now
+[`castarter.legacy`](https://github.com/giocomai/castarter.legacy).
+
+Since then, it has been developed as a personal endeavour, as a
+professional project at
+[OBCT](https://www.balcanicaucaso.org/)/[CCI](https://www.cci.tn.it/),
+as well as within the scope of various initiatives, including:
+
+- [EDJNet](https://www.europeandatajournalism.eu/), the European Data
+  Journalism Network
+- [Text as data & data in the text](https://tadadit.xyz/), co-funded by
+  the Italian MFA (see [website](https://tadadit.xyz/) for details and
+  disclaimers)
+
+Each line of support enabled an increased feature set, the creation of
+example, an extension to a wider range of use cases, and the writing of
+documentation.
 
 ## Installation
 
@@ -169,7 +188,7 @@ Assuming that my project on the European Union involves text mining the
 website of the European Council, the European Commission, and the
 European Parliament, the folder structure may look something like this:
 
-    #> /tmp/RtmpU9kVLn/castarter_data
+    #> /tmp/RtmpwmPz20/castarter_data
     #> └── european_union
     #>     ├── european_commission
     #>     ├── european_council
