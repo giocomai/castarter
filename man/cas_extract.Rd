@@ -16,7 +16,7 @@ cas_extract(
   db_connection = NULL,
   file_format = "html",
   sample = FALSE,
-  write_to_db = TRUE,
+  write_to_db = FALSE,
   keep_if_status = 200,
   encoding = "UTF-8",
   ...
