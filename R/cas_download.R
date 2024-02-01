@@ -16,7 +16,7 @@
 #' @param sample Defaults to FALSE. If TRUE, the download order is randomised.
 #'   If a numeric is given, the download order is randomised and at most the
 #'   given number of items is downloaded.
-#' @param retry_times Defaults to 10. Number of times to retry download in case
+#' @param retry_times Defaults to 3. Number of times to retry download in case
 #'   of errors.
 #' @param user_agent Defaults to NULL. If given, passed to download method.
 #'
@@ -37,8 +37,8 @@ cas_download <- function(download_df = NULL,
                          pause_cap = 256,
                          pause_min = 4,
                          sample = FALSE,
-                         retry_times = 8,
-                         terminate_on = 404,
+                         retry_times = 3,
+                         terminate_on = NULL,
                          user_agent = NULL,
                          download_again_if_status_is_not = NULL,
                          ...) {

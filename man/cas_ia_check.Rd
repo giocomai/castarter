@@ -7,7 +7,7 @@
 cas_ia_check(
   url = NULL,
   wait = 1,
-  retry_times = 16,
+  retry_times = 3,
   pause_base = 2,
   pause_cap = 512,
   pause_min = 4,
@@ -26,7 +26,7 @@ cas_ia_check(
 page and the next. Can be increased to reduce server load, or can be set to
 0 when this is not an issue.}
 
-\item{retry_times}{Defaults to 10. Number of times to retry download in case
+\item{retry_times}{Defaults to 3. Number of times to retry download in case
 of errors.}
 
 \item{check_db}{Defaults to TRUE. If TRUE, checks if given URL has already

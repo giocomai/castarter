@@ -7,7 +7,7 @@
 cas_ia_save(
   url = NULL,
   wait = 32,
-  retry_times = 64,
+  retry_times = 3,
   pause_base = 16,
   pause_cap = 1024,
   pause_min = 64,
@@ -28,7 +28,7 @@ wait time is considered suitable by Archive.org itself, but I've noticed
 that with wait time shorter than 10 seconds the whole process stops getting
 positive replies from the server very soon.}
 
-\item{retry_times}{Defaults to 10. Number of times to retry download in case
+\item{retry_times}{Defaults to 3. Number of times to retry download in case
 of errors.}
 
 \item{pause_base, pause_cap}{This method uses exponential back-off with full

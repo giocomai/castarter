@@ -14,8 +14,8 @@ cas_download_httr(
   pause_base = 2,
   pause_cap = 256,
   pause_min = 4,
-  terminate_on = 404,
-  retry_times = 16,
+  terminate_on = NULL,
+  retry_times = 3,
   db_connection = NULL,
   disconnect_db = FALSE,
   sample = FALSE,
@@ -38,7 +38,7 @@ See Readme for a more extensive explanation.}
 page and the next. Can be increased to reduce server load, or can be set to
 0 when this is not an issue.}
 
-\item{retry_times}{Defaults to 10. Number of times to retry download in case
+\item{retry_times}{Defaults to 3. Number of times to retry download in case
 of errors.}
 
 \item{db_connection}{Defaults to NULL. If NULL, uses local SQLite database.

@@ -122,7 +122,7 @@ cas_build_urls(
   url = "https://example.com/archive/?from={here}&to={here}",
   glue = TRUE,
   start_date = "2011-01-01",
-  end_page = "2022-12-31",
+  end_date = "2022-12-31",
   date_separator = ".",
   date_format = "dmY",
   index_group = "news"

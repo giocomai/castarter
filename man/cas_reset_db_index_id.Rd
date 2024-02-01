@@ -2,8 +2,7 @@
 % Please edit documentation in R/cas_reset.R
 \name{cas_reset_db_index_id}
 \alias{cas_reset_db_index_id}
-\title{Removes from the local database the folder where links to index associated
-with their id are stored}
+\title{Removes from the local database the table where links to index urls are stored}
 \usage{
 cas_reset_db_index_id(db_connection = NULL, db_folder = NULL, ask = TRUE, ...)
 }
@@ -18,6 +17,5 @@ will be deleted without asking for confirmation from the user.}
 \item{...}{Passed to \code{cas_get_db_file()}.}
 }
 \description{
-Removes from the local database the folder where links to index associated
-with their id are stored
+Removes from the local database the table where links to index urls are stored
 }

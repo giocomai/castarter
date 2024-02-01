@@ -21,7 +21,7 @@
 #' @examples
 cas_ia_check <- function(url = NULL,
                          wait = 1,
-                         retry_times = 16,
+                         retry_times = 3,
                          pause_base = 2,
                          pause_cap = 512,
                          pause_min = 4,
@@ -213,7 +213,7 @@ cas_ia_check <- function(url = NULL,
 #' }
 cas_ia_save <- function(url = NULL,
                         wait = 32,
-                        retry_times = 64,
+                        retry_times = 3,
                         pause_base = 16,
                         pause_cap = 1024,
                         pause_min = 64,

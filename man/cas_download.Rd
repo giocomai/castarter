@@ -17,8 +17,8 @@ cas_download(
   pause_cap = 256,
   pause_min = 4,
   sample = FALSE,
-  retry_times = 8,
-  terminate_on = 404,
+  retry_times = 3,
+  terminate_on = NULL,
   user_agent = NULL,
   download_again_if_status_is_not = NULL,
   ...
@@ -41,7 +41,7 @@ page and the next. Can be increased to reduce server load, or can be set to
 If a numeric is given, the download order is randomised and at most the
 given number of items is downloaded.}
 
-\item{retry_times}{Defaults to 10. Number of times to retry download in case
+\item{retry_times}{Defaults to 3. Number of times to retry download in case
 of errors.}
 
 \item{user_agent}{Defaults to NULL. If given, passed to download method.}
