@@ -10,6 +10,7 @@ cas_download_internal(
   index_group = NULL,
   overwrite_file = FALSE,
   wait = 1,
+  create_folder_if_missing = NULL,
   db_connection = NULL,
   disconnect_db = FALSE,
   sample = FALSE,
