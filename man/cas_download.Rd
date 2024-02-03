@@ -12,6 +12,7 @@ cas_download(
   file_format = "html",
   overwrite_file = FALSE,
   create_folder_if_missing = NULL,
+  ignore_id = TRUE,
   wait = 1,
   pause_base = 2,
   pause_cap = 256,

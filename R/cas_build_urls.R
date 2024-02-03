@@ -132,8 +132,6 @@ cas_build_urls <- function(url,
       date_format
     ) %>%
       base::unique()
-    
-    
   } else if (is.null(start_page) | is.null(end_page)) {
     variable_part <- ""
   } else {

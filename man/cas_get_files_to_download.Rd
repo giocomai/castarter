@@ -8,6 +8,7 @@ cas_get_files_to_download(
   urls = NULL,
   index = FALSE,
   index_group = NULL,
+  ignore_id = TRUE,
   desc_id = FALSE,
   batch = NULL,
   create_folder_if_missing = NULL,

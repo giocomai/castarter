@@ -32,6 +32,7 @@ cas_download <- function(download_df = NULL,
                          file_format = "html",
                          overwrite_file = FALSE,
                          create_folder_if_missing = NULL,
+                         ignore_id = TRUE,
                          wait = 1,
                          pause_base = 2,
                          pause_cap = 256,
@@ -48,6 +49,7 @@ cas_download <- function(download_df = NULL,
     index_group = index_group,
     overwrite_file = overwrite_file,
     create_folder_if_missing = create_folder_if_missing,
+    ignore_id = ignore_id,
     wait = wait,
     sample = sample,
     file_format = file_format,
@@ -180,6 +182,7 @@ cas_get_urls_df <- function(urls = NULL,
 cas_get_files_to_download <- function(urls = NULL,
                                       index = FALSE,
                                       index_group = NULL,
+                                      ignore_id = TRUE,
                                       desc_id = FALSE,
                                       batch = NULL,
                                       create_folder_if_missing = NULL,
@@ -204,9 +207,23 @@ cas_get_files_to_download <- function(urls = NULL,
   ) %>%
     dplyr::collect()
 
+  if (isTRUE(ignore_id)) {
+    ignore_id <- cas_read_db_ignore_id(
+      db_connection = db,
+      disconnect_db = FALSE
+    ) |>
+      dplyr::pull(id)
+
+    urls_df <- urls_df %>%
+      dplyr::filter(!(id %in% ignore_id))
+  } else if (is.numeric(ignore_id)) {
+    urls_df <- urls_df %>%
+      dplyr::filter(!(id %in% ignore_id))
+  }
+
   if (nrow(urls_df) == 0) {
-    usethis::ui_warn("No {usethis::ui_code(type)} urls for download stored in database.")
-    return(NULL)
+    cli::cli_warn("No {.code {type}} urls for download stored in database.")
+    invisible(return(NULL))
   }
 
   path <- cas_get_base_path(

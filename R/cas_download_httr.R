@@ -15,6 +15,7 @@ cas_download_httr <- function(download_df = NULL,
                               index = FALSE,
                               index_group = NULL,
                               overwrite_file = FALSE,
+                              ignore_id = TRUE,
                               wait = 1,
                               create_folder_if_missing = NULL,
                               pause_base = 2,
@@ -44,6 +45,7 @@ cas_download_httr <- function(download_df = NULL,
       index = index,
       index_group = index_group,
       create_folder_if_missing = create_folder_if_missing,
+      ignore_id = ignore_id,
       db_connection = db,
       disconnect_db = FALSE,
       file_format = file_format,
@@ -63,7 +65,7 @@ cas_download_httr <- function(download_df = NULL,
       cli::cli_inform(c(v = "The folder {.path {current_batch_folder}} for the current download batch has been created."))
     }
   }
-  
+
   if (is.numeric(sample) == TRUE) {
     download_df <- download_df %>%
       dplyr::slice_sample(n = sample)
