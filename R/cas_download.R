@@ -198,11 +198,16 @@ cas_get_files_to_download <- function(urls = NULL,
     false = "contents"
   )
 
+  db <- cas_connect_to_db(
+    db_connection = db_connection,
+    ...
+  )
+  
   urls_df <- cas_get_urls_df(
     urls = urls,
     index = index,
     index_group = index_group,
-    db_connection = db_connection,
+    db_connection = db,
     ...
   ) %>%
     dplyr::collect()
@@ -239,7 +244,7 @@ cas_get_files_to_download <- function(urls = NULL,
   ## if not, set batch to 1
   previous_download_df <- cas_read_db_download(
     index = index,
-    db_connection = db_connection,
+    db_connection = db,
     db_folder = db_folder,
     ...
   ) %>%
