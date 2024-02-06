@@ -39,6 +39,7 @@ cas_browse <- function(index = FALSE,
       file_format = file_format,
       db_connection = db,
       sample = sample,
+      disconnect_db = FALSE,
       ...
     )
 
