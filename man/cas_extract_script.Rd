@@ -8,7 +8,8 @@ cas_extract_script(
   html_document,
   script_type = NULL,
   match = NULL,
-  accessors = NULL
+  accessors = NULL,
+  remove_from_script = NULL
 )
 }
 \arguments{
@@ -26,6 +27,9 @@ script of type "NewsArticle".}
 \code{purrr::pluck} in order to extract sub-components of the list resulting
 from reading the with \code{jsonlite} the result of the previous steps and
 filter.}
+
+\item{remove_from_script}{Defaults to NULL. If given, removed after the
+script has been extracted but before processing the json.}
 }
 \value{
 May return a list or a character vector. If no match is found, returns \code{NA_character_}

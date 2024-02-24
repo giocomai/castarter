@@ -302,6 +302,8 @@ cas_extract <- function(extractors,
 #'   `purrr::pluck` in order to extract sub-components of the list resulting
 #'   from reading the with `jsonlite` the result of the previous steps and
 #'   filter.
+#' @param remove_from_script Defaults to NULL. If given, removed after the
+#'   script has been extracted but before processing the json.
 #'
 #' @inheritParams cas_extract_html
 #'
@@ -349,7 +351,8 @@ cas_extract <- function(extractors,
 cas_extract_script <- function(html_document,
                                script_type = NULL,
                                match = NULL,
-                               accessors = NULL) {
+                               accessors = NULL,
+                               remove_from_script = NULL) {
   if (is.null(script_type) == TRUE) {
     script_pre <- html_document %>%
       rvest::html_elements("script")
@@ -361,11 +364,16 @@ cas_extract_script <- function(html_document,
   script_l <- purrr::map(
     .x = script_pre,
     .f = function(x) {
-      x %>%
-        rvest::html_text2() %>%
-        stringr::str_remove_all(pattern = stringr::fixed("\\")) %>%
-        stringr::str_remove_all(pattern = stringr::fixed("\r")) %>%
-        jsonlite::parse_json()
+      if (is.null(remove_from_script)) {
+        x %>%
+          rvest::html_text2() %>%
+          jsonlite::parse_json()
+      } else {
+        x %>%
+          rvest::html_text2() %>%
+          stringr::str_remove_all(pattern = remove_from_script) %>%
+          jsonlite::parse_json()
+      }
     }
   )
 
