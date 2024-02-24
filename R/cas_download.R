@@ -202,7 +202,7 @@ cas_get_files_to_download <- function(urls = NULL,
     db_connection = db_connection,
     ...
   )
-  
+
   urls_df <- cas_get_urls_df(
     urls = urls,
     index = index,
