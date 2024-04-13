@@ -9,11 +9,12 @@ cas_write_corpus(
   arrange_by = NULL,
   to_lower = FALSE,
   drop_na = TRUE,
+  drop_empty = TRUE,
   date = date,
   text = text,
   tif_compliant = FALSE,
   file_format = "parquet",
-  partition = "year",
+  partition = NULL,
   token = "full_text",
   corpus_folder = "corpus",
   path = NULL,
@@ -36,6 +37,11 @@ Passed to \code{tidytext} if token is not \code{full_text}.}
 \item{drop_na}{Defaults to TRUE. If TRUE, items that have NA in their \code{text}
 or \code{date} columns are dropped. This is often useful, as in many cases these
 may have other issues and/or cause inconsistencies in further analyses.}
+
+\item{drop_empty}{Defaults to TRUE. If TRUE, items that have empty elements
+("") in their \code{text} or \code{date} columns are dropped. This is often useful,
+as in many cases these may have other issues and/or cause inconsistencies
+in further analyses.}
 
 \item{date}{Unquoted date column, defaults to \code{date}.}
 

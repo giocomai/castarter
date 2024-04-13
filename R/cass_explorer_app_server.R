@@ -9,7 +9,7 @@ cass_explorer_app_server <- function(input, output, session) {
 
   observeEvent(input$cicerone,
     {
-      cass_cicerone_help$init()$start()
+      castarter::cass_cicerone_help$init()$start()
     },
     ignoreInit = TRUE,
     ignoreNULL = TRUE
