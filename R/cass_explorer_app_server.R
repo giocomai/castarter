@@ -350,6 +350,8 @@ cass_explorer_app_server <- function(input, output, session) {
 
   ##### modules #####
 
+  mod_cass_regex_info_server("cass_regex_info_1")
+  
   ##### graph modules #####
   shiny::observeEvent(input$go,
     mod_cass_show_barchart_ggiraph_server(

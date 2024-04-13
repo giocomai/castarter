@@ -44,6 +44,7 @@ cass_explorer_app_ui <- function(request) {
         icon = shiny::icon("search"),
         width = "100%"
       ),
+      mod_cass_regex_info_ui(id = "cass_regex_info_1"),
       shiny::uiOutput(outputId = "date_range_input_UI"),
       bslib::input_switch(
         id = "kwic_switch",
