@@ -3,7 +3,7 @@
 #' @param corpus Defaults to NULL. If NULL, retrieves corpus from the current
 #'   website with `cas_read_db_contents_data()`. If given, it is expected to be
 #'   a corresponding data frame.
-#' @param tif_compliant Defaults to TRUE. If TRUE, it ensures that the first
+#' @param tif_compliant Defaults to FALSE. If TRUE, it ensures that the first
 #'   column is a character vector named "doc_id" and that the second column is a
 #'   character vector named "text". See \url{https://docs.ropensci.org/tif/} for
 #'   details
@@ -32,6 +32,10 @@
 #' @param drop_na Defaults to TRUE. If TRUE, items that have NA in their `text`
 #'   or `date` columns are dropped. This is often useful, as in many cases these
 #'   may have other issues and/or cause inconsistencies in further analyses.
+#' @param drop_empty Defaults to TRUE. If TRUE, items that have empty elements
+#'   ("") in their `text` or `date` columns are dropped. This is often useful,
+#'   as in many cases these may have other issues and/or cause inconsistencies
+#'   in further analyses.
 #' @inheritParams cas_read_from_db
 #'
 #' @return
@@ -42,11 +46,12 @@ cas_write_corpus <- function(corpus = NULL,
                              arrange_by = NULL,
                              to_lower = FALSE,
                              drop_na = TRUE,
+                             drop_empty = TRUE,
                              date = date,
                              text = text,
-                             tif_compliant = TRUE,
+                             tif_compliant = FALSE,
                              file_format = "parquet",
-                             partition = "year",
+                             partition = NULL,
                              token = "full_text",
                              corpus_folder = "corpus",
                              path = NULL,
@@ -66,6 +71,11 @@ cas_write_corpus <- function(corpus = NULL,
   if (drop_na == TRUE) {
     corpus_df <- corpus_df %>%
       dplyr::filter(is.na({{ text }}) == FALSE, is.na({{ date }}) == FALSE)
+  }
+  
+  if (drop_empty == TRUE) {
+    corpus_df <- corpus_df %>%
+      dplyr::filter({{ text }}!= "", {{ date }} != "")
   }
 
   cas_options_l <- cas_get_options(...)

@@ -11,7 +11,7 @@ cas_write_corpus(
   drop_na = TRUE,
   date = date,
   text = text,
-  tif_compliant = TRUE,
+  tif_compliant = FALSE,
   file_format = "parquet",
   partition = "year",
   token = "full_text",
@@ -43,7 +43,7 @@ may have other issues and/or cause inconsistencies in further analyses.}
 set to TRUE, it will be renamed to "text" even if originally it had a
 different name.}
 
-\item{tif_compliant}{Defaults to TRUE. If TRUE, it ensures that the first
+\item{tif_compliant}{Defaults to FALSE. If TRUE, it ensures that the first
 column is a character vector named "doc_id" and that the second column is a
 character vector named "text". See \url{https://docs.ropensci.org/tif/} for
 details}
