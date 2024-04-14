@@ -33,7 +33,7 @@ mod_cass_regex_info_server <- function(id) {
           shiny::modalDialog(
             title = "How does pattern matching work here?",
             easyClose = TRUE,
-            size = "l",
+            size = "xl",
             shiny::h2("The basics"),
             shiny::tags$ul(
               shiny::tags$li("Use comma-separated patterns for comparisons: e.g. searching for 'apple, orange' will match items that include either 'apple' or 'orange', and will report them separately in graphs."),
