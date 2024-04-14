@@ -92,8 +92,9 @@ cass_explorer_app_ui <- function(request) {
     ### Time series ####
 
     bslib::nav_panel(
-      title = "Time series",
-      "Time series goes here"
+      title = "Export",
+      shiny::p("All files are exported in csv format."),
+      shiny::uiOutput(outputId = "export_cards_UI")
     ),
     bslib::nav_spacer(),
     bslib::nav_item(

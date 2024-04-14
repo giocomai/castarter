@@ -10,23 +10,37 @@
 mod_cass_download_csv_ui <- function(id) {
   ns <- NS(id)
   tagList(
-    downloadButton(ns("download_data")),
+    downloadButton(outputId = ns("download_data")),
   )
 }
 
 #' cass_download_csv Server Functions
 #'
 #' @noRd
-mod_cass_download_csv_server <- function(id, df, type = "data") {
+mod_cass_download_csv_server <- function(id, df, type = "data", corpus = "corpus") {
   moduleServer(id, function(input, output, session) {
     ns <- session$ns
 
     output$download_data <- downloadHandler(
       filename = function() {
-        stringr::str_c(Sys.Date(), "_castarter_", type, ".csv")
+        stringr::str_c(
+          Sys.Date(),
+          "_castarter_",
+          type,
+          "_",
+          corpus,
+          "_",
+          as.numeric(Sys.time()),
+          ".csv"
+        ) |>
+          fs::path_sanitize()
       },
       content = function(con) {
-        readr::write_csv(df, con)
+        readr::write_csv(
+          df |>
+            dplyr::collect(),
+          con
+        )
       }
     )
   })
@@ -37,12 +51,6 @@ mod_cass_download_csv_server <- function(id, df, type = "data") {
 
 ## To be copied in the server
 # mod_cass_download_csv_server("mod_cass_download_csv_ui_1")
-
-#
-#
-#
-#
-#
 
 #' A minimal shiny app that demonstrates the functioning of related modules
 #'

@@ -6,17 +6,17 @@ cass_cicerone_help <- cicerone::Cicerone$
   el = "pattern",
   title = "Type the text you want to search here",
   description = "You can use commas to compare frequency of different terms"
-  )$
+)$
   step(
-    el = "go",
-    title = "Click here!",
-    description = "Press 'enter' or click on the 'Go!' button to update graphs"
-  )$
+  el = "go",
+  title = "Click here!",
+  description = "Press 'enter' or click on the 'Go!' button to update graphs"
+)$
   step(
-    el = "cass_regex_info_1-show_regex_helpers",
-    title = "Find out more about pattern matching rules",
-    description = "Clik here for a quick help and a link to detailed documentation."
-  )$
+  el = "cass_regex_info_1-show_regex_helpers",
+  title = "Find out more about pattern matching rules",
+  description = "Clik here for a quick help and a link to detailed documentation."
+)$
   step(
   el = "column_selector_UI",
   title = "Select the columns of the corpus to be used for each operation",

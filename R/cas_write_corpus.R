@@ -72,10 +72,10 @@ cas_write_corpus <- function(corpus = NULL,
     corpus_df <- corpus_df %>%
       dplyr::filter(is.na({{ text }}) == FALSE, is.na({{ date }}) == FALSE)
   }
-  
+
   if (drop_empty == TRUE) {
     corpus_df <- corpus_df %>%
-      dplyr::filter({{ text }}!= "", {{ date }} != "")
+      dplyr::filter({{ text }} != "", {{ date }} != "")
   }
 
   cas_options_l <- cas_get_options(...)

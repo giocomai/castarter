@@ -42,6 +42,7 @@ cass_explorer_app_server <- function(input, output, session) {
       active_corpus_df <- golem::get_golem_options("corpus") %>%
         dplyr::filter(
           is.na(date) == FALSE,
+          is.na(text) == FALSE,
           date >= lubridate::as_date(input$date_range[[1]]),
           date <= lubridate::as_date(input$date_range[[2]])
         )
@@ -348,10 +349,98 @@ cass_explorer_app_server <- function(input, output, session) {
     ignoreNULL = TRUE
   )
 
-  ##### modules #####
+  #### modules #####
 
   mod_cass_regex_info_server("cass_regex_info_1")
+
+
+  ### export modules #####
   
+  output$export_cards_UI <- renderUI({
+    shiny::tagList(
+      bslib::card(
+        bslib::card_header("Export original corpus"),
+        bslib::card_body(
+          shiny::p("Export the corpus in full in its original form."),
+          castarter:::mod_cass_download_csv_ui("mod_download_original_corpus")
+        )
+      ),
+      bslib::card(
+        bslib::card_header("Export full text"),
+        bslib::card_body(
+          shiny::p("Export all available columns for the active corpus (i.e. after filtering based on pattern and dates)."),
+          castarter:::mod_cass_download_csv_ui("mod_download_full_text")
+        )
+      ),
+      bslib::card(
+        bslib::card_header("Export aggregated count"),
+        bslib::card_body(
+          shiny::p("Export the count of matches, aggregated in the same form as used for the graph on the main tab."),
+          castarter:::mod_cass_download_csv_ui("mod_download_word_count")
+        )
+      ),
+      bslib::card(
+        bslib::card_header("Export filtered sentences"),
+        bslib::card_body(
+          shiny::p("Export only sentences where there is a match with the current pattern."),
+          castarter:::mod_cass_download_csv_ui("mod_download_kwic_sentences")
+        )
+      ),
+      bslib::card(
+        bslib::card_header("Export keywords in context"),
+        bslib::card_body(
+          shiny::p("Export keywords in context for the current pattern (the matched pattern is in its own column, with words just before and just after it in separate columns.)"),
+          castarter:::mod_cass_download_csv_ui("mod_download_kwic_df")
+        )
+      )
+    )
+    
+  })
+
+  castarter:::mod_cass_download_csv_server(
+    id = "mod_download_original_corpus",
+    df = golem::get_golem_options("corpus"),
+    type = "original_corpus",
+    corpus = golem::get_golem_options("title")
+  )
+
+  castarter:::mod_cass_download_csv_server(
+    id = "mod_download_full_text",
+    df = corpus_active_r(),
+    type = "full_text",
+    corpus = golem::get_golem_options("title")
+  )
+
+  castarter:::mod_cass_download_csv_server(
+    id = "mod_download_word_count",
+    df = word_count_summarised_df_r(),
+    type = stringr::str_c("count", ifelse(input$pattern != "",
+      stringr::str_c("_", input$pattern),
+      ""
+    )),
+    corpus = golem::get_golem_options("title")
+  )
+
+  castarter:::mod_cass_download_csv_server(
+    id = "mod_download_kwic_sentences",
+    df = kwic_sentences_df_r(),
+    type = stringr::str_c("kwic", ifelse(input$pattern != "",
+      stringr::str_c("_", input$pattern),
+      ""
+    )),
+    corpus = golem::get_golem_options("title")
+  )
+
+  castarter:::mod_cass_download_csv_server(
+    id = "mod_download_kwic_df",
+    df = kwic_df_r(),
+    type = stringr::str_c("kwic", ifelse(input$pattern != "",
+      stringr::str_c("_", input$pattern),
+      ""
+    )),
+    corpus = golem::get_golem_options("title")
+  )
+
   ##### graph modules #####
   shiny::observeEvent(input$go,
     mod_cass_show_barchart_ggiraph_server(
