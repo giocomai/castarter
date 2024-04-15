@@ -6,7 +6,6 @@
 \usage{
 cas_write_corpus(
   corpus = NULL,
-  arrange_by = NULL,
   to_lower = FALSE,
   drop_na = TRUE,
   drop_empty = TRUE,
@@ -27,9 +26,6 @@ cas_write_corpus(
 \item{corpus}{Defaults to NULL. If NULL, retrieves corpus from the current
 website with \code{cas_read_db_contents_data()}. If given, it is expected to be
 a corresponding data frame.}
-
-\item{arrange_by}{Defaults to NULL. If given, expected to be an unquoted
-column name, such as \code{date} or \code{id}.}
 
 \item{to_lower}{Defaults to FALSE. Whether to convert tokens to lowercase.
 Passed to \code{tidytext} if token is not \code{full_text}.}

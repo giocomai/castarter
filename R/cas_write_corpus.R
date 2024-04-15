@@ -7,8 +7,6 @@
 #'   column is a character vector named "doc_id" and that the second column is a
 #'   character vector named "text". See \url{https://docs.ropensci.org/tif/} for
 #'   details
-#' @param arrange_by Defaults to NULL. If given, expected to be an unquoted
-#'   column name, such as `date` or `id`.
 #' @param text Unquoted text column, defaults to `text`. If `tif_compliant` is
 #'   set to TRUE, it will be renamed to "text" even if originally it had a
 #'   different name.
@@ -43,7 +41,6 @@
 #'
 #' @examples
 cas_write_corpus <- function(corpus = NULL,
-                             arrange_by = NULL,
                              to_lower = FALSE,
                              drop_na = TRUE,
                              drop_empty = TRUE,
@@ -106,11 +103,6 @@ cas_write_corpus <- function(corpus = NULL,
       dplyr::ungroup() %>%
       dplyr::rename(text = {{ text }}) %>%
       dplyr::select("doc_id", "text", dplyr::everything())
-  }
-
-  if (is.null(arrange_by) == FALSE) {
-    corpus_df <- corpus_df %>%
-      dplyr::arrange({{ arrange_by }})
   }
 
   if (token == "full_text") {
