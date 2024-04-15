@@ -69,10 +69,10 @@ cas_write_corpus <- function(corpus = NULL,
     corpus_df <- corpus_df %>%
       dplyr::filter(is.na({{ text }}) == FALSE, is.na({{ date }}) == FALSE)
   }
-
+  
   if (drop_empty == TRUE) {
     corpus_df <- corpus_df %>%
-      dplyr::filter({{ text }} != "", {{ date }} != "")
+      dplyr::filter(as.character({{ text }}) != "", as.character({{ date }}) != "")
   }
 
   cas_options_l <- cas_get_options(...)
@@ -86,12 +86,6 @@ cas_write_corpus <- function(corpus = NULL,
       ...
     )
   }
-
-  if (fs::file_exists(path)) {
-    cli::cli_abort("The folder {.path {path}} already exists. Please remove or rename it before writing corpus.")
-  }
-
-  fs::dir_create(path = path)
 
   if (tif_compliant == TRUE) {
     corpus_df <- corpus_df %>%
@@ -116,7 +110,7 @@ cas_write_corpus <- function(corpus = NULL,
         to_lower = to_lower
       )
   }
-
+  
   if (is.null(partition)) {
     corpus_df %>%
       arrow::write_dataset(path = path)
