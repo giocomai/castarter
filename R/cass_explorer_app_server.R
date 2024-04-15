@@ -20,7 +20,8 @@ cass_explorer_app_server <- function(input, output, session) {
   output$date_range_input_UI <- renderUI({
     date_range_s <- golem::get_golem_options("corpus") %>%
       dplyr::distinct(date) %>%
-      dplyr::pull(date, as_vector = FALSE)
+      dplyr::collect() |> 
+      dplyr::pull(date)
 
     shiny::dateRangeInput(
       inputId = "date_range",
