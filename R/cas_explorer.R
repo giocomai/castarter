@@ -23,6 +23,7 @@ cas_explorer <- function(corpus = castarter::cas_demo_corpus,
                          collect = FALSE,
                          advanced = FALSE,
                          custom_head_html = '<meta name="referrer" content="no-referrer" />',
+                         footer_html = shiny::tagList(),
                          onStart = NULL,
                          options = list(),
                          enableBookmarking = NULL,
@@ -48,7 +49,8 @@ cas_explorer <- function(corpus = castarter::cas_demo_corpus,
       title = title,
       collect = collect,
       advanced = advanced,
-      custom_head_html = custom_head_html
+      custom_head_html = custom_head_html,
+      footer_html = footer_html
     )
   )
 }

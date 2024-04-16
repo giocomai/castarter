@@ -29,6 +29,9 @@ cass_explorer_app_ui <- function(request) {
     $("#go").click();
 }});')))
     ),
+    footer = shiny::tagList(
+      golem::get_golem_options("footer_html")
+    ),
     sidebar = bslib::sidebar(
       width = 300,
       shiny::textInput(

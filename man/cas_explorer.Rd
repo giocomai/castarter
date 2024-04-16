@@ -11,6 +11,7 @@ cas_explorer(
   collect = FALSE,
   advanced = FALSE,
   custom_head_html = "<meta name=\\"referrer\\" content=\\"no-referrer\\" />",
+  footer_html = shiny::tagList(),
   onStart = NULL,
   options = list(),
   enableBookmarking = NULL,
