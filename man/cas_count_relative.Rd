@@ -12,7 +12,7 @@ cas_count_relative(
   ignore_case = TRUE,
   fixed = FALSE,
   full_words_only = FALSE,
-  string_column_name = string,
+  pattern_column_name = pattern,
   n_column_name = n,
   locale = "en"
 )
@@ -30,7 +30,7 @@ cas_count_relative(
 
 \item{full_words_only}{Defaults to FALSE. If FALSE, string is counted even when the it is found in the middle of a word (e.g. if FALSE, "ratio" would be counted as match in the word "irrational").}
 
-\item{string_column_name}{Defaults to 'word'. The unquoted name of the column to be used for the word in the output (if \code{include_string} is set to TRUE, as per default).}
+\item{pattern_column_name}{Defaults to 'word'. The unquoted name of the column to be used for the word in the output (if \code{include_string} is set to TRUE, as per default).}
 
 \item{n_column_name}{Defaults to 'n'. The unquoted name of the column to be used for the count in the output.}
 
@@ -46,7 +46,7 @@ Count strings in a corpus relative to the number of words
 \dontrun{
 cas_count_relative(
   corpus = corpus,
-  string = c("dogs", "cats", "horses"),
+  pattern = c("dogs", "cats", "horses"),
   text = text,
   group_by = date,
   n_column_name = n
