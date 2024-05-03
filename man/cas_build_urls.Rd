@@ -37,10 +37,12 @@ string \code{{here}} within curly brackets, e.g.
 \verb{https://example.com/archive/?from_date=\{here\}&to_date=\{here\}}.}
 
 \item{start_page}{If the urls include a numerical component, define first
-number of the sequence. start_page defaults to 1.}
+number of the sequence. Defaults to NULL. If given, coerced to numeric,
+expected to be an integer.}
 
 \item{end_page}{If the urls include a numerical component, define first
-number of the sequence. end_page defaults to 10.}
+number of the sequence. Defaults to NULL. If given, coerced to numeric,
+expected to be an integer.}
 
 \item{increase_by}{Defines by how much the number in the link should be
 increased in the numerical sequence. Defaults to 1.}

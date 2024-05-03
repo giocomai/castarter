@@ -23,9 +23,11 @@
 #' @param url_ending Part of index link appneded after the part of the link that
 #'   varies. If not relevant, may be left empty.
 #' @param start_page If the urls include a numerical component, define first
-#'   number of the sequence. start_page defaults to 1.
+#'   number of the sequence. Defaults to NULL. If given, coerced to numeric,
+#'   expected to be an integer.
 #' @param end_page If the urls include a numerical component, define first
-#'   number of the sequence. end_page defaults to 10.
+#'   number of the sequence. Defaults to NULL. If given, coerced to numeric,
+#'   expected to be an integer.
 #' @param increase_by Defines by how much the number in the link should be
 #'   increased in the numerical sequence. Defaults to 1.
 #' @param date_format A character string, defaults to "YMD". Check
@@ -102,6 +104,27 @@ cas_build_urls <- function(url,
                            index = TRUE,
                            write_to_db = FALSE,
                            ...) {
+  if (is.null(end_page)==FALSE) {
+    if (length(end_page)!=1) {
+      cli::cli_abort(
+        message = c(`x` = "{.var end_page} must be a numeric vector of length 1.")
+      )
+    }
+    end_page_n <- as.numeric(end_page)
+    if (is.na(end_page_n)) {
+      if (stringr::str_detect(string = end_page, pattern = "-")) {
+        cli::cli_abort(
+          message = c(`x` = "{.var end_page} must be an integer.", 
+                      i = "Check your inputs. Perhaps you meant to set {.var end_date} instead?")
+        )
+      } else {
+        cli::cli_abort(
+          message = c(`x` = "{.var end_page} must be an integer.")
+        )
+      }
+    }
+  }
+  
   if (is.null(start_date) == FALSE) {
     # allow for simplified date_format
     if (stringr::str_detect(string = date_format, pattern = "%", negate = TRUE)) {
