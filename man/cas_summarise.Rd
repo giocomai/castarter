@@ -12,6 +12,7 @@ cas_summarise(
   pattern_column_name = pattern,
   period = NULL,
   f = mean,
+  period_summary_function = sum,
   every = 1L,
   before = 0L,
   after = 0L,
@@ -29,7 +30,14 @@ for summarising. Possible values include "year", "quarter", "month", "day",
 "hour", "minute", "second", "millisecond".}
 
 \item{f}{Defaults to \code{mean}. Function to be applied over n for all the values
-in a given time period. Common alterantives would be \code{mean} or \code{median}.}
+in a given time period. Common alternatives would be \code{mean} or \code{median}.}
+
+\item{period_summary_function}{Defaults to \code{sum}. This is applied when
+grouping by period (e.g. when \code{period} is set to year). When calculating
+absolute word frequency, the default (\code{sum}) is fine. When calculating
+relative frequencies, then \code{mean} would be more appropriate, but extra
+consideration should be given to the implications if then a rolling average
+is applied.}
 
 \item{every}{\verb{[positive integer(1)]}
 

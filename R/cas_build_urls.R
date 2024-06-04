@@ -104,8 +104,8 @@ cas_build_urls <- function(url,
                            index = TRUE,
                            write_to_db = FALSE,
                            ...) {
-  if (is.null(end_page)==FALSE) {
-    if (length(end_page)!=1) {
+  if (is.null(end_page) == FALSE) {
+    if (length(end_page) != 1) {
       cli::cli_abort(
         message = c(`x` = "{.var end_page} must be a numeric vector of length 1.")
       )
@@ -114,8 +114,10 @@ cas_build_urls <- function(url,
     if (is.na(end_page_n)) {
       if (stringr::str_detect(string = end_page, pattern = "-")) {
         cli::cli_abort(
-          message = c(`x` = "{.var end_page} must be an integer.", 
-                      i = "Check your inputs. Perhaps you meant to set {.var end_date} instead?")
+          message = c(
+            `x` = "{.var end_page} must be an integer.",
+            i = "Check your inputs. Perhaps you meant to set {.var end_date} instead?"
+          )
         )
       } else {
         cli::cli_abort(
@@ -124,7 +126,7 @@ cas_build_urls <- function(url,
       }
     }
   }
-  
+
   if (is.null(start_date) == FALSE) {
     # allow for simplified date_format
     if (stringr::str_detect(string = date_format, pattern = "%", negate = TRUE)) {

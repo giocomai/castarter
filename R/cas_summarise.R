@@ -12,7 +12,13 @@
 #'   for summarising. Possible values include "year", "quarter", "month", "day",
 #'   "hour", "minute", "second", "millisecond".
 #' @param f Defaults to `mean`. Function to be applied over n for all the values
-#'   in a given time period. Common alterantives would be `mean` or `median`.
+#'   in a given time period. Common alternatives would be `mean` or `median`.
+#' @param period_summary_function Defaults to `sum`. This is applied when
+#'   grouping by period (e.g. when `period` is set to year). When calculating
+#'   absolute word frequency, the default (`sum`) is fine. When calculating
+#'   relative frequencies, then `mean` would be more appropriate, but extra
+#'   consideration should be given to the implications if then a rolling average
+#'   is applied.
 #' @param auto_convert Defaults to FALSE. If FALSE, the date column is returned
 #'   using the same format as the input; the minimun vale in the given group is
 #'   used for reference (e.g. all values for January 2022 are summarised as
@@ -43,6 +49,7 @@ cas_summarise <- function(count_df,
                           pattern_column_name = pattern,
                           period = NULL,
                           f = mean,
+                          period_summary_function = sum,
                           every = 1L,
                           before = 0L,
                           after = 0L,
@@ -75,17 +82,7 @@ cas_summarise <- function(count_df,
         unit = period
       )) %>%
       dplyr::group_by({{ pattern_column_name }}, {{ date_column_name }}) %>%
-      dplyr::summarise({{ n_column_name }} := sum({{ n_column_name }}, na.rm = TRUE),
-        .groups = "drop_last"
-      ) %>%
-      dplyr::mutate(n = slider::slide_period_dbl(
-        .x = {{ n_column_name }},
-        .i = {{ date_column_name }},
-        .period = period,
-        .f = f,
-        .before = before,
-        .after = after
-      )) %>%
+      dplyr::summarise({{ n_column_name }} := period_summary_function({{ n_column_name }}, na.rm = TRUE)) %>%
       dplyr::ungroup() %>%
       tidyr::complete(
         {{ date_column_name }} := seq.Date(
@@ -95,7 +92,16 @@ cas_summarise <- function(count_df,
         ),
         {{ pattern_column_name }},
         fill = rlang::list2({{ n_column_name }} := 0)
-      )
+      ) %>%
+      dplyr::group_by({{ pattern_column_name }}) %>%
+      dplyr::mutate(n = slider::slide_period_dbl(
+        .x = {{ n_column_name }},
+        .i = {{ date_column_name }},
+        .period = period,
+        .f = f,
+        .before = before,
+        .after = after
+      ))
   }
 
   if (auto_convert == TRUE) {
