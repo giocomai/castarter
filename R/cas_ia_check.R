@@ -161,7 +161,7 @@ cas_ia_check <- function(url = NULL,
   )
 
   if (check_db == FALSE & write_db == FALSE) {
-    # do nothing, as db object won't exist
+    return(output_df)
   } else {
     if (output_only_newly_checked == TRUE) {
       cas_disconnect_from_db(
