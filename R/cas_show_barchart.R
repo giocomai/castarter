@@ -10,6 +10,11 @@
 #' @export
 #'
 #' @examples
+#' cas_count(corpus = tifkremlinen::kremlin_en,
+#' pattern = c("putin", "medvedev")) |> 
+#'   cas_summarise(period = "year") |> 
+#'   cas_show_gg_base() |> 
+#'   cas_show_barchart_ggplot2(position = "dodge")
 cas_show_gg_base <- function(count_df,
                              group_by = date,
                              n_column_name = n,
@@ -79,12 +84,17 @@ cas_show_barchart_ggiraph <- function(ggobj,
 #' Creates barchart with ggplot2
 #'
 #' @param ggobj A ggplot2 object, typically generated with `cas_show_gg_base()`
-#' @param position Defaults to "stack". Available values include "dodge".
+#' @param position Defaults to "dodge". Available values include "stack".
 #'
-#' @return A ggplot2 object
+#' @return A ggplot2 object.
 #' @export
 #'
 #' @examples
+#' cas_count(corpus = tifkremlinen::kremlin_en,
+#' pattern = c("putin", "medvedev")) |> 
+#'   cas_summarise(period = "year") |> 
+#'   cas_show_gg_base() |> 
+#'   cas_show_barchart_ggplot2(position = "stack")
 cas_show_barchart_ggplot2 <- function(ggobj,
                                       position = "stack") {
   if (position == "stack") {
