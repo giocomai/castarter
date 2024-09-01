@@ -69,7 +69,7 @@ cas_write_corpus <- function(corpus = NULL,
     corpus_df <- corpus_df %>%
       dplyr::filter(is.na({{ text }}) == FALSE, is.na({{ date }}) == FALSE)
   }
-  
+
   if (drop_empty == TRUE) {
     corpus_df <- corpus_df %>%
       dplyr::filter(as.character({{ text }}) != "", as.character({{ date }}) != "")
@@ -110,7 +110,7 @@ cas_write_corpus <- function(corpus = NULL,
         to_lower = to_lower
       )
   }
-  
+
   if (is.null(partition)) {
     corpus_df %>%
       arrow::write_dataset(path = path)
