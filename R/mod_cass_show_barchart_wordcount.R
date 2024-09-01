@@ -8,8 +8,8 @@
 #'
 #' @importFrom shiny NS tagList
 mod_cass_show_barchart_wordcount_ui <- function(id) {
-  ns <- NS(id)
-  tagList(
+  ns <- shiny::NS(id)
+  shiny::tagList(
     shiny::plotOutput(ns("ggplot2_barchart"))
   )
 }
@@ -52,16 +52,16 @@ mod_cass_show_barchart_wordcount_server <- function(id,
         ) +
         ggplot2::labs(title = "No match found in this corpus.\nCheck your pattern and try again.")
     } else if (empty_pattern == TRUE) {
-      gg_base_year_gg <- count_df %>%
-        dplyr::mutate(date = factor(date)) %>%
+      gg_base_year_gg <- count_df |>
+        dplyr::mutate(date = factor(date)) |>
         cas_show_gg_base() +
         ggplot2::scale_x_discrete(name = NULL) +
         ggplot2::scale_fill_manual(values = NA) +
         ggplot2::guides(fill = "none") +
         ggplot2::labs(title = stringr::str_c("Total number of words per ", period))
     } else {
-      gg_base_year_gg <- count_df %>%
-        dplyr::mutate(date = factor(date)) %>%
+      gg_base_year_gg <- count_df |>
+        dplyr::mutate(date = factor(date)) |>
         cas_show_gg_base() +
         ggplot2::scale_x_discrete(name = NULL) +
         ggplot2::labs(title = stringr::str_c("Total number of mentions per ", period))
@@ -81,7 +81,7 @@ mod_cass_show_barchart_wordcount_server <- function(id,
 ## To be copied in the server
 # mod_cass_show_barchart_wordcount_server("cass_show_barchart_wordcount_ui_1")
 # count_df <- castarter::cas_count(corpus = tifkremlinen::kremlin_en,
-#                                   string = c("putin", "medvedev")) %>%
+#                                  pattern = c("putin", "medvedev")) |> 
 #   cas_summarise(period = "year")
 # cass_show_barchart_wordcount_app(count_df)
 
@@ -89,7 +89,7 @@ mod_cass_show_barchart_wordcount_server <- function(id,
 cass_show_barchart_wordcount_app <- function(count_df,
                                              type = "ggplot2",
                                              period = "year") {
-  ui <- fluidPage(
+  ui <- shiny::fluidPage(
     mod_cass_show_barchart_wordcount_ui("cass_show_barchart_wordcount_ui_1")
   )
   server <- function(input, output, session) {
@@ -97,5 +97,5 @@ cass_show_barchart_wordcount_app <- function(count_df,
       count_df = count_df
     )
   }
-  shinyApp(ui, server)
+  shiny::shinyApp(ui, server)
 }

@@ -9,11 +9,18 @@ cas_show_barchart_ggplot2(ggobj, position = "stack")
 \arguments{
 \item{ggobj}{A ggplot2 object, typically generated with \code{cas_show_gg_base()}}
 
-\item{position}{Defaults to "stack". Available values include "dodge".}
+\item{position}{Defaults to "dodge". Available values include "stack".}
 }
 \value{
-A ggplot2 object
+A ggplot2 object.
 }
 \description{
 Creates barchart with ggplot2
+}
+\examples{
+cas_count(corpus = tifkremlinen::kremlin_en,
+pattern = c("putin", "medvedev")) |> 
+  cas_summarise(period = "year") |> 
+  cas_show_gg_base() |> 
+  cas_show_barchart_ggplot2(position = "stack")
 }
