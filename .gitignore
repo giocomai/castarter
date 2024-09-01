@@ -12,3 +12,4 @@ logo
 /Meta/
 client.json
 .Rprofile
+renv
