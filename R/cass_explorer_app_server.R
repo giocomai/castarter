@@ -252,8 +252,8 @@ cass_explorer_app_server <- function(input, output, session) {
                 inputId = "barchart_position",
                 label = "Bars should be:",
                 choices = c(
-                  stacked = "stack",
-                  dodged = "dodge"
+                  dodged = "dodge",
+                  stacked = "stack"
                 )
               )
             }
