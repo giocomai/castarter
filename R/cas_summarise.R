@@ -103,17 +103,19 @@ cas_summarise <- function(count_df,
         .after = after
       ))
   }
+  
+  summarised_output_df <- summarised
 
   if (auto_convert == TRUE) {
     if (period == "year") {
-      summarised %>%
+      summarised_output_df <- summarised %>%
         dplyr::transmute(
           {{ date_column_name }} := lubridate::year({{ date_column_name }}),
           {{ pattern_column_name }},
           {{ n_column_name }}
         )
     } else if (period == "quarter") {
-      summarised %>%
+      summarised_output_df <- summarised %>%
         dplyr::transmute(
           {{ date_column_name }} := lubridate::quarter(
             x = {{ date_column_name }},
@@ -124,7 +126,7 @@ cas_summarise <- function(count_df,
           {{ n_column_name }}
         )
     } else if (period == "month") {
-      summarised %>%
+      summarised_output_df <- summarised %>%
         dplyr::transmute(
           {{ date_column_name }} := stringr::str_extract(
             string = {{ date_column_name }},
@@ -134,18 +136,16 @@ cas_summarise <- function(count_df,
           {{ n_column_name }}
         )
     } else if (period == "day") {
-      summarised %>%
+      summarised_output_df <- summarised %>%
         dplyr::transmute(
           {{ date_column_name }} := as.Date({{ date_column_name }}),
           {{ pattern_column_name }},
           {{ n_column_name }}
         )
-    } else {
-      summarised
     }
-  } else {
-    summarised
   }
+  summarised_output_df |> 
+    dplyr::ungroup()
 }
 
 
