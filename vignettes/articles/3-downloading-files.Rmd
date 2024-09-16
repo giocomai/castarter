@@ -9,3 +9,49 @@ knitr::opts_chunk$set(
   eval = FALSE
 )
 ```
+
+
+In most cases, once direct links to contents pages have been extracted, this is a straightforward task that boils down to running `cas_download()`.
+
+It is worth mentioning that `castarter` downloads files in batches, each going to its own folder. This can be customised and may be helpful in containing the number of files stored in a single folder. Also, if we realise that there's some issue due to connection or server issue in a given batch, it may be easier to just delete a whole download batch and download it anew. 
+
+This also implies that is possible to download the same page more than once, each in its own batch, which can be useful in particular for recurrent web scraping tasks. 
+
+By default, `castarter` stores a log the download process, including the time when any given page has been retrieved or if the server has given some error message. 
+
+Let's see the process in action. 
+
+## Downloading file
+
+In the following code chunk we'll just enable the settings for one of the projects used in previous articles, and then download files.
+
+```{r european_parliament_paginated download}
+library("castarter")
+
+cas_set_options(
+  base_folder = fs::path(
+    fs::path_home_r(),
+    "R",
+    "castarter_vignettes"
+  ),
+  project = "european_union",
+  website = "european_parliament_paginated"
+)
+
+cas_download()
+```
+
+Logs about the download process are stored in the local database and can be accessed as follows:
+
+```{r}
+cas_read_db_download()
+```
+
+Notice that `id` can be used to match with all other data we have (at this stage, `url` and index page from where that `url` has been extracted). Combinations of `id` and `batch`, conceptually, must be unique.
+
+
+
+## Other user cases
+
+[TO DO]
+
