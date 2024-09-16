@@ -48,6 +48,10 @@ cass_explorer_app_server <- function(input, output, session) {
           date <= lubridate::as_date(input$date_range[[2]])
         )
 
+      if (is.element("doc_id", colnames(active_corpus_df))==FALSE) {
+        active_corpus_df <- active_corpus_df |> 
+          dplyr::mutate(doc_id = id)
+      }
 
       if (is.null(input$pattern) == FALSE) {
         if (input$pattern != "") {
@@ -94,7 +98,7 @@ cass_explorer_app_server <- function(input, output, session) {
 
       corpus_active_r() %>%
         dplyr::collect() %>%
-        dplyr::select(id, date, url, title, text) %>%
+        dplyr::select(doc_id, date, url, title, text) %>%
         dplyr::collect() %>%
         cas_kwic(pattern = stringr::str_flatten(c(
           "(?i)",
