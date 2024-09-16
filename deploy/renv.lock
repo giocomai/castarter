@@ -46,9 +46,9 @@
     },
     "MASS": {
       "Package": "MASS",
-      "Version": "7.3-60.2",
+      "Version": "7.3-61",
       "Source": "Repository",
-      "Repository": "CRAN",
+      "Repository": "RSPM",
       "Requirements": [
         "R",
         "grDevices",
@@ -57,7 +57,7 @@
         "stats",
         "utils"
       ],
-      "Hash": "2f342c46163b0b54d7b64d1f798e2c78"
+      "Hash": "0cafd6f0500e5deba33be22c46bf6055"
     },
     "Matrix": {
       "Package": "Matrix",
@@ -200,6 +200,19 @@
       "Source": "Repository",
       "Repository": "CRAN",
       "Hash": "46da3912f69e3e6258a033802c4af32e"
+    },
+    "V8": {
+      "Package": "V8",
+      "Version": "5.0.0",
+      "Source": "Repository",
+      "Repository": "CRAN",
+      "Requirements": [
+        "Rcpp",
+        "curl",
+        "jsonlite",
+        "utils"
+      ],
+      "Hash": "9eb7b2df315593e726b029200fc0276c"
     },
     "arrow": {
       "Package": "arrow",
@@ -364,7 +377,7 @@
       "RemoteRepo": "castarter",
       "RemoteUsername": "giocomai",
       "RemoteRef": "HEAD",
-      "RemoteSha": "3714d6ec5c150b8f5ee71f5db8c0905b5368c269",
+      "RemoteSha": "487cba710731d5d274cfd0108c16b5208281dd75",
       "Requirements": [
         "DBI",
         "DT",
@@ -403,7 +416,23 @@
         "waiter",
         "xml2"
       ],
-      "Hash": "0ca752dd6dd5e7d0f004b5664ffff569"
+      "Hash": "6310cbafac12ba53211fc907d799fe92"
+    },
+    "castarter.readability": {
+      "Package": "castarter.readability",
+      "Version": "0.0.0.9000",
+      "Source": "GitHub",
+      "RemoteType": "github",
+      "RemoteHost": "api.github.com",
+      "RemoteRepo": "castarter.readability",
+      "RemoteUsername": "giocomai",
+      "RemotePkgRef": "giocomai/castarter.readability",
+      "RemoteRef": "HEAD",
+      "RemoteSha": "e789905c04ab6cece976ac62f42d730e8f0b587d",
+      "Requirements": [
+        "V8"
+      ],
+      "Hash": "007cfb026b212ffcf169dbcf89de19f3"
     },
     "chromote": {
       "Package": "chromote",
@@ -1089,9 +1118,9 @@
     },
     "httr2": {
       "Package": "httr2",
-      "Version": "1.0.3",
+      "Version": "1.0.4",
       "Source": "Repository",
-      "Repository": "https://packagemanager.rstudio.com/cran/latest",
+      "Repository": "CRAN",
       "Requirements": [
         "R",
         "R6",
@@ -1106,7 +1135,7 @@
         "vctrs",
         "withr"
       ],
-      "Hash": "10d93e97faad6b629301bb3a2fd23378"
+      "Hash": "836e9564fbeca3bb390bb429a53cd401"
     },
     "hunspell": {
       "Package": "hunspell",
@@ -1380,6 +1409,18 @@
       ],
       "Hash": "c62edf62de70cadf40553e10c739049d"
     },
+    "pak": {
+      "Package": "pak",
+      "Version": "0.8.0",
+      "Source": "Repository",
+      "Repository": "CRAN",
+      "Requirements": [
+        "R",
+        "tools",
+        "utils"
+      ],
+      "Hash": "019d4d5634410800a96b69737fb2dbac"
+    },
     "pillar": {
       "Package": "pillar",
       "Version": "1.9.0",
@@ -1558,14 +1599,14 @@
     },
     "ps": {
       "Package": "ps",
-      "Version": "1.7.7",
+      "Version": "1.8.0",
       "Source": "Repository",
       "Repository": "CRAN",
       "Requirements": [
         "R",
         "utils"
       ],
-      "Hash": "878b467580097e9c383acbb16adab57a"
+      "Hash": "4b9c8485b0c7eecdf0a9ba5132a45576"
     },
     "purrr": {
       "Package": "purrr",
@@ -1584,14 +1625,14 @@
     },
     "ragg": {
       "Package": "ragg",
-      "Version": "1.3.2",
+      "Version": "1.3.3",
       "Source": "Repository",
       "Repository": "CRAN",
       "Requirements": [
         "systemfonts",
         "textshaping"
       ],
-      "Hash": "e3087db406e079a8a2fd87f413918ed3"
+      "Hash": "0595fe5e47357111f29ad19101c7d271"
     },
     "rappdirs": {
       "Package": "rappdirs",
@@ -1633,13 +1674,13 @@
     },
     "reactR": {
       "Package": "reactR",
-      "Version": "0.6.0",
+      "Version": "0.6.1",
       "Source": "Repository",
       "Repository": "CRAN",
       "Requirements": [
         "htmltools"
       ],
-      "Hash": "10f4d661c235181648a5958c02c0382a"
+      "Hash": "b8e3d93f508045812f47136c7c44c251"
     },
     "reactable": {
       "Package": "reactable",
@@ -2138,13 +2179,13 @@
     },
     "tinytex": {
       "Package": "tinytex",
-      "Version": "0.52",
+      "Version": "0.53",
       "Source": "Repository",
       "Repository": "CRAN",
       "Requirements": [
         "xfun"
       ],
-      "Hash": "cfbad971a71f0e27cec22e544a08bc3b"
+      "Hash": "9db859e8aabbb474293dde3097839420"
     },
     "tokenizers": {
       "Package": "tokenizers",
