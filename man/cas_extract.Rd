@@ -19,6 +19,7 @@ cas_extract(
   write_to_db = FALSE,
   keep_if_status = 200,
   encoding = "UTF-8",
+  readability = FALSE,
   ...
 )
 }
