@@ -9,3 +9,36 @@ knitr::opts_chunk$set(
   eval = FALSE
 )
 ```
+
+
+## Automatic extraction of contents and metadata
+
+This is a bit of a shortcut, and may or may not work, but also, as it may make life easier for beginners, let's present this option. 
+
+```{r setup european_parliament_paginated}
+library("castarter")
+
+cas_set_options(
+  base_folder = fs::path(
+    fs::path_home_r(),
+    "R",
+    "castarter_vignettes"
+  ),
+  project = "european_union",
+  website = "european_parliament_paginated"
+)
+```
+
+
+```{r install castarter.readability}
+pak::pak("giocomai/castarter.readability")
+```
+
+
+```{r extract with readability}
+cas_extract(extractors = NULL,
+            readability = TRUE,
+            write_to_db = FALSE,
+            sample = 10)
+```
+
