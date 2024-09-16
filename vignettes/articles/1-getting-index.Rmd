@@ -80,7 +80,7 @@ This may all sound exceedingly technical if you are not familiar with some compo
 
 If a sitemap is there, the following option may be of help:
 
-```{r eval = FALSE}
+```{r extract links from sitemap file, eval = FALSE}
 library("castarter")
 
 cas_set_options(
@@ -116,7 +116,7 @@ In some instances, sitemaps may have multiple level, e.g. there is a sitemap wit
 
 A relevant script may look as follows:
 
-```{r eval = FALSE}
+```{r multiple levels sitemap files, eval = FALSE}
 library("castarter")
 
 cas_set_options(
@@ -166,7 +166,7 @@ Notice that in some cases the first-level sitemap may be linking to second-level
 
 ### Press releases of the European Parliament
 
-Let's say that we are interested in analysing the press releases issued by the European Parliament. After checking that no relevant `sitemap.xml` is easily accessible and there aren't relevant pointers in the `robots.txt` (see section above for details), we decide to look at the website itself. From the [home page](https://www.europarl.europa.eu/), we can see there's a link to "All press releases", that, as expected, [leads to a page](https://www.europarl.europa.eu/news/en/press-room) where all relevant articles are listed in reverse chronological order.
+Let's say that we are interested in analysing the press releases issued by the European Parliament. After checking that no relevant `sitemap.xml` is easily accessible and there aren't relevant pointers in the `robots.txt` (see section above for details), we decide to look at the website itself. From the [home page](https://www.europarl.europa.eu/), we can see there's a link to "News", that [leads to a home page for news](https://www.europarl.europa.eu/news/en) where all relevant articles are listed in reverse chronological order.
 
 So far, everything is as expected. Older articles, however, are not self-evidently paginated with progressive index urls: there is instead a "Load more" button that loads more articles leaving the main address of the page unchanged. 
 
@@ -178,14 +178,13 @@ Both of the "Load more" and the "Advanced filter" button offer a meaningful appr
 
 First, even if the "Load more" button does not change the url in the browser's address bar, it does ask for older articles in the background. Using our browser, we may be able to see what it requests. 
 
-We open our browser's developer tools (e.g. pressing F12 on Firefox), and then select the "Network" tab from the panel that appears. If we click on "Load more" now, we see the request as it is processed by the browser: copying the url value of that request, we see a nice "https://www.europarl.europa.eu/news/en/press-room/page/2". 
+We open our browser's developer tools (e.g. pressing F12 on Firefox), and then select the "Network" tab from the panel that appears. If we click on "Load more" now, we see the request as it is processed by the browser: copying the url value of that request, we see a nice "https://www.europarl.europa.eu/news/en/page/2". 
 
 If we paste it in the browser, we see this opens an unstyled page with just a list of articles: it's in many ways an ideal format. It also appear immediately that just by changing the last digit in the url, we can paginate and get older articles.
 
 
-```{r eval = TRUE}
+```{r european_parliament_paginated setup, eval = TRUE}
 library("castarter")
-
 
 cas_set_options(
   base_folder = fs::path(
@@ -198,24 +197,28 @@ cas_set_options(
 )
 ```
 
-Let's put this in practice and get the 10 most recent index pages. Let's set also the `index_group` parameter to "press-room"; this isn't mandatory, but if we want to add then index pages from other sections of the website it will make things easier. 
+Let's put this in practice and get the 10 most recent index pages. Let's set also the `index_group` parameter to "news"; this isn't mandatory, but if we want to add then index pages from other sections of the website it will make things easier. 
 
-```{r eval = TRUE}
-cas_build_urls(url = "https://www.europarl.europa.eu/news/en/press-room/page/",
-               start_page = 1, 
-               end_page = 10,
-               index_group = "press-room",
-               write_to_db = TRUE)
+```{r european_parliament_paginated index urls, eval = TRUE}
+cas_build_urls(
+  url = "https://www.europarl.europa.eu/news/en/page/",
+  start_page = 1,
+  end_page = 10,
+  index_group = "news",
+  write_to_db = TRUE
+)
 
-cas_read_db_index() |> 
+cas_read_db_index() |>
   dplyr::collect()
-
-
 ```
 
 Looks good: ready for download.
 
-```{r eval = TRUE}
+```{r european_parliament_paginated download index create folder, eval = TRUE}
+cas_download_index(create_folder_if_missing = TRUE)
+```
+
+```{r european_parliament_paginated download index, eval = FALSE}
 cas_download_index()
 ```
 
@@ -228,18 +231,18 @@ cas_extract_links(write_to_db = TRUE)
 Let's look at the result:
 
 ```{r eval = TRUE}
-cas_read_db_contents_id() |> 
-  head() |> 
-  dplyr::select(url, link_text) |> 
-  dplyr::collect()
+cas_read_db_contents_id() |>
+   head() |>
+  dplyr::select(url, link_text) |>
+  dplyr::collect() 
 ```
 
 Looks good. Let's to a quick check: how many links did we extract from each page?
 
 ```{r eval = TRUE}
-cas_read_db_contents_id() |> 
-  dplyr::group_by(source_index_id) |> 
-  dplyr::tally() |> 
+cas_read_db_contents_id() |>
+  dplyr::group_by(source_index_id) |>
+  dplyr::tally() |>
   dplyr::collect()
 ```
 
@@ -256,7 +259,7 @@ https://www.europarl.europa.eu/news/en/press-room?minDate=25-01-2024&maxDate=25-
 It's easy to guess that we can iterate on that day to find older articles as needed. If we assume that for each day all articles will always fit in a single page (an assumption we can later check), we can take this as a good starting point. 
 
 
-```{r eval = TRUE}
+```{r european_parliament_dates setup, eval = TRUE}
 library("castarter")
 
 
@@ -274,36 +277,47 @@ cas_set_options(
 As the date is effectively repeated twice in the url, we need to fall back on a slightly more complex syntax, enabling the `glue` parameter and the inserting `{here}` where we want the date to appear.
 
 
-```{r eval = TRUE}
-cas_build_urls(glue = TRUE, 
-               url = "https://www.europarl.europa.eu/news/en/press-room?minDate={here}&maxDate={here}&contentType=all",
-               start_date = "2024-01-10",
-               end_date = "2024-01-25",
-               date_format = "dmY",
-               date_separator = "-",
-               index_group = "press-room",
-               write_to_db = FALSE) |> 
-  head() |> 
+```{r european_parliament_dates build urls, eval = TRUE}
+cas_build_urls(
+  glue = TRUE,
+  url = "https://www.europarl.europa.eu/news/en?minDate={here}&maxDate={here}&contentType=all",
+  start_date = "2024-06-01",
+  end_date = "2024-06-30",
+  date_format = "dmY",
+  date_separator = "-",
+  index_group = "news",
+  write_to_db = FALSE
+) |>
+  head() |>
   dplyr::pull(url)
 ```
+
 The urls look good, and it seems they should work. Indeed, on most websites these should work, but, as it happens, it is not uncommon to find some sloppy backend development. In this case, the expectation would be that if you set both `minDate` and `maxDate` as, e.g. "17-01-2024", one would expect to find all posts published on that date. Unfortunately, not in the case of the European Parliament's website: such queries would always return an empty page for all dates.
 
 This is already becoming a rather unusual case that can't easily be addressed with `cas_build_urls()` internal functions, so unfortunately we'll have to proceed with a custom solution, e.g.:
 
-```{r eval = TRUE}
-start_date <- as.Date("2024-01-10")
-end_date <- as.Date("2024-01-25")
+```{r european_parliament_dates custom vector, eval = TRUE}
+start_date <- as.Date("2024-06-01")
+end_date <- as.Date("2024-06-30")
 date_format <- "%d-%m-%Y"
 
-date_sequence <- format(x = seq.Date(from = start_date,
-                                     to = end_date,
-                                     by = "day"),
-                        date_format)
+date_sequence <- format(
+  x = seq.Date(
+    from = start_date,
+    to = end_date,
+    by = "day"
+  ),
+  date_format
+)
 
-date_sequence_plus_1 <- format(x = seq.Date(from = start_date,
-                                            to = end_date,
-                                            by = "day")+1,
-                               date_format)
+date_sequence_plus_1 <- format(
+  x = seq.Date(
+    from = start_date,
+    to = end_date,
+    by = "day"
+  ) + 1,
+  date_format
+)
 
 index_urls_v <- glue::glue("https://www.europarl.europa.eu/news/en/press-room?minDate={date_sequence}&maxDate={date_sequence_plus_1}&contentType=all")
 
@@ -312,15 +326,23 @@ index_urls_v
 
 After checking that this new custom format indeed actually works, we can then add these urls to the stored index:
 
-```{r eval = TRUE}
-cas_build_urls(url = index_urls_v,
-               index_group = "press-room",
-               write_to_db = TRUE)
+```{r european_parliament_dates custom build urls, eval = TRUE}
+cas_build_urls(
+  url = index_urls_v,
+  index_group = "press-room",
+  write_to_db = TRUE
+)
 ```
 
 And proceed with the download as usual:
 
-```{r eval = TRUE}
+```{r european_parliament_dates index download create folder, eval = TRUE, echo=FALSE}
+cas_download_index(create_folder_if_missing = TRUE)
+```
+
+```{r european_parliament_dates index download, eval = FALSE,echo=TRUE}
 cas_download_index()
 ```
+
+
 
