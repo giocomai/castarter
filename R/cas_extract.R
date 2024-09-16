@@ -64,6 +64,7 @@ cas_extract <- function(extractors,
                         write_to_db = FALSE,
                         keep_if_status = 200,
                         encoding = "UTF-8",
+                        readability = FALSE,
                         ...) {
   ellipsis::check_dots_unnamed()
 
@@ -244,17 +245,42 @@ cas_extract <- function(extractors,
         return(NULL)
       }
 
-      current_df <- names(extractors) %>%
-        purrr::set_names() %>%
-        purrr::map(.f = function(current_function) {
-          current_function <- extractors[[current_function]](current_html_document)
-        }) %>%
-        tibble::as_tibble() %>%
-        dplyr::mutate(
-          id = as.numeric(x[["id"]]),
-          url = as.character(x[["url"]])
-        ) %>%
-        dplyr::select("id", "url", dplyr::everything())
+      if (isTRUE(readability)) {
+        readability_list <- castarter.readability::cas_extract_readability(html = as.character(current_html_document),
+                                               
+                                                                                                       url = x$url)
+        #TODO prevent processing rather than process and drop
+        readability_list[[c("content")]] <- NULL
+        readability_list[[c("siteName")]] <- NULL
+        readability_list[[c("lang")]] <- NULL
+        readability_list[[c("dir")]] <- NULL
+        readability_list[[c("length")]] <- NULL
+        
+        readability_list[purrr::map_lgl(.x = readability_list,
+                                        .f = \(x) is.null(x))] <- NA_character_
+        current_df <- readability_list |> 
+          tibble::as_tibble() |> 
+          dplyr::rename(text = textContent) |> 
+          dplyr::mutate(
+            id = as.numeric(x[["id"]]),
+            url = as.character(x[["url"]])
+          ) |> 
+          dplyr::relocate(title, text) |> 
+          dplyr::select("id", "url", dplyr::everything())
+      } else {
+        current_df <- names(extractors) %>%
+          purrr::set_names() %>%
+          purrr::map(.f = function(current_function) {
+            current_function <- extractors[[current_function]](current_html_document)
+          }) %>%
+          tibble::as_tibble() %>%
+          dplyr::mutate(
+            id = as.numeric(x[["id"]]),
+            url = as.character(x[["url"]])
+          ) %>%
+          dplyr::select("id", "url", dplyr::everything())
+      }
+      
 
       if (is.null(post_processing) == FALSE) {
         if (is.function(post_processing) == FALSE) {
