@@ -60,8 +60,9 @@ cas_download_httr <- function(download_df = NULL,
     return(invisible(NULL))
   } else {
     current_batch_folder <- fs::path_dir(path = download_df[["path"]][1])
+    current_base_download_path <- fs::path_dir(current_batch_folder)
     if (fs::file_exists(current_batch_folder) == FALSE) {
-      if (isTRUE(create_folder_if_missing)) {
+      if (isTRUE(create_folder_if_missing) | fs::file_exists(current_base_download_path)) {
         fs::dir_create(path = current_batch_folder)
         cli::cli_inform(c(v = "The folder {.path {current_batch_folder}} for the current download batch has been created."))
       } else {

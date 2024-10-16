@@ -29,9 +29,11 @@ A ggplot2 object with aesthetics set, but no geometry.
 Creates base ggplot2 object to be used by ggplot or ggiraph
 }
 \examples{
-cas_count(corpus = tifkremlinen::kremlin_en,
-pattern = c("putin", "medvedev")) |> 
-  cas_summarise(period = "year") |> 
-  cas_show_gg_base() |> 
+cas_count(
+  corpus = tifkremlinen::kremlin_en,
+  pattern = c("putin", "medvedev")
+) |>
+  cas_summarise(period = "year") |>
+  cas_show_gg_base() |>
   cas_show_barchart_ggplot2(position = "dodge")
 }

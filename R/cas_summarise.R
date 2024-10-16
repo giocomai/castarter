@@ -103,7 +103,7 @@ cas_summarise <- function(count_df,
         .after = after
       ))
   }
-  
+
   summarised_output_df <- summarised
 
   if (auto_convert == TRUE) {
@@ -144,7 +144,7 @@ cas_summarise <- function(count_df,
         )
     }
   }
-  summarised_output_df |> 
+  summarised_output_df |>
     dplyr::ungroup()
 }
 

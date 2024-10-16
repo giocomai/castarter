@@ -81,7 +81,7 @@ mod_cass_show_barchart_wordcount_server <- function(id,
 ## To be copied in the server
 # mod_cass_show_barchart_wordcount_server("cass_show_barchart_wordcount_ui_1")
 # count_df <- castarter::cas_count(corpus = tifkremlinen::kremlin_en,
-#                                  pattern = c("putin", "medvedev")) |> 
+#                                  pattern = c("putin", "medvedev")) |>
 #   cas_summarise(period = "year")
 # cass_show_barchart_wordcount_app(count_df)
 

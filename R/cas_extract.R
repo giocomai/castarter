@@ -72,7 +72,7 @@ cas_extract <- function(extractors,
     db_connection = db_connection,
     ...
   )
-  
+
   available_files_to_extract_df <- cas_get_files_to_extract(
     id = id,
     ignore_id = ignore_id,
@@ -86,16 +86,16 @@ cas_extract <- function(extractors,
     keep_if_status = keep_if_status,
     ...
   )
-  
+
   if (write_to_db == FALSE) {
     cas_disconnect_from_db(
       db_connection = db,
       disconnect_db = TRUE
     )
-    
+
     db <- duckdb::dbConnect(duckdb::duckdb(), ":memory:")
   }
-  
+
   purrr::walk(
     .progress = "Extracting",
     .x = purrr::transpose(available_files_to_extract_df),
@@ -111,26 +111,29 @@ cas_extract <- function(extractors,
       }
 
       if (isTRUE(readability)) {
-        readability_list <- castarter.readability::cas_extract_readability(html = as.character(current_html_document),
-                                               
-                                                                                                       url = x$url)
-        #TODO prevent processing rather than process and drop
+        readability_list <- castarter.readability::cas_extract_readability(
+          html = as.character(current_html_document),
+          url = x$url
+        )
+        # TODO prevent processing rather than process and drop
         readability_list[[c("content")]] <- NULL
         readability_list[[c("siteName")]] <- NULL
         readability_list[[c("lang")]] <- NULL
         readability_list[[c("dir")]] <- NULL
         readability_list[[c("length")]] <- NULL
-        
-        readability_list[purrr::map_lgl(.x = readability_list,
-                                        .f = \(x) is.null(x))] <- NA_character_
-        current_df <- readability_list |> 
-          tibble::as_tibble() |> 
-          dplyr::rename(text = textContent) |> 
+
+        readability_list[purrr::map_lgl(
+          .x = readability_list,
+          .f = \(x) is.null(x)
+        )] <- NA_character_
+        current_df <- readability_list |>
+          tibble::as_tibble() |>
+          dplyr::rename(text = textContent) |>
           dplyr::mutate(
             id = as.numeric(x[["id"]]),
             url = as.character(x[["url"]])
-          ) |> 
-          dplyr::relocate(title, text) |> 
+          ) |>
+          dplyr::relocate(title, text) |>
           dplyr::select("id", "url", dplyr::everything())
       } else {
         current_df <- names(extractors) %>%
@@ -145,7 +148,7 @@ cas_extract <- function(extractors,
           ) %>%
           dplyr::select("id", "url", dplyr::everything())
       }
-      
+
 
       if (is.null(post_processing) == FALSE) {
         if (is.function(post_processing) == FALSE) {
@@ -245,7 +248,7 @@ cas_extract_script <- function(html_document,
                                accessors = NULL,
                                remove_from_script = NULL) {
   if (is.null(script_type) == TRUE) {
-    script_pre <- html_document |> 
+    script_pre <- html_document |>
       rvest::html_elements("script")
   } else {
     script_pre <- html_document |>
@@ -256,14 +259,15 @@ cas_extract_script <- function(html_document,
     .x = script_pre,
     .f = function(x) {
       if (is.null(remove_from_script)) {
-        x |> 
-          rvest::html_text2() |> 
-          stringr::str_conv(encoding = "UTF-8") |> stringr::str_remove_all(stringr::fixed("\\")) |> 
+        x |>
+          rvest::html_text2() |>
+          stringr::str_conv(encoding = "UTF-8") |>
+          stringr::str_remove_all(stringr::fixed("\\")) |>
           jsonlite::parse_json()
       } else {
         x %>%
           rvest::html_text2() %>%
-          stringr::str_remove_all(pattern = remove_from_script) |> 
+          stringr::str_remove_all(pattern = remove_from_script) |>
           jsonlite::parse_json()
       }
     }

@@ -10,10 +10,12 @@
 #' @export
 #'
 #' @examples
-#' cas_count(corpus = tifkremlinen::kremlin_en,
-#' pattern = c("putin", "medvedev")) |> 
-#'   cas_summarise(period = "year") |> 
-#'   cas_show_gg_base() |> 
+#' cas_count(
+#'   corpus = tifkremlinen::kremlin_en,
+#'   pattern = c("putin", "medvedev")
+#' ) |>
+#'   cas_summarise(period = "year") |>
+#'   cas_show_gg_base() |>
 #'   cas_show_barchart_ggplot2(position = "dodge")
 cas_show_gg_base <- function(count_df,
                              group_by = date,
@@ -90,10 +92,12 @@ cas_show_barchart_ggiraph <- function(ggobj,
 #' @export
 #'
 #' @examples
-#' cas_count(corpus = tifkremlinen::kremlin_en,
-#' pattern = c("putin", "medvedev")) |> 
-#'   cas_summarise(period = "year") |> 
-#'   cas_show_gg_base() |> 
+#' cas_count(
+#'   corpus = tifkremlinen::kremlin_en,
+#'   pattern = c("putin", "medvedev")
+#' ) |>
+#'   cas_summarise(period = "year") |>
+#'   cas_show_gg_base() |>
 #'   cas_show_barchart_ggplot2(position = "stack")
 cas_show_barchart_ggplot2 <- function(ggobj,
                                       position = "stack") {

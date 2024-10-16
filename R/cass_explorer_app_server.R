@@ -91,8 +91,8 @@ cass_explorer_app_server <- function(input, output, session) {
         return(NULL)
       }
 
-      corpus_active_r() |> 
-        dplyr::select(dplyr::any_of(c("doc_id", "id")), date, url, title, text) |> 
+      corpus_active_r() |>
+        dplyr::select(dplyr::any_of(c("doc_id", "id")), date, url, title, text) |>
         dplyr::collect() %>%
         cas_kwic(pattern = stringr::str_flatten(c(
           "(?i)",

@@ -209,7 +209,7 @@ cas_get_files_to_download <- function(urls = NULL,
     index_group = index_group,
     db_connection = db,
     ...
-  ) |> 
+  ) |>
     dplyr::collect()
 
   if (isTRUE(ignore_id)) {
@@ -219,7 +219,7 @@ cas_get_files_to_download <- function(urls = NULL,
     ) |>
       dplyr::pull(id)
 
-    urls_df <- urls_df |> 
+    urls_df <- urls_df |>
       dplyr::filter(!(id %in% ignore_id))
   } else if (is.numeric(ignore_id)) {
     urls_df <- urls_df %>%
@@ -247,7 +247,7 @@ cas_get_files_to_download <- function(urls = NULL,
     db_connection = db,
     db_folder = db_folder,
     ...
-  ) |> 
+  ) |>
     dplyr::collect()
 
   if (nrow(previous_download_df) == 0) {
@@ -275,7 +275,7 @@ cas_get_files_to_download <- function(urls = NULL,
     files_to_download_df <- expected_filenames_df
   } else {
     if (is.null(download_again_if_status_is_not) == FALSE) {
-      previous_download_df <- previous_download_df %>%
+      previous_download_df <- previous_download_df |>
         dplyr::filter(status %in% download_again_if_status_is_not)
     }
     files_to_download_df <- dplyr::anti_join(
@@ -290,11 +290,11 @@ cas_get_files_to_download <- function(urls = NULL,
     y = urls_df,
     by = "id"
   ) %>%
-    dplyr::mutate(batch = as.numeric(current_batch)) %>%
+    dplyr::mutate(batch = as.numeric(current_batch)) |>
     dplyr::select("id", "batch", "url", "path")
 
   if (desc_id) {
-    urls_to_download_df %>%
+    urls_to_download_df |>
       dplyr::arrange(dplyr::desc(x = id))
   } else {
     urls_to_download_df

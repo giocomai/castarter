@@ -61,7 +61,8 @@ matches the given status.}
 Mostly used internally by \link{cas_extract} or for troubleshooting.
 }
 \examples{
-#' \dontrun{
+#'
+\dontrun{
 if (interactive) {
   cas_get_files_to_extract()
 }
