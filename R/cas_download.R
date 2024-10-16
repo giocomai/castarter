@@ -209,7 +209,7 @@ cas_get_files_to_download <- function(urls = NULL,
     index_group = index_group,
     db_connection = db,
     ...
-  ) %>%
+  ) |> 
     dplyr::collect()
 
   if (isTRUE(ignore_id)) {
@@ -219,7 +219,7 @@ cas_get_files_to_download <- function(urls = NULL,
     ) |>
       dplyr::pull(id)
 
-    urls_df <- urls_df %>%
+    urls_df <- urls_df |> 
       dplyr::filter(!(id %in% ignore_id))
   } else if (is.numeric(ignore_id)) {
     urls_df <- urls_df %>%
@@ -247,7 +247,7 @@ cas_get_files_to_download <- function(urls = NULL,
     db_connection = db,
     db_folder = db_folder,
     ...
-  ) %>%
+  ) |> 
     dplyr::collect()
 
   if (nrow(previous_download_df) == 0) {

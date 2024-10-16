@@ -51,26 +51,33 @@ cas_download_httr <- function(download_df = NULL,
       file_format = file_format,
       download_again_if_status_is_not = download_again_if_status_is_not,
       ...
-    ) %>%
+    ) |>
       dplyr::collect()
   }
 
   if (nrow(download_df) == 0) {
-    usethis::ui_info("No new files or pages to download.")
+    cli::cli_inform("No new files or pages to download.")
     return(invisible(NULL))
   } else {
     current_batch_folder <- fs::path_dir(path = download_df[["path"]][1])
     if (fs::file_exists(current_batch_folder) == FALSE) {
-      fs::dir_create(path = current_batch_folder)
-      cli::cli_inform(c(v = "The folder {.path {current_batch_folder}} for the current download batch has been created."))
+      if (isTRUE(create_folder_if_missing)) {
+        fs::dir_create(path = current_batch_folder)
+        cli::cli_inform(c(v = "The folder {.path {current_batch_folder}} for the current download batch has been created."))
+      } else {
+        cli::cli_abort(c(
+          v = "The folder {.path {current_batch_folder}} for the current download batch does not exist and has not been created.",
+          i = "Set {.var create_folder_if_missing} to {.val TRUE} or create the folder manually."
+        ))
+      }
     }
   }
 
   if (is.numeric(sample) == TRUE) {
-    download_df <- download_df %>%
+    download_df <- download_df |>
       dplyr::slice_sample(n = sample)
   } else if (isTRUE(sample)) {
-    download_df <- download_df %>%
+    download_df <- download_df |>
       dplyr::slice_sample(p = 1)
   }
 
