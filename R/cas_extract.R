@@ -72,165 +72,30 @@ cas_extract <- function(extractors,
     db_connection = db_connection,
     ...
   )
-
-  type <- dplyr::if_else(condition = index,
-    true = "index",
-    false = "contents"
-  )
-
-  if (is.null(custom_path)) {
-    path <- cas_get_base_path(...)
-  } else {
-    path_ending <- stringr::str_c(file_format, type, sep = "_")
-
-    custom_path_ending <- fs::path_file(custom_path)
-
-    if (path_ending == custom_path_ending) {
-      path <- fs::path(custom_path)
-    } else {
-      path <- fs::path(
-        custom_path,
-        path_ending
-      )
-    }
-  }
-
-  previous_download_df <- cas_read_db_download(
+  
+  available_files_to_extract_df <- cas_get_files_to_extract(
+    id = id,
+    ignore_id = ignore_id,
+    custom_path = custom_path,
     index = index,
+    store_as_character = store_as_character,
+    check_previous = check_previous,
     db_connection = db,
-    disconnect_db = FALSE,
+    file_format = file_format,
+    sample = sample,
+    keep_if_status = keep_if_status,
     ...
-  ) %>%
-    dplyr::arrange(dplyr::desc(datetime)) %>%
-    dplyr::distinct(id, .keep_all = TRUE) %>%
-    dplyr::arrange(id, batch, datetime) %>%
-    dplyr::filter(status %in% keep_if_status)
-
-  stored_files_df <- previous_download_df %>%
-    dplyr::select("id", "batch") %>%
-    dplyr::mutate(path = fs::path(
-      path,
-      batch,
-      stringr::str_c(id, "_", batch, ".", file_format)
-    )) %>%
-    dplyr::select("id", "path")
-
-  if (store_as_character == TRUE) {
-    stored_files_df <- stored_files_df %>%
-      dplyr::mutate(id = as.character(id))
-  }
-
-
-  if (check_previous == FALSE) {
-    files_to_extract_pre_df <- stored_files_df
-    write_to_db <- FALSE
-  } else {
-    # Do not process previously extracted
-    previously_extracted_df <- cas_read_db_contents_data(
-      db_connection = db,
-      disconnect_db = FALSE,
-      ...
-    )
-
-    if (is.null(previously_extracted_df) == FALSE) {
-      previously_extracted_df <- previously_extracted_df %>%
-        dplyr::select(id) %>%
-        dplyr::collect()
-
-      if (store_as_character == TRUE) {
-        previously_extracted_df <- previously_extracted_df %>%
-          dplyr::mutate(id = as.character(id))
-      }
-    }
-
-    if (is.null(previously_extracted_df) == FALSE) {
-      files_to_extract_pre_df <- dplyr::anti_join(
-        x = stored_files_df,
-        y = previously_extracted_df,
-        by = "id"
-      )
-    } else {
-      files_to_extract_pre_df <- stored_files_df
-    }
-  }
-
-  if (nrow(files_to_extract_pre_df) == 0) {
-    # TODO return consistently data frame or S3 object
-    return(invisible(NULL))
-  }
-
-  contents_id_df <- cas_read_db_contents_id(
-    db_connection = db,
-    disconnect_db = FALSE,
-    ...
-  ) %>%
-    dplyr::collect()
-
-  if (store_as_character == TRUE) {
-    contents_id_df <- contents_id_df %>%
-      dplyr::mutate(id = as.character(id))
-  }
-
-  files_to_extract_df <- files_to_extract_pre_df %>%
-    dplyr::inner_join(
-      y = contents_id_df,
-      by = "id"
-    )
-
-  if (is.null(id) == FALSE) {
-    id_to_keep <- id
-    files_to_extract_df <- files_to_extract_df %>%
-      dplyr::filter(id %in% id_to_keep)
-  }
-
-  if (isTRUE(ignore_id)) {
-    ignore_id <- cas_read_db_ignore_id(
-      db_connection = db,
-      disconnect_db = FALSE
-    ) |>
-      dplyr::pull(id)
-
-    files_to_extract_df <- files_to_extract_df %>%
-      dplyr::filter(!(id %in% ignore_id))
-  } else if (is.numeric(ignore_id)) {
-    files_to_extract_df <- files_to_extract_df %>%
-      dplyr::filter(!(id %in% ignore_id))
-  }
-
-  if (is.numeric(sample) == TRUE) {
-    if (sample > nrow(files_to_extract_df)) {
-      sample <- nrow(files_to_extract_df)
-    }
-
-    files_to_extract_df <- files_to_extract_df %>%
-      dplyr::slice_sample(n = sample)
-  } else if (isTRUE(sample)) {
-    files_to_extract_df <- files_to_extract_df %>%
-      dplyr::slice_sample(p = 1)
-  }
-
+  )
+  
   if (write_to_db == FALSE) {
     cas_disconnect_from_db(
       db_connection = db,
       disconnect_db = TRUE
     )
-
+    
     db <- duckdb::dbConnect(duckdb::duckdb(), ":memory:")
   }
-
-  available_files_to_extract_df <- files_to_extract_df %>%
-    dplyr::mutate(available = fs::file_exists(path)) %>%
-    dplyr::filter(available)
-
-  if (nrow(available_files_to_extract_df) != nrow(files_to_extract_df)) {
-    cli::cli_warn(c(
-      `x` = glue::glue("Not all downloaded files are currently available in their expected location."),
-      `*` = glue::glue("Total files expected:  {scales::number(nrow(files_to_extract_df))}"),
-      `*` = glue::glue("Total files available: {scales::number(nrow(available_files_to_extract_df))}"),
-      `i` = glue::glue("Only available files will be processed. Consider running `cas_restore()` or otherwise deal with missing files as needed.")
-    ))
-  }
-
+  
   purrr::walk(
     .progress = "Extracting",
     .x = purrr::transpose(available_files_to_extract_df),
@@ -380,10 +245,10 @@ cas_extract_script <- function(html_document,
                                accessors = NULL,
                                remove_from_script = NULL) {
   if (is.null(script_type) == TRUE) {
-    script_pre <- html_document %>%
+    script_pre <- html_document |> 
       rvest::html_elements("script")
   } else {
-    script_pre <- html_document %>%
+    script_pre <- html_document |>
       rvest::html_elements(stringr::str_c("script[type='", script_type, "']"))
   }
 
@@ -391,13 +256,14 @@ cas_extract_script <- function(html_document,
     .x = script_pre,
     .f = function(x) {
       if (is.null(remove_from_script)) {
-        x %>%
-          rvest::html_text2() %>%
+        x |> 
+          rvest::html_text2() |> 
+          stringr::str_conv(encoding = "UTF-8") |> stringr::str_remove_all(stringr::fixed("\\")) |> 
           jsonlite::parse_json()
       } else {
         x %>%
           rvest::html_text2() %>%
-          stringr::str_remove_all(pattern = remove_from_script) %>%
+          stringr::str_remove_all(pattern = remove_from_script) |> 
           jsonlite::parse_json()
       }
     }

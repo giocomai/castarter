@@ -1,8 +1,8 @@
 #' Set key project parameters that determine the folder used for storing project files
 #'
-#' Your project folder can be anywhwere on your file system. Considering that
+#' Your project folder can be anywhere on your file system. Considering that
 #' this is where possibly a very large number of html files will be downloaded,
-#' it is usually preferrable to choose a location that is not included in live
+#' it is usually preferable to choose a location that is not included in live
 #' backups. These settings determine the names given to these hierarchical
 #' folders: `website` folder will be under `project` folder which will be under
 #' the `base_folder`.

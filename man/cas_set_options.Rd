@@ -40,9 +40,9 @@ variable, defaults to \code{castarter_data}.}
 Nothing, used for its side effects (setting options).
 }
 \description{
-Your project folder can be anywhwere on your file system. Considering that
+Your project folder can be anywhere on your file system. Considering that
 this is where possibly a very large number of html files will be downloaded,
-it is usually preferrable to choose a location that is not included in live
+it is usually preferable to choose a location that is not included in live
 backups. These settings determine the names given to these hierarchical
 folders: \code{website} folder will be under \code{project} folder which will be under
 the \code{base_folder}.
