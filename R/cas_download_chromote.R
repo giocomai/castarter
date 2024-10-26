@@ -1,6 +1,7 @@
 #' Downloads one file at a time with chromote
 #'
 #' @inheritParams cas_download_httr
+#' @inheritParams cas_get_files_to_download
 #'
 #' @return
 #' @export
@@ -15,6 +16,7 @@ cas_download_chromote <- function(download_df = NULL,
                                   db_connection = NULL,
                                   sample = FALSE,
                                   file_format = "html",
+                                  download_again = FALSE,
                                   disconnect_db = FALSE,
                                   ...) {
   if (requireNamespace("chromote", quietly = TRUE) == FALSE) {
@@ -39,6 +41,7 @@ cas_download_chromote <- function(download_df = NULL,
       disconnect_db = FALSE,
       file_format = file_format,
       ignore_id = ignore_id,
+      download_again = download_again,
       # download_again_if_status_is_not = download_again_if_status_is_not,
       ...
     ) %>%

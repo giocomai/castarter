@@ -14,6 +14,7 @@ cas_download_chromote(
   db_connection = NULL,
   sample = FALSE,
   file_format = "html",
+  download_again = FALSE,
   disconnect_db = FALSE,
   ...
 )
