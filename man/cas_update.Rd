@@ -10,12 +10,13 @@ cas_update(
   post_processing = NULL,
   wait = 3,
   user_agent = NULL,
+  download_method = c("default", "chromote"),
   ...
 )
 }
 \arguments{
 \item{extract_links_partial}{A partial function, typically created with
-\code{purrr::partial(.f = cas_extract_links)}, followed by the paramters
+\code{purrr::partial(.f = cas_extract_links)}, followed by the parameters
 originally used by \code{cas_extract_links()}. See examples.}
 
 \item{extractors}{A named list of functions. See examples for details.}
@@ -29,6 +30,12 @@ page and the next. Can be increased to reduce server load, or can be set to
 0 when this is not an issue.}
 
 \item{user_agent}{Defaults to NULL. If given, passed to download method.}
+
+\item{download_method}{Defines how the download should be implemented, (e.g.
+curl, wget, R internal, etc.). Currently, only "default" and "chromote" are
+supported. Chromote is more resource-intensive, but as it processes
+javascript may be helpful to download from websites where other methods
+fail.}
 
 \item{...}{Passed to \code{cas_get_db_file()}.}
 }
