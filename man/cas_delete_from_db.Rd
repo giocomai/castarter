@@ -22,7 +22,7 @@ cas_delete_from_db(
 \item{id}{Defaults to NULL. A vector of id. Rows with the given id will be
 removed from the database.}
 
-\item{batch}{Defaults to NULL. A vector of batch identigiers. Rows with the
+\item{batch}{Defaults to NULL. A vector of batch identifiers. Rows with the
 given batch id will be removed from the database.}
 
 \item{index_group}{Defaults to NULL. A vector of "index_group" names. Rows
