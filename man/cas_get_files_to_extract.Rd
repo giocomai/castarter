@@ -15,6 +15,7 @@ cas_get_files_to_extract(
   file_format = "html",
   sample = FALSE,
   keep_if_status = 200,
+  only_available = TRUE,
   ...
 )
 }
@@ -54,6 +55,10 @@ given number of items is downloaded.}
 
 \item{keep_if_status}{Defaults to 200. Keep only if recorded download status
 matches the given status.}
+
+\item{only_available}{Defaults to TRUE. If TRUE, returns only files available
+locally. If FALSE, returns also path to files that according to logging
+data have already been downloaded, yet are not available where expected.}
 
 \item{...}{Passed to \code{cas_get_db_file()}.}
 }

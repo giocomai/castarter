@@ -2,6 +2,9 @@
 #'
 #' Mostly used internally by [cas_extract] or for troubleshooting.
 #'
+#' @param only_available Defaults to TRUE. If TRUE, returns only files available
+#'   locally. If FALSE, returns also path to files that according to logging
+#'   data have already been downloaded, yet are not available where expected.
 #' @inheritParams cas_extract
 #'
 #' @return
@@ -24,6 +27,7 @@ cas_get_files_to_extract <- function(id = NULL,
                                      file_format = "html",
                                      sample = FALSE,
                                      keep_if_status = 200,
+                                     only_available = TRUE,
                                      ...) {
   ellipsis::check_dots_unnamed()
 
@@ -181,5 +185,11 @@ cas_get_files_to_extract <- function(id = NULL,
       `i` = glue::glue("Only available files will be processed. Consider running `cas_restore()` or otherwise deal with missing files as needed.")
     ))
   }
-  available_files_to_extract_df
+  
+  if (only_available) {
+    available_files_to_extract_df
+  } else {
+    files_to_extract_df |>
+      dplyr::mutate(available = fs::file_exists(path)) 
+  }
 }
