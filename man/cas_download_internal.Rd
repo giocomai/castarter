@@ -11,6 +11,7 @@ cas_download_internal(
   overwrite_file = FALSE,
   ignore_id = TRUE,
   wait = 1,
+  ignore_ssl_certificates = FALSE,
   create_folder_if_missing = NULL,
   db_connection = NULL,
   disconnect_db = FALSE,
@@ -31,6 +32,11 @@ See Readme for a more extensive explanation.}
 \item{wait}{Defaults to 1. Number of seconds to wait between downloading one
 page and the next. Can be increased to reduce server load, or can be set to
 0 when this is not an issue.}
+
+\item{ignore_ssl_certificates}{Logical, defaults to FALSE. If TRUE it uses
+wget to download the page, and does not check if the SSL certificate is
+valid. Useful, for example, for https pages with expired or mis-configured
+SSL certificate.}
 
 \item{db_connection}{Defaults to NULL. If NULL, uses local SQLite database.
 If given, must be a connection object or a list with relevant connection
