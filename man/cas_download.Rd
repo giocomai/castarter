@@ -30,6 +30,12 @@ cas_download(
 considered \code{index} files. If not, they will be considered \code{contents} files.
 See Readme for a more extensive explanation.}
 
+\item{file_format}{Defaults to \code{html}. Used for storing files in dedicated
+folders, but also for determining processing options. For example, if a
+sitemap is downloaded as an index with \code{file_format} set to xml, it will be
+processed accordingly. If it is stored as xml.gz, it will be automatically
+decompressed for correct processing.}
+
 \item{overwrite_file}{Logical, defaults to FALSE. If TRUE, files are
 downloaded again even if already present, overwriting previously downloaded
 items.}

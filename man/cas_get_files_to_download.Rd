@@ -38,6 +38,12 @@ in the database to find if previous downloads have taken place. If so, by
 default, the current batch will be one unit higher than the highest batch
 number found in the database.}
 
+\item{file_format}{Defaults to \code{html}. Used for storing files in dedicated
+folders, but also for determining processing options. For example, if a
+sitemap is downloaded as an index with \code{file_format} set to xml, it will be
+processed accordingly. If it is stored as xml.gz, it will be automatically
+decompressed for correct processing.}
+
 \item{download_again_if_status_is_not}{Defaults to NULL. If given, it must a
 status code as integer, typically \code{200L}, or \code{c(200L, 404L)}.}
 

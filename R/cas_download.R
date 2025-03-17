@@ -19,6 +19,11 @@
 #' @param retry_times Defaults to 3. Number of times to retry download in case
 #'   of errors.
 #' @param user_agent Defaults to NULL. If given, passed to download method.
+#' @param file_format Defaults to `html`. Used for storing files in dedicated
+#'   folders, but also for determining processing options. For example, if a
+#'   sitemap is downloaded as an index with `file_format` set to xml, it will be
+#'   processed accordingly. If it is stored as xml.gz, it will be automatically
+#'   decompressed for correct processing.
 #'
 #' @inheritParams cas_connect_to_db
 #'

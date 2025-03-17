@@ -24,6 +24,12 @@ See Readme for a more extensive explanation.}
 \item{remote}{Defaults to TRUE. If TRUE, opens relevant url online. If FALSE,
 it opens the locally stored file.}
 
+\item{file_format}{Defaults to \code{html}. Used for storing files in dedicated
+folders, but also for determining processing options. For example, if a
+sitemap is downloaded as an index with \code{file_format} set to xml, it will be
+processed accordingly. If it is stored as xml.gz, it will be automatically
+decompressed for correct processing.}
+
 \item{sample}{Defaults to 1. By default, it opens one random url.}
 
 \item{...}{Passed to \code{cas_get_db_file()}.}

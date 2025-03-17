@@ -59,6 +59,12 @@ conducted to verify if the same content had been previously extracted. If
 FALSE, \code{write_to_db} must be set (or will be set) to FALSE, to prevent
 duplication of data.}
 
+\item{file_format}{Defaults to \code{html}. Used for storing files in dedicated
+folders, but also for determining processing options. For example, if a
+sitemap is downloaded as an index with \code{file_format} set to xml, it will be
+processed accordingly. If it is stored as xml.gz, it will be automatically
+decompressed for correct processing.}
+
 \item{sample}{Defaults to FALSE. If TRUE, the download order is randomised.
 If a numeric is given, the download order is randomised and at most the
 given number of items is downloaded.}
