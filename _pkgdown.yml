@@ -7,30 +7,33 @@ lang: en
 
 template:
   bootstrap: 5
+  light-switch: true
   bootswatch: lux
   bslib:
     pkgdown-nav-height: 100px
-
 
 articles:
 - title: Step by step
   navbar: ~
   contents:
-  - '`articles/0-key-concepts`'
-  - '`articles/1-getting-index`'
-  - '`articles/2-extracting-links`'
-  - '`articles/3-downloading-files`'
-  - '`articles/4-extracting-contents`'
-  - '`articles/5-data-exploration-analysis`'
-  - '`articles/6-data-quality`'
-  - '`articles/7-archiving-file-management`'
-  - '`articles/8-updating-datasets`'
-  - '`articles/castarter-workflow`'
+  - articles/0-key-concepts
+  - articles/1-getting-index
+  - articles/2-extracting-links
+  - articles/3-downloading-files
+  - articles/4-extracting-contents
+  - articles/5-data-exploration-analysis
+  - articles/6-data-quality
+  - articles/7-archiving-file-management
+  - articles/8-updating-datasets
 - title: Technical details
   navbar: Technical details
   contents:
-  - '`castarter-database`'
-  - '`castarter-shiny-modules`'
+  - castarter-database
+  - castarter-shiny-modules
+- title: Workflows
+  navbar: Workflows
+  contents:
+  - articles/text-mining-workflow
 
 reference:
 - title: Settings
