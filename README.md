@@ -1,7 +1,7 @@
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 
-# castarter <a href='https://github.com/giocomai/castarter'><img src='man/figures/hex-castarter.png' align="right" height="320" /></a>
+# castarter <a href='https://github.com/giocomai/castarter'><img src='man/figures/hex-castarter.png' alt = "castarter hex logo" align="right" height="320" /></a>
 
 <!-- badges: start -->
 
@@ -188,7 +188,7 @@ Assuming that my project on the European Union involves text mining the
 website of the European Council, the European Commission, and the
 European Parliament, the folder structure may look something like this:
 
-    #> /tmp/RtmpwmPz20/castarter_data
+    #> /tmp/RtmpVgls0f/castarter_data
     #> └── european_union
     #>     ├── european_commission
     #>     ├── european_council
