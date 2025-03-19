@@ -1,0 +1,358 @@
+---
+title: "Text-mining a section of a website"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Text-mining a section of a website}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r knitr setup, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>",
+  eval = TRUE
+)
+
+library("castarter")
+```
+
+
+One of the first issues that appear when starting a text mining or web scraping project relates to the issue of managing files and folder. `castarter` defaults to an opinionated folder structure that should work for most projects. It also facilitates downloading files (skipping previously downloaded files) and ensuring consistent and unique matching between a downloaded html, its source url, and data extracted from them. Finally, it facilitates archiving and backuping downloaded files and scripts.
+
+
+## Getting started
+
+In this vignette, I will outline some of the basic steps that can be used to extract and process the contents of press releases from a number of institutions of the European Union. When text mining or scraping, it is common to gather quickly many thousands of file, and keeping them in good order is fundamental, particularly in the long term. 
+
+A preliminary suggestion: depending on how you usually work and keep your files backed-up it may make sense to keep your scripts in a folder that is live-synced (e.g. with services such as Dropbox, Nextcloud, or Google Drive). It however rarely make sense to live-sync tens or hundreds of thousands of files as you proceed with your scraping. You may want to keep this in mind as you set the `base_folder` with `cas_set_options()`. I will keep in the current working directory here for the sake of simplicity, but there are no drawbacks in having scripts and folders in different locations. 
+
+`castarter` stores details about the download process in a database. By default, this is stored locally in DuckDB database kept in the same folder as website files, but it can be stored in a different folder, or alternative database backends such as RSQlite or MySQL can also be used. 
+
+Assuming that my project on the European Union involves text mining the website of the European Parliament, the European Council, and the External action service (EEAS) the folder structure may look something like this:
+
+
+```{r castarter setup intro}
+library("castarter")
+cas_set_options(
+  base_folder = fs::path_home(
+    "R",
+    "castarter_data"
+  ),
+  project = "European Union",
+  website = "European Parliament"
+)
+```
+
+
+```{r castarter setup local, include = TRUE, echo=FALSE}
+fs::dir_create(
+  path = fs::path(
+    cas_get_options()$base_folder,
+    cas_get_options()$project
+  ))
+
+fs::dir_create(path = fs::path(
+  cas_get_options()$base_folder,
+  cas_get_options()$project,
+  "European Parliament"
+))
+
+fs::dir_create(path = fs::path(
+  cas_get_options()$base_folder,
+  cas_get_options()$project,
+  "European Council"
+))
+
+fs::dir_create(path = fs::path(
+  cas_get_options()$base_folder,
+  cas_get_options()$project,
+  "EEAS"
+))
+
+fs::dir_tree(cas_get_options()$base_folder |> fs::path_rel(), recurse = 1)
+```
+
+
+In brief, `castarter_data` is the base folder where I can store all of my text mining projects. `European Union` is the name of the project, while all others are the names of the specific websites I will source. The user will be prompted to accept creating folder as needed when starting to download the files. 
+
+## Downloading index files
+
+In text mining a common scenario involves first downloading web pages containing lists of urls to the actual posts we are interested in. In the case of the European Commission, these would probably be the pages in the "[news section](https://ec.europa.eu/commission/presscorner/home/en)". By clicking on the the numbers at the bottom of the page, we get to see direct links to the subsequent pages listing all posts. 
+
+These URLs look something like this:
+
+```{r eval = TRUE, echo=FALSE}
+tibble::tibble(index_urls = paste0("https://ec.europa.eu/commission/presscorner/home/en?pagenumber=", 1:10)) |>
+  knitr::kable()
+```
+
+Sometimes such urls can be derived from the archive section, as is the case for example for EEAS:
+
+```{r cas_build_urls}
+index_df <- cas_build_urls(
+  url = "https://www.eeas.europa.eu/eeas/press-material_en?f%5B0%5D=pm_category%253AStatement/Declaration&f%5B1%5D=press_site%253AEEAS&f%5B2%5D=press_site%253AEEAS&fulltext=&created_from=&created_to=&0=press_site%253AEEAS&1=press_site%253AEEAS&2=press_site%253AEEAS&page=",
+  start_page = 0,
+  end_page = 3,
+  index_group = "Statements"
+)
+
+index_df |>
+  knitr::kable()
+```
+
+
+All information about index urls and the download process are typically stored in a local database for consistency and future reference.
+
+## A practical example: retrieving posts published on the website of the EU Parliament
+
+Each of the following steps is documented in more details considering alternative scenarios in the dedicated vignettes. In the following walkthrough we'll proceed with a basic scenario, simply retrieving the latest posts published on the European Parliament website. 
+
+First, let's define the directory where all files and information will be stored.
+
+```{r castarter setup}
+library("castarter")
+cas_set_options(
+  base_folder = fs::path_home(
+    "R",
+    "castarter_data"
+  ),
+  project = "European Union",
+  website = "European Parliament"
+)
+```
+
+We create the urls of the index pages:
+
+```{r index_df}
+index_df <- cas_build_urls(
+  url = "https://www.europarl.europa.eu/news/en/page/",
+  start_page = 1,
+  end_page = 10, # 600,
+  index_group = "news"
+)
+
+index_df |> 
+  knitr::kable()
+```
+
+Store them in the local database:
+
+```{r index_db}
+cas_write_db_index(urls = index_df)
+
+cas_read_db_index()
+```
+
+### Download index files
+
+And then start downloading the index files:
+
+```{r}
+cas_download_index(create_folder_if_missing = TRUE)
+```
+
+### Extract links
+
+```{r}
+cas_download(index = TRUE, create_folder_if_missing = TRUE)
+```
+
+## Check how the download is going
+
+```{r}
+download_status_df <- cas_read_db_download(index = TRUE)
+
+download_status_df
+```
+
+## Extract links from index files
+
+Time to extract links from the index page. In this case, we'll keep things simple, and take any link that includes in the url the following string `news/en/press-room/`. We first test this approach without storing it in the local database (setting `write_to_db` to FALSE), and then, if it works, we move ahead. 
+
+```{r links_df no db}
+links_df <- cas_extract_links(
+  include_when = "news/en/press-room/",
+  write_to_db = FALSE
+)
+
+```
+
+```{r links_df db, echo = FALSE}
+links_df <- cas_extract_links(
+  include_when = "news/en/press-room/",
+  write_to_db = TRUE
+)
+
+links_df <- cas_read_db_contents_id()
+```
+
+It's usually a good idea to give a quick look at results and then check if a consistent number of links has been extracted from each index page. 
+
+```{r links_df}
+
+
+links_df |> 
+  knitr::kable()
+```
+
+You will notice that this table includes information about where each link has been found, i.e., the id of the relevant index page. This allows us to always be able to answer the question "where did I find this link?": the source page, and the time when it was downloaded, are all stored in the local database by default. 
+
+We can also see that from each index page we retrieved 15 unique links, also a good indicator that things are as expected. 
+
+```{r links_df tally}
+links_df |>
+  dplyr::group_by(source_index_id) |>
+  dplyr::tally() |>
+  dplyr::collect()
+```
+
+
+We can proceed with storing the links to the contents pages in the local database. Notice that even if run this command (or the script as a whole) multiple times, there are no negative side effects: by defaults, only pages that are not available locally will be downloaded, and only new index pages will be processed. 
+
+```{r cas_extract_links not evaluated, eval = FALSE}
+cas_extract_links(
+  include_when = "news/en/press-room/",
+  write_to_db = TRUE
+)
+```
+
+Time to download. 
+
+```{r cas_download}
+cas_download(create_folder_if_missing = TRUE)
+```
+
+Keeping in mind that information about the time of download is stored locally for reference:
+
+```{r}
+cas_read_db_download() |> 
+  knitr::kable()
+```
+
+## Extracting contents
+
+Now that we have `r nrow(cas_read_db_download())` html files stored locally, it's finally time to extract the information we need, such as title and text. 
+
+To do so, we create a list defining how each piece of information should be extracted. 
+
+First, we need to open one of the content pages. As they are expected to have all the same structure, we can open one in our browser with:
+
+```{r cas_browse, eval=FALSE}
+cas_browse()
+```
+
+
+A typical workflow for finding the right combinations may look as follows: first test what works on a single page or a small set of pages, and then let the extractor process all pages.
+
+The specifics of extracting fields will be presented separately, but folks familiar with the way html pages are built will understand the gist of it just by looking at a few examples below. What is worth highlighting is that by relying on the source code of the page often it is possible to access information in a structured form that is not normally visible to the user, including keywords passed to search engines and a description field commonly used by social media for the preview of the page.
+
+In this case, this allows for example to extract whether a given post is associated with a EU Parliament committee.
+
+This approach allows for extracting how many fields as needed, accepting that some of them may be empty for some pages (for example, some of the post on EP website have a factbox, others don't).
+
+
+```{r extractors_l}
+extractors_l <- list(
+  title = \(x) cas_extract_html(
+    html_document = x,
+    container = "h1",
+    container_class = "ep_title"
+  ),
+    date = \(x) cas_extract_html(
+    html_document = x,
+    container = "time",
+    container_itemprop = "datePublished",
+    attribute = "datetime",
+    container_instance = 1
+  ) |> 
+    lubridate::ymd_hms() |> 
+    lubridate::as_date(),
+  datetime = \(x) cas_extract_html(
+    html_document = x,
+    container = "time",
+    container_itemprop = "datePublished",
+    attribute = "datetime",
+    container_instance = 1
+  ) |> 
+    lubridate::ymd_hms(),
+  description = \(x) cas_extract_html(html_document = x,
+                                      container = "meta",
+                                      container_property = "og:description",
+                                      attribute = "content"), 
+  type = \(x) cas_extract_html(html_document = x,
+                                   container = "meta",
+                                   container_name = "keywords",
+                                   attribute = "content") |> 
+    stringr::str_extract("productType:[[:print:]]+") |> 
+    stringr::str_remove("productType:") |> 
+    stringr::str_extract("[[:print:]]+,") |> 
+    stringr::str_remove(","),
+  subtype = \(x) cas_extract_html(html_document = x,
+                                 container = "meta",
+                                 container_name = "routes",
+                                 attribute = "content") |> 
+    stringr::str_extract("productSubType:[[:print:]]+") |> 
+    stringr::str_remove("productSubType:"),
+  committee = \(x) cas_extract_html(html_document = x,
+                                   container = "meta",
+                                   container_name = "keywords",
+                                   attribute = "content") |> 
+    stringr::str_extract("com:[[:print:]]+") |> 
+    stringr::str_remove("com:") |> 
+    stringr::str_extract("[[:print:]]+,") |> 
+    stringr::str_replace_all(pattern = "com:", replacement = "; ") |> 
+    stringr::str_remove_all(","),
+  facts = \(x) cas_extract_html(
+    html_document = x,
+    container = "div",
+    container_class = "ep-a_facts"
+  ),
+  text =  \(x) cas_extract_html(
+    html_document = x,
+    container = "div",
+    container_class = "ep_gridcolumn-content",
+    sub_element = "p"
+  )
+  
+)
+```
+
+
+```{r}
+set.seed(10)
+current_file <- cas_get_path_to_files(sample = 1)
+# current_file <- cas_get_path_to_files(id = 1)
+# x <- xml2::read_html(current_file$path)
+# cas_browse(id = current_file$id)
+
+test_df <- cas_extract(extractors = extractors_l,
+                       id = current_file$id,
+                       write_to_db = FALSE,
+                       check_previous = FALSE) |> 
+  dplyr::collect()
+
+
+
+test_df |> 
+  dplyr::mutate(text = stringr::str_trunc(string = text, width = 160)) |> 
+  tidyr::pivot_longer(cols = dplyr::everything()) |> 
+  knitr::kable()
+```
+
+
+
+```{r cas_extract to db}
+cas_extract(extractors = extractors_l,
+            write_to_db = FALSE)
+```
+
+## Output
+
+```{r}
+corpus_df <- cas_read_db_contents_data() |> 
+  dplyr::collect()
+```
+
+
+
