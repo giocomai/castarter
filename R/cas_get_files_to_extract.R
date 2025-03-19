@@ -17,18 +17,20 @@
 #'   cas_get_files_to_extract()
 #' }
 #' }
-cas_get_files_to_extract <- function(id = NULL,
-                                     ignore_id = TRUE,
-                                     custom_path = NULL,
-                                     index = FALSE,
-                                     store_as_character = TRUE,
-                                     check_previous = TRUE,
-                                     db_connection = NULL,
-                                     file_format = "html",
-                                     sample = FALSE,
-                                     keep_if_status = 200,
-                                     only_available = TRUE,
-                                     ...) {
+cas_get_files_to_extract <- function(
+  id = NULL,
+  ignore_id = TRUE,
+  custom_path = NULL,
+  index = FALSE,
+  store_as_character = TRUE,
+  check_previous = TRUE,
+  db_connection = NULL,
+  file_format = "html",
+  sample = FALSE,
+  keep_if_status = 200,
+  only_available = TRUE,
+  ...
+) {
   ellipsis::check_dots_unnamed()
 
   db <- cas_connect_to_db(
@@ -36,10 +38,7 @@ cas_get_files_to_extract <- function(id = NULL,
     ...
   )
 
-  type <- dplyr::if_else(condition = index,
-    true = "index",
-    false = "contents"
-  )
+  type <- dplyr::if_else(condition = index, true = "index", false = "contents")
 
   if (is.null(custom_path)) {
     path <- cas_get_base_path(...)
@@ -71,18 +70,19 @@ cas_get_files_to_extract <- function(id = NULL,
 
   stored_files_df <- previous_download_df |>
     dplyr::select("id", "batch") |>
-    dplyr::mutate(path = fs::path(
-      path,
-      batch,
-      stringr::str_c(id, "_", batch, ".", file_format)
-    )) |>
+    dplyr::mutate(
+      path = fs::path(
+        path,
+        batch,
+        stringr::str_c(id, "_", batch, ".", file_format)
+      )
+    ) |>
     dplyr::select("id", "path")
 
   if (store_as_character == TRUE) {
     stored_files_df <- stored_files_df |>
       dplyr::mutate(id = as.character(id))
   }
-
 
   if (check_previous == FALSE) {
     files_to_extract_pre_df <- stored_files_df
@@ -118,8 +118,16 @@ cas_get_files_to_extract <- function(id = NULL,
   }
 
   if (nrow(files_to_extract_pre_df) == 0) {
-    # TODO return consistently data frame or S3 object
-    return(invisible(NULL))
+    empty_df <- tibble::tibble(
+      id = character(),
+      path = fs::path(),
+      url = character(),
+      link_text = character(),
+      source_index_id = double(),
+      source_index_batch = double(),
+      available = logical()
+    )
+    return(empty_df)
   }
 
   contents_id_df <- cas_read_db_contents_id(
@@ -172,24 +180,31 @@ cas_get_files_to_extract <- function(id = NULL,
       dplyr::slice_sample(p = 1)
   }
 
-
   available_files_to_extract_df <- files_to_extract_df |>
     dplyr::mutate(available = fs::file_exists(path)) |>
     dplyr::filter(available)
 
   if (nrow(available_files_to_extract_df) != nrow(files_to_extract_df)) {
     cli::cli_warn(c(
-      `x` = glue::glue("Not all downloaded files are currently available in their expected location."),
-      `*` = glue::glue("Total files expected:  {scales::number(nrow(files_to_extract_df))}"),
-      `*` = glue::glue("Total files available: {scales::number(nrow(available_files_to_extract_df))}"),
-      `i` = glue::glue("Only available files will be processed. Consider running `cas_restore()` or otherwise deal with missing files as needed.")
+      `x` = glue::glue(
+        "Not all downloaded files are currently available in their expected location."
+      ),
+      `*` = glue::glue(
+        "Total files expected:  {scales::number(nrow(files_to_extract_df))}"
+      ),
+      `*` = glue::glue(
+        "Total files available: {scales::number(nrow(available_files_to_extract_df))}"
+      ),
+      `i` = glue::glue(
+        "Only available files will be processed. Consider running `cas_restore()` or otherwise deal with missing files as needed."
+      )
     ))
   }
-  
+
   if (only_available) {
     available_files_to_extract_df
   } else {
     files_to_extract_df |>
-      dplyr::mutate(available = fs::file_exists(path)) 
+      dplyr::mutate(available = fs::file_exists(path))
   }
 }

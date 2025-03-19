@@ -50,22 +50,24 @@
 #'   post_processing = pp
 #' )
 #' }
-cas_extract <- function(extractors,
-                        post_processing = NULL,
-                        id = NULL,
-                        ignore_id = TRUE,
-                        custom_path = NULL,
-                        index = FALSE,
-                        store_as_character = TRUE,
-                        check_previous = TRUE,
-                        db_connection = NULL,
-                        file_format = "html",
-                        sample = FALSE,
-                        write_to_db = FALSE,
-                        keep_if_status = 200,
-                        encoding = "UTF-8",
-                        readability = FALSE,
-                        ...) {
+cas_extract <- function(
+  extractors,
+  post_processing = NULL,
+  id = NULL,
+  ignore_id = TRUE,
+  custom_path = NULL,
+  index = FALSE,
+  store_as_character = TRUE,
+  check_previous = TRUE,
+  db_connection = NULL,
+  file_format = "html",
+  sample = FALSE,
+  write_to_db = FALSE,
+  keep_if_status = 200,
+  encoding = "UTF-8",
+  readability = FALSE,
+  ...
+) {
   ellipsis::check_dots_unnamed()
 
   db <- cas_connect_to_db(
@@ -86,6 +88,10 @@ cas_extract <- function(extractors,
     keep_if_status = keep_if_status,
     ...
   )
+
+  if (nrow(available_files_to_extract_df) == 0) {
+    return(invisible(NULL))
+  }
 
   if (write_to_db == FALSE) {
     cas_disconnect_from_db(
@@ -139,7 +145,9 @@ cas_extract <- function(extractors,
         current_df <- names(extractors) %>%
           purrr::set_names() %>%
           purrr::map(.f = function(current_function) {
-            current_function <- extractors[[current_function]](current_html_document)
+            current_function <- extractors[[current_function]](
+              current_html_document
+            )
           }) %>%
           tibble::as_tibble() %>%
           dplyr::mutate(
@@ -149,10 +157,11 @@ cas_extract <- function(extractors,
           dplyr::select("id", "url", dplyr::everything())
       }
 
-
       if (is.null(post_processing) == FALSE) {
         if (is.function(post_processing) == FALSE) {
-          cli::cli_abort("When given, {.val post_processing} must be a function.")
+          cli::cli_abort(
+            "When given, {.val post_processing} must be a function."
+          )
         }
         current_df <- post_processing(current_df)
       }
@@ -242,11 +251,13 @@ cas_extract <- function(extractors,
 #'   )
 #' }
 #' }
-cas_extract_script <- function(html_document,
-                               script_type = NULL,
-                               match = NULL,
-                               accessors = NULL,
-                               remove_from_script = NULL) {
+cas_extract_script <- function(
+  html_document,
+  script_type = NULL,
+  match = NULL,
+  accessors = NULL,
+  remove_from_script = NULL
+) {
   if (is.null(script_type) == TRUE) {
     script_pre <- html_document |>
       rvest::html_elements("script")
