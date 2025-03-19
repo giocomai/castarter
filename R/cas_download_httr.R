@@ -11,29 +11,28 @@
 #' @export
 #'
 #' @examples
-cas_download_httr <- function(download_df = NULL,
-                              index = FALSE,
-                              index_group = NULL,
-                              overwrite_file = FALSE,
-                              ignore_id = TRUE,
-                              wait = 1,
-                              create_folder_if_missing = NULL,
-                              pause_base = 2,
-                              pause_cap = 256,
-                              pause_min = 4,
-                              terminate_on = NULL,
-                              retry_times = 3,
-                              db_connection = NULL,
-                              disconnect_db = FALSE,
-                              sample = FALSE,
-                              file_format = "html",
-                              user_agent = NULL,
-                              download_again_if_status_is_not = NULL,
-                              ...) {
-  type <- dplyr::if_else(condition = index,
-    true = "index",
-    false = "contents"
-  )
+cas_download_httr <- function(
+  download_df = NULL,
+  index = FALSE,
+  index_group = NULL,
+  overwrite_file = FALSE,
+  ignore_id = TRUE,
+  wait = 1,
+  create_folder_if_missing = NULL,
+  pause_base = 2,
+  pause_cap = 256,
+  pause_min = 4,
+  terminate_on = NULL,
+  retry_times = 3,
+  db_connection = NULL,
+  disconnect_db = FALSE,
+  sample = FALSE,
+  file_format = "html",
+  user_agent = NULL,
+  download_again_if_status_is_not = NULL,
+  ...
+) {
+  type <- dplyr::if_else(condition = index, true = "index", false = "contents")
 
   db <- cas_connect_to_db(
     db_connection = db_connection,
@@ -51,20 +50,27 @@ cas_download_httr <- function(download_df = NULL,
       file_format = file_format,
       download_again_if_status_is_not = download_again_if_status_is_not,
       ...
-    ) |>
-      dplyr::collect()
+    )
   }
 
-  if (nrow(download_df) == 0) {
+  if (is.null(download_df)) {
+    cli::cli_inform("No new files or pages to download.")
+    return(invisible(NULL))
+  } else if (nrow(download_df) == 0) {
     cli::cli_inform("No new files or pages to download.")
     return(invisible(NULL))
   } else {
     current_batch_folder <- fs::path_dir(path = download_df[["path"]][1])
     current_base_download_path <- fs::path_dir(current_batch_folder)
     if (fs::file_exists(current_batch_folder) == FALSE) {
-      if (isTRUE(create_folder_if_missing) | fs::file_exists(current_base_download_path)) {
+      if (
+        isTRUE(create_folder_if_missing) |
+          fs::file_exists(current_base_download_path)
+      ) {
         fs::dir_create(path = current_batch_folder)
-        cli::cli_inform(c(v = "The folder {.path {current_batch_folder}} for the current download batch has been created."))
+        cli::cli_inform(c(
+          v = "The folder {.path {current_batch_folder}} for the current download batch has been created."
+        ))
       } else {
         cli::cli_abort(c(
           v = "The folder {.path {current_batch_folder}} for the current download batch does not exist and has not been created.",
@@ -119,7 +125,6 @@ cas_download_httr <- function(download_df = NULL,
             )
           )
         }
-
 
         info_df <- tibble::tibble(
           id = x$id,

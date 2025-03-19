@@ -57,37 +57,39 @@
 #' \dontrun{
 #' links <- cas_extract_links(domain = "http://www.example.com/")
 #' }
-cas_extract_links <- function(id = NULL,
-                              batch = "latest",
-                              domain = NULL,
-                              index = TRUE,
-                              index_group = NULL,
-                              output_index = FALSE,
-                              output_index_group = NULL,
-                              include_when = NULL,
-                              exclude_when = NULL,
-                              container = NULL,
-                              container_class = NULL,
-                              container_id = NULL,
-                              custom_xpath = NULL,
-                              custom_css = NULL,
-                              match = NULL,
-                              min_length = NULL,
-                              max_length = NULL,
-                              attribute_type = "href",
-                              append_string = NULL,
-                              remove_string = NULL,
-                              write_to_db = FALSE,
-                              file_format = "html",
-                              keep_only_within_domain = TRUE,
-                              sample = FALSE,
-                              check_previous = TRUE,
-                              check_again = FALSE,
-                              encoding = "UTF-8",
-                              reverse_order = FALSE,
-                              db_connection = NULL,
-                              disconnect_db = TRUE,
-                              ...) {
+cas_extract_links <- function(
+  id = NULL,
+  batch = "latest",
+  domain = NULL,
+  index = TRUE,
+  index_group = NULL,
+  output_index = FALSE,
+  output_index_group = NULL,
+  include_when = NULL,
+  exclude_when = NULL,
+  container = NULL,
+  container_class = NULL,
+  container_id = NULL,
+  custom_xpath = NULL,
+  custom_css = NULL,
+  match = NULL,
+  min_length = NULL,
+  max_length = NULL,
+  attribute_type = "href",
+  append_string = NULL,
+  remove_string = NULL,
+  write_to_db = FALSE,
+  file_format = "html",
+  keep_only_within_domain = TRUE,
+  sample = FALSE,
+  check_previous = TRUE,
+  check_again = FALSE,
+  encoding = "UTF-8",
+  reverse_order = FALSE,
+  db_connection = NULL,
+  disconnect_db = TRUE,
+  ...
+) {
   if (is.null(domain) == FALSE) {
     if (domain == "" | is.na(domain) == TRUE) {
       domain <- NULL
@@ -106,11 +108,18 @@ cas_extract_links <- function(id = NULL,
     db_connection = db,
     file_format = file_format,
     ...
-  ) %>%
-    dplyr::collect()
+  )
+
+  if (is.null(local_files_df)) {
+    return(invisible(NULL))
+  } else if (nrow(local_files_df) == 0) {
+    return(invisible(NULL))
+  }
 
   if (sum(local_files_df$available) < nrow(local_files_df)) {
-    cli::cli_warn(message = "Missing files: {nrow(local_files_df %>% dplyr::filter(!available))}")
+    cli::cli_warn(
+      message = "Missing files: {nrow(local_files_df %>% dplyr::filter(!available))}"
+    )
 
     local_files_df <- local_files_df %>%
       dplyr::filter(available) %>%
@@ -119,7 +128,9 @@ cas_extract_links <- function(id = NULL,
     if (nrow(local_files_df) == 0) {
       return(NULL)
     } else {
-      cli::cli_inform(c(i = "Links will be extracted from the {scales::number(nrow(local_files_df))} files available."))
+      cli::cli_inform(c(
+        i = "Links will be extracted from the {scales::number(nrow(local_files_df))} files available."
+      ))
     }
   } else {
     local_files_df <- local_files_df %>%
@@ -150,7 +161,6 @@ cas_extract_links <- function(id = NULL,
         dplyr::collect()
     }
   }
-
 
   if (nrow(previous_links_df) == 0) {
     start_id <- 1
@@ -198,7 +208,6 @@ cas_extract_links <- function(id = NULL,
     local_files_df <- local_files_df %>%
       dplyr::filter(index_group %in% {{ index_group }})
   }
-
 
   if (is.numeric(sample) == TRUE) {
     local_files_df <- local_files_df %>%
@@ -269,7 +278,9 @@ cas_extract_links <- function(id = NULL,
             link_text = NA_character_
           )
         } else {
-          cli::cli_abort(message = "Parameter {.code match} must be given when file format is set to {.code json}")
+          cli::cli_abort(
+            message = "Parameter {.code match} must be given when file format is set to {.code json}"
+          )
         }
       } else {
         # effectively, expect html or xml
@@ -292,12 +303,26 @@ cas_extract_links <- function(id = NULL,
         } else if (is.null(container)) {
           a_xml_nodeset <- temp %>%
             rvest::html_elements("a")
-        } else if (is.null(container_id) == TRUE & is.null(container_class) == FALSE) {
+        } else if (
+          is.null(container_id) == TRUE & is.null(container_class) == FALSE
+        ) {
           a_xml_nodeset <- temp %>%
-            rvest::html_elements(xpath = paste0("//", container, "[@class='", container_class, "']//a"))
-        } else if (is.null(container_class) == TRUE & is.null(container_id) == FALSE) {
+            rvest::html_elements(
+              xpath = paste0(
+                "//",
+                container,
+                "[@class='",
+                container_class,
+                "']//a"
+              )
+            )
+        } else if (
+          is.null(container_class) == TRUE & is.null(container_id) == FALSE
+        ) {
           a_xml_nodeset <- temp %>%
-            rvest::html_elements(xpath = paste0("//", container, "[@id='", container_id, "']//a"))
+            rvest::html_elements(
+              xpath = paste0("//", container, "[@id='", container_id, "']//a")
+            )
         } else if (is.null(container_class) & is.null(container_id)) {
           a_xml_nodeset <- temp %>%
             rvest::html_elements(xpath = paste0("//", container, "//a"))
@@ -332,10 +357,12 @@ cas_extract_links <- function(id = NULL,
 
       if (is.null(exclude_when) == FALSE) {
         links_df <- links_df %>%
-          dplyr::filter(!stringr::str_detect(
-            string = url,
-            pattern = stringr::str_c(exclude_when, collapse = "|")
-          ))
+          dplyr::filter(
+            !stringr::str_detect(
+              string = url,
+              pattern = stringr::str_c(exclude_when, collapse = "|")
+            )
+          )
       }
 
       if (is.null(domain) == FALSE) {
@@ -345,24 +372,28 @@ cas_extract_links <- function(id = NULL,
               stringr::str_starts(
                 string = url,
                 pattern = "https://|http://"
-              ) ~ url,
+              ) ~
+                url,
               stringr::str_starts(
                 string = url,
                 pattern = stringr::fixed("/")
-              ) & stringr::str_ends(
-                string = domain,
-                pattern = stringr::fixed("/")
-              ) ~ stringr::str_c(
-                domain,
-                stringr::str_remove(
-                  string = url,
-                  pattern = "/"
+              ) &
+                stringr::str_ends(
+                  string = domain,
+                  pattern = stringr::fixed("/")
+                ) ~
+                stringr::str_c(
+                  domain,
+                  stringr::str_remove(
+                    string = url,
+                    pattern = "/"
+                  )
+                ),
+              TRUE ~
+                stringr::str_c(
+                  domain,
+                  url
                 )
-              ),
-              TRUE ~ stringr::str_c(
-                domain,
-                url
-              )
             )
           )
 
@@ -382,10 +413,12 @@ cas_extract_links <- function(id = NULL,
 
       if (is.null(remove_string) == FALSE) {
         links_df <- links_df %>%
-          dplyr::mutate(url = stringr::str_remove_all(
-            string = url,
-            pattern = remove_string
-          ))
+          dplyr::mutate(
+            url = stringr::str_remove_all(
+              string = url,
+              pattern = remove_string
+            )
+          )
       }
 
       if (is.null(min_length) == FALSE) {

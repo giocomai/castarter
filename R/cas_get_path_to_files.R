@@ -10,24 +10,23 @@
 #' @export
 #'
 #' @examples
-cas_get_path_to_files <- function(urls = NULL,
-                                  id = NULL,
-                                  batch = "latest",
-                                  status = 200,
-                                  index = FALSE,
-                                  index_group = NULL,
-                                  custom_folder = NULL,
-                                  custom_path = NULL,
-                                  file_format = "html",
-                                  sample = FALSE,
-                                  db_connection = NULL,
-                                  db_folder = NULL,
-                                  disconnect_db = TRUE,
-                                  ...) {
-  type <- dplyr::if_else(condition = index,
-    true = "index",
-    false = "contents"
-  )
+cas_get_path_to_files <- function(
+  urls = NULL,
+  id = NULL,
+  batch = "latest",
+  status = 200,
+  index = FALSE,
+  index_group = NULL,
+  custom_folder = NULL,
+  custom_path = NULL,
+  file_format = "html",
+  sample = FALSE,
+  db_connection = NULL,
+  db_folder = NULL,
+  disconnect_db = TRUE,
+  ...
+) {
+  type <- dplyr::if_else(condition = index, true = "index", false = "contents")
 
   db <- cas_connect_to_db(
     read_only = TRUE,
@@ -43,6 +42,10 @@ cas_get_path_to_files <- function(urls = NULL,
     disconnect_db = FALSE,
     ...
   )
+
+  if (is.null(available_files_df)) {
+    return(invisible(NULL))
+  }
 
   if (isTRUE(index)) {
     if (is.null(index_group) == FALSE) {
@@ -95,10 +98,12 @@ cas_get_path_to_files <- function(urls = NULL,
   }
   available_files_df %>%
     dplyr::select("id", "batch") %>%
-    dplyr::mutate(path = fs::path(
-      path,
-      batch,
-      stringr::str_c(id, "_", batch, ".", file_format)
-    )) %>%
+    dplyr::mutate(
+      path = fs::path(
+        path,
+        batch,
+        stringr::str_c(id, "_", batch, ".", file_format)
+      )
+    ) %>%
     dplyr::mutate(available = fs::file_exists(path = path))
 }
