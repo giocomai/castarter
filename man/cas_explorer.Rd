@@ -2,10 +2,10 @@
 % Please edit documentation in R/cas_explorer.R
 \name{cas_explorer}
 \alias{cas_explorer}
-\title{Run the Shiny Application}
+\title{Run a web interface allowing basic word frequency analysis}
 \usage{
 cas_explorer(
-  corpus = castarter::cas_demo_corpus,
+  corpus = NULL,
   default_pattern = NULL,
   title = "castarter",
   collect = FALSE,
@@ -20,6 +20,13 @@ cas_explorer(
 )
 }
 \arguments{
+\item{corpus}{Defaults to NULL. If not given, by default the main table with
+extracted contents will tentatively be retrieved with
+\code{cas_read_db_contents_data()}. Consider that for improved speed and reduced
+memory requirements it may be more efficient to store locally the corpus
+(e.g. with \code{cas_write_corpus(partition = "year")}), and read it as input to
+this argument with \code{cas_read_corpus(partition = "year")}.}
+
 \item{collect}{Defaults to FALSE. If TRUE, retrieves the corpus in memory,
 even if is originally read from a parquet file or a database. With
 \code{arrow} version before 14 that do not have full support of using stringr
@@ -56,5 +63,5 @@ expression in order for the match to be considered successful.}
 for more details.}
 }
 \description{
-Run the Shiny Application
+Run a web interface allowing basic word frequency analysis
 }
