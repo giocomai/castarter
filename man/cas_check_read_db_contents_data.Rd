@@ -2,7 +2,8 @@
 % Please edit documentation in R/cas_check_read_db_contents_data.R
 \name{cas_check_read_db_contents_data}
 \alias{cas_check_read_db_contents_data}
-\title{Returns a corpus from the \code{contents_data} table in the database; if corpus is give, it just returns that instead.}
+\title{Returns a corpus from the \code{contents_data} table in the database; if corpus is
+given, it just returns that instead.}
 \usage{
 cas_check_read_db_contents_data(
   corpus = NULL,
@@ -17,6 +18,10 @@ cas_check_read_db_contents_data(
 frame and not a database connection, no matter the input.}
 
 \item{...}{Passed to \code{cas_get_db_file()}.}
+}
+\value{
+A data frame, possibly as a database connection, expected to be a
+corpus.
 }
 \description{
 Mostly used internally

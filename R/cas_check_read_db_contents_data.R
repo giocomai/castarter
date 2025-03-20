@@ -1,4 +1,5 @@
-#' Returns a corpus from the `contents_data` table in the database; if corpus is give, it just returns that instead.
+#' Returns a corpus from the `contents_data` table in the database; if corpus is
+#' given, it just returns that instead.
 #'
 #' Mostly used internally
 #'
@@ -6,15 +7,18 @@
 #'   frame and not a database connection, no matter the input.
 #' @inheritParams cas_read_corpus
 #'
-#' @return
+#' @return A data frame, possibly as a database connection, expected to be a
+#'   corpus.
 #' @export
 #'
 #' @examples
-cas_check_read_db_contents_data <- function(corpus = NULL,
-                                            collect = FALSE,
-                                            db_connection = NULL,
-                                            db_folder = NULL,
-                                            ...) {
+cas_check_read_db_contents_data <- function(
+  corpus = NULL,
+  collect = FALSE,
+  db_connection = NULL,
+  db_folder = NULL,
+  ...
+) {
   if (is.null(corpus)) {
     if (cas_check_use_db(...) == FALSE) {
       cli::cli_abort(c(
@@ -38,7 +42,7 @@ cas_check_read_db_contents_data <- function(corpus = NULL,
   }
 
   if (collect == TRUE) {
-    corpus_df %>%
+    corpus_df |>
       dplyr::collect()
   } else {
     corpus_df
