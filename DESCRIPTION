@@ -1,6 +1,6 @@
 Package: castarter
 Title: Content Analysis Starter Toolkit
-Version: 0.2.0.9013
+Version: 0.2.0.9014
 Authors@R: 
     c(person(given = "Giorgio",
              family = "Comai",
@@ -48,7 +48,8 @@ Imports:
     PrettyCols,
     reactable,
     progress,
-    shinymeta
+    shinymeta,
+    httr2
 Suggests: 
     testthat (>= 3.0.0),
     roxygen2,
