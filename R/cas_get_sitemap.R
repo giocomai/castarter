@@ -46,7 +46,7 @@ cas_get_sitemap <- function(
 
     if (isFALSE(resp)) {
       return(invisible(NULL))
-    } else if (!resp_has_body(resp)) {
+    } else if (!httr2::resp_has_body(resp)) {
       return(invisible(NULL))
     } else {
       body_string <- httr2::resp_body_string(resp)
