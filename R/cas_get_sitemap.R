@@ -29,7 +29,7 @@ cas_get_sitemap <- function(
 
     if (isFALSE(resp)) {
       sitemap_url <- NULL
-    } else if (!resp_has_body(resp)) {
+    } else if (!httr2::resp_has_body(resp)) {
       sitemap_url <- NULL
     } else {
       sitemap_response <- resp
