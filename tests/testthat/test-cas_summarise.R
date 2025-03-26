@@ -4,7 +4,7 @@ test_that("cas_summarise works when single word given", {
     object = {
       castarter::cas_count(
         corpus = castarter::cas_demo_corpus,
-        words = c("moscow")
+        pattern = c("moscow")
       ) %>%
         cas_summarise(f = sum) %>%
         dplyr::pull(n) %>%
@@ -13,7 +13,7 @@ test_that("cas_summarise works when single word given", {
     expected = {
       castarter::cas_count(
         corpus = castarter::cas_demo_corpus,
-        words = c("moscow")
+        pattern = c("moscow")
       ) %>%
         #  cas_summarise(f = sum) %>%
         dplyr::pull(n) %>%
@@ -27,7 +27,7 @@ test_that("cas_summarise works when more than one word given", {
     object = {
       castarter::cas_count(
         corpus = castarter::cas_demo_corpus,
-        words = c("moscow", "russia")
+        pattern = c("moscow", "russia")
       ) %>%
         cas_summarise(f = sum) %>%
         dplyr::pull(n) %>%
@@ -36,7 +36,7 @@ test_that("cas_summarise works when more than one word given", {
     expected = {
       castarter::cas_count(
         corpus = castarter::cas_demo_corpus,
-        words = c("moscow", "russia")
+        pattern = c("moscow", "russia")
       ) %>%
         #  cas_summarise(f = sum) %>%
         dplyr::pull(n) %>%
@@ -51,7 +51,7 @@ test_that("cas_summarise works when more than one word given and period is not N
     object = {
       castarter::cas_count(
         corpus = castarter::cas_demo_corpus,
-        words = c("moscow", "russia")
+        pattern = c("moscow", "russia")
       ) %>%
         cas_summarise(f = sum, period = "month") %>%
         dplyr::pull(n) %>%
@@ -60,7 +60,7 @@ test_that("cas_summarise works when more than one word given and period is not N
     expected = {
       castarter::cas_count(
         corpus = castarter::cas_demo_corpus,
-        words = c("moscow", "russia")
+        pattern = c("moscow", "russia")
       ) %>%
         # cas_summarise(f = sum, period = "month") %>%
         dplyr::pull(n) %>%
@@ -74,7 +74,7 @@ test_that("cas_summarise works when one word given, rolling mean, and period is 
   expect_false(object = {
     summurised_sum <- castarter::cas_count(
       corpus = castarter::cas_demo_corpus,
-      words = c("moscow", "russia")
+      pattern = c("moscow", "russia")
     ) %>%
       cas_summarise(f = sum, period = "month", before = 3, after = 3) %>%
       dplyr::pull(n) %>%
@@ -82,7 +82,7 @@ test_that("cas_summarise works when one word given, rolling mean, and period is 
 
     counted_sum <- castarter::cas_count(
       corpus = castarter::cas_demo_corpus,
-      words = c("moscow", "russia")
+      pattern = c("moscow", "russia")
     ) %>%
       dplyr::pull(n) %>%
       sum()
@@ -97,7 +97,7 @@ test_that("cas_summarise works when one word given, rolling mean, and period is 
   expect_false(object = {
     summurised_sum <- castarter::cas_count(
       corpus = castarter::cas_demo_corpus,
-      words = c("moscow", "russia")
+      pattern = c("moscow", "russia")
     ) %>%
       cas_summarise(f = sum, before = 3, after = 3) %>%
       dplyr::pull(n) %>%
@@ -105,7 +105,7 @@ test_that("cas_summarise works when one word given, rolling mean, and period is 
 
     counted_sum <- castarter::cas_count(
       corpus = castarter::cas_demo_corpus,
-      words = c("moscow", "russia")
+      pattern = c("moscow", "russia")
     ) %>%
       dplyr::pull(n) %>%
       sum()
