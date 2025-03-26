@@ -8,7 +8,7 @@
 #' @export
 #'
 #' @examples
-#' cas_create_db_folder(path = fs::path(fs::path_temp(), "cas_data"))
+#' cas_create_db_folder(path = fs::path(fs::path_temp(), "cas_data"), ask = FALSE)
 cas_create_db_folder <- function(path = NULL,
                                  ask = TRUE,
                                  ...) {
