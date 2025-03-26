@@ -10,7 +10,7 @@
 #' @export
 #'
 #' @examples
-#' if (interactive) {
+#' if (interactive()) {
 #' cas_get_sitemap("https://www.europeandatajournalism.eu/")
 #' }
 cas_get_sitemap <- function(

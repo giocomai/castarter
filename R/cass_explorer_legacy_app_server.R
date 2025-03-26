@@ -144,14 +144,14 @@ cass_explorer_legacy_app_server <- function(input, output, session) {
           text = .data[[input$text_column]],
           date = .data[[input$group_by_column]]
         ) %>%
-        castarter::cas_count(string = castarter:::cass_split(input$string))
+        castarter::cas_count(string = castarter:::cass_split_string(input$string))
     } else if (input$freq == "Relative frequency") {
       count_df <- corpus_df %>%
         dplyr::rename(
           text = .data[[input$text_column]],
           date = .data[[input$group_by_column]]
         ) %>%
-        castarter::cas_count_relative(string = castarter:::cass_split(input$string))
+        castarter::cas_count_relative(string = castarter:::cass_split_string(input$string))
     }
     count_df
   })

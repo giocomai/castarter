@@ -16,7 +16,7 @@ Nothing, used for its side effects.
 Creates the base folder where \code{castarter} stores the project database.
 }
 \examples{
-cas_create_db_folder(path = fs::path(fs::path_temp(), "cas_data"))
+cas_create_db_folder(path = fs::path(fs::path_temp(), "cas_data"), ask = FALSE)
 }
 \seealso{
 Other database functions: 

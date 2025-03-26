@@ -19,6 +19,6 @@ A character vector
 Split string into multiple inputs
 }
 \examples{
-cass_split("dogs, cats, horses")
-cass_split(string = "dogs, cats, horses", to_regex = TRUE)
+cass_split_string("dogs, cats, horses")
+cass_split_string(string = "dogs, cats, horses", to_regex = TRUE)
 }

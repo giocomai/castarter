@@ -17,7 +17,7 @@ httr2 object, and body of the xml.
 Searches in default location and then in robots.txt and return url
 }
 \examples{
-if (interactive) {
+if (interactive()) {
 cas_get_sitemap("https://www.europeandatajournalism.eu/")
 }
 }
