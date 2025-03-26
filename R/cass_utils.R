@@ -8,8 +8,8 @@
 #' @export
 #'
 #' @examples
-#' cass_split("dogs, cats, horses")
-#' cass_split(string = "dogs, cats, horses", to_regex = TRUE)
+#' cass_split_string("dogs, cats, horses")
+#' cass_split_string(string = "dogs, cats, horses", to_regex = TRUE)
 cass_split_string <- function(string,
                               squish = TRUE,
                               to_lower = TRUE,
