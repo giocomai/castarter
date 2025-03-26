@@ -148,15 +148,10 @@ cas_read_db_index()
 
 And then start downloading the index files:
 
-```{r}
+```{r cas_download_index}
 cas_download_index(create_folder_if_missing = TRUE)
 ```
 
-### Extract links
-
-```{r}
-cas_download(index = TRUE, create_folder_if_missing = TRUE)
-```
 
 ## Check how the download is going
 
@@ -170,12 +165,11 @@ download_status_df
 
 Time to extract links from the index page. In this case, we'll keep things simple, and take any link that includes in the url the following string `news/en/press-room/`. We first test this approach without storing it in the local database (setting `write_to_db` to FALSE), and then, if it works, we move ahead. 
 
-```{r links_df no db}
+```{r links_df no db, eval=FALSE}
 links_df <- cas_extract_links(
   include_when = "news/en/press-room/",
   write_to_db = FALSE
 )
-
 ```
 
 ```{r links_df db, echo = FALSE}
@@ -329,15 +323,16 @@ current_file <- cas_get_path_to_files(sample = 1)
 test_df <- cas_extract(extractors = extractors_l,
                        id = current_file$id,
                        write_to_db = FALSE,
-                       check_previous = FALSE) |> 
-  dplyr::collect()
+                       check_previous = FALSE)
 
-
-
-test_df |> 
+if (is.null(test_df)==FALSE) {
+  test_df |> 
+    dplyr::collect() |> 
   dplyr::mutate(text = stringr::str_trunc(string = text, width = 160)) |> 
   tidyr::pivot_longer(cols = dplyr::everything()) |> 
   knitr::kable()
+}
+
 ```
 
 
@@ -350,9 +345,193 @@ cas_extract(extractors = extractors_l,
 ## Output
 
 ```{r}
-corpus_df <- cas_read_db_contents_data() |> 
-  dplyr::collect()
+corpus_df <- cas_read_db_contents_data()
 ```
 
+
+## All at once
+
+All of the above can be achieved with the following script:
+
+```{r eval = TRUE}
+library("castarter")
+cas_set_options(
+  base_folder = fs::path_home(
+    "R",
+    "castarter_eu"
+  ),
+  project = "European Union",
+  website = "European Parliament"
+)
+
+cas_build_urls(
+  url = "https://www.europarl.europa.eu/news/en/page/",
+  start_page = 1,
+  end_page = 600,
+  index_group = "news",
+  write_to_db = TRUE
+)
+
+cas_download_index()
+
+cas_extract_links(
+  include_when = "news/en/press-room/",
+  write_to_db = TRUE
+)
+
+cas_download()
+
+cas_extract(extractors = extractors_l,
+            write_to_db = TRUE)
+
+```
+
+Extracted contents are stored in a local database and can be retrieved with:
+
+```{r}
+corpus_df <- cas_read_db_contents_data() |> 
+  dplyr::collect()
+
+str(corpus_df)
+```
+
+
+## Time to process results
+
+The easiest way to explore results is probably by using the interactive web interface provided by `castarter`, which facilitates basic word frequency operations and exporting subset based on pattern matching:
+
+```{r eval = FALSE}
+cas_explorer()
+```
+
+
+Consider that you may have some efficiency gains (in terms of speed and memory demands) by reading the corpus from a local `arrow` file. Write it with `cas_write_corpus(partition = "year")`, and pass it to `cas_explorer()` with `cas_read_corpus(partition = "year")`
+
+You can also explore the corpus with some of the convenience functions provided by the package. Here are a couple of examples. 
+
+Total word count per year:
+
+```{r}
+cas_count_total_words(corpus = corpus_df |>
+                        dplyr::mutate(year = lubridate::year(date)),
+                      group_by = year) |> 
+  knitr::kable()
+```
+
+Basic graph with number of mentions of "crisis" per year:
+
+```{r}
+cas_count(
+  corpus = corpus_df,
+  pattern = c("crisis")
+) |>
+  cas_summarise(period = "year") |>
+  cas_show_gg_base() |>
+  cas_show_barchart_ggplot2(position = "stack")
+```
+
+The keyword "crisis" in context:
+
+```{r}
+cas_kwic(corpus = corpus_df |> head(100),
+         pattern = "crisis") |> 
+  dplyr::select(before, pattern, after)
+```
+
+
+We should also keep in mind that by extracting more information, besides the text, we may use them to filter contents or to derive additional information, e.g. which committees have been tagged in most posts:
+
+```{r}
+corpus_df |> 
+  dplyr::filter(is.na(committee)==FALSE) |> 
+  dplyr::mutate(committee = stringr::str_split(string = committee, pattern = "; ")) |> 
+  dplyr::select(id, committee) |> 
+  tidyr::unnest(committee) |> 
+  dplyr::count(committee, sort = TRUE)
+```
+
+
+## A simplified workflow: finding links through sitemaps, exracting contents with `readability`
+
+The workflow described in the previous steps is highly customisable, but requires some understanding of how html and websites work.
+
+Below, a largely adaptable approach is briefly outlined:
+
+- instead of parsing index pages, of specific sections, links are extracted from the sitemap of the website (assuming that the relevant section from where contents should be extracted can be identified based on part of the url)
+- metadata and contents are extracted automatically relying on the [`castarter.readability`](https://github.com/giocomai/castarter.readability) plugin, itself based on Mozilla's `readability.js`
+
+N.B. the readability plugin needs to be installed separately
+
+```{r eval = FALSE}
+pak::pak("giocomai/castarter.readability")
+```
+
+Here is a quick example based on the website of the Italian Space Agency. `castarter` finds the sitemap based on the domain url, and, in order to keep only news posted in English in 2025 it filters links only when "en/2025" is part of the url. 
+
+`readability` automatically finds title, byline, date published, and full text of the article. 
+
+```{r Italian Space Agency}
+library("castarter")
+cas_set_options(
+  base_folder = fs::path_home(
+    "R",
+    "castarter_data"
+  ),
+  project = "Space",
+  website = "Italian Space Agency"
+)
+
+sitemap_df <- cas_get_sitemap(domain = "https://www.asi.it/")
+
+cas_build_urls(url = sitemap_df$sitemap_url,
+               index_group = "base_sitemap",
+               write_to_db = TRUE)
+
+
+cas_download_index(file_format = "xml")
+
+cas_extract_links(
+  index = TRUE,
+  file_format = "xml",
+  custom_css = "loc",
+  index_group = "base_sitemap",
+  output_index = TRUE,
+  output_index_group = "sitemap",
+  write_to_db = TRUE
+)
+
+cas_download_index(file_format = "xml")
+
+cas_extract_links(
+  file_format = "xml",
+  custom_css = "loc",
+  index_group = "sitemap", # exclude the base sitemap
+  include_when = "en/2025", # keep only urls with this string
+  write_to_db = TRUE
+)
+
+download_df <- cas_get_files_to_download()
+
+
+
+cas_download(download_df = download_df)
+
+extracted_readability_df <- cas_extract(
+  extractors = NULL,
+  readability = TRUE,
+  write_to_db = FALSE,
+  check_previous = FALSE
+) |> 
+  dplyr::collect()
+
+
+extracted_readability_df |> 
+  dplyr::slice(1) |> 
+  dplyr::mutate(text = stringr::str_trunc(string = text, width = 140)) |> 
+  tidyr::pivot_longer(cols = dplyr::everything(), values_to = "extracted", names_to = "type") |> 
+  knitr::kable()
+
+
+```
 
 
