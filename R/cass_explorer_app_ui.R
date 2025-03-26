@@ -56,7 +56,9 @@ cass_explorer_app_ui <- function(request) {
         value = FALSE
       ),
       shiny::tagList({
-        if (golem::get_golem_options("advanced")) {
+        if (is.null(golem::get_golem_options("advanced"))) {
+          return(NULL)
+        } else if (golem::get_golem_options("advanced")) {
           shiny::tagList(
             shiny::h3("Additional settings"),
             shiny::uiOutput(outputId = "column_selector_UI")
