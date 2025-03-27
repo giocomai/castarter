@@ -37,7 +37,7 @@ urls_df <- cas_build_urls(
   end_page = 10
 )
 
-cas_write_db_contents(urls = urls_df)
+cas_write_db_contents_id(urls = urls_df)
 
 cas_read_db_contents_id()
 }
