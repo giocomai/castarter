@@ -1,11 +1,14 @@
-#' Downloads one file at a time with readLines
+#' Downloads one file at a time with the default R function for downloading
+#' files
 #'
-#' Mostly used internally by `cas_download`.
+#' Mostly used internally by [cas_download()], relies on [download.file()]
+#' function.
 #'
-#' @param download_df A data frame with four columns: `id`, `url`, `path`, `type`.
+#' @param download_df A data frame with four columns: `id`, `url`, `path`,
+#'   `type`.
 #' @param overwrite_file Logical, defaults to FALSE.
 #' @param ignore_ssl_certificates Logical, defaults to FALSE. If TRUE it uses
-#'   wget to download the page, and does not check if the SSL certificate is
+#'   `wget` to download the page, and does not check if the SSL certificate is
 #'   valid. Useful, for example, for https pages with expired or mis-configured
 #'   SSL certificate.
 #'

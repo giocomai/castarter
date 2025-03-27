@@ -2,7 +2,8 @@
 % Please edit documentation in R/cas_download_internal.R
 \name{cas_download_internal}
 \alias{cas_download_internal}
-\title{Downloads one file at a time with readLines}
+\title{Downloads one file at a time with the default R function for downloading
+files}
 \usage{
 cas_download_internal(
   download_df = NULL,
@@ -21,7 +22,8 @@ cas_download_internal(
 )
 }
 \arguments{
-\item{download_df}{A data frame with four columns: \code{id}, \code{url}, \code{path}, \code{type}.}
+\item{download_df}{A data frame with four columns: \code{id}, \code{url}, \code{path},
+\code{type}.}
 
 \item{index}{Logical, defaults to FALSE. If TRUE, downloaded files will be
 considered \code{index} files. If not, they will be considered \code{contents} files.
@@ -34,7 +36,7 @@ page and the next. Can be increased to reduce server load, or can be set to
 0 when this is not an issue.}
 
 \item{ignore_ssl_certificates}{Logical, defaults to FALSE. If TRUE it uses
-wget to download the page, and does not check if the SSL certificate is
+\code{wget} to download the page, and does not check if the SSL certificate is
 valid. Useful, for example, for https pages with expired or mis-configured
 SSL certificate.}
 
@@ -60,5 +62,6 @@ decompressed for correct processing.}
 Invisibly returns the full \code{httr} response.
 }
 \description{
-Mostly used internally by \code{cas_download}.
+Mostly used internally by \code{\link[=cas_download]{cas_download()}}, relies on \code{\link[=download.file]{download.file()}}
+function.
 }
