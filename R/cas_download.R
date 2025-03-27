@@ -139,22 +139,22 @@ cas_get_urls_df <- function(urls = NULL,
     } else if (index == TRUE) {
       urls_df <- cas_read_db_index(index_group = index_group, ...)
     } else {
-      usethis::ui_stop("Parameter {usethis::ui_field('index`)} must be either {usethis::ui_value('TRUE`)} or {usethis::ui_value('FALSE`)}")
+      cli::cli_abort("Parameter {.var index} must be either {.val {TRUE}} or {.val {FALSE}}.")
     }
   } else {
     if (is.data.frame(urls) == FALSE) {
       urls_df <- tibble::tibble(
         id = seq_along(urls),
-        url = url
+        url = urls
       )
     } else {
       if (sum(c("id", "url") %in% names(urls)) == 2) {
         urls_df <- urls
       } else {
-        usethis::ui_stop("{usethis::ui_code('urls')} must either be a character vector or a data frame with at least two columns named {usethis::ui_field('id')} and {usethis::ui_field('url')}.")
+        cli::cli_abort("{.var urls} must either be a character vector or a data frame with at least two columns named {.var id} and {.var url}.")
       }
       if (is.numeric(urls_df$id) == FALSE) {
-        usethis::ui_stop("If given, the {usethis::ui_field('id')} column must be numeric.")
+        cli::cli_abort("If given, the {.var id} column must be numeric.")
       }
     }
   }
