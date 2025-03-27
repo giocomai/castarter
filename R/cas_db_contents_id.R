@@ -33,7 +33,7 @@
 #'   end_page = 10
 #' )
 #'
-#' cas_write_db_contents_id(urls = urls_df)
+#' cas_write_db_contents_id(urls = urls_df$url)
 #'
 #' cas_read_db_contents_id()
 cas_write_db_contents_id <- function(urls,
