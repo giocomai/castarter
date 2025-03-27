@@ -1,12 +1,14 @@
 Package: castarter
 Title: Content Analysis Starter Toolkit
-Version: 0.2.0.9015
+Version: 0.3
 Authors@R: 
     c(person(given = "Giorgio",
              family = "Comai",
              role = c("aut", "cre", "cph"),
              email = "g@giorgiocomai.eu",
-             comment = c(ORCID = "0000-0002-0515-9542")))
+             comment = c(ORCID = "0000-0002-0515-9542")),
+      person("EDJNet", role = c("fnd"))
+      )
 Description: Consistent approaches for basic web scraping, text mining and word frequency analysis of textual datasets
 License: MIT + file LICENSE
 Encoding: UTF-8
