@@ -5,10 +5,10 @@ test_that("cas_count with one word works", {
     object = {
       df <- cas_count(
         corpus = cas_demo_corpus,
-        string = c("Europe")
+        pattern = c("Europe")
       )
       list(
-        n_words = length(unique(df$string)),
+        n_words = length(unique(df$pattern)),
         total_n = sum(df$n) > 0
       )
     },
@@ -24,11 +24,11 @@ test_that("cas_count with more than one word works", {
     object = {
       df <- cas_count(
         corpus = cas_demo_corpus,
-        string = c("Europe", "Asia")
+        pattern = c("Europe", "Asia")
       )
 
       list(
-        n_words = length(unique(df$string)),
+        n_words = length(unique(df$pattern)),
         total_n = sum(df$n) > 0
       )
     },
@@ -44,7 +44,7 @@ test_that("cas_count sets custom column names as expected", {
     object = {
       df <- cas_count(
         corpus = cas_demo_corpus,
-        string = c("Europe"),
+        pattern = c("Europe"),
         pattern_column_name = pattern,
         n_column_name = value
       )
@@ -54,3 +54,4 @@ test_that("cas_count sets custom column names as expected", {
     expected = c("date", "pattern", "value")
   )
 })
+
