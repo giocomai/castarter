@@ -22,7 +22,7 @@ Create dygraphs based on a data frame typically generated with cas_count()
 
 count_df <- castarter::cas_count(
   corpus = castarter::cas_demo_corpus,
-  words = c("russia", "moscow")
+  pattern = c("russia", "moscow")
 ) \%>\%
   cas_summarise(before = 15, after = 15)
 cas_show_ts_dygraph(count_df)
