@@ -84,7 +84,7 @@ cas_kwic <- function(corpus,
 #' @examples
 #'
 #' cas_kwic_single_pattern(
-#'   corpus = tifkremlinen::kremlin_en,
+#'   corpus = castarter::cas_demo_corpus,
 #'   pattern = "West"
 #' )
 cas_kwic_single_pattern <- function(corpus,

@@ -11,7 +11,7 @@
 #'
 #' @examples
 #' cas_count(
-#'   corpus = tifkremlinen::kremlin_en,
+#'   corpus = castarter::cas_demo_corpus,
 #'   pattern = c("putin", "medvedev")
 #' ) |>
 #'   cas_summarise(period = "year") |>
@@ -93,7 +93,7 @@ cas_show_barchart_ggiraph <- function(ggobj,
 #'
 #' @examples
 #' cas_count(
-#'   corpus = tifkremlinen::kremlin_en,
+#'   corpus = castarter::cas_demo_corpus,
 #'   pattern = c("putin", "medvedev")
 #' ) |>
 #'   cas_summarise(period = "year") |>

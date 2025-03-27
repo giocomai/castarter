@@ -1,4 +1,4 @@
 library("testthat")
 
 
-castarter::cas_explorer(corpus = tifkremlinen::kremlin_en)
+castarter::cas_explorer(corpus = castarter::cas_demo_corpus)

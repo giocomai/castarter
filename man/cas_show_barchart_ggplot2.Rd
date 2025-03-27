@@ -19,7 +19,7 @@ Creates barchart with ggplot2
 }
 \examples{
 cas_count(
-  corpus = tifkremlinen::kremlin_en,
+  corpus = castarter::cas_demo_corpus,
   pattern = c("putin", "medvedev")
 ) |>
   cas_summarise(period = "year") |>

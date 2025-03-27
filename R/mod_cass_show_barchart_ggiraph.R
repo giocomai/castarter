@@ -32,7 +32,7 @@ mod_cass_show_barchart_ggiraph_server <- function(id, count_df) {
 
 ## To be copied in the server
 # mod_cass_show_barchart_ggiraph_server("cass_show_barchart_ggiraph_ui_1")
-# count_df <- castarter::cas_count(corpus = tifkremlinen::kremlin_en,
+# count_df <- castarter::cas_count(corpus = castarter::cas_demo_corpus,
 #                                   string = c("putin", "medvedev")) %>%
 #   cas_summarise(period = "year")
 # cass_show_barchart_ggiraph_app(count_df)

@@ -30,7 +30,7 @@ Creates base ggplot2 object to be used by ggplot or ggiraph
 }
 \examples{
 cas_count(
-  corpus = tifkremlinen::kremlin_en,
+  corpus = castarter::cas_demo_corpus,
   pattern = c("putin", "medvedev")
 ) |>
   cas_summarise(period = "year") |>

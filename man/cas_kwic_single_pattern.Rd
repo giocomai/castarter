@@ -66,7 +66,7 @@ Adds a column with n words before and after the selected pattern to see keywords
 \examples{
 
 cas_kwic_single_pattern(
-  corpus = tifkremlinen::kremlin_en,
+  corpus = castarter::cas_demo_corpus,
   pattern = "West"
 )
 }
