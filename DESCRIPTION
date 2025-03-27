@@ -49,7 +49,8 @@ Imports:
     reactable,
     progress,
     shinymeta,
-    httr2
+    httr2,
+    fs
 Suggests: 
     testthat (>= 3.0.0),
     roxygen2,
