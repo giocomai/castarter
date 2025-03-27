@@ -1,6 +1,6 @@
 library("testthat")
 
-test_that("actually outputs girage object", {
+test_that("actually outputs giraffe object", {
   expect_equal(object = {
     count_df <- castarter::cas_count(
       corpus = castarter::cas_demo_corpus,
@@ -26,7 +26,7 @@ test_that("actually outputs girage object", {
       ggplot2::ggplot(mapping = ggplot2::aes(
         x = date,
         y = n,
-        fill = word
+        fill = pattern
       ))
 
 
@@ -41,7 +41,7 @@ test_that("actually outputs girage object", {
     class(ggiraph::girafe(ggobj = ggobj +
       ggiraph::geom_col_interactive(
         mapping = ggplot2::aes(
-          data_id = word,
+          data_id = pattern,
           tooltip = n
         ),
         position = ggplot2::position_dodge()
