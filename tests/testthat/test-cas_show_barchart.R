@@ -35,7 +35,7 @@ test_that("actually outputs girage object", {
       pattern = c("moscow")
     ) %>%
       cas_summarise(period = "quarter", f = sum) %>%
-      cas_show_barchart_gg_base() %>%
+      cas_show_gg_base() %>%
       cas_show_barchart_ggiraph()
 
     class(ggiraph::girafe(ggobj = ggobj +

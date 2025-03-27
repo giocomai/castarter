@@ -4,7 +4,7 @@ test_that("cas_show_ts_dygraph outputs dygraph", {
     object = {
       count_df <- castarter::cas_count(
         corpus = castarter::cas_demo_corpus,
-        words = c("russia", "moscow")
+        pattern = c("russia", "moscow")
       ) %>%
         cas_summarise(before = 15, after = 15)
 

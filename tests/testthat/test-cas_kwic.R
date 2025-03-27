@@ -20,22 +20,22 @@ corpus <- tibble::tibble(
 
 # i <- 1
 # corpus = tibble::tibble(text = "The quick brown fox jumps over the lazy dog.")
-# string = "fox"
+# pattern = "fox"
 # current_all_words_location_l <- all_words_location_l[[i]]
-# current_string_location_l <- string_location_l[[i]]
+# current_pattern_location_l <- pattern_location_l[[i]]
 # current_text <- corpus$text[i]
 # ignore_case = TRUE
 #
 
 
-test_that("cas_kwic works with one string", {
+test_that("cas_kwic works with one pattern", {
   expect_equal(
     castarter::cas_kwic(
       corpus = tibble::tibble(text = "The quick brown fox jumps over the lazy dog."),
-      string = "fox"
+      pattern = "fox"
     ),
     tibble::tribble(
-      ~text, ~before, ~string, ~after,
+      ~text, ~before, ~pattern, ~after,
       "The quick brown fox jumps over the lazy dog.", "The quick brown ", "fox", " jumps over the lazy dog"
     )
   )
@@ -46,10 +46,10 @@ test_that("cas_kwic works when match is the last word", {
   expect_equal(
     castarter::cas_kwic(
       corpus = tibble::tibble(text = "The quick brown fox jumps over the lazy dog."),
-      string = "dog"
+      pattern = "dog"
     ),
     tibble::tribble(
-      ~text, ~before, ~string, ~after,
+      ~text, ~before, ~pattern, ~after,
       "The quick brown fox jumps over the lazy dog.", "fox jumps over the lazy ", "dog", ""
     )
   )
@@ -57,14 +57,14 @@ test_that("cas_kwic works when match is the last word", {
 
 
 
-test_that("cas_kwic works with two strings", {
+test_that("cas_kwic works with two patterns", {
   expect_equal(
     castarter::cas_kwic(
       corpus = tibble::tibble(text = "The quick brown fox jumps over the lazy dog."),
-      string = c("fox", "dog")
+      pattern = c("fox", "dog")
     ),
     tibble::tribble(
-      ~text, ~before, ~string, ~after,
+      ~text, ~before, ~pattern, ~after,
       "The quick brown fox jumps over the lazy dog.", "The quick brown ", "fox", " jumps over the lazy dog",
       "The quick brown fox jumps over the lazy dog.", "fox jumps over the lazy ", "dog", ""
     )
