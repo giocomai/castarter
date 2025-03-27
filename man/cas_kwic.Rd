@@ -70,7 +70,7 @@ keywords in context
 \examples{
 
 cas_kwic(
-  corpus = tifkremlinen::kremlin_en,
+  corpus = castarter::cas_demo_corpus,
   pattern = c("china", "india")
 )
 }
