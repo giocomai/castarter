@@ -32,6 +32,9 @@ settings (see example).}
 
 \item{...}{Passed to \code{cas_get_db_file()}.}
 }
+\value{
+Nothing, used for its side effects.
+}
 \description{
 Archive originals of downloaded files in compressed folders
 }

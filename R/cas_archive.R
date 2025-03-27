@@ -8,7 +8,7 @@
 #'   confirmed to be stored in the relevant compressed file, they are removed
 #'   from their original folders, and the empty folders deleted.
 #' @inheritParams cas_read_from_db
-#' @return
+#' @return Nothing, used for its side effects.
 #' @export
 #'
 #' @examples
