@@ -31,7 +31,7 @@ users:
 - extracting links from index pages
 - managing the download process by
   - ensuring pages are downloaded only once
-  - managing the creation of folders and subfolders
+  - managing the creation of folders and sub-folders
   - keeping a log of the download process for reporting
 - extracting text and metadata from the downloaded files, including
   support for different formats, including html (default), json, xml,
@@ -40,7 +40,7 @@ users:
   analysis even if the resulting dataset is larger than available memory
 - keeping a textual dataset updated
 - sharing a textual dataset with the wider public through a web
-  interface that enables basic analaysis of the corpus
+  interface that enables basic analysis of the corpus
 - conducting basic quality and sanity checks on the textual dataset
 - exporting the dataset to common formats
 - making backup of files, and storing them to a remote location
@@ -71,7 +71,7 @@ as well as within the scope of various initiatives, including:
   disclaimers)
 
 Each line of support enabled an increased feature set, the creation of
-example, an extension to a wider range of use cases, and the writing of
+examples, an extension to a wider range of use cases, and the writing of
 documentation.
 
 ## Installation
@@ -188,7 +188,7 @@ Assuming that my project on the European Union involves text mining the
 website of the European Council, the European Commission, and the
 European Parliament, the folder structure may look something like this:
 
-    #> /tmp/RtmpVgls0f/castarter_data
+    #> /tmp/RtmpcczCo6/castarter_data
     #> └── european_union
     #>     ├── european_commission
     #>     ├── european_council

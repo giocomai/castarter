@@ -32,12 +32,12 @@ It facilitates many of the tasks that often pose an excessive hurdle for beginne
 - extracting links from index pages
 - managing the download process by
   - ensuring pages are downloaded only once
-  - managing the creation of folders and subfolders
+  - managing the creation of folders and sub-folders
   - keeping a log of the download process for reporting
 - extracting text and metadata from the downloaded files, including support for different formats, including html (default), json, xml, and csv
 - keeping extracted text in a database in order to allow further analysis even if the resulting dataset is larger than available memory
 - keeping a textual dataset updated
-- sharing a textual dataset with the wider public through a web interface that enables basic analaysis of the corpus
+- sharing a textual dataset with the wider public through a web interface that enables basic analysis of the corpus
 - conducting basic quality and sanity checks on the textual dataset
 - exporting the dataset to common formats
 - making backup of files, and storing them to a remote location
@@ -49,12 +49,12 @@ This package allows for many custom options for advanced users, but is still opi
 
 `castarter` is a more modern, fully-featured, and consistent iteration of a previous package with the same name, now [`castarter.legacy`](https://github.com/giocomai/castarter.legacy). 
 
-Since then, it has been developed as a personal endeavour, as a professional project at [OBCT](https://www.balcanicaucaso.org/)/[CCI](https://www.cci.tn.it/),  as well as within the scope of various initiatives, including:
+Since then, it has been developed as a personal endeavour, as a professional project at [OBCT](https://www.balcanicaucaso.org/)/[CCI](https://www.cci.tn.it/), as well as within the scope of various initiatives, including:
 
 - [EDJNet](https://www.europeandatajournalism.eu/), the European Data Journalism Network 
 - [Text as data & data in the text](https://tadadit.xyz/), co-funded by the Italian MFA (see [website](https://tadadit.xyz/) for details and disclaimers)
 
-Each line of support enabled an increased feature set, the creation of example, an extension to a wider range of use cases, and the writing of documentation.
+Each line of support enabled an increased feature set, the creation of examples, an extension to a wider range of use cases, and the writing of documentation.
 
 ## Installation
 
