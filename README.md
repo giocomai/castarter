@@ -124,12 +124,12 @@ reference) and have a look at one of the workflow examples.
 
 ### Workflow examples
 
+- a [workflow](articles/castarter-workflow.html) based on either
+  pagination or website sitemap
 - a [full
   walkthrough](https://tadadit.xyz/tutorials/2023-02-kremlin_ru_en_extract/)
   of extracting textual contents on a website, with code and a detailed
   explanation of the process
-- an [additional example](articles/castarter-workflow.html), with full
-  code but only partial explanation of the process
 
 ## Step-by-step
 
@@ -188,7 +188,7 @@ Assuming that my project on the European Union involves text mining the
 website of the European Council, the European Commission, and the
 European Parliament, the folder structure may look something like this:
 
-    #> /tmp/RtmpcczCo6/castarter_data
+    #> /tmp/Rtmp9VWdTP/castarter_data
     #> └── european_union
     #>     ├── european_commission
     #>     ├── european_council

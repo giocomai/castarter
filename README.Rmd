@@ -90,8 +90,10 @@ To get an idea of how `castarter` works you should check out the [Key concepts](
 
 ### Workflow examples
 
+
+- a [workflow](articles/castarter-workflow.html) based on either pagination or website sitemap
 - a [full walkthrough](https://tadadit.xyz/tutorials/2023-02-kremlin_ru_en_extract/) of extracting textual contents on a website, with code and a detailed explanation of the process
-- an [additional example](articles/castarter-workflow.html), with full code but only partial explanation of the process
+
 
 ## Step-by-step
 
