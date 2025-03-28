@@ -17,12 +17,13 @@ A minimal shiny app that demonstrates the functioning of related modules
 }
 \examples{
 
-count_df <- castarter::cas_count(
-  corpus = castarter::cas_demo_corpus,
-  string = c("russia", "moscow")
+count_df <- cas_count(
+  corpus = cas_demo_corpus,
+  pattern = c("russia", "moscow")
 ) |>
   cas_summarise(before = 15, after = 15)
-if (interactive() {
+  
+if (interactive()) {
 cass_download_csv_app(count_df)
 }
 

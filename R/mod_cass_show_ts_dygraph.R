@@ -34,12 +34,6 @@ mod_cass_show_ts_dygraph_server <- function(id, count_df, strokeWidth = 2) {
 ## To be copied in the server
 # mod_cass_show_ts_dygraph_server("cass_show_ts_dygraph_ui_1")
 
-#
-#
-#
-#
-#
-
 #' A minimal shiny app that demonstrates the functioning of related modules
 #'
 #' @param count_df A dataframe with three columns (`date`, `word`, and `n`), typically created with `cas_count()` and possibly processed with `cas_summarise()`.
@@ -49,19 +43,19 @@ mod_cass_show_ts_dygraph_server <- function(id, count_df, strokeWidth = 2) {
 #'
 #' @examples
 #'
-#' count_df <- castarter::cas_count(
-#'   corpus = castarter::cas_demo_corpus,
-#'   string = c("russia", "moscow")
-#' ) %>%
+#' count_df <- cas_count(
+#'   corpus = cas_demo_corpus,
+#'   pattern = c("russia", "moscow")
+#' ) |> 
 #'   cas_summarise(before = 15, after = 15)
 #'
 #' # cass_show_ts_dygraph_app(count_df)
 cass_show_ts_dygraph_app <- function(count_df) {
   ui <- fluidPage(
-    castarter:::mod_cass_show_ts_dygraph_ui("cass_show_ts_dygraph_ui_1")
+    mod_cass_show_ts_dygraph_ui("cass_show_ts_dygraph_ui_1")
   )
   server <- function(input, output, session) {
-    castarter:::mod_cass_show_ts_dygraph_server("cass_show_ts_dygraph_ui_1",
+    mod_cass_show_ts_dygraph_server("cass_show_ts_dygraph_ui_1",
       count_df = count_df
     )
   }

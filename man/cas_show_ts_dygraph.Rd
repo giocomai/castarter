@@ -2,7 +2,7 @@
 % Please edit documentation in R/cas_show_ts.R
 \name{cas_show_ts_dygraph}
 \alias{cas_show_ts_dygraph}
-\title{Create dygraphs based on a data frame typically generated with cas_count()}
+\title{Create dygraphs based on a data frame typically generated with \code{\link[=cas_count]{cas_count()}}}
 \usage{
 cas_show_ts_dygraph(
   count_df,
@@ -13,17 +13,21 @@ cas_show_ts_dygraph(
 )
 }
 \arguments{
-\item{count_df}{}
+\item{count_df}{A data frame with word frequency counts, typically generated
+with \code{\link[=cas_count]{cas_count()}} (and possibly \code{\link[=cas_summarise]{cas_summarise()}})}
+}
+\value{
+A \code{dygraph} object.
 }
 \description{
-Create dygraphs based on a data frame typically generated with cas_count()
+Create dygraphs based on a data frame typically generated with \code{\link[=cas_count]{cas_count()}}
 }
 \examples{
 
-count_df <- castarter::cas_count(
-  corpus = castarter::cas_demo_corpus,
+count_df <- cas_count(
+  corpus = cas_demo_corpus,
   pattern = c("russia", "moscow")
-) \%>\%
+) |>
   cas_summarise(before = 15, after = 15)
 cas_show_ts_dygraph(count_df)
 }
