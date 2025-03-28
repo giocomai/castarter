@@ -9,7 +9,7 @@ Authors@R:
              comment = c(ORCID = "0000-0002-0515-9542")),
       person("EDJNet", role = c("fnd"))
       )
-Description: Consistent approaches for basic web scraping, text mining and word frequency analysis of textual datasets
+Description: Consistent approaches for basic web scraping, text mining and word frequency analysis of textual datasets.
 License: MIT + file LICENSE
 Encoding: UTF-8
 LazyData: true
