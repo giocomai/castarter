@@ -1,10 +1,12 @@
-#' Takes a character vector and returns it with matches of pattern wrapped in html tags used for highlighting
+#' Takes a character vector and returns it with matches of pattern wrapped in
+#' html tags used for highlighting
 #'
 #' @param string A character vector.
 #' @param param Pattern to match.
-#' @param ignore_case Defaults to TRUE.
+#' @param ignore_case Defaults to `TRUE`.
 #'
-#' @return
+#' @return A character vector, fo the same length as the input string. Matched
+#'   words are bound by the html `<mark>` tag.
 #' @export
 #'
 #' @examples
@@ -15,9 +17,7 @@
 #'   ),
 #'   pattern = "foundation|software|warranty"
 #' )
-cass_highlight <- function(string,
-                           pattern,
-                           ignore_case = TRUE) {
+cass_highlight <- function(string, pattern, ignore_case = TRUE) {
   split_l <- stringr::str_split(
     string = string,
     pattern = stringr::regex(
@@ -34,8 +34,13 @@ cass_highlight <- function(string,
     )
   )
 
-  purrr::map2_chr(.progress = TRUE, .x = split_l, .y = extracted_l, .f = function(x, y) {
-    extracted_marked_v <- stringr::str_c("<mark>", y, "</mark>")
-    stringr::str_c(x, c(extracted_marked_v, ""), collapse = "")
-  })
+  purrr::map2_chr(
+    .progress = "Highlighting",
+    .x = split_l,
+    .y = extracted_l,
+    .f = function(x, y) {
+      extracted_marked_v <- stringr::str_c("<mark>", y, "</mark>")
+      stringr::str_c(x, c(extracted_marked_v, ""), collapse = "")
+    }
+  )
 }

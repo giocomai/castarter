@@ -2,19 +2,25 @@
 % Please edit documentation in R/cass_highlight.R
 \name{cass_highlight}
 \alias{cass_highlight}
-\title{Takes a character vector and returns it with matches of pattern wrapped in html tags used for highlighting}
+\title{Takes a character vector and returns it with matches of pattern wrapped in
+html tags used for highlighting}
 \usage{
 cass_highlight(string, pattern, ignore_case = TRUE)
 }
 \arguments{
 \item{string}{A character vector.}
 
-\item{ignore_case}{Defaults to TRUE.}
+\item{ignore_case}{Defaults to \code{TRUE}.}
 
 \item{param}{Pattern to match.}
 }
+\value{
+A character vector, fo the same length as the input string. Matched
+words are bound by the html \verb{<mark>} tag.
+}
 \description{
-Takes a character vector and returns it with matches of pattern wrapped in html tags used for highlighting
+Takes a character vector and returns it with matches of pattern wrapped in
+html tags used for highlighting
 }
 \examples{
 cass_highlight(
