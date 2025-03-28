@@ -112,7 +112,8 @@ test_that("cas_write_db_index tries to write twice same data, and cas_read_db_in
       use_db = TRUE,
       db_connection = db,
       disconnect_db = TRUE
-    )
+    ) |>
+      dplyr::collect()
 
     nrow(index_df) == 10
   })
@@ -167,11 +168,12 @@ test_that("cas_write_db_index tries to write new set of urls, but with already u
       use_db = TRUE,
       db_connection = db,
       disconnect_db = TRUE
-    )
+    ) |>
+      dplyr::collect()
 
     sum(
       nrow(index_df) == 20,
-      length(unique(index_df$index_id)) == 20
+      length(unique(index_df$id)) == 20
     ) ==
       2
   })
