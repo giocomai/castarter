@@ -23,18 +23,18 @@ cas_write_corpus(
 )
 }
 \arguments{
-\item{corpus}{Defaults to NULL. If NULL, retrieves corpus from the current
-website with \code{cas_read_db_contents_data()}. If given, it is expected to be
+\item{corpus}{Defaults to \code{NULL}. If \code{NULL}, retrieves corpus from the current
+website with \code{\link[=cas_read_db_contents_data]{cas_read_db_contents_data()}}. If given, it is expected to be
 a corresponding data frame.}
 
-\item{to_lower}{Defaults to FALSE. Whether to convert tokens to lowercase.
+\item{to_lower}{Defaults to \code{FALSE}. Whether to convert tokens to lower case.
 Passed to \code{tidytext} if token is not \code{full_text}.}
 
-\item{drop_na}{Defaults to TRUE. If TRUE, items that have NA in their \code{text}
+\item{drop_na}{Defaults to \code{TRUE}. If \code{TRUE}, items that have \code{NA} in their \code{text}
 or \code{date} columns are dropped. This is often useful, as in many cases these
 may have other issues and/or cause inconsistencies in further analyses.}
 
-\item{drop_empty}{Defaults to TRUE. If TRUE, items that have empty elements
+\item{drop_empty}{Defaults to \code{TRUE}. If \code{TRUE}, items that have empty elements
 ("") in their \code{text} or \code{date} columns are dropped. This is often useful,
 as in many cases these may have other issues and/or cause inconsistencies
 in further analyses.}
@@ -42,18 +42,18 @@ in further analyses.}
 \item{date}{Unquoted date column, defaults to \code{date}.}
 
 \item{text}{Unquoted text column, defaults to \code{text}. If \code{tif_compliant} is
-set to TRUE, it will be renamed to "text" even if originally it had a
+set to \code{TRUE}, it will be renamed to "text" even if originally it had a
 different name.}
 
-\item{tif_compliant}{Defaults to FALSE. If TRUE, it ensures that the first
+\item{tif_compliant}{Defaults to \code{FALSE}. If \code{TRUE}, it ensures that the first
 column is a character vector named "doc_id" and that the second column is a
 character vector named "text". See \url{https://docs.ropensci.org/tif/} for
-details}
+details.}
 
 \item{file_format}{Defaults to "parquet". Currently, other options are not
 implemented.}
 
-\item{partition}{Defaults to NULL. If NULL, the parquet file is not
+\item{partition}{Defaults to \code{NULL}. If \code{NULL}, the parquet file is not
 partitioned. "year" is a common alternative: if set to "year", the parquet
 file is partitioned by year. If a \code{year} column does not exist, it is
 created based on the assumption that a \code{date} column exists and it is (or
@@ -61,12 +61,11 @@ can be coerced to) a vector of class \code{Date}.}
 
 \item{token}{Defaults to "full_text", which does not tokenise the text
 column. If different from \code{full_text}, it is passed to
-\code{tidytext::unnest_tokens} (see its help for details). Accepted values
-include "words", "sentences", and "paragraphs". See
-\code{?tidytext::unnest_tokens()} for details.}
+\code{\link[tidytext:unnest_tokens]{tidytext::unnest_tokens()}} (see its help for details). Accepted values
+include "words", "sentences", and "paragraphs".}
 
-\item{path}{Defaults to NULL. If NULL, path is set to the
-project/website/export/dataset/file_format folder.}
+\item{path}{Defaults to \code{NULL}. If \code{NULL}, path is set to the
+\code{project/website/export/dataset/file_format} folder.}
 
 \item{db_connection}{Defaults to NULL. If NULL, uses local SQLite database.
 If given, must be a connection object or a list with relevant connection
@@ -74,6 +73,14 @@ settings (see example).}
 
 \item{...}{Passed to \code{cas_get_db_file()}.}
 }
+\value{
+Invisibly returns the path to the corpus.
+}
 \description{
 Export the textual dataset for the current website
+}
+\examples{
+\dontrun{
+cas_write_corpus(cas_read_db_contents_data(), partition = "year")
+}
 }

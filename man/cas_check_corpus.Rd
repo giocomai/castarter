@@ -26,13 +26,13 @@ updated corpus.}
 \item{keep_only_latest}{Logical, defaults to FALSE. If set to TRUE, it
 deletes previous, older, corpora of the same type.}
 
-\item{path}{Defaults to NULL. If NULL, path is set to the
-project/website/export/dataset/file_format folder.}
+\item{path}{Defaults to \code{NULL}. If \code{NULL}, path is set to the
+\code{project/website/export/dataset/file_format} folder.}
 
 \item{file_format}{Defaults to "parquet". Currently, other options are not
 implemented.}
 
-\item{partition}{Defaults to NULL. If NULL, the parquet file is not
+\item{partition}{Defaults to \code{NULL}. If \code{NULL}, the parquet file is not
 partitioned. "year" is a common alternative: if set to "year", the parquet
 file is partitioned by year. If a \code{year} column does not exist, it is
 created based on the assumption that a \code{date} column exists and it is (or
@@ -40,9 +40,8 @@ can be coerced to) a vector of class \code{Date}.}
 
 \item{token}{Defaults to "full_text", which does not tokenise the text
 column. If different from \code{full_text}, it is passed to
-\code{tidytext::unnest_tokens} (see its help for details). Accepted values
-include "words", "sentences", and "paragraphs". See
-\code{?tidytext::unnest_tokens()} for details.}
+\code{\link[tidytext:unnest_tokens]{tidytext::unnest_tokens()}} (see its help for details). Accepted values
+include "words", "sentences", and "paragraphs".}
 }
 \value{
 Path to corpus. NULL, if no corpus is found and update is set to
