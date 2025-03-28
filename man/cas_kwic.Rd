@@ -35,33 +35,33 @@ the \code{before} column.}
 \item{words_after}{Integer, defaults to 5. Number of columns to include in
 the \code{after} column.}
 
-\item{same_sentence}{Logical, defaults to TRUE. If TRUE, before and after
+\item{same_sentence}{Logical, defaults to \code{TRUE}. If TRUE, before and after
 include only words found in the sentence including the matched pattern.}
 
-\item{period_at_end_of_sentence}{Logical, defaults to TRUE. If TRUE, a period
-(".") is always included at the end of a sentence. Relevant only if
-\code{same_sentence} is set to TRUE.}
+\item{period_at_end_of_sentence}{Logical, defaults to \code{TRUE}. If \code{TRUE}, a
+period (".") is always included at the end of a sentence. Relevant only if
+\code{same_sentence} is set to \code{TRUE}.}
 
-\item{ignore_case}{Defaults to TRUE.}
+\item{ignore_case}{Defaults to \code{TRUE}.}
 
-\item{regex}{Defaults to TRUE. Treat pattern as regex.}
+\item{regex}{Defaults to \code{TRUE}. Treat pattern as regex.}
 
-\item{full_words_only}{Defaults to FALSE. If FALSE, pattern is counted even
-when it is found in the middle of a word (e.g. if FALSE, "ratio" would be
-counted as match in the word "irrational").}
+\item{full_words_only}{Defaults to \code{FALSE}. If \code{FALSE}, pattern is counted
+even when it is found in the middle of a word (e.g. if \code{FALSE}, "ratio"
+would be counted as match in the word "irrational").}
 
-\item{full_word_with_partial_match}{Defaults to TRUE. If TRUE, if there is a
-partial match of the pattern, the \code{pattern} column still includes the full
-word where the match has been found. Relevant only when
-\code{full_words_only} is set to FALSE.}
+\item{full_word_with_partial_match}{Defaults to \code{TRUE}. If \code{TRUE}, if there
+is a partial match of the pattern, the \code{pattern} column still includes the
+full word where the match has been found. Relevant only when
+\code{full_words_only} is set to \code{FALSE}.}
 
-\item{pattern_column_name}{Defaults to 'pattern'. The unquoted name of the
+\item{pattern_column_name}{Defaults to "pattern'. The unquoted name of the
 column to be used for the word in the output.}
 }
 \value{
 A data frame (a tibble), with the same columns as input, plus three
-columns: before, pattern, and after. Only rows where the pattern is found
-are included.
+columns: \code{before}, \code{pattern}, and \code{after}. Only rows where the pattern is
+found are included.
 }
 \description{
 Adds a column with n words before and after the selected pattern to see
@@ -70,7 +70,7 @@ keywords in context
 \examples{
 
 cas_kwic(
-  corpus = castarter::cas_demo_corpus,
+  corpus = cas_demo_corpus,
   pattern = c("china", "india")
 )
 }
