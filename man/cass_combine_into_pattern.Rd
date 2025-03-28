@@ -9,17 +9,19 @@ cass_combine_into_pattern(words, full_words_only = TRUE)
 \arguments{
 \item{words}{A character vector of words to be combined for string matching.}
 
-\item{full_words_only}{Logical, defaults to TRUE. If TRUE, the correspondent words are matched only when they are a separate word.}
+\item{full_words_only}{Logical, defaults to TRUE. If TRUE, the correspondent
+words are matched only when they are a separate word.}
 }
 \value{
-A character vector of length one, ready to be used for regex matching.
+A character vector of length one, ready to be used for regex
+matching.
 }
 \description{
 Combines a vector of words into a string to be used for regex matching.
 }
 \examples{
-
 words <- c("dogs", "cats", "horses")
 
 cass_combine_into_pattern(words)
 }
+\keyword{internal}

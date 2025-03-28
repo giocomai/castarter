@@ -48,10 +48,14 @@ cass_split_string <- function(string,
 #' @return A character vector of length one, ready to be used for regex
 #'   matching.
 #'
+#' @export
+#'
+#' @keywords internal
+#'
 #' @examples
 #' words <- c("dogs", "cats", "horses")
 #'
-#' castarter:::cass_combine_into_pattern(words)
+#' cass_combine_into_pattern(words)
 cass_combine_into_pattern <- function(words,
                                       full_words_only = TRUE) {
   if (full_words_only == TRUE) {
