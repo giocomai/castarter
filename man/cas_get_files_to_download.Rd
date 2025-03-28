@@ -50,7 +50,8 @@ status code as integer, typically \code{200L}, or \code{c(200L, 404L)}.}
 \item{...}{
   Arguments passed on to \code{\link[=cas_get_urls_df]{cas_get_urls_df}}, \code{\link[=cas_get_base_folder]{cas_get_base_folder}}
   \describe{
-    \item{\code{custom_path}}{Defaults to NULL. If given, all other parameters and settings are ignored, and folder is set to this value.}
+    \item{\code{custom_path}}{Defaults to NULL. If given, all other parameters and
+settings are ignored, and this value is returned.}
   }}
 }
 \value{

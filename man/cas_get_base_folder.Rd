@@ -7,12 +7,35 @@
 cas_get_base_folder(..., level = "website", custom_path = NULL)
 }
 \arguments{
-\item{...}{Passed to \code{cas_get_options()}.}
+\item{...}{Passed to \code{\link[=cas_get_options]{cas_get_options()}}.}
 
-\item{level}{Defaults to "website". Valid values are "website", "project", and "base".}
+\item{level}{Defaults to "website". Valid values are "website", "project",
+and "base".}
 
-\item{custom_path}{Defaults to NULL. If given, all other parameters and settings are ignored, and folder is set to this value.}
+\item{custom_path}{Defaults to NULL. If given, all other parameters and
+settings are ignored, and this value is returned.}
+}
+\value{
+Path to the folder well all project files are stored.
 }
 \description{
-Get base folder under which files will be stored.
+The path is computed based on inputs and settings; it may or may not exist.
+}
+\examples{
+
+
+cas_set_options(
+  base_folder = fs::path(tempdir(), "R", "castarter_data"),
+  db_folder = fs::path(tempdir(), "R", "castarter_data"),
+  project = "example_project",
+  website = "example_website"
+)
+
+cas_get_base_folder()
+
+cas_get_base_folder(level = "website")
+cas_get_base_folder(level = "project")
+cas_get_base_folder(level = "base")
+
+cas_get_base_folder(custom_path = fs::path(tempdir(), "custom_path"))
 }

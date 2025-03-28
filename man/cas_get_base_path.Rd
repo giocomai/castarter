@@ -17,11 +17,12 @@ cas_get_base_path(
 \item{create_folder_if_missing}{Logical, defaults to NULL. If NULL, it will ask
 before creating a new folder. If TRUE, it will create it without asking.}
 
-\item{custom_path}{Defaults to NULL. If given, all other parameters and settings are ignored, and folder is set to this value.}
+\item{custom_path}{Defaults to NULL. If given, all other parameters and
+settings are ignored, and this value is returned.}
 
 \item{file_format}{}
 
-\item{...}{Passed to \code{cas_get_options()}.}
+\item{...}{Passed to \code{\link[=cas_get_options]{cas_get_options()}}.}
 }
 \value{
 Path to base folder. A character vector of length one of class \code{fs_path}.
