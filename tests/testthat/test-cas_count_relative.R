@@ -3,15 +3,15 @@ test_that("cas_count_relative() works when more than one string given", {
     object = {
       cas_count_relative(
         corpus = cas_demo_corpus,
-        string = c("putin", "russia"),
+        pattern = c("putin", "russia"),
         group_by = date
-      ) %>%
-        dplyr::filter(string == "russia")
+      ) |>
+        dplyr::filter(pattern == "russia")
     },
     expected = {
       cas_count_relative(
         corpus = cas_demo_corpus,
-        string = c("russia"),
+        pattern = c("russia"),
         group_by = date
       )
     }
