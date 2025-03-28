@@ -52,7 +52,11 @@ Imports:
     progress,
     shinymeta,
     httr2,
-    fs
+    fs,
+    forcats,
+    ggplot2,
+    scales,
+    stringi
 Suggests: 
     testthat (>= 3.0.0),
     roxygen2,
