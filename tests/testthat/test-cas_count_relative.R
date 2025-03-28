@@ -1,4 +1,4 @@
-test_that("cas_count_relative() works when more than one string given", {
+test_that("cas_count_relative() works when more than one pattern given", {
   expect_equal(
     object = {
       cas_count_relative(
