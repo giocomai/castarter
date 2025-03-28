@@ -4,7 +4,7 @@
 \alias{cass_download_csv_app}
 \title{A minimal shiny app that demonstrates the functioning of related modules}
 \usage{
-cass_download_csv_app(df, type)
+cass_download_csv_app(df, type = "data")
 }
 \arguments{
 \item{df}{A data frame to be exported as csv.}
@@ -20,8 +20,10 @@ A minimal shiny app that demonstrates the functioning of related modules
 count_df <- castarter::cas_count(
   corpus = castarter::cas_demo_corpus,
   string = c("russia", "moscow")
-) \%>\%
+) |>
   cas_summarise(before = 15, after = 15)
+if (interactive() {
+cass_download_csv_app(count_df)
+}
 
-# cass_cass_download_csv_app(count_df)
 }

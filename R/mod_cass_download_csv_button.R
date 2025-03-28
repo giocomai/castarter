@@ -17,7 +17,12 @@ mod_cass_download_csv_ui <- function(id) {
 #' cass_download_csv Server Functions
 #'
 #' @noRd
-mod_cass_download_csv_server <- function(id, df, type = "data", corpus = "corpus") {
+mod_cass_download_csv_server <- function(
+  id,
+  df,
+  type = "data",
+  corpus = "corpus"
+) {
   moduleServer(id, function(input, output, session) {
     ns <- session$ns
 
@@ -64,17 +69,21 @@ mod_cass_download_csv_server <- function(id, df, type = "data", corpus = "corpus
 #' count_df <- castarter::cas_count(
 #'   corpus = castarter::cas_demo_corpus,
 #'   string = c("russia", "moscow")
-#' ) %>%
+#' ) |>
 #'   cas_summarise(before = 15, after = 15)
+#' if (interactive() {
+#' cass_download_csv_app(count_df)
+#' }
 #'
-#' # cass_cass_download_csv_app(count_df)
-cass_download_csv_app <- function(df, type) {
+cass_download_csv_app <- function(df, type = "data") {
   ui <- fluidPage(
-    castarter:::mod_cass_download_csv_ui("mod_cass_download_csv_ui_1")
+    mod_cass_download_csv_ui("mod_cass_download_csv_ui_1")
   )
   server <- function(input, output, session) {
-    castarter:::mod_cass_download_csv_server("mod_cass_download_csv_ui_1",
-      df = df, type = type
+    mod_cass_download_csv_server(
+      "mod_cass_download_csv_ui_1",
+      df = df,
+      type = type
     )
   }
   shinyApp(ui, server)
