@@ -171,14 +171,14 @@ cas_get_sitemap <- function(
 #'
 #' @examples
 #' cas_set_options(
-#'   base_folder = fs::path(tempdir(), "R", "castarter_data"),
-#'   db_folder = fs::path(tempdir(), "R", "castarter_data"),
+#'   base_folder = fs::path(fs::path_temp(), "R", "castarter_data"),
+#'   db_folder = fs::path(fs::path_temp(), "R", "castarter_data"),
 #'   project = "example_project",
 #'   website = "example_website"
 #' )
 #' cas_enable_db()
 #'
-#' cas_write_db_sitemap(sitemap_url = "https://example.com/sitemap.xml")
+#' cas_write_db_sitemap(sitemap = "https://example.com/sitemap.xml")
 #'
 #' cas_read_db_sitemap()
 cas_read_db_sitemap <- function(
@@ -213,7 +213,8 @@ cas_read_db_sitemap <- function(
 #' If some URLs are already included in the database, it appends only the new
 #' ones: URLs are expected to be unique.
 #'
-#' @param sitemap A sitemap url, or a dataframe with at least one column named `sitemap_url`.
+#' @param sitemap A sitemap url, or a dataframe with at least one column named
+#'   `sitemap_url`.
 #'
 #' @inheritParams cas_write_to_db
 #'
@@ -222,14 +223,14 @@ cas_read_db_sitemap <- function(
 #'
 #' @examples
 #' cas_set_options(
-#'   base_folder = fs::path(tempdir(), "R", "castarter_data"),
-#'   db_folder = fs::path(tempdir(), "R", "castarter_data"),
+#'   base_folder = fs::path(fs::path_temp(), "R", "castarter_data"),
+#'   db_folder = fs::path(fs::path_temp(), "R", "castarter_data"),
 #'   project = "example_project",
 #'   website = "example_website"
 #' )
 #' cas_enable_db()
 #'
-#' cas_write_db_sitemap(sitemap_url = "https://example.com/sitemap.xml")
+#' cas_write_db_sitemap(sitemap = "https://example.com/sitemap.xml")
 #'
 #' cas_read_db_sitemap()
 cas_write_db_sitemap <- function(

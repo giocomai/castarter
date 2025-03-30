@@ -13,7 +13,8 @@ cas_write_db_sitemap(
 )
 }
 \arguments{
-\item{sitemap}{A sitemap url, or a dataframe with at least one column named \code{sitemap_url}.}
+\item{sitemap}{A sitemap url, or a dataframe with at least one column named
+\code{sitemap_url}.}
 
 \item{overwrite}{Logical, defaults to FALSE. If TRUE, checks if matching data
 are previously held in the table and overwrites them. This should be used
@@ -36,14 +37,14 @@ ones: URLs are expected to be unique.
 }
 \examples{
 cas_set_options(
-  base_folder = fs::path(tempdir(), "R", "castarter_data"),
-  db_folder = fs::path(tempdir(), "R", "castarter_data"),
+  base_folder = fs::path(fs::path_temp(), "R", "castarter_data"),
+  db_folder = fs::path(fs::path_temp(), "R", "castarter_data"),
   project = "example_project",
   website = "example_website"
 )
 cas_enable_db()
 
-cas_write_db_sitemap(sitemap_url = "https://example.com/sitemap.xml")
+cas_write_db_sitemap(sitemap = "https://example.com/sitemap.xml")
 
 cas_read_db_sitemap()
 }

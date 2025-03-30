@@ -23,14 +23,14 @@ Read sitemap from local database
 }
 \examples{
 cas_set_options(
-  base_folder = fs::path(tempdir(), "R", "castarter_data"),
-  db_folder = fs::path(tempdir(), "R", "castarter_data"),
+  base_folder = fs::path(fs::path_temp(), "R", "castarter_data"),
+  db_folder = fs::path(fs::path_temp(), "R", "castarter_data"),
   project = "example_project",
   website = "example_website"
 )
 cas_enable_db()
 
-cas_write_db_sitemap(sitemap_url = "https://example.com/sitemap.xml")
+cas_write_db_sitemap(sitemap = "https://example.com/sitemap.xml")
 
 cas_read_db_sitemap()
 }
