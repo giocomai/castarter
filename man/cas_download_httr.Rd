@@ -22,6 +22,7 @@ cas_download_httr(
   sample = FALSE,
   file_format = "html",
   user_agent = NULL,
+  download_again = FALSE,
   download_again_if_status_is_not = NULL,
   ...
 )

@@ -18,6 +18,8 @@ cas_download_internal(
   disconnect_db = FALSE,
   sample = FALSE,
   file_format = "html",
+  download_again = FALSE,
+  download_again_if_status_is_not = NULL,
   ...
 )
 }

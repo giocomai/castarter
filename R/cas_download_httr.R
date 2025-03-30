@@ -29,6 +29,7 @@ cas_download_httr <- function(
   sample = FALSE,
   file_format = "html",
   user_agent = NULL,
+  download_again = FALSE,
   download_again_if_status_is_not = NULL,
   ...
 ) {
@@ -48,6 +49,7 @@ cas_download_httr <- function(
       db_connection = db,
       disconnect_db = FALSE,
       file_format = file_format,
+      download_again = download_again,
       download_again_if_status_is_not = download_again_if_status_is_not,
       ...
     )

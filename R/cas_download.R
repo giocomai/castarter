@@ -31,23 +31,26 @@
 #' @export
 #'
 #' @examples
-cas_download <- function(download_df = NULL,
-                         index = FALSE,
-                         index_group = NULL,
-                         file_format = "html",
-                         overwrite_file = FALSE,
-                         create_folder_if_missing = NULL,
-                         ignore_id = TRUE,
-                         wait = 1,
-                         pause_base = 2,
-                         pause_cap = 256,
-                         pause_min = 4,
-                         sample = FALSE,
-                         retry_times = 3,
-                         terminate_on = NULL,
-                         user_agent = NULL,
-                         download_again_if_status_is_not = NULL,
-                         ...) {
+cas_download <- function(
+  download_df = NULL,
+  index = FALSE,
+  index_group = NULL,
+  file_format = "html",
+  overwrite_file = FALSE,
+  create_folder_if_missing = NULL,
+  ignore_id = TRUE,
+  wait = 1,
+  pause_base = 2,
+  pause_cap = 256,
+  pause_min = 4,
+  sample = FALSE,
+  retry_times = 3,
+  terminate_on = NULL,
+  user_agent = NULL,
+  download_again = FALSE,
+  download_again_if_status_is_not = NULL,
+  ...
+) {
   cas_download_httr(
     download_df = download_df,
     index = index,
@@ -64,6 +67,7 @@ cas_download <- function(download_df = NULL,
     pause_min = pause_min,
     terminate_on = terminate_on,
     user_agent = user_agent,
+    download_again = download_again,
     download_again_if_status_is_not = download_again_if_status_is_not,
     ...
   )
@@ -78,21 +82,24 @@ cas_download <- function(download_df = NULL,
 #' @export
 #'
 #' @examples
-cas_download_index <- function(download_df = NULL,
-                               index_group = NULL,
-                               file_format = "html",
-                               overwrite_file = FALSE,
-                               create_folder_if_missing = NULL,
-                               wait = 1,
-                               pause_base = 2,
-                               pause_cap = 256,
-                               pause_min = 4,
-                               sample = FALSE,
-                               retry_times = 8,
-                               terminate_on = 404,
-                               user_agent = NULL,
-                               download_again_if_status_is_not = NULL,
-                               ...) {
+cas_download_index <- function(
+  download_df = NULL,
+  index_group = NULL,
+  file_format = "html",
+  overwrite_file = FALSE,
+  create_folder_if_missing = NULL,
+  wait = 1,
+  pause_base = 2,
+  pause_cap = 256,
+  pause_min = 4,
+  sample = FALSE,
+  retry_times = 8,
+  terminate_on = 404,
+  user_agent = NULL,
+  download_again = FALSE,
+  download_again_if_status_is_not = NULL,
+  ...
+) {
   cas_download_httr(
     download_df = download_df,
     index = TRUE,
@@ -108,6 +115,7 @@ cas_download_index <- function(download_df = NULL,
     pause_min = pause_min,
     terminate_on = terminate_on,
     user_agent = user_agent,
+    download_again = download_again,
     download_again_if_status_is_not = download_again_if_status_is_not,
     ...
   )
@@ -129,17 +137,21 @@ cas_download_index <- function(download_df = NULL,
 #'   "https://example.com/a/",
 #'   "https://example.com/b/"
 #' ))
-cas_get_urls_df <- function(urls = NULL,
-                            index = FALSE,
-                            index_group = NULL,
-                            ...) {
+cas_get_urls_df <- function(
+  urls = NULL,
+  index = FALSE,
+  index_group = NULL,
+  ...
+) {
   if (is.null(urls)) {
     if (index == FALSE) {
       urls_df <- cas_read_db_contents_id(...)
     } else if (index == TRUE) {
       urls_df <- cas_read_db_index(index_group = index_group, ...)
     } else {
-      cli::cli_abort("Parameter {.var index} must be either {.val {TRUE}} or {.val {FALSE}}.")
+      cli::cli_abort(
+        "Parameter {.var index} must be either {.val {TRUE}} or {.val {FALSE}}."
+      )
     }
   } else {
     if (is.data.frame(urls) == FALSE) {
@@ -151,7 +163,9 @@ cas_get_urls_df <- function(urls = NULL,
       if (sum(c("id", "url") %in% names(urls)) == 2) {
         urls_df <- urls
       } else {
-        cli::cli_abort("{.var urls} must either be a character vector or a data frame with at least two columns named {.var id} and {.var url}.")
+        cli::cli_abort(
+          "{.var urls} must either be a character vector or a data frame with at least two columns named {.var id} and {.var url}."
+        )
       }
       if (is.numeric(urls_df$id) == FALSE) {
         cli::cli_abort("If given, the {.var id} column must be numeric.")
@@ -184,24 +198,23 @@ cas_get_urls_df <- function(urls = NULL,
 #' @export
 #'
 #' @examples
-cas_get_files_to_download <- function(urls = NULL,
-                                      index = FALSE,
-                                      index_group = NULL,
-                                      ignore_id = TRUE,
-                                      desc_id = FALSE,
-                                      batch = NULL,
-                                      create_folder_if_missing = NULL,
-                                      custom_folder = NULL,
-                                      custom_path = NULL,
-                                      file_format = "html",
-                                      db_connection = NULL,
-                                      download_again = FALSE,
-                                      download_again_if_status_is_not = NULL,
-                                      ...) {
-  type <- dplyr::if_else(condition = index,
-    true = "index",
-    false = "contents"
-  )
+cas_get_files_to_download <- function(
+  urls = NULL,
+  index = FALSE,
+  index_group = NULL,
+  ignore_id = TRUE,
+  desc_id = FALSE,
+  batch = NULL,
+  create_folder_if_missing = NULL,
+  custom_folder = NULL,
+  custom_path = NULL,
+  file_format = "html",
+  db_connection = NULL,
+  download_again = FALSE,
+  download_again_if_status_is_not = NULL,
+  ...
+) {
+  type <- dplyr::if_else(condition = index, true = "index", false = "contents")
 
   db <- cas_connect_to_db(
     db_connection = db_connection,

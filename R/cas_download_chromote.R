@@ -7,26 +7,27 @@
 #' @export
 #'
 #' @examples
-cas_download_chromote <- function(download_df = NULL,
-                                  index = FALSE,
-                                  index_group = NULL,
-                                  overwrite_file = FALSE,
-                                  ignore_id = TRUE,
-                                  wait = 1,
-                                  db_connection = NULL,
-                                  sample = FALSE,
-                                  file_format = "html",
-                                  download_again = FALSE,
-                                  disconnect_db = FALSE,
-                                  ...) {
+cas_download_chromote <- function(
+  download_df = NULL,
+  index = FALSE,
+  index_group = NULL,
+  overwrite_file = FALSE,
+  ignore_id = TRUE,
+  wait = 1,
+  db_connection = NULL,
+  sample = FALSE,
+  file_format = "html",
+  download_again = FALSE,
+  disconnect_db = FALSE,
+  ...
+) {
   if (requireNamespace("chromote", quietly = TRUE) == FALSE) {
-    cli::cli_abort("You need to install the {.pkg chromote} package to download pages with headless chrome/chromium.")
+    cli::cli_abort(
+      "You need to install the {.pkg chromote} package to download pages with headless chrome/chromium."
+    )
   }
 
-  type <- dplyr::if_else(condition = index,
-    true = "index",
-    false = "contents"
-  )
+  type <- dplyr::if_else(condition = index, true = "index", false = "contents")
 
   db <- cas_connect_to_db(
     db_connection = db_connection,
@@ -55,7 +56,9 @@ cas_download_chromote <- function(download_df = NULL,
     current_batch_folder <- fs::path_dir(path = download_df[["path"]][1])
     if (fs::file_exists(current_batch_folder) == FALSE) {
       fs::dir_create(path = current_batch_folder)
-      cli::cli_inform(c(i = "The folder {.path {current_batch_folder}} for the current download batch has been created."))
+      cli::cli_inform(c(
+        i = "The folder {.path {current_batch_folder}} for the current download batch has been created."
+      ))
     }
   }
 
@@ -113,7 +116,9 @@ cas_download_chromote <- function(download_df = NULL,
           )
         } else {
           cli::cli_alert_danger(c(x = raw))
-          cli::cli_warn("Error while downloading page with id {.val {x$id}} and url {.url {x$url}}. The process will proceed with other pages.")
+          cli::cli_warn(
+            "Error while downloading page with id {.val {x$id}} and url {.url {x$url}}. The process will proceed with other pages."
+          )
         }
         Sys.sleep(time = wait)
       }

@@ -19,6 +19,7 @@ cas_download_index(
   retry_times = 8,
   terminate_on = 404,
   user_agent = NULL,
+  download_again = FALSE,
   download_again_if_status_is_not = NULL,
   ...
 )

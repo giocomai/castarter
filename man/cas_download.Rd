@@ -21,6 +21,7 @@ cas_download(
   retry_times = 3,
   terminate_on = NULL,
   user_agent = NULL,
+  download_again = FALSE,
   download_again_if_status_is_not = NULL,
   ...
 )
