@@ -4,7 +4,17 @@
 \alias{cas_get_sitemap}
 \title{Checks for availability of a sitemap in xml format.}
 \usage{
-cas_get_sitemap(domain = NULL, sitemap_url = NULL)
+cas_get_sitemap(
+  domain = NULL,
+  sitemap_url = NULL,
+  check_robots = TRUE,
+  check_common = TRUE,
+  read_from_db = TRUE,
+  write_to_db = FALSE,
+  db_connection = NULL,
+  disconnect_db = FALSE,
+  ...
+)
 }
 \arguments{
 \item{domain}{Defaults to \code{NULL}, but required unless \code{sitemap_url} given.
@@ -12,6 +22,12 @@ Expected to be a full domain name. If input does not start with \code{http},
 then \verb{https://} is prepended automatically.}
 
 \item{sitemap_url}{Defaults to \code{NULL}. If given, \code{domain} is ignored.}
+
+\item{db_connection}{Defaults to NULL. If NULL, uses local SQLite database.
+If given, must be a connection object or a list with relevant connection
+settings (see example).}
+
+\item{...}{Passed to \code{cas_get_db_file()}.}
 }
 \value{
 A data frame, including a \code{sitemap_url} column, the response as an
@@ -24,6 +40,6 @@ the sitemap, along with the contents of the sitemap itself, if found.
 }
 \examples{
 if (interactive()) {
-  cas_get_sitemap("https://www.europeandatajournalism.eu/")
+  cas_get_sitemap(domain = "https://www.europeandatajournalism.eu/")
 }
 }

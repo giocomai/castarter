@@ -14,8 +14,8 @@
 #' @examples
 #'
 #' cas_set_options(
-#'   base_folder = fs::path(tempdir(), "R", "castarter_data"),
-#'   db_folder = fs::path(tempdir(), "R", "castarter_data"),
+#'   base_folder = fs::path(fs::path_temp(), "R", "castarter_data"),
+#'   db_folder = fs::path(fs::path_temp(), "R", "castarter_data"),
 #'   project = "example_project",
 #'   website = "example_website"
 #' )
@@ -31,16 +31,23 @@
 #' cas_write_db_index(urls = urls_df)
 #'
 #' cas_read_db_index()
-cas_write_db_index <- function(urls,
-                               overwrite = FALSE,
-                               db_connection = NULL,
-                               disconnect_db = FALSE,
-                               ...) {
+cas_write_db_index <- function(
+  urls,
+  overwrite = FALSE,
+  db_connection = NULL,
+  disconnect_db = FALSE,
+  ...
+) {
   if (is.data.frame(urls)) {
-    if (identical(colnames(urls), colnames(casdb_empty_index_id)) & identical(sapply(urls, class), sapply(casdb_empty_index_id, class))) {
+    if (
+      identical(colnames(urls), colnames(casdb_empty_index_id)) &
+        identical(sapply(urls, class), sapply(casdb_empty_index_id, class))
+    ) {
       urls_df <- urls
     } else {
-      cli::cli_abort("{.var urls} data frame must match exactly the column names and types of {.code casdb_empty_index_id}")
+      cli::cli_abort(
+        "{.var urls} data frame must match exactly the column names and types of {.code casdb_empty_index_id}"
+      )
     }
   } else {
     urls_df <- cas_build_urls(
@@ -64,25 +71,25 @@ cas_write_db_index <- function(urls,
     db_connection = db,
     disconnect_db = FALSE,
     ...
-  ) %>%
+  ) |>
     dplyr::collect()
 
   if (nrow(previous_index_df) > 0) {
-    urls_to_add_df <- urls_df %>%
+    urls_to_add_df <- urls_df |>
       dplyr::anti_join(
         y = previous_index_df,
         by = c("url", "index_group")
       )
 
     if (sum(is.element(urls_to_add_df$id, previous_index_df$id)) > 0) {
-      usethis::ui_info("Introducing new {usethis::ui_code('id')} to ensure unique values")
+      cli::cli_inform("Introducing new {.code id} to ensure unique values.")
       urls_to_add_df$id <- seq(
         sum(max(previous_index_df$id), 1),
         sum(
           max(previous_index_df$id),
           nrow(urls_to_add_df)
         )
-      ) %>%
+      ) |>
         as.numeric()
     }
   } else {
@@ -100,9 +107,13 @@ cas_write_db_index <- function(urls,
       ...
     )
 
-    usethis::ui_done("Urls added to {usethis::ui_field('index_id')} table: {usethis::ui_value(urls_to_add_n)}")
+    cli::cli_inform(
+      c(v = "Urls added to {.field index_id} table: {.val {urls_to_add_n}}")
+    )
   } else {
-    usethis::ui_info("No new url added to {usethis::ui_field('index_id')} table.")
+    cli::cli_inform(
+      c(i = "No new url added to {.field index_id} table.")
+    )
   }
 
   cas_disconnect_from_db(
@@ -141,10 +152,12 @@ cas_write_db_index <- function(urls,
 #' cas_write_db_index(urls = urls_df)
 #'
 #' cas_read_db_index()
-cas_read_db_index <- function(db_connection = NULL,
-                              db_folder = NULL,
-                              index_group = NULL,
-                              ...) {
+cas_read_db_index <- function(
+  db_connection = NULL,
+  db_folder = NULL,
+  index_group = NULL,
+  ...
+) {
   db_result <- tryCatch(
     cas_read_from_db(
       table = "index_id",
@@ -163,14 +176,13 @@ cas_read_db_index <- function(db_connection = NULL,
     tibble::as_tibble(casdb_empty_index_id)
   } else {
     if (is.null(index_group) == FALSE) {
-      db_result %>%
+      db_result |>
         dplyr::filter(index_group == !!index_group)
     } else {
       db_result
     }
   }
 }
-
 
 
 #' Read index from local database
@@ -207,13 +219,15 @@ cas_read_db_index <- function(db_connection = NULL,
 #' cas_write_db_index(urls = urls_df)
 #'
 #' cas_read_db_index()
-cas_read_db_download <- function(index = FALSE,
-                                 id = NULL,
-                                 batch = "latest",
-                                 status = 200L,
-                                 db_connection = NULL,
-                                 db_folder = NULL,
-                                 ...) {
+cas_read_db_download <- function(
+  index = FALSE,
+  id = NULL,
+  batch = "latest",
+  status = 200L,
+  db_connection = NULL,
+  db_folder = NULL,
+  ...
+) {
   type <- dplyr::if_else(
     condition = index,
     true = "index",
@@ -241,32 +255,29 @@ cas_read_db_download <- function(index = FALSE,
       tibble::as_tibble(casdb_empty_download)
     } else {
       if (is.null(id) == FALSE) {
-        db_result <- db_result %>%
+        db_result <- db_result |>
           dplyr::filter(id %in% {{ id }})
       }
 
       if (is.null(batch) == TRUE) {
         # do nothing
       } else if (is.numeric(batch)) {
-        db_result <- db_result %>%
+        db_result <- db_result |>
           dplyr::filter(batch %in% {{ batch }})
       } else if (batch == "latest") {
-        db_result <- db_result %>%
-          dplyr::slice_max(batch,
-            n = 1,
-            by = "id"
-          )
+        db_result <- db_result |>
+          dplyr::slice_max(batch, n = 1, by = "id")
       }
 
       if (is.null(status) == TRUE) {
         # do nothing
       } else if (is.numeric(status)) {
-        db_result <- db_result %>%
+        db_result <- db_result |>
           dplyr::filter(status %in% {{ status }})
       }
 
-      db_result %>%
-        dplyr::collect() %>%
+      db_result |>
+        dplyr::collect() |>
         dplyr::mutate(
           datetime = lubridate::as_datetime(datetime),
           size = fs::as_fs_bytes(size)

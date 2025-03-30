@@ -9,9 +9,7 @@
 #'
 #' @examples
 #' cas_create_db_folder(path = fs::path(fs::path_temp(), "cas_data"), ask = FALSE)
-cas_create_db_folder <- function(path = NULL,
-                                 ask = TRUE,
-                                 ...) {
+cas_create_db_folder <- function(path = NULL, ask = TRUE, ...) {
   db_path <- cas_get_db_folder(
     path = path,
     ...
@@ -21,8 +19,12 @@ cas_create_db_folder <- function(path = NULL,
     if (ask == FALSE) {
       fs::dir_create(path = db_path, recurse = TRUE)
     } else {
-      usethis::ui_info(glue::glue("The database folder {{usethis::ui_path(cas_get_db_folder())}} does not exist. If you prefer to store database files elsewhere, reply negatively and set your preferred database folder with `cas_set_db_folder()`"))
-      check <- usethis::ui_yeah(glue::glue("Do you want to create {{usethis::ui_path(cas_get_db_folder())}} for storing data in a local database?"))
+      usethis::ui_info(glue::glue(
+        "The database folder {{usethis::ui_path(cas_get_db_folder())}} does not exist. If you prefer to store database files elsewhere, reply negatively and set your preferred database folder with `cas_set_db_folder()`"
+      ))
+      check <- usethis::ui_yeah(glue::glue(
+        "Do you want to create {{usethis::ui_path(cas_get_db_folder())}} for storing data in a local database?"
+      ))
       if (check == TRUE) {
         fs::dir_create(path = db_path, recurse = TRUE)
       }
@@ -48,8 +50,7 @@ cas_create_db_folder <- function(path = NULL,
 #' cas_set_db_folder(fs::path(fs::path_home_r(), "R", "cas_data"))
 #'
 #' cas_set_db_folder(fs::path(fs::path_temp(), "cas_data"))
-cas_set_db_folder <- function(path = NULL,
-                              ...) {
+cas_set_db_folder <- function(path = NULL, ...) {
   if (is.null(path)) {
     path <- Sys.getenv("castarter_database_folder")
   } else {
@@ -68,8 +69,7 @@ cas_set_db_folder <- function(path = NULL,
 #' @examples
 #' cas_get_db_folder()
 #' @export
-cas_get_db_folder <- function(path = NULL,
-                              ...) {
+cas_get_db_folder <- function(path = NULL, ...) {
   if (is.null(path)) {
     path <- Sys.getenv("castarter_database_folder")
   }
@@ -81,7 +81,7 @@ cas_get_db_folder <- function(path = NULL,
     )
   }
 
-  invisible(path)
+  path
 }
 
 
@@ -127,13 +127,15 @@ cas_get_db_folder <- function(path = NULL,
 #'   )
 #' }
 #' }
-cas_set_db <- function(db_settings = NULL,
-                       driver = NULL,
-                       host = NULL,
-                       port,
-                       database,
-                       user,
-                       pwd) {
+cas_set_db <- function(
+  db_settings = NULL,
+  driver = NULL,
+  host = NULL,
+  port,
+  database,
+  user,
+  pwd
+) {
   if (is.null(db_settings) == TRUE) {
     if (is.null(driver) == FALSE) Sys.setenv(castarter_db_driver = driver)
     if (is.null(host) == FALSE) Sys.setenv(castarter_db_host = host)
@@ -186,7 +188,6 @@ cas_get_db_settings <- function() {
 }
 
 
-
 #' Gets location of database file
 #'
 #' @params db_type Defaults to "SQLite". Valid values include "DuckDB".
@@ -199,8 +200,7 @@ cas_get_db_settings <- function() {
 #' cas_set_db_folder(path = tempdir())
 #' db_file_location <- cas_get_db_file(project = "test-project") # outputs location of database file
 #' db_file_location
-cas_get_db_file <- function(db_folder = NULL,
-                            ...) {
+cas_get_db_file <- function(db_folder = NULL, ...) {
   db_folder <- cas_get_db_folder(
     path = db_folder,
     ...
@@ -270,8 +270,7 @@ cas_disable_db <- function() {
 #' @export
 #' @examples
 #' cas_check_use_db()
-cas_check_use_db <- function(use_db = NULL,
-                             ...) {
+cas_check_use_db <- function(use_db = NULL, ...) {
   if (is.null(use_db) == FALSE) {
     return(as.logical(use_db))
   }
@@ -320,7 +319,6 @@ cas_check_db_folder <- function() {
 }
 
 
-
 #' Return a connection to be used for caching
 #'
 #' @param db_connection Defaults to NULL. If NULL, uses local SQLite database.
@@ -363,12 +361,14 @@ cas_check_db_folder <- function() {
 #' }
 #' }
 #'
-cas_connect_to_db <- function(db_connection = NULL,
-                              use_db = NULL,
-                              db_type = NULL,
-                              db_folder = NULL,
-                              read_only = FALSE,
-                              ...) {
+cas_connect_to_db <- function(
+  db_connection = NULL,
+  use_db = NULL,
+  db_type = NULL,
+  db_folder = NULL,
+  read_only = FALSE,
+  ...
+) {
   if (isFALSE(x = cas_check_use_db(use_db))) {
     return(NULL)
   }
@@ -403,12 +403,18 @@ cas_connect_to_db <- function(db_connection = NULL,
         ),
         ask = FALSE
       )
-      cli::cli_inform(message = c(i = "Folder {.path {fs::path_dir(db_file)}} for storing project and website files created."))
+      cli::cli_inform(
+        message = c(
+          i = "Folder {.path {fs::path_dir(db_file)}} for storing project and website files created."
+        )
+      )
     }
 
     if (stringr::str_to_lower(db_type) == "duckdb") {
       if (requireNamespace("duckdb", quietly = TRUE) == FALSE) {
-        cli::cli_abort(message = "To use DuckDB databases you need to install the package {.pkg duckdb}.")
+        cli::cli_abort(
+          message = "To use DuckDB databases you need to install the package {.pkg duckdb}."
+        )
       }
       db <- DBI::dbConnect(
         drv = duckdb::duckdb(),
@@ -418,7 +424,9 @@ cas_connect_to_db <- function(db_connection = NULL,
       return(db)
     } else if (stringr::str_to_lower(db_type) == "sqlite") {
       if (requireNamespace("RSQLite", quietly = TRUE) == FALSE) {
-        cli::cli_abort(message = "To use SQLite databases you need to install the package {.pkg RSQLite}.")
+        cli::cli_abort(
+          message = "To use SQLite databases you need to install the package {.pkg RSQLite}."
+        )
       }
       db <- DBI::dbConnect(
         drv = RSQLite::SQLite(),
@@ -432,7 +440,9 @@ cas_connect_to_db <- function(db_connection = NULL,
         drv <- RSQLite::SQLite()
       } else {
         if (requireNamespace("odbc", quietly = TRUE) == FALSE) {
-          cli::cli_abort(message = "To use custom databases you need to install the package {.pkg odbc}, or provide your connection directly to all functions.")
+          cli::cli_abort(
+            message = "To use custom databases you need to install the package {.pkg odbc}, or provide your connection directly to all functions."
+          )
         }
         drv <- odbc::odbc()
       }
@@ -452,12 +462,16 @@ cas_connect_to_db <- function(db_connection = NULL,
     if (is.list(db_connection)) {
       if (db_connection[["driver"]] == "SQLite") {
         if (requireNamespace("RSQLite", quietly = TRUE) == FALSE) {
-          cli::cli_abort(message = "To use SQLite databases you need to install the package {.pkg RSQLite}.")
+          cli::cli_abort(
+            message = "To use SQLite databases you need to install the package {.pkg RSQLite}."
+          )
         }
         drv <- RSQLite::SQLite()
       } else {
         if (requireNamespace("odbc", quietly = TRUE) == FALSE) {
-          cli::cli_abort(message = "To use custom databases you need to install the package {.pkg odbc}, or provide your connection directly to all functions.")
+          cli::cli_abort(
+            message = "To use custom databases you need to install the package {.pkg odbc}, or provide your connection directly to all functions."
+          )
         }
         drv <- odbc::odbc()
       }
@@ -480,8 +494,6 @@ cas_connect_to_db <- function(db_connection = NULL,
 }
 
 
-
-
 #' Ensure that connection to database is disconnected consistently
 #'
 #' @param use_db Defaults to NULL. If given, it should be given either TRUE or FALSE. Typically set with `cas_enable_db()` or `cas_disable_db()`.
@@ -495,10 +507,12 @@ cas_connect_to_db <- function(db_connection = NULL,
 #'
 #' @examples
 #' cas_disconnect_from_db()
-cas_disconnect_from_db <- function(db_connection = NULL,
-                                   db_type = NULL,
-                                   use_db = NULL,
-                                   disconnect_db = FALSE) {
+cas_disconnect_from_db <- function(
+  db_connection = NULL,
+  db_type = NULL,
+  use_db = NULL,
+  disconnect_db = FALSE
+) {
   if (isFALSE(disconnect_db)) {
     return(invisible(NULL))
   }
@@ -506,7 +520,6 @@ cas_disconnect_from_db <- function(db_connection = NULL,
   if (isFALSE(x = cas_check_use_db(use_db))) {
     return(invisible(NULL))
   }
-
 
   if (is.null(db_type)) {
     db_type <- cas_get_options()$db_type
@@ -573,12 +586,14 @@ cas_disconnect_from_db <- function(db_connection = NULL,
 #'   df = urls_df,
 #'   table = "index_id"
 #' )
-cas_write_to_db <- function(df,
-                            table,
-                            overwrite = FALSE,
-                            db_connection = NULL,
-                            disconnect_db = FALSE,
-                            ...) {
+cas_write_to_db <- function(
+  df,
+  table,
+  overwrite = FALSE,
+  db_connection = NULL,
+  disconnect_db = FALSE,
+  ...
+) {
   if (cas_check_use_db(...) == FALSE) {
     return(invisible(NULL))
   }
@@ -597,22 +612,22 @@ cas_write_to_db <- function(df,
   }
 
   if (table == "index_id") {
-    if (identical(colnames(df), colnames(casdb_empty_index_id)) & identical(sapply(df, class), sapply(casdb_empty_index_id, class))) {
-      DBI::dbWriteTable(db,
-        name = table,
-        value = df,
-        append = TRUE
-      )
+    if (
+      identical(colnames(df), colnames(casdb_empty_index_id)) &
+        identical(sapply(df, class), sapply(casdb_empty_index_id, class))
+    ) {
+      DBI::dbWriteTable(db, name = table, value = df, append = TRUE)
     } else {
-      cli::cli_abort("Incompatible data frame passed to `index_id`. `df` should have a numeric `id` column, and a character `url` and `type` column.")
+      cli::cli_abort(
+        "Incompatible data frame passed to `index_id`. `df` should have a numeric `id` column, and a character `url` and `type` column."
+      )
     }
   } else if (table == "contents_id") {
-    if (identical(colnames(df), colnames(casdb_empty_contents_id)) & identical(sapply(df, class), sapply(casdb_empty_contents_id, class))) {
-      DBI::dbWriteTable(db,
-        name = table,
-        value = df,
-        append = TRUE
-      )
+    if (
+      identical(colnames(df), colnames(casdb_empty_contents_id)) &
+        identical(sapply(df, class), sapply(casdb_empty_contents_id, class))
+    ) {
+      DBI::dbWriteTable(db, name = table, value = df, append = TRUE)
     } else {
       cli::cli_abort("Incompatible data frame passed to `contents_id`.")
     }
@@ -664,11 +679,13 @@ cas_write_to_db <- function(df,
 #' )
 #'
 #' cas_read_from_db(table = "index_id")
-cas_read_from_db <- function(table,
-                             db_folder = NULL,
-                             db_connection = NULL,
-                             disconnect_db = FALSE,
-                             ...) {
+cas_read_from_db <- function(
+  table,
+  db_folder = NULL,
+  db_connection = NULL,
+  disconnect_db = FALSE,
+  ...
+) {
   if (cas_check_use_db(...) == FALSE) {
     cli::cli_abort(c(
       x = "Database not set.",

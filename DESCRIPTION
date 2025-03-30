@@ -66,7 +66,7 @@ Suggests:
     arrow
 Config/testthat/edition: 3
 Depends: 
-    R (>= 2.10)
+    R (>= 3.5)
 URL: https://castarter.tadadit.xyz, https://github.com/giocomai/castarter
 BugReports: https://github.com/giocomai/castarter/issues
 Language: en-US
