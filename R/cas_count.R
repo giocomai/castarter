@@ -109,7 +109,7 @@ cas_count_single <- function(corpus,
 
   output_df |>
     dplyr::transmute(
-      {{ group_by }},
+      dplyr::pick({{ group_by }}),
       {{ pattern_column_name }} := pattern,
       {{ n_column_name }}
     ) |>
