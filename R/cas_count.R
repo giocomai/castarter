@@ -46,7 +46,7 @@ cas_count <- function(corpus,
                       n_column_name = n,
                       locale = "en") {
   if (drop_na == TRUE) {
-    corpus <- corpus |> 
+    corpus <- corpus |>
       tidyr::drop_na({{ text }}, {{ group_by }})
   }
 
@@ -78,7 +78,7 @@ cas_count <- function(corpus,
         locale = locale
       )
     }
-  ) %>%
+  ) |>
     purrr::list_rbind()
 }
 
@@ -93,26 +93,26 @@ cas_count_single <- function(corpus,
                              pattern_column_name = word,
                              n_column_name = n,
                              locale = "en") {
-  output_df <- corpus %>%
+  output_df <- corpus |>
     dplyr::mutate({{ n_column_name }} := stringr::str_count(
       string = {{ text }},
       pattern = stringr::regex(
         pattern = !!pattern,
         ignore_case = !!ignore_case
       )
-    )) %>%
-    dplyr::group_by(dplyr::pick({{ group_by }})) %>%
+    )) |>
+    dplyr::group_by(dplyr::pick({{ group_by }})) |>
     dplyr::summarise(
       {{ n_column_name }} := sum({{ n_column_name }}, na.rm = TRUE),
       .groups = "drop"
     )
 
-  output_df %>%
+  output_df |>
     dplyr::transmute(
       {{ group_by }},
       {{ pattern_column_name }} := pattern,
       {{ n_column_name }}
-    ) %>%
+    ) |>
     dplyr::collect()
 }
 
