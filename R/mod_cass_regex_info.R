@@ -49,7 +49,7 @@ mod_cass_regex_info_server <- function(id) {
             shiny::p("Here are a few examples of common use cases:"),
             shiny::tags$ul(
               shiny::tags$li("It is possible to match specific combinations. For example, if you want to match both 'russian' and 'russians', you can search for 'russian[s]?`, which indicates that the final 's' may or may not be present; 'russian|russians' would similarly work."),
-              shiny::tags$li("In particular for languages with declensions, it may be important to consider all possible terminations, especially when combining words: for example, in 'коллективн[а-я]+ Запад', '[а-я]+' would capture none, one or more letters of the Cyrillic alphabet (the corresponding for Latin characters would be '[a-z]?'; other alphabets can be capptured with e.g. \\p{Cyrillic} or \\p{Greek})."),
+              shiny::tags$li("In particular for languages with declensions, it may be important to consider all possible terminations, especially when combining words: for example, in 'коллективн[а-я]+ Запад', '[а-я]+' would capture none, one or more letters of the Cyrillic alphabet (the corresponding for Latin characters would be '[a-z]?'; other alphabets can be captured with e.g. \\p{Cyrillic} or \\p{Greek})."),
               shiny::tags$li("If you rely on regex, be mindful that some selectors (e.g. '[[:alpha:]]' for any character or '\\b' for word boundary) refer specifically to ASCII characters and will not work as expected with non-ASCII characters such as some accented letters or non-Latin alphabets.")
             )
           )
