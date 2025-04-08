@@ -27,8 +27,8 @@ counted.}
 \item{text}{Defaults to \code{text}. The unquoted name of the column of the corpus
 data frame to be used for matching.}
 
-\item{group_by}{Defaults to NULL. If given, the unquoted name of the column
-to be used for grouping (e.g. date, or doc_id, or source, etc.)}
+\item{group_by}{Defaults to NULL. If given, the name of one ore more columns
+to be used for grouping (e.g. \code{date}, or \code{doc_id}, or \code{source}, etc.)}
 
 \item{ignore_case}{Defaults to TRUE.}
 

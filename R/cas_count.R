@@ -5,8 +5,8 @@
 #'   counted.
 #' @param text Defaults to `text`. The unquoted name of the column of the corpus
 #'   data frame to be used for matching.
-#' @param group_by Defaults to NULL. If given, the unquoted name of the column
-#'   to be used for grouping (e.g. date, or doc_id, or source, etc.)
+#' @param group_by Defaults to NULL. If given, the name of one ore more columns
+#'   to be used for grouping (e.g. `date`, or `doc_id`, or `source`, etc.)
 #' @param ignore_case Defaults to TRUE.
 #' @param drop_na Defaults to TRUE. If TRUE, all rows where either `text` or
 #'   `group_by` column is NA are removed before further processing.
@@ -46,8 +46,8 @@ cas_count <- function(corpus,
                       n_column_name = n,
                       locale = "en") {
   if (drop_na == TRUE) {
-    corpus <- corpus %>%
-      dplyr::filter(is.na({{ text }}) == FALSE, is.na({{ group_by }}) == FALSE)
+    corpus <- corpus |> 
+      tidyr::drop_na({{ text }}, {{ group_by }})
   }
 
   if (isTRUE(full_words_only)) {
@@ -101,7 +101,7 @@ cas_count_single <- function(corpus,
         ignore_case = !!ignore_case
       )
     )) %>%
-    dplyr::group_by({{ group_by }}) %>%
+    dplyr::group_by(dplyr::pick({{ group_by }})) %>%
     dplyr::summarise(
       {{ n_column_name }} := sum({{ n_column_name }}, na.rm = TRUE),
       .groups = "drop"
@@ -146,6 +146,6 @@ cas_count_total_words <- function(corpus,
     pattern_column_name = cas_pattern,
     n_column_name = {{ n_column_name }},
     locale = locale
-  ) %>%
+  ) |>
     dplyr::select(-cas_pattern)
 }
