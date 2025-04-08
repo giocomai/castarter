@@ -1,3 +1,7 @@
+# castarter 0.4
+
+- `cas_kwic()` for keywords-in-context now support patterns of more than one word
+
 # castarter 0.3
 
 - enhanced documentation, including tutorials and example workflows

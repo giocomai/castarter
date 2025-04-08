@@ -212,31 +212,31 @@ cas_kwic_single_pattern <- function(
             tibble::as_tibble() |>
             dplyr::mutate(row_number = dplyr::row_number()) |>
             dplyr::filter(
-              current_match[1] >= start & current_match[1] <= end
+              current_match[2] >= start & current_match[1] <= end
             ) |>
             dplyr::pull(.data$row_number)
 
           if (full_word_with_partial_match == TRUE) {
-            if (current_match_row_number == 1) {
+            if (min(current_match_row_number) == 1) {
               end_of_before <- 0
             } else {
               end_of_before <- current_all_words_location_l[
-                current_match_row_number - 1,
+                min(current_match_row_number) - 1,
                 2
               ]
             }
 
             start_of_pattern <- current_all_words_location_l[
-              current_match_row_number,
+              min(current_match_row_number),
               1
             ]
             end_of_pattern <- current_all_words_location_l[
-              current_match_row_number,
+              max(current_match_row_number),
               2
             ]
 
             if (
-              current_match_row_number ==
+              max(current_match_row_number) ==
                 length(current_all_words_location_l) / 2
             ) {
               start_of_after <- 0
@@ -246,7 +246,7 @@ cas_kwic_single_pattern <- function(
                 start_of_after <- end_of_after <- current_all_words_location_l[
                   min(
                     length(current_all_words_location_l) / 2,
-                    current_match_row_number + words_after
+                    max(current_match_row_number) + words_after
                   ),
                   2
                 ] +
@@ -254,18 +254,18 @@ cas_kwic_single_pattern <- function(
               }
             } else {
               start_of_after <- current_all_words_location_l[
-                current_match_row_number + 1,
+                max(current_match_row_number) + 1,
                 1
               ]
               if (period_at_end_of_sentence == TRUE) {
                 if (
                   length(current_all_words_location_l) / 2 <=
-                    current_match_row_number + words_after
+                  max(current_match_row_number) + words_after
                 ) {
                   end_of_after <- current_all_words_location_l[
                     min(
                       length(current_all_words_location_l) / 2,
-                      current_match_row_number + words_after
+                      max(current_match_row_number) + words_after
                     ),
                     2
                   ] +
@@ -274,7 +274,7 @@ cas_kwic_single_pattern <- function(
                   end_of_after <- current_all_words_location_l[
                     min(
                       length(current_all_words_location_l) / 2,
-                      current_match_row_number + words_after
+                      max(current_match_row_number) + words_after
                     ),
                     2
                   ]
@@ -283,7 +283,7 @@ cas_kwic_single_pattern <- function(
                 end_of_after <- current_all_words_location_l[
                   min(
                     length(current_all_words_location_l) / 2,
-                    current_match_row_number + words_after
+                    max(current_match_row_number) + words_after
                   ),
                   2
                 ]
@@ -299,7 +299,7 @@ cas_kwic_single_pattern <- function(
             if (period_at_end_of_sentence == TRUE) {
               if (
                 length(current_all_words_location_l) / 2 <=
-                  current_match_row_number + words_after
+                max(current_match_row_number) + words_after
               ) {
                 end_of_after <- current_all_words_location_l[
                   length(current_all_words_location_l) / 2,
@@ -308,7 +308,7 @@ cas_kwic_single_pattern <- function(
                   1
               } else {
                 end_of_after <- current_all_words_location_l[
-                  current_match_row_number + words_after,
+                  max(current_match_row_number) + words_after,
                   2
                 ]
               }
@@ -316,7 +316,7 @@ cas_kwic_single_pattern <- function(
               end_of_after <- current_all_words_location_l[
                 min(
                   length(current_all_words_location_l) / 2,
-                  current_match_row_number + words_after
+                  max(current_match_row_number) + words_after
                 ),
                 2
               ]
@@ -329,7 +329,7 @@ cas_kwic_single_pattern <- function(
               before = stringr::str_sub(
                 string = current_text,
                 start = current_all_words_location_l[
-                  max(1, current_match_row_number - words_before),
+                  max(1, min(current_match_row_number) - words_before),
                   1
                 ],
                 end = end_of_before

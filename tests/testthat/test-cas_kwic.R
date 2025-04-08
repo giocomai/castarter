@@ -1,5 +1,6 @@
 library("dplyr", warn.conflicts = TRUE)
 library("testthat")
+library("castarter")
 
 corpus <- tibble::tibble(
   text = c(
@@ -92,6 +93,59 @@ test_that("cas_kwic works with two patterns", {
       "fox jumps over the lazy",
       "dog",
       "."
+    )
+  )
+})
+
+
+
+
+test_that("cas_kwic works with pattern of two words", {
+  expect_equal(
+    cas_kwic(
+      corpus = tibble::tibble(
+        text = "The quick brown fox jumps over the lazy dog."
+      ),
+      pattern = "brow[:alpha:]+ fox"
+    ),
+    tibble::tribble(
+      ~text,
+      ~before,
+      ~pattern,
+      ~after,
+      "The quick brown fox jumps over the lazy dog.",
+      "The quick",
+      "brown fox",
+      "jumps over the lazy dog."
+    )
+  )
+})
+
+
+
+
+test_that("cas_kwic works with pattern of two words", {
+  expect_equal(
+    cas_kwic(
+      corpus = tibble::tibble(
+        text = "The quick brown fox jumps over the lazy dog, and then another browny fox arrives."
+      ),
+      pattern = "brow[:alpha:]+ fox"
+    ),
+    tibble::tribble(
+      ~text,
+      ~before,
+      ~pattern,
+      ~after,
+      "The quick brown fox jumps over the lazy dog, and then another browny fox arrives.",
+      "The quick",
+      "brown fox",
+      "jumps over the lazy dog",
+      
+      "The quick brown fox jumps over the lazy dog, and then another browny fox arrives.",
+      "lazy dog, and then another",
+      "browny fox",
+      "arrives."
     )
   )
 })
