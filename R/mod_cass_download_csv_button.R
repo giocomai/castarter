@@ -65,7 +65,7 @@ mod_cass_download_csv_server <- function(
 #' @export
 #'
 #' @examples
-#'
+#' \dontrun{
 #' count_df <- cas_count(
 #'   corpus = cas_demo_corpus,
 #'   pattern = c("russia", "moscow")
@@ -75,7 +75,7 @@ mod_cass_download_csv_server <- function(
 #' if (interactive()) {
 #' cass_download_csv_app(count_df)
 #' }
-#'
+#' }
 cass_download_csv_app <- function(df, type = "data") {
   ui <- fluidPage(
     mod_cass_download_csv_ui("mod_cass_download_csv_ui_1")

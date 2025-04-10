@@ -16,7 +16,7 @@ A shiny app
 A minimal shiny app that demonstrates the functioning of related modules
 }
 \examples{
-
+\dontrun{
 count_df <- cas_count(
   corpus = cas_demo_corpus,
   pattern = c("russia", "moscow")
@@ -26,5 +26,5 @@ count_df <- cas_count(
 if (interactive()) {
 cass_download_csv_app(count_df)
 }
-
+}
 }
