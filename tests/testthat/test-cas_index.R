@@ -61,10 +61,12 @@ test_that("cas_write_db_index writes, and cas_read_db_index returns data frame o
     index_df <- cas_read_db_index(
       use_db = TRUE,
       db_connection = db,
-      disconnect_db = TRUE
+      disconnect_db = FALSE
     ) |>
       dplyr::collect()
 
+    cas_disconnect_from_db(db)
+    
     nrow(index_df) == 10
   })
 })
@@ -111,10 +113,12 @@ test_that("cas_write_db_index tries to write twice same data, and cas_read_db_in
     index_df <- cas_read_db_index(
       use_db = TRUE,
       db_connection = db,
-      disconnect_db = TRUE
+      disconnect_db = FALSE
     ) |>
       dplyr::collect()
 
+    cas_disconnect_from_db(db)
+    
     nrow(index_df) == 10
   })
 })
@@ -167,10 +171,12 @@ test_that("cas_write_db_index tries to write new set of urls, but with already u
     index_df <- cas_read_db_index(
       use_db = TRUE,
       db_connection = db,
-      disconnect_db = TRUE
+      disconnect_db = FALSE
     ) |>
       dplyr::collect()
 
+    cas_disconnect_from_db(db)
+    
     sum(
       nrow(index_df) == 20,
       length(unique(index_df$id)) == 20
