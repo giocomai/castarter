@@ -37,7 +37,7 @@ Path to base folder. A character vector of length one of class
 \code{fs_path}.
 }
 \description{
-Full path to folder is determined by:
+For more information on how the full path is determined, see details.
 }
 \details{
 \itemize{

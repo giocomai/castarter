@@ -1,6 +1,6 @@
 #' Build full path to base folder where batches of files will be stored.
 #'
-#' Full path to folder is determined by:
+#' For more information on how the full path is determined, see details.
 #'
 #' * `base_folder` - path to the folder where all project files are expected to be stored. Can be retrieved with `cas_get_base_folder(level = "base")`, can be set for the whole session with `cas_set_options(base_folder = fs::path(fs::path_temp(), "castarter")`.
 #' * `project` - project name, typically set with `cas_set_options(project = "example_project)`
