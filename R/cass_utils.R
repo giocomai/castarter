@@ -82,7 +82,7 @@ cass_combine_into_pattern <- function(words,
 #'
 #' The path is computed based on inputs and settings; it may or may not exist.
 #'
-#' @param level Defaults to "website". Valid values are "website", "project",
+#' @param level Defaults to "base". Valid values are "website", "project",
 #'   and "base".
 #' @param custom_path Defaults to NULL. If given, all other parameters and
 #'   settings are ignored, and this value is returned.
@@ -109,7 +109,7 @@ cass_combine_into_pattern <- function(words,
 #'
 #' cas_get_base_folder(custom_path = fs::path(tempdir(), "custom_path"))
 cas_get_base_folder <- function(...,
-                                level = "website",
+                                level = c("base", "project", "website"),
                                 custom_path = NULL) {
   rlang::check_dots_used()
 
@@ -119,18 +119,18 @@ cas_get_base_folder <- function(...,
 
   cas_options_l <- cas_get_options(...)
 
-  if (level == "website") {
+  if (level[[1]] == "website") {
     path <- fs::path(
       cas_options_l$base_folder,
       cas_options_l$project,
       cas_options_l$website
     )
-  } else if (level == "project") {
+  } else if (level[[1]] == "project") {
     path <- fs::path(
       cas_options_l$base_folder,
       cas_options_l$project
     )
-  } else if (level == "base") {
+  } else if (level[[1]] == "base") {
     path <- fs::path(
       cas_options_l$base_folder
     )

@@ -1,16 +1,48 @@
-#' Build full path to base working folder
+#' Build full path to base folder where batches of files will be stored.
 #'
-#' @param create_folder_if_missing Logical, defaults to NULL. If NULL, it will ask
-#'   before creating a new folder. If TRUE, it will create it without asking.
-#' @param custom_folder
-#' @param file_format
+#' Full path to folder is determined by:
+#'
+#' * `base_folder` - path to the folder where all project files are expected to be stored. Can be retrieved with `cas_get_base_folder(level = "base")`, can be set for the whole session with `cas_set_options(base_folder = fs::path(fs::path_temp(), "castarter")`.
+#' * `project` - project name, typically set with `cas_set_options(project = "example_project)`
+#' * `website` - website name, typically set with `cas_set_options(website = "example_project)`
+#' * a combination of `file_format` and either `index`, `contents`, or something different if set with the `custom_folder` argument.
+#'
+#'
+#' @param create_folder_if_missing Logical, defaults to NULL. If NULL, it will
+#'   ask before creating a new folder. If TRUE, it will create it without
+#'   asking.
+#' @param custom_folder Defaults to NULL. Folder name within the website folder
+#'   is typically determined by `file_format` and either `index` or `contents`;
+#'   if you prefer another option, different from both `index` and `contents`,
+#'   you can set it using the `custom_folder` argument.
+#' @param file_format Defaults to `html`. Used to determine folder name, and
+#'   internally to assume contents type when using functions such as
+#'   [cas_extract()].
+#' @param custom_path Defaults to NULL. If given, overrides all other inputs,
+#'   and is returned as given.
 #'
 #' @inheritParams cas_get_base_folder
 #'
-#' @return Path to base folder. A character vector of length one of class `fs_path`.
+#' @return Path to base folder. A character vector of length one of class
+#'   `fs_path`.
 #' @export
 #'
 #' @examples
+#' set.seed(1)
+#' cas_set_options(project = "example_project",
+#'                 website = "example_website", 
+#'                 base_folder = fs::path(fs::path_temp(), "castarter"))
+#' 
+#' cas_get_base_path(create_folder_if_missing = FALSE)
+#' 
+#' cas_get_base_path(file_format = "html", 
+#'                   create_folder_if_missing = FALSE)
+#' 
+#' cas_get_base_path(file_format = "xml", 
+#'                   create_folder_if_missing = FALSE)
+#' 
+#' cas_get_base_path(index = TRUE,
+#'                   create_folder_if_missing = FALSE)
 cas_get_base_path <- function(create_folder_if_missing = NULL,
                               custom_path = NULL,
                               custom_folder = NULL,
@@ -27,7 +59,7 @@ cas_get_base_path <- function(create_folder_if_missing = NULL,
       level = "website",
       ...
     )
-    if (is.null(custom_folder) == FALSE) {
+    if (!is.null(custom_folder)) {
       path <- fs::path(
         website_folder,
         stringr::str_c(file_format, "_", custom_folder)
@@ -38,6 +70,8 @@ cas_get_base_path <- function(create_folder_if_missing = NULL,
         stringr::str_c(file_format, "_", type)
       )
     }
+  } else {
+    path <- custom_path
   }
 
   if (fs::dir_exists(path) == FALSE) {
@@ -57,7 +91,7 @@ cas_get_base_path <- function(create_folder_if_missing = NULL,
         sep = " "
       ))
     } else {
-      cli::cli_warn(message = c(`!` = "Base path returned, but the folder does not exist and has not been created"))
+      cli::cli_warn(message = c(`!` = "Base path returned, but the folder does not exist and has not been created."))
     }
   }
   fs::path(path)
