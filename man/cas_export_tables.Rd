@@ -19,7 +19,7 @@ cas_export_tables(
 project/website/export/file_format folder.}
 
 \item{file_format}{Defaults to "csv.gz", i.e. compressed csv files. All
-formats supported by \code{readr::write_csv()} are valid.}
+formats supported by \code{\link[readr:write_delim]{readr::write_csv()}} are valid.}
 
 \item{tables}{Defaults to NULL. If NULL, all database tables are exported. If
 given, names of the database tables to export. See

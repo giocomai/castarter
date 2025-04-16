@@ -3,7 +3,7 @@
 #' @param path Defaults to NULL. If NULL, path is set to the
 #'   project/website/export/file_format folder.
 #' @param file_format Defaults to "csv.gz", i.e. compressed csv files. All
-#'   formats supported by `readr::write_csv()` are valid.
+#'   formats supported by [readr::write_csv()] are valid.
 #' @param tables Defaults to NULL. If NULL, all database tables are exported. If
 #'   given, names of the database tables to export. See
 #'   `vignette("castarter-database")` for details.
@@ -17,15 +17,19 @@
 #'   cas_export_tables(file_format = "csv")
 #' }
 #' }
-cas_export_tables <- function(path = NULL,
-                              file_format = "csv.gz",
-                              tables = NULL,
-                              db_connection = NULL,
-                              disconnect_db = FALSE,
-                              db_folder = NULL,
-                              ...) {
+cas_export_tables <- function(
+  path = NULL,
+  file_format = "csv.gz",
+  tables = NULL,
+  db_connection = NULL,
+  disconnect_db = FALSE,
+  db_folder = NULL,
+  ...
+) {
   if (cas_check_use_db(...) == FALSE) {
-    cli::cli_abort("Database not set. Set the database connection with `cas_set_options()` or pass database connection with the parameter `db_connection`.")
+    cli::cli_abort(
+      "Database not set. Set the database connection with {.fun cas_set_options} or pass database connection with the argument {.arg db_connection}."
+    )
   }
 
   db <- cas_connect_to_db(
@@ -36,34 +40,29 @@ cas_export_tables <- function(path = NULL,
 
   cas_options_l <- cas_get_options(...)
 
-  if (is.null(path) == TRUE) {
+  if (is.null(path)) {
     path <- fs::path(
-      cas_get_base_path(...) %>%
-        fs::path_dir(),
+      cas_get_base_folder(level = "website"),
       "export",
       "tables",
-      file_format %>%
+      file_format |>
         stringr::str_replace(
           pattern = stringr::fixed("."),
           replacement = "_"
         ),
-      fs::path_sanitize(Sys.time(),
-        replacement = "_"
-      ) %>%
-        stringr::str_replace(
-          pattern = " ",
-          replacement = "-"
-        )
+      fs::path_sanitize(Sys.time() |> format("%Y-%m-%d-%H_%M_%S"))
     )
   }
 
   if (fs::file_exists(path)) {
-    cli::cli_abort("The folder {.path {path}} already exists. Please remove or rename it before exporting.")
+    cli::cli_abort(
+      "The folder {.path {path}} already exists. Please remove or rename it before exporting."
+    )
   }
 
   fs::dir_create(path = path)
 
-  if (is.null(tables) == TRUE) {
+  if (is.null(tables)) {
     tables_v <- DBI::dbListTables(conn = db)
   } else {
     tables_v <- tables
@@ -72,19 +71,21 @@ cas_export_tables <- function(path = NULL,
   purrr::walk(
     .x = tables_v,
     .f = function(current_table) {
-      DBI::dbReadTable(conn = db, name = current_table) %>%
+      DBI::dbReadTable(conn = db, name = current_table) |>
         dplyr::collect() |>
-        readr::write_csv(file = fs::path(
-          path,
-          stringr::str_c(
-            current_table,
-            "-",
-            cas_options_l$website,
-            ".",
-            file_format
-          ) %>%
-            fs::path_sanitize()
-        ))
+        readr::write_csv(
+          file = fs::path(
+            path,
+            stringr::str_c(
+              current_table,
+              "-",
+              cas_options_l$website,
+              ".",
+              file_format
+            ) |>
+              fs::path_sanitize()
+          )
+        )
     }
   )
 
@@ -95,6 +96,6 @@ cas_export_tables <- function(path = NULL,
 
   cli::cli_inform(c(
     v = "Tables {.field {stringr::str_flatten_comma(tables_v)}} have been successfully exported in {.field {file_format}} format",
-    i = "Exported files are available in the {.path {path}} folder"
+    i = "Exported files are available in the following folder: {.path {path}}"
   ))
 }

@@ -12,14 +12,16 @@
 #' @export
 #'
 #' @examples
-cas_archive <- function(path = NULL,
-                        file_format = "tar.gz",
-                        index = TRUE,
-                        contents = TRUE,
-                        remove_original = TRUE,
-                        db_connection = NULL,
-                        db_folder = NULL,
-                        ...) {
+cas_archive <- function(
+  path = NULL,
+  file_format = "tar.gz",
+  index = TRUE,
+  contents = TRUE,
+  remove_original = TRUE,
+  db_connection = NULL,
+  db_folder = NULL,
+  ...
+) {
   # if (cas_check_use_db(...) == FALSE) {
   #   cli::cli_abort(message = c(x = "Database not set.",
   #                              i = " Set the database connection with `cas_set_options()` or pass a database connection with the parameter `db_connection`."))
@@ -35,17 +37,13 @@ cas_archive <- function(path = NULL,
 
   website_folder <- cas_get_base_folder(level = "website")
 
-  if (is.null(path) == TRUE) {
+  if (is.null(path)) {
     path <- fs::path(
       website_folder,
       "archive",
-      fs::path_sanitize(Sys.time(),
-        replacement = "_"
-      ) %>%
-        stringr::str_replace(
-          pattern = " ",
-          replacement = "-"
-        )
+      fs::path_sanitize(
+        Sys.time() |> format("%Y-%m-%d-%H_%M_%S")
+      )
     )
   }
 
@@ -63,7 +61,7 @@ cas_archive <- function(path = NULL,
       glob = "*_index"
     )
 
-    index_folders_v <- base_index_folders_v %>%
+    index_folders_v <- base_index_folders_v |>
       fs::dir_ls(
         recurse = FALSE,
         type = "directory"
@@ -79,29 +77,34 @@ cas_archive <- function(path = NULL,
       type = "directory",
       glob = "*_contents"
     )
-    contents_folders_v <- base_contents_folders_v %>%
+    contents_folders_v <- base_contents_folders_v |>
       fs::dir_ls(
         recurse = FALSE,
         type = "directory"
       )
 
-    n_folders_to_archive <- sum(n_folders_to_archive, length(contents_folders_v))
+    n_folders_to_archive <- sum(
+      n_folders_to_archive,
+      length(contents_folders_v)
+    )
   }
 
   if (n_folders_to_archive == 0) {
-    cli::cli_inform(message = c(v = "No new files to archive for the current website."))
+    cli::cli_inform(
+      message = c(v = "No new files to archive for the current website.")
+    )
     return(invisible(NULL))
   }
 
   fs::dir_create(path = path)
 
-  if (index == TRUE) {
+  if (index) {
     purrr::walk(
       .progress = "Archiving index files",
       .x = index_folders_v,
       .f = function(current_folder) {
         current_filename <- stringr::str_c(
-          fs::path_dir(current_folder) %>%
+          fs::path_dir(current_folder) |>
             fs::path_file(),
           "_",
           fs::path_file(current_folder),
@@ -129,7 +132,8 @@ cas_archive <- function(path = NULL,
           if (sum(local_files_v %in% tarred_files_v) == length(local_files_v)) {
             fs::dir_delete(path = current_folder)
           } else {
-            cli::cli_abort(c("Something's not right: not all locally stored files in folder {.folder {fs::path_real(current_folder)}} are included in the newly generated {.path {fs::path_real(tarfile_v)}}",
+            cli::cli_abort(c(
+              "Something's not right: not all locally stored files in folder {.folder {fs::path_real(current_folder)}} are included in the newly generated {.path {fs::path_real(tarfile_v)}}",
               i = "Archiving process has been stopped."
             ))
           }
@@ -149,12 +153,13 @@ cas_archive <- function(path = NULL,
           fs::dir_delete(current_index_folder)
         } else {
           absolute_path <- fs::path_abs(current_index_folder)
-          cli::cli_inform(message = "Index folders have been archived, but some files or folder are still present in {.path {absolute_path}}")
+          cli::cli_inform(
+            message = "Index folders have been archived, but some files or folder are still present in {.path {absolute_path}}"
+          )
         }
       }
     )
   }
-
 
   if (contents == TRUE) {
     base_contents_folders_v <- fs::dir_ls(
@@ -163,7 +168,7 @@ cas_archive <- function(path = NULL,
       type = "directory",
       glob = "*_contents"
     )
-    contents_folders_v <- base_contents_folders_v %>%
+    contents_folders_v <- base_contents_folders_v |>
       fs::dir_ls(
         recurse = FALSE,
         type = "directory"
@@ -174,7 +179,7 @@ cas_archive <- function(path = NULL,
       .x = contents_folders_v,
       .f = function(current_folder) {
         current_filename <- stringr::str_c(
-          fs::path_dir(current_folder) %>%
+          fs::path_dir(current_folder) |>
             fs::path_file(),
           "_",
           fs::path_file(current_folder),
@@ -201,7 +206,8 @@ cas_archive <- function(path = NULL,
           if (sum(local_files_v %in% tarred_files_v) == length(local_files_v)) {
             fs::dir_delete(path = current_folder)
           } else {
-            cli::cli_abort(c("Something's not right: not all locally stored files in folder {.folder {fs::path_real(current_folder)}} are included in the newly generated {.path {fs::path_real(tarfile_v)}}",
+            cli::cli_abort(c(
+              "Something's not right: not all locally stored files in folder {.folder {fs::path_real(current_folder)}} are included in the newly generated {.path {fs::path_real(tarfile_v)}}",
               i = "Archiving process has been stopped."
             ))
           }
@@ -221,7 +227,9 @@ cas_archive <- function(path = NULL,
           fs::dir_delete(current_contents_folder)
         } else {
           absolute_path <- fs::path_abs(current_contents_folder)
-          cli::cli_inform(message = "Index folders have been archived, but some files or folder are still present in {.path {absolute_path}}")
+          cli::cli_inform(
+            message = "Index folders have been archived, but some files or folder are still present in {.path {absolute_path}}"
+          )
         }
       }
     )
