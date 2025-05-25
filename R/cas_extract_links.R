@@ -58,39 +58,38 @@
 #' links <- cas_extract_links(domain = "http://www.example.com/")
 #' }
 cas_extract_links <- function(
-  id = NULL,
-  batch = "latest",
-  domain = NULL,
-  index = TRUE,
-  index_group = NULL,
-  output_index = FALSE,
-  output_index_group = NULL,
-  include_when = NULL,
-  exclude_when = NULL,
-  container = NULL,
-  container_class = NULL,
-  container_id = NULL,
-  custom_xpath = NULL,
-  custom_css = NULL,
-  match = NULL,
-  min_length = NULL,
-  max_length = NULL,
-  attribute_type = "href",
-  append_string = NULL,
-  remove_string = NULL,
-  write_to_db = FALSE,
-  file_format = "html",
-  keep_only_within_domain = TRUE,
-  sample = FALSE,
-  check_previous = TRUE,
-  check_again = FALSE,
-  encoding = "UTF-8",
-  reverse_order = FALSE,
-  db_connection = NULL,
-  disconnect_db = TRUE,
-  ...
-) {
-  if (is.null(domain) == FALSE) {
+    id = NULL,
+    batch = "latest",
+    domain = NULL,
+    index = TRUE,
+    index_group = NULL,
+    output_index = FALSE,
+    output_index_group = NULL,
+    include_when = NULL,
+    exclude_when = NULL,
+    container = NULL,
+    container_class = NULL,
+    container_id = NULL,
+    custom_xpath = NULL,
+    custom_css = NULL,
+    match = NULL,
+    min_length = NULL,
+    max_length = NULL,
+    attribute_type = "href",
+    append_string = NULL,
+    remove_string = NULL,
+    write_to_db = FALSE,
+    file_format = "html",
+    keep_only_within_domain = TRUE,
+    sample = FALSE,
+    check_previous = TRUE,
+    check_again = FALSE,
+    encoding = "UTF-8",
+    reverse_order = FALSE,
+    db_connection = NULL,
+    disconnect_db = TRUE,
+    ...) {
+  if (!is.null(domain)) {
     if (domain == "" | is.na(domain) == TRUE) {
       domain <- NULL
     }
@@ -118,11 +117,11 @@ cas_extract_links <- function(
 
   if (sum(local_files_df$available) < nrow(local_files_df)) {
     cli::cli_warn(
-      message = "Missing files: {nrow(local_files_df %>% dplyr::filter(!available))}"
+      message = "Missing files: {nrow(local_files_df |> dplyr::filter(!available))}"
     )
 
-    local_files_df <- local_files_df %>%
-      dplyr::filter(available) %>%
+    local_files_df <- local_files_df |>
+      dplyr::filter(available) |>
       dplyr::select(-"available")
 
     if (nrow(local_files_df) == 0) {
@@ -133,31 +132,31 @@ cas_extract_links <- function(
       ))
     }
   } else {
-    local_files_df <- local_files_df %>%
+    local_files_df <- local_files_df |>
       dplyr::select(-"available")
   }
 
-  if (check_previous == FALSE & write_to_db == FALSE) {
-    if (output_index == TRUE) {
+  if (!check_previous & !write_to_db) {
+    if (output_index) {
       previous_links_df <- casdb_empty_index_id
     } else {
       previous_links_df <- casdb_empty_contents_id
     }
   } else {
-    if (output_index == TRUE) {
+    if (output_index) {
       previous_links_df <- cas_read_db_index(
         index_group = output_index_group,
         db_connection = db,
         disconnect_db = FALSE,
         ...
-      ) %>%
+      ) |>
         dplyr::collect()
     } else {
       previous_links_df <- cas_read_db_contents_id(
         db_connection = db,
         disconnect_db = FALSE,
         ...
-      ) %>%
+      ) |>
         dplyr::collect()
     }
   }
@@ -168,16 +167,16 @@ cas_extract_links <- function(
     start_id <- sum(1, max(previous_links_df$id))
   }
 
-  if (output_index == TRUE) {
+  if (output_index) {
     # do nothing, as source is not kept for index urls
   } else {
-    if (check_again == TRUE) {
+    if (check_again) {
       # do nothing, as all index files should be read
     } else {
-      local_files_df <- local_files_df %>%
+      local_files_df <- local_files_df |>
         dplyr::anti_join(
-          y = previous_links_df %>%
-            dplyr::select(-"id") %>%
+          y = previous_links_df |>
+            dplyr::select(-"id") |>
             dplyr::rename(
               id = source_index_id,
               batch = source_index_batch
@@ -190,37 +189,37 @@ cas_extract_links <- function(
     }
   }
 
-  if (is.null(index_group) == FALSE) {
+  if (!is.null(index_group)) {
     previous_index_links_df <- cas_read_db_index(
       db_connection = db,
       disconnect_db = FALSE,
       ...
-    ) %>%
+    ) |>
       dplyr::collect()
 
-    local_files_df <- local_files_df %>%
+    local_files_df <- local_files_df |>
       dplyr::left_join(
-        y = previous_index_links_df %>%
+        y = previous_index_links_df |>
           dplyr::select("id", "index_group"),
         by = "id"
       )
 
-    local_files_df <- local_files_df %>%
+    local_files_df <- local_files_df |>
       dplyr::filter(index_group %in% {{ index_group }})
   }
 
-  if (is.numeric(sample) == TRUE) {
-    local_files_df <- local_files_df %>%
+  if (is.numeric(sample)) {
+    local_files_df <- local_files_df |>
       dplyr::slice_sample(n = sample)
   } else if (isTRUE(sample)) {
-    local_files_df <- local_files_df %>%
+    local_files_df <- local_files_df |>
       dplyr::slice_sample(p = 1)
   } else {
-    if (reverse_order == TRUE) {
-      local_files_df <- local_files_df %>%
+    if (reverse_order) {
+      local_files_df <- local_files_df |>
         dplyr::arrange(dplyr::desc(id), dplyr::desc(batch))
     } else {
-      local_files_df <- local_files_df %>%
+      local_files_df <- local_files_df |>
         dplyr::arrange(id, batch)
     }
   }
@@ -260,7 +259,7 @@ cas_extract_links <- function(
             matched_pre <- purrr::map_chr(
               .x = temp,
               .f = function(x) {
-                x %>%
+                x |>
                   purrr::pluck(match)
               }
             )
@@ -268,7 +267,7 @@ cas_extract_links <- function(
             matched_pre <- purrr::map_chr(
               .x = temp,
               .f = function(x) {
-                x %>%
+                x |>
                   purrr::pluck(names(match))
               }
             )
@@ -290,23 +289,23 @@ cas_extract_links <- function(
           encoding = encoding
         )
 
-        if (inherits(x = temp, what = "xml_node") == FALSE) {
+        if (!inherits(x = temp, what = "xml_node")) {
           return(NULL)
         }
 
-        if (is.null(custom_xpath) == FALSE) {
-          a_xml_nodeset <- temp %>%
+        if (!is.null(custom_xpath)) {
+          a_xml_nodeset <- temp |>
             rvest::html_elements(xpath = custom_xpath)
-        } else if (is.null(custom_css) == FALSE) {
-          a_xml_nodeset <- temp %>%
+        } else if (!is.null(custom_css)) {
+          a_xml_nodeset <- temp |>
             rvest::html_elements(css = custom_css)
         } else if (is.null(container)) {
-          a_xml_nodeset <- temp %>%
+          a_xml_nodeset <- temp |>
             rvest::html_elements("a")
         } else if (
           is.null(container_id) == TRUE & is.null(container_class) == FALSE
         ) {
-          a_xml_nodeset <- temp %>%
+          a_xml_nodeset <- temp |>
             rvest::html_elements(
               xpath = paste0(
                 "//",
@@ -316,47 +315,45 @@ cas_extract_links <- function(
                 "']//a"
               )
             )
-        } else if (
-          is.null(container_class) == TRUE & is.null(container_id) == FALSE
-        ) {
-          a_xml_nodeset <- temp %>%
+        } else if (is.null(container_class) & !is.null(container_id)) {
+          a_xml_nodeset <- temp |>
             rvest::html_elements(
               xpath = paste0("//", container, "[@id='", container_id, "']//a")
             )
         } else if (is.null(container_class) & is.null(container_id)) {
-          a_xml_nodeset <- temp %>%
+          a_xml_nodeset <- temp |>
             rvest::html_elements(xpath = paste0("//", container, "//a"))
         }
 
         if (file_format == "xml" | file_format == "xml.gz") {
           links_df <- tibble::tibble(
-            url = a_xml_nodeset %>%
-              rvest::html_text() %>%
+            url = a_xml_nodeset |>
+              rvest::html_text() |>
               stringr::str_squish(),
             link_text = NA_character_
           )
         } else {
           # effectively, expect html
           links_df <- tibble::tibble(
-            url = a_xml_nodeset %>%
+            url = a_xml_nodeset |>
               xml2::xml_attr(attribute_type),
-            link_text = a_xml_nodeset %>%
-              rvest::html_text() %>%
+            link_text = a_xml_nodeset |>
+              rvest::html_text() |>
               stringr::str_squish()
           )
         }
       }
 
-      if (is.null(include_when) == FALSE) {
-        links_df <- links_df %>%
+      if (!is.null(include_when)) {
+        links_df <- links_df |>
           dplyr::filter(stringr::str_detect(
             string = url,
             pattern = stringr::str_c(include_when, collapse = "|")
           ))
       }
 
-      if (is.null(exclude_when) == FALSE) {
-        links_df <- links_df %>%
+      if (!is.null(exclude_when)) {
+        links_df <- links_df |>
           dplyr::filter(
             !stringr::str_detect(
               string = url,
@@ -365,8 +362,8 @@ cas_extract_links <- function(
           )
       }
 
-      if (is.null(domain) == FALSE) {
-        links_df <- links_df %>%
+      if (!is.null(domain)) {
+        links_df <- links_df |>
           dplyr::mutate(
             url = dplyr::case_when(
               stringr::str_starts(
@@ -397,8 +394,8 @@ cas_extract_links <- function(
             )
           )
 
-        if (keep_only_within_domain == TRUE) {
-          links_df <- links_df %>%
+        if (keep_only_within_domain) {
+          links_df <- links_df |>
             dplyr::filter(stringr::str_starts(
               string = url,
               pattern = stringr::fixed(domain)
@@ -406,13 +403,13 @@ cas_extract_links <- function(
         }
       }
 
-      if (is.null(append_string) == FALSE) {
-        links_df <- links_df %>%
+      if (!is.null(append_string)) {
+        links_df <- links_df |>
           dplyr::mutate(url = stringr::str_c(url, append_string))
       }
 
-      if (is.null(remove_string) == FALSE) {
-        links_df <- links_df %>%
+      if (!is.null(remove_string)) {
+        links_df <- links_df |>
           dplyr::mutate(
             url = stringr::str_remove_all(
               string = url,
@@ -421,39 +418,39 @@ cas_extract_links <- function(
           )
       }
 
-      if (is.null(min_length) == FALSE) {
-        links_df <- links_df %>%
+      if (!is.null(min_length)) {
+        links_df <- links_df |>
           dplyr::filter(nchar(url) > min_length)
       }
 
-      if (is.null(max_length) == FALSE) {
-        links_df <- links_df %>%
+      if (!is.null(max_length)) {
+        links_df <- links_df |>
           dplyr::filter(nchar(url) < max_length)
       }
 
-      if (check_previous == TRUE) {
-        links_df <- links_df %>%
+      if (check_previous) {
+        links_df <- links_df |>
           dplyr::anti_join(
             y = previous_links_df,
             by = "url"
-          ) %>%
+          ) |>
           dplyr::anti_join(
             y = new_links_df,
             by = "url"
-          ) %>%
+          ) |>
           dplyr::distinct(url, .keep_all = TRUE)
       }
 
       if (nrow(links_df) > 0) {
         end_id <- sum(start_id, nrow(links_df) - 1)
 
-        links_to_store_df <- links_df %>%
+        links_to_store_df <- links_df |>
           dplyr::mutate(
             url = stringr::str_remove_all(string = url, pattern = "\\s"),
             source_index_id = as.numeric(x$id),
             source_index_batch = as.numeric(x$batch),
             id = as.numeric(start_id:end_id)
-          ) %>%
+          ) |>
           dplyr::select(
             "id",
             "url",
@@ -462,11 +459,11 @@ cas_extract_links <- function(
             "source_index_batch"
           )
 
-        if (write_to_db == TRUE) {
-          if (output_index == TRUE) {
+        if (write_to_db) {
+          if (output_index) {
             cas_write_db_index(
-              urls = links_to_store_df %>%
-                dplyr::select("id", "url") %>%
+              urls = links_to_store_df |>
+                dplyr::select("id", "url") |>
                 dplyr::mutate(index_group = output_index_group),
               db_connection = db,
               disconnect_db = FALSE,
@@ -498,8 +495,8 @@ cas_extract_links <- function(
     }
   )
 
-  if (is.data.frame(new_links_df) == FALSE) {
-    if (output_index == TRUE) {
+  if (!is.data.frame(new_links_df)) {
+    if (output_index) {
       new_links_df <- casdb_empty_index_id
     } else {
       new_links_df <- casdb_empty_contents_id
