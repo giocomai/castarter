@@ -1,11 +1,15 @@
-#' Downloads one file at a time with chromote
+#' Downloads one file at a time with `chromote`
 #'
 #' @inheritParams cas_download_httr
 #' @inheritParams cas_get_files_to_download
+#' @param delay Defaults to 0. Passed to `chromote`'s internal method `go_to`.
+#'   Number of seconds to wait after the page load event fires.
+#' @param timeout Defaults to 20. Passed to `chromote`'s internal method
+#'   `go_to`. Maximum time in seconds to wait for the page load event.
 #'
 #' @return
 #' @export
-#'
+#' 
 #' @examples
 cas_download_chromote <- function(
   download_df = NULL,
@@ -14,14 +18,17 @@ cas_download_chromote <- function(
   overwrite_file = FALSE,
   ignore_id = TRUE,
   wait = 1,
+  delay = 0,
+  timeout = 20,
   db_connection = NULL,
   sample = FALSE,
   file_format = "html",
   download_again = FALSE,
+  download_again_if_status_is_not = NULL,
   disconnect_db = FALSE,
   ...
 ) {
-  if (requireNamespace("chromote", quietly = TRUE) == FALSE) {
+  if (!requireNamespace("chromote", quietly = TRUE)) {
     cli::cli_abort(
       "You need to install the {.pkg chromote} package to download pages with headless chrome/chromium."
     )
@@ -43,9 +50,9 @@ cas_download_chromote <- function(
       file_format = file_format,
       ignore_id = ignore_id,
       download_again = download_again,
-      # download_again_if_status_is_not = download_again_if_status_is_not,
+      download_again_if_status_is_not = download_again_if_status_is_not,
       ...
-    ) %>%
+    ) |>
       dplyr::collect()
   }
 
@@ -62,11 +69,11 @@ cas_download_chromote <- function(
     }
   }
 
-  if (is.numeric(sample) == TRUE) {
-    download_df <- download_df %>%
+  if (is.numeric(sample)) {
+    download_df <- download_df |>
       dplyr::slice_sample(n = sample)
   } else if (isTRUE(sample)) {
-    download_df <- download_df %>%
+    download_df <- download_df |>
       dplyr::slice_sample(p = 1)
   }
 
@@ -80,8 +87,11 @@ cas_download_chromote <- function(
         raw <- tryCatch(
           expr = {
             b <- chromote::ChromoteSession$new()
-            b$Page$navigate(x$url)
-            b$Page$loadEventFired()
+            
+            b$go_to(url = x$url,
+                    delay = delay, 
+                    timeout_ = timeout)
+            
             result <- b$Runtime$evaluate(
               expression = "document.documentElement.outerHTML"
             )
