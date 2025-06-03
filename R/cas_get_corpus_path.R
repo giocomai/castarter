@@ -8,13 +8,15 @@
 #'
 #' @examples
 #' \dontrun{
-#' cas_get_corpus_path()
+#'  cas_get_corpus_path()
 #' }
-cas_get_corpus_path <- function(...,
-                                corpus_folder = "corpus",
-                                file_format = "parquet",
-                                partition = NULL,
-                                token = "full_text") {
+cas_get_corpus_path <- function(
+  ...,
+  corpus_folder = "corpus",
+  file_format = "parquet",
+  partition = NULL,
+  token = "full_text"
+) {
   rlang::check_dots_used()
 
   if (is.null(partition)) {
@@ -22,12 +24,11 @@ cas_get_corpus_path <- function(...,
   }
 
   fs::path(
-    cas_get_base_folder(
-      ...,
-      create_folder_if_missing = FALSE
+    cas_get_website_folder(
+      ...
     ),
     corpus_folder,
-    file_format %>%
+    file_format |>
       stringr::str_replace(
         pattern = stringr::fixed("."),
         replacement = "_"
@@ -35,10 +36,10 @@ cas_get_corpus_path <- function(...,
     token,
     partition,
     fs::path_sanitize(
-      Sys.time() %>%
+      Sys.time() |>
         as.character(digits = 0L),
       replacement = "_"
-    ) %>%
+    ) |>
       stringr::str_replace(
         pattern = " ",
         replacement = "-"

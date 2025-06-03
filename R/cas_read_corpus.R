@@ -13,13 +13,15 @@
 #' \dontrun{
 #' cas_read_corpus()
 #' }
-cas_read_corpus <- function(...,
-                            update = FALSE,
-                            path = NULL,
-                            file_format = "parquet",
-                            partition = NULL,
-                            token = "full_text",
-                            corpus_folder = "corpus") {
+cas_read_corpus <- function(
+  ...,
+  update = FALSE,
+  path = NULL,
+  file_format = "parquet",
+  partition = NULL,
+  token = "full_text",
+  corpus_folder = "corpus"
+) {
   rlang::check_dots_used()
 
   path <- cas_check_corpus(

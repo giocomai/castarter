@@ -69,12 +69,12 @@ cas_write_corpus <- function(
     ...
   )
 
-  if (drop_na == TRUE) {
+  if (drop_na) {
     corpus_df <- corpus_df |>
       dplyr::filter(is.na({{ text }}) == FALSE, is.na({{ date }}) == FALSE)
   }
 
-  if (drop_empty == TRUE) {
+  if (drop_empty) {
     corpus_df <- corpus_df |>
       dplyr::filter(
         as.character({{ text }}) != "",

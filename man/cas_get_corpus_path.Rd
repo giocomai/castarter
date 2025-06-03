@@ -34,6 +34,6 @@ Get path to folder where the corpus is stored.
 }
 \examples{
 \dontrun{
-cas_get_corpus_path()
+ cas_get_corpus_path()
 }
 }
