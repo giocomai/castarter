@@ -5,7 +5,13 @@
 \title{Takes a character vector and returns it with matches of pattern wrapped in
 html tags used for highlighting}
 \usage{
-cass_highlight(string, pattern, ignore_case = TRUE)
+cass_highlight(
+  string,
+  pattern,
+  highlight = TRUE,
+  bold = FALSE,
+  ignore_case = TRUE
+)
 }
 \arguments{
 \item{string}{A character vector.}

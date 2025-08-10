@@ -17,7 +17,17 @@
 #'   ),
 #'   pattern = "foundation|software|warranty"
 #' )
-cass_highlight <- function(string, pattern, ignore_case = TRUE) {
+cass_highlight <- function(
+  string,
+  pattern,
+  highlight = TRUE,
+  bold = FALSE,
+  ignore_case = TRUE
+) {
+  if (length(pattern) > 1) {
+    pattern <- stringr::str_flatten(string = pattern, collapse = "|")
+  }
+
   split_l <- stringr::str_split(
     string = string,
     pattern = stringr::regex(
@@ -34,12 +44,26 @@ cass_highlight <- function(string, pattern, ignore_case = TRUE) {
     )
   )
 
+  if (bold & highlight) {
+    before_string <- "<mark>**"
+    after_string <- "**</mark>"
+  } else if (!bold & highlight) {
+    before_string <- "<mark>"
+    after_string <- "</mark>"
+  } else if (bold & !highlight) {
+    before_string <- "**"
+    after_string <- "**"
+  } else if (!bold & !highlight) {
+    before_string <- ""
+    after_string <- ""
+  }
+
   purrr::map2_chr(
     .progress = "Highlighting",
     .x = split_l,
     .y = extracted_l,
     .f = function(x, y) {
-      extracted_marked_v <- stringr::str_c("<mark>", y, "</mark>")
+      extracted_marked_v <- stringr::str_c(before_string, y, after_string)
       stringr::str_c(x, c(extracted_marked_v, ""), collapse = "")
     }
   )
