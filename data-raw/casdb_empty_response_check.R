@@ -2,6 +2,7 @@
 
 casdb_empty_response_check <- tibble::tibble(
   url = NA_character_,
+  response_url = NA_character_,
   status = NA_integer_,
   status_description = NA_character_,
   type = NA_character_,

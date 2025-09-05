@@ -87,6 +87,7 @@ cas_check_response <- function(
       if (is.na(x[["url"]])) {
         resp_df <- tibble::tibble(
           url = NA_character_,
+          response_url = NA_character_,
           status = NA_integer_,
           status_description = NA_character_,
           type = NA_character_,
@@ -104,6 +105,7 @@ cas_check_response <- function(
         if (isFALSE(resp)) {
           resp_df <- tibble::tibble(
             url = as.character(x[["url"]]),
+            response_url = NA_character_,
             status = NA_integer_,
             status_description = NA_character_,
             type = NA_character_,
@@ -115,6 +117,7 @@ cas_check_response <- function(
         } else {
           resp_df <- tibble::tibble(
             url = as.character(x[["url"]]),
+            response_url = as.character(httr2::resp_url(resp = resp)),
             status = as.numeric(httr2::resp_status(resp)),
             status_description = as.character(httr2::resp_status_desc(resp)),
             type = as.character(httr2::resp_content_type(resp)),
