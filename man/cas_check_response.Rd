@@ -7,7 +7,7 @@
 cas_check_response(
   urls_df = NULL,
   wait = 1,
-  output_only_newly_checked = TRUE,
+  output_only_newly_checked = FALSE,
   urls = NULL,
   index = FALSE,
   index_group = NULL,
