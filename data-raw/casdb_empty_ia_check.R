@@ -1,10 +1,14 @@
 ## code to prepare `casdb_empty_ia_check` dataset goes here
 
-
-casdb_empty_ia_check <- c("url", "status", "available", "ia_url", "timestamp", "checked_at") %>%
-  purrr::map_dfc(setNames,
-    object = list(character())
-  )
+casdb_empty_ia_check <- c(
+  "url",
+  "status",
+  "available",
+  "ia_url",
+  "timestamp",
+  "checked_at"
+) |>
+  purrr::map_dfc(setNames, object = list(character()))
 
 casdb_empty_ia_check$available <- as.logical(casdb_empty_ia_check$available)
 

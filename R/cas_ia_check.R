@@ -19,19 +19,21 @@
 #' @export
 #'
 #' @examples
-cas_ia_check <- function(url = NULL,
-                         wait = 1,
-                         retry_times = 3,
-                         pause_base = 2,
-                         pause_cap = 512,
-                         pause_min = 4,
-                         db_connection = NULL,
-                         disconnect_db = FALSE,
-                         check_db = TRUE,
-                         write_db = TRUE,
-                         output_only_newly_checked = FALSE,
-                         ...) {
-  if (check_db == FALSE & write_db == FALSE) {
+cas_ia_check <- function(
+  url = NULL,
+  wait = 1,
+  retry_times = 3,
+  pause_base = 2,
+  pause_cap = 512,
+  pause_min = 4,
+  db_connection = NULL,
+  disconnect_db = FALSE,
+  check_db = TRUE,
+  write_db = TRUE,
+  output_only_newly_checked = FALSE,
+  ...
+) {
+  if (!check_db & !write_db) {
     # do nothing, as connection won't be needed
   } else {
     db <- cas_connect_to_db(
@@ -40,8 +42,7 @@ cas_ia_check <- function(url = NULL,
     )
   }
 
-
-  if (check_db == TRUE) {
+  if (check_db) {
     db_result <- tryCatch(
       cas_read_db_ia(
         db_connection = db,
@@ -58,7 +59,7 @@ cas_ia_check <- function(url = NULL,
     } else if (isFALSE(db_result)) {
       previous_df <- casdb_empty_ia_check
     } else {
-      if (length(db_result %>% dplyr::pull(url)) == 0) {
+      if (length(db_result |> dplyr::pull(url)) == 0) {
         previous_df <- casdb_empty_ia_check
       } else {
         previous_df <- db_result
@@ -71,16 +72,16 @@ cas_ia_check <- function(url = NULL,
         disconnect_db = FALSE
       )
 
-      url_v <- url_df %>%
+      url_v <- url_df |>
         dplyr::pull(url)
     } else if (is.data.frame(url)) {
-      url_v <- url_df %>%
+      url_v <- url_df |>
         dplyr::pull(url)
     } else {
       url_v <- as.character(url)
     }
 
-    url_to_process_df <- tibble::tibble(url = unique(url_v)) %>%
+    url_to_process_df <- tibble::tibble(url = unique(url_v)) |>
       dplyr::anti_join(
         y = previous_df,
         by = "url",
@@ -98,7 +99,7 @@ cas_ia_check <- function(url = NULL,
   pb <- progress::progress_bar$new(total = nrow(url_to_process_df))
 
   output_df <- purrr::map_dfr(
-    .x = url_to_process_df %>% dplyr::pull("url"),
+    .x = url_to_process_df |> dplyr::pull("url"),
     .f = function(x) {
       pb$tick()
 
@@ -114,7 +115,8 @@ cas_ia_check <- function(url = NULL,
 
       httr::stop_for_status(ia_available)
 
-      ia_available_text <- httr::content(ia_available,
+      ia_available_text <- httr::content(
+        ia_available,
         as = "text",
         encoding = "UTF-8"
       )
@@ -131,20 +133,22 @@ cas_ia_check <- function(url = NULL,
           checked_at = lubridate::as_datetime(Sys.time())
         )
       } else {
-        current_df <- tibble::as_tibble(ia_available_list$archived_snapshots$closest) %>%
-          dplyr::rename(ia_url = url) %>%
+        current_df <- tibble::as_tibble(
+          ia_available_list$archived_snapshots$closest
+        ) |>
+          dplyr::rename(ia_url = url) |>
           dplyr::mutate(
             timestamp = lubridate::ymd_hms(timestamp),
             checked_at = lubridate::as_datetime(Sys.time()),
             url = as.character(x)
-          ) %>%
+          ) |>
           dplyr::select(
             "url",
             dplyr::everything()
           )
       }
 
-      if (write_db == TRUE) {
+      if (write_db) {
         cas_write_to_db(
           df = current_df,
           table = "ia_check",
@@ -171,10 +175,10 @@ cas_ia_check <- function(url = NULL,
       return(output_df)
     }
 
-    cas_read_db_ia() %>%
-      dplyr::filter(url %in% {{ url_v }}) %>%
-      dplyr::group_by(url) %>%
-      dplyr::slice_max(checked_at) %>%
+    cas_read_db_ia() |>
+      dplyr::filter(url %in% {{ url_v }}) |>
+      dplyr::group_by(url) |>
+      dplyr::slice_max(checked_at) |>
       dplyr::ungroup()
   }
 }
@@ -211,19 +215,21 @@ cas_ia_check <- function(url = NULL,
 #'   cas_ia_save()
 #' }
 #' }
-cas_ia_save <- function(url = NULL,
-                        wait = 32,
-                        retry_times = 3,
-                        pause_base = 16,
-                        pause_cap = 1024,
-                        pause_min = 64,
-                        only_if_unavailable = TRUE,
-                        ia_check = TRUE,
-                        ia_check_wait = 2,
-                        db_connection = NULL,
-                        check_db = TRUE,
-                        write_db = TRUE,
-                        ...) {
+cas_ia_save <- function(
+  url = NULL,
+  wait = 32,
+  retry_times = 3,
+  pause_base = 16,
+  pause_cap = 1024,
+  pause_min = 64,
+  only_if_unavailable = TRUE,
+  ia_check = TRUE,
+  ia_check_wait = 2,
+  db_connection = NULL,
+  check_db = TRUE,
+  write_db = TRUE,
+  ...
+) {
   db <- cas_connect_to_db(
     db_connection = db_connection,
     ...
@@ -240,8 +246,8 @@ cas_ia_save <- function(url = NULL,
       pause_cap = pause_cap,
       pause_min = pause_min,
       output_only_newly_checked = FALSE
-    ) %>%
-      dplyr::filter(available == FALSE) %>%
+    ) |>
+      dplyr::filter(available == FALSE) |>
       dplyr::pull(url)
   }
 
@@ -251,15 +257,14 @@ cas_ia_save <- function(url = NULL,
       disconnect_db = FALSE
     )
 
-    url_v <- url_df %>%
+    url_v <- url_df |>
       dplyr::pull(url)
   } else if (is.data.frame(url)) {
-    url_v <- url_df %>%
+    url_v <- url_df |>
       dplyr::pull(url)
   } else {
     url_v <- as.character(url)
   }
-
 
   if (length(url_v) < 2) {
     wait <- 0
@@ -317,9 +322,7 @@ cas_ia_save <- function(url = NULL,
 #' @export
 #'
 #' @examples
-cas_read_db_ia <- function(db_connection = NULL,
-                           db_folder = NULL,
-                           ...) {
+cas_read_db_ia <- function(db_connection = NULL, db_folder = NULL, ...) {
   db_result <- tryCatch(
     cas_read_from_db(
       table = "ia_check",
