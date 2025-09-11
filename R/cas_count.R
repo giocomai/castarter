@@ -34,23 +34,33 @@
 #' )
 #' }
 #'
-cas_count <- function(corpus,
-                      pattern,
-                      text = text,
-                      group_by = date,
-                      ignore_case = TRUE,
-                      drop_na = TRUE,
-                      fixed = FALSE,
-                      full_words_only = FALSE,
-                      pattern_column_name = pattern,
-                      n_column_name = n,
-                      locale = "en") {
-  if (drop_na == TRUE) {
-    corpus <- corpus |>
-      tidyr::drop_na({{ text }}, {{ group_by }})
+cas_count <- function(
+  corpus,
+  pattern,
+  text = text,
+  group_by = date,
+  ignore_case = TRUE,
+  drop_na = TRUE,
+  fixed = FALSE,
+  full_words_only = FALSE,
+  pattern_column_name = pattern,
+  n_column_name = n,
+  locale = "en"
+) {
+  if (drop_na) {
+    if (
+      inherits(x = corpus, "ArrowObject") |
+        inherits(x = corpus, "arrow_dplyr_query")
+    ) {
+      corpus <- corpus |>
+        dplyr::filter(!is.na({{ text }}), !is.na({{ group_by }}))
+    } else {
+      corpus <- corpus |>
+        tidyr::drop_na({{ text }}, {{ group_by }})
+    }
   }
 
-  if (isTRUE(full_words_only)) {
+  if (full_words_only) {
     pattern <- purrr::map_chr(
       .x = pattern,
       .f = function(x) {
@@ -83,37 +93,66 @@ cas_count <- function(corpus,
 }
 
 # Actually does the counting, but accepts only vectors of length 1 as pattern
-cas_count_single <- function(corpus,
-                             pattern,
-                             text = text,
-                             group_by = date,
-                             ignore_case = TRUE,
-                             fixed = FALSE,
-                             full_words_only = FALSE,
-                             pattern_column_name = word,
-                             n_column_name = n,
-                             locale = "en") {
-  output_df <- corpus |>
-    dplyr::mutate({{ n_column_name }} := stringr::str_count(
-      string = {{ text }},
-      pattern = stringr::regex(
-        pattern = !!pattern,
-        ignore_case = !!ignore_case
+cas_count_single <- function(
+  corpus,
+  pattern,
+  text = text,
+  group_by = date,
+  ignore_case = TRUE,
+  fixed = FALSE,
+  full_words_only = FALSE,
+  pattern_column_name = word,
+  n_column_name = n,
+  locale = "en"
+) {
+  pre_arrow_check <- corpus |>
+    dplyr::mutate(
+      {{ n_column_name }} := stringr::str_count(
+        string = {{ text }},
+        pattern = stringr::regex(
+          pattern = !!pattern,
+          ignore_case = !!ignore_case
+        )
       )
-    )) |>
-    dplyr::group_by(dplyr::pick({{ group_by }})) |>
+    )
+
+  if (
+    inherits(x = corpus, "ArrowObject") |
+      inherits(x = corpus, "arrow_dplyr_query")
+  ) {
+    post_arrow_check <- pre_arrow_check |>
+      dplyr::group_by({{ group_by }})
+  } else {
+    post_arrow_check <- pre_arrow_check |>
+      dplyr::group_by(dplyr::pick({{ group_by }}))
+  }
+
+  output_df <- post_arrow_check |>
     dplyr::summarise(
       {{ n_column_name }} := sum({{ n_column_name }}, na.rm = TRUE),
       .groups = "drop"
     )
 
-  output_df |>
-    dplyr::transmute(
-      dplyr::pick({{ group_by }}),
-      {{ pattern_column_name }} := pattern,
-      {{ n_column_name }}
-    ) |>
-    dplyr::collect()
+  if (
+    inherits(x = corpus, "ArrowObject") |
+      inherits(x = corpus, "arrow_dplyr_query")
+  ) {
+    output_df |>
+      dplyr::transmute(
+        {{ group_by }},
+        {{ pattern_column_name }} := pattern,
+        {{ n_column_name }}
+      ) |>
+      dplyr::collect()
+  } else {
+    output_df |>
+      dplyr::transmute(
+        dplyr::pick({{ group_by }}),
+        {{ pattern_column_name }} := pattern,
+        {{ n_column_name }}
+      ) |>
+      dplyr::collect()
+  }
 }
 
 
@@ -128,13 +167,15 @@ cas_count_single <- function(corpus,
 #' @export
 #'
 #' @examples
-cas_count_total_words <- function(corpus,
-                                  pattern = "\\w+",
-                                  text = text,
-                                  group_by = date,
-                                  ignore_case = TRUE,
-                                  n_column_name = n,
-                                  locale = "en") {
+cas_count_total_words <- function(
+  corpus,
+  pattern = "\\w+",
+  text = text,
+  group_by = date,
+  ignore_case = TRUE,
+  n_column_name = n,
+  locale = "en"
+) {
   cas_count_single(
     corpus = corpus,
     pattern = pattern,
