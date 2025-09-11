@@ -2,7 +2,7 @@
 title: "1. Getting index pages"
 ---
 
-```{r, include = FALSE}
+```{r setup, include = FALSE}
 knitr::opts_chunk$set(
   collapse = TRUE,
   comment = "#>",
@@ -104,8 +104,6 @@ cas_extract_links(
   index = TRUE,
   file_format = "xml",
   custom_css = "loc",
-  output_index = TRUE,
-  output_index_group = "sitemap",
   write_to_db = TRUE
 )
 
@@ -224,7 +222,7 @@ cas_download_index()
 
 Now, as these index pages have only links to the articles we are interested in and nothing else, we're happy with extracting all links included there:
 
-```{r eval = TRUE}
+```{r cas_extract_links, eval = TRUE}
 cas_extract_links(write_to_db = TRUE)
 ```
 
@@ -232,9 +230,9 @@ Let's look at the result:
 
 ```{r eval = TRUE}
 cas_read_db_contents_id() |>
-   head() |>
+  head() |>
   dplyr::select(url, link_text) |>
-  dplyr::collect() 
+  dplyr::collect()
 ```
 
 Looks good. Let's to a quick check: how many links did we extract from each page?
