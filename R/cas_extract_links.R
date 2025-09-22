@@ -58,37 +58,38 @@
 #' links <- cas_extract_links(domain = "http://www.example.com/")
 #' }
 cas_extract_links <- function(
-    id = NULL,
-    batch = "latest",
-    domain = NULL,
-    index = TRUE,
-    index_group = NULL,
-    output_index = FALSE,
-    output_index_group = NULL,
-    include_when = NULL,
-    exclude_when = NULL,
-    container = NULL,
-    container_class = NULL,
-    container_id = NULL,
-    custom_xpath = NULL,
-    custom_css = NULL,
-    match = NULL,
-    min_length = NULL,
-    max_length = NULL,
-    attribute_type = "href",
-    append_string = NULL,
-    remove_string = NULL,
-    write_to_db = FALSE,
-    file_format = "html",
-    keep_only_within_domain = TRUE,
-    sample = FALSE,
-    check_previous = TRUE,
-    check_again = FALSE,
-    encoding = "UTF-8",
-    reverse_order = FALSE,
-    db_connection = NULL,
-    disconnect_db = TRUE,
-    ...) {
+  id = NULL,
+  batch = "latest",
+  domain = NULL,
+  index = TRUE,
+  index_group = NULL,
+  output_index = FALSE,
+  output_index_group = NULL,
+  include_when = NULL,
+  exclude_when = NULL,
+  container = NULL,
+  container_class = NULL,
+  container_id = NULL,
+  custom_xpath = NULL,
+  custom_css = NULL,
+  match = NULL,
+  min_length = NULL,
+  max_length = NULL,
+  attribute_type = "href",
+  append_string = NULL,
+  remove_string = NULL,
+  write_to_db = FALSE,
+  file_format = "html",
+  keep_only_within_domain = TRUE,
+  sample = FALSE,
+  check_previous = TRUE,
+  check_again = FALSE,
+  encoding = "UTF-8",
+  reverse_order = FALSE,
+  db_connection = NULL,
+  disconnect_db = TRUE,
+  ...
+) {
   if (!is.null(domain)) {
     if (domain == "" | is.na(domain) == TRUE) {
       domain <- NULL
@@ -481,10 +482,20 @@ cas_extract_links <- function(
           }
         }
 
-        return(dplyr::bind_rows(
+        output_combo_df <- dplyr::bind_rows(
           new_links_df,
           links_to_store_df
-        ))
+        ) |>
+          dplyr::select("id", "url")
+
+        if (output_index) {
+          return(
+            output_combo_df |>
+              dplyr::mutate(index_group = output_index_group)
+          )
+        } else {
+          return(output_combo_df |> dplyr::mutate(index_group = NA_character_))
+        }
       } else {
         if (nrow(new_links_df) > 0) {
           return(new_links_df)
