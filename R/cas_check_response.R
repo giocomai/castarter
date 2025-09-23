@@ -129,7 +129,7 @@ cas_check_response <- function(
         }
       }
 
-      if (write_db == TRUE) {
+      if (write_db) {
         cas_write_to_db(
           df = resp_df,
           table = "response_check",

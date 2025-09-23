@@ -90,6 +90,12 @@ cas_extract_links <- function(
   disconnect_db = TRUE,
   ...
 ) {
+  if (!is.null(output_index_group)) {
+    output_index_group_write <- output_index_group
+  } else {
+    output_index_group_write <- NA_character_
+  }
+
   if (!is.null(domain)) {
     if (domain == "" | is.na(domain) == TRUE) {
       domain <- NULL
@@ -245,7 +251,7 @@ cas_extract_links <- function(
         start_id <- sum(max(new_links_df[["id"]]), 1)
       } else {
         start_id <- new_links_df
-        if (output_index == TRUE) {
+        if (output_index) {
           new_links_df <- casdb_empty_index_id
         } else {
           new_links_df <- casdb_empty_contents_id
@@ -465,7 +471,7 @@ cas_extract_links <- function(
             cas_write_db_index(
               urls = links_to_store_df |>
                 dplyr::select("id", "url") |>
-                dplyr::mutate(index_group = output_index_group),
+                dplyr::mutate(index_group = output_index_group_write),
               db_connection = db,
               disconnect_db = FALSE,
               ...
@@ -485,16 +491,18 @@ cas_extract_links <- function(
         output_combo_df <- dplyr::bind_rows(
           new_links_df,
           links_to_store_df
-        ) |>
-          dplyr::select("id", "url")
+        )
 
         if (output_index) {
           return(
             output_combo_df |>
-              dplyr::mutate(index_group = output_index_group)
+              dplyr::select("id", "url") |>
+              dplyr::mutate(index_group = output_index_group_write)
           )
         } else {
-          return(output_combo_df |> dplyr::mutate(index_group = NA_character_))
+          return(
+            output_combo_df
+          )
         }
       } else {
         if (nrow(new_links_df) > 0) {
