@@ -9,7 +9,8 @@ cas_extract_html_custom(
   container,
   container_type,
   container_match,
-  attribute = NULL
+  attribute = NULL,
+  sub_element = NULL
 )
 }
 \arguments{
@@ -25,6 +26,11 @@ are to be extracted, such as "div", "ul", and others. Either
 \item{attribute}{Defaults to NULL. If given, type of attribute to extract.
 Typically used in combination with container, as in
 \code{cas_extract_html(container = "time", attribute = "datetime")}.}
+
+\item{sub_element}{Defaults to NULL. If provided, also \code{container} must be
+given. Only text within elements of given type under the chosen combination
+of container/containerClass will be extracted. When given, it will
+tipically be "p", to extract all p elements inside the selected div.}
 }
 \value{
 A character vector.

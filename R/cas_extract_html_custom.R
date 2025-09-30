@@ -22,11 +22,11 @@ cas_extract_html_custom <- function(
   container,
   container_type,
   container_match,
-  attribute = NULL
+  attribute = NULL,
+  sub_element = NULL
 ) {
-  xml_nodeset <- rvest::html_elements(
-    x = html_document,
-    xpath = stringr::str_c(
+  if (is.null(sub_element)) {
+    xpath_string <- stringr::str_c(
       "//",
       container,
       "[@",
@@ -35,6 +35,22 @@ cas_extract_html_custom <- function(
       container_match,
       "']"
     )
+  } else {
+    xpath_string <- stringr::str_c(
+      "//",
+      container,
+      "[@",
+      container_type,
+      "='",
+      container_match,
+      "']//",
+      sub_element
+    )
+  }
+
+  xml_nodeset <- rvest::html_elements(
+    x = html_document,
+    xpath = xpath_string
   )
 
   if (!is.null(attribute)) {
