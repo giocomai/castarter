@@ -82,10 +82,10 @@ cas_download_httr <- function(
     }
   }
 
-  if (is.numeric(sample) == TRUE) {
+  if (is.numeric(sample)) {
     download_df <- download_df |>
       dplyr::slice_sample(n = sample)
-  } else if (isTRUE(sample)) {
+  } else if (sample) {
     download_df <- download_df |>
       dplyr::slice_sample(p = 1)
   }

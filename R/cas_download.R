@@ -230,7 +230,7 @@ cas_get_files_to_download <- function(
   ) |>
     dplyr::collect()
 
-  if (isTRUE(ignore_id)) {
+  if (ignore_id & type == "contents") {
     ignore_id <- cas_read_db_ignore_id(
       db_connection = db,
       disconnect_db = FALSE
@@ -240,7 +240,7 @@ cas_get_files_to_download <- function(
     urls_df <- urls_df |>
       dplyr::filter(!(id %in% ignore_id))
   } else if (is.numeric(ignore_id)) {
-    urls_df <- urls_df %>%
+    urls_df <- urls_df |>
       dplyr::filter(!(id %in% ignore_id))
   }
 
@@ -289,10 +289,10 @@ cas_get_files_to_download <- function(
     )
   )
 
-  if (isTRUE(download_again)) {
+  if (download_again) {
     files_to_download_df <- expected_filenames_df
   } else {
-    if (is.null(download_again_if_status_is_not) == FALSE) {
+    if (!is.null(download_again_if_status_is_not)) {
       previous_download_df <- previous_download_df |>
         dplyr::filter(status %in% download_again_if_status_is_not)
     }
@@ -307,7 +307,7 @@ cas_get_files_to_download <- function(
     x = files_to_download_df,
     y = urls_df,
     by = "id"
-  ) %>%
+  ) |>
     dplyr::mutate(batch = as.numeric(current_batch)) |>
     dplyr::select("id", "batch", "url", "path")
 
