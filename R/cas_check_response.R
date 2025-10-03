@@ -1,17 +1,20 @@
-#' Cas check httr response
+#' Check httr response code and cache locally results
 #'
-#' @param urls_df A data frame with a url column, typically retrieved with `cas_get_urls_df()`.
+#' @param url A character vector of urls, or a data frame with a `url` column,
+#'   typically retrieved with `cas_get_urls_df()`.
 #' @inheritParams cas_ia_check
 #'
-#' @returns
+#' @returns A data frame with response status for each given url.
 #' @export
 #'
 #' @examples
+#' \dontrun{
+#' cas_check_response("https://example.com")
+#' }
 cas_check_response <- function(
-  urls_df = NULL,
+  url = NULL,
   wait = 1,
   output_only_newly_checked = FALSE,
-  urls = NULL,
   index = FALSE,
   index_group = NULL,
   db_connection = NULL,
@@ -20,12 +23,22 @@ cas_check_response <- function(
   write_db = TRUE,
   ...
 ) {
-  if (is.null(urls_df)) {
-    urls_df <- cas_get_urls_df(
-      urls = urls,
+  if (is.null(url)) {
+    url <- cas_get_urls_df(
+      urls = NULL,
       index = index,
       index_group = index_group,
       ...
+    )
+  }
+
+  if (is.character(url)) {
+    urls_df <- tibble::tibble(url = url)
+  } else if (is.data.frame(url) & "url" %in% colnames(url)) {
+    urls_df <- dplyr::distinct(url)
+  } else {
+    cli::cli_abort(
+      message = "{.arg url} must either be a charcater vector or a data frame with a {.var url} column."
     )
   }
 
@@ -72,8 +85,7 @@ cas_check_response <- function(
         copy = TRUE
       )
   } else {
-    url_v <- unique(url)
-    urls_to_process_df <- tibble::tibble(url = url_v)
+    urls_to_process_df <- urls_df |> dplyr::distinct()
   }
 
   if (nrow(urls_to_process_df) < 2) {

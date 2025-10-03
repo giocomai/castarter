@@ -2,13 +2,12 @@
 % Please edit documentation in R/cas_check_response.R
 \name{cas_check_response}
 \alias{cas_check_response}
-\title{Cas check httr response}
+\title{Check httr response code and cache locally results}
 \usage{
 cas_check_response(
-  urls_df = NULL,
+  url = NULL,
   wait = 1,
   output_only_newly_checked = FALSE,
-  urls = NULL,
   index = FALSE,
   index_group = NULL,
   db_connection = NULL,
@@ -19,7 +18,8 @@ cas_check_response(
 )
 }
 \arguments{
-\item{urls_df}{A data frame with a url column, typically retrieved with \code{cas_get_urls_df()}.}
+\item{url}{A character vector of urls, or a data frame with a \code{url} column,
+typically retrieved with \code{cas_get_urls_df()}.}
 
 \item{wait}{Defaults to 1. Number of seconds to wait between downloading one
 page and the next. Can be increased to reduce server load, or can be set to
@@ -33,6 +33,14 @@ not been previously checked.}
 
 \item{...}{Passed to \code{cas_get_db_file()}.}
 }
+\value{
+A data frame with response status for each given url.
+}
 \description{
-Cas check httr response
+Check httr response code and cache locally results
+}
+\examples{
+\dontrun{
+cas_check_response("https://example.com")
+}
 }
