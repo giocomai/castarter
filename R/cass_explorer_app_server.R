@@ -501,7 +501,23 @@ cass_explorer_app_server <- function(input, output, session) {
 
       castarter:::mod_cass_download_csv_server(
         id = "mod_download_kwic_sentences",
-        df = kwic_sentences_df_r(),
+        df = corpus_active_r() |>
+          dplyr::collect() |>
+          tidytext::unnest_tokens(
+            output = sentence,
+            input = text,
+            to_lower = FALSE,
+            token = "sentences"
+          ) |>
+          dplyr::filter(stringr::str_detect(
+            string = sentence,
+            pattern = stringr::regex(
+              cass_split_string(input$pattern, to_regex = TRUE),
+              ignore_case = TRUE
+            )
+          )) |>
+          dplyr::select(date, url, sentence) |>
+          dplyr::arrange(date),
         type = stringr::str_c(
           "kwic",
           ifelse(input$pattern != "", stringr::str_c("_", input$pattern), "")
