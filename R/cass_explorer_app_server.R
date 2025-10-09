@@ -7,7 +7,8 @@
 cass_explorer_app_server <- function(input, output, session) {
   ### Help ####
 
-  observeEvent(input$cicerone,
+  observeEvent(
+    input$cicerone,
     {
       castarter::cass_cicerone_help$init()$start()
     },
@@ -18,8 +19,8 @@ cass_explorer_app_server <- function(input, output, session) {
   ### Date range ####
 
   output$date_range_input_UI <- renderUI({
-    date_range_s <- golem::get_golem_options("corpus") %>%
-      dplyr::distinct(date) %>%
+    date_range_s <- golem::get_golem_options("corpus") |>
+      dplyr::distinct(date) |>
       dplyr::collect() |>
       dplyr::pull(date)
 
@@ -40,7 +41,7 @@ cass_explorer_app_server <- function(input, output, session) {
       input$go
     ),
     valueExpr = ({
-      active_corpus_df <- golem::get_golem_options("corpus") %>%
+      active_corpus_df <- golem::get_golem_options("corpus") |>
         dplyr::filter(
           is.na(date) == FALSE,
           is.na(text) == FALSE,
@@ -51,7 +52,7 @@ cass_explorer_app_server <- function(input, output, session) {
       if (is.null(input$pattern) == FALSE) {
         if (input$pattern != "") {
           if (golem::get_golem_options("collect") == TRUE) {
-            active_corpus_df <- active_corpus_df %>%
+            active_corpus_df <- active_corpus_df |>
               dplyr::collect()
           }
 
@@ -60,7 +61,7 @@ cass_explorer_app_server <- function(input, output, session) {
             to_regex = TRUE
           )
 
-          active_corpus_df <- active_corpus_df %>%
+          active_corpus_df <- active_corpus_df |>
             dplyr::filter(
               stringr::str_detect(
                 string = text,
@@ -92,15 +93,23 @@ cass_explorer_app_server <- function(input, output, session) {
       }
 
       corpus_active_r() |>
-        dplyr::select(dplyr::any_of(c("doc_id", "id")), date, url, title, text) |>
-        dplyr::collect() %>%
-        cas_kwic(pattern = stringr::str_flatten(c(
-          "(?i)",
-          cass_split_string(
-            string = input$pattern,
-            to_regex = TRUE
-          )
-        )))
+        dplyr::select(
+          dplyr::any_of(c("doc_id", "id")),
+          date,
+          url,
+          title,
+          text
+        ) |>
+        dplyr::collect() |>
+        cas_kwic(
+          pattern = stringr::str_flatten(c(
+            "(?i)",
+            cass_split_string(
+              string = input$pattern,
+              to_regex = TRUE
+            )
+          ))
+        )
     })
   )
 
@@ -117,17 +126,25 @@ cass_explorer_app_server <- function(input, output, session) {
       return(NULL)
     }
 
-    max_pattern_length <- kwic_df_r() %>%
-      dplyr::distinct(pattern) %>%
-      dplyr::filter(is.na(pattern) == FALSE) %>%
-      dplyr::mutate(nchar_pattern = nchar(pattern)) %>%
-      dplyr::slice_max(nchar_pattern, with_ties = FALSE) %>%
+    max_pattern_length <- kwic_df_r() |>
+      dplyr::distinct(pattern) |>
+      dplyr::filter(is.na(pattern) == FALSE) |>
+      dplyr::mutate(nchar_pattern = nchar(pattern)) |>
+      dplyr::slice_max(nchar_pattern, with_ties = FALSE) |>
       dplyr::pull(nchar_pattern)
 
-    kwic_df_r() %>%
-      dplyr::mutate(source = paste0("<a target='_blank' href='", url, "'>", title, "</a><br />")) %>%
-      dplyr::select(date, source, before, pattern, after) %>%
-      dplyr::arrange(date) %>%
+    kwic_df_r() |>
+      dplyr::mutate(
+        source = paste0(
+          "<a target='_blank' href='",
+          url,
+          "'>",
+          title,
+          "</a><br />"
+        )
+      ) |>
+      dplyr::select(date, source, before, pattern, after) |>
+      dplyr::arrange(date) |>
       reactable::reactable(
         resizable = TRUE,
         filterable = TRUE,
@@ -147,7 +164,6 @@ cass_explorer_app_server <- function(input, output, session) {
       )
   })
 
-
   kwic_sentences_df_r <- shiny::eventReactive(
     eventExpr = list(
       input$date_range,
@@ -163,32 +179,38 @@ cass_explorer_app_server <- function(input, output, session) {
         return(NULL)
       }
 
-      corpus_active_r() %>%
-        dplyr::collect() %>%
+      corpus_active_r() |>
+        dplyr::collect() |>
         tidytext::unnest_tokens(
           output = sentence,
           input = text,
           to_lower = FALSE,
           token = "sentences"
-        ) %>%
+        ) |>
         dplyr::filter(stringr::str_detect(
           string = sentence,
           pattern = stringr::regex(
-            cass_split_string(input$pattern,
-              to_regex = TRUE
-            ),
+            cass_split_string(input$pattern, to_regex = TRUE),
             ignore_case = TRUE
           )
-        )) %>%
-        dplyr::mutate(Source = paste0("<a target='_blank' href='", url, "'>", title, "</a><br />")) %>%
-        dplyr::mutate(sentence = cass_highlight(
-          sentence,
-          cass_split_string(input$pattern,
-            to_regex = TRUE
+        )) |>
+        dplyr::mutate(
+          Source = paste0(
+            "<a target='_blank' href='",
+            url,
+            "'>",
+            title,
+            "</a><br />"
           )
-        )) %>%
-        dplyr::rename(Sentence = sentence, Date = date) %>%
-        dplyr::select(Date, Source, Sentence) %>%
+        ) |>
+        dplyr::mutate(
+          sentence = cass_highlight(
+            sentence,
+            cass_split_string(input$pattern, to_regex = TRUE)
+          )
+        ) |>
+        dplyr::rename(Sentence = sentence, Date = date) |>
+        dplyr::select(Date, Source, Sentence) |>
         dplyr::arrange(Date)
     }
   )
@@ -206,9 +228,7 @@ cass_explorer_app_server <- function(input, output, session) {
       return(NULL)
     }
 
-
-
-    kwic_sentences_df_r() %>%
+    kwic_sentences_df_r() |>
       reactable::reactable(
         resizable = TRUE,
         filterable = TRUE,
@@ -264,9 +284,7 @@ cass_explorer_app_server <- function(input, output, session) {
     )
   })
 
-
   ### Advanced UI ####
-
 
   ##### Column selector UI   ######
 
@@ -277,28 +295,40 @@ cass_explorer_app_server <- function(input, output, session) {
           inputId = "text_column",
           label = "Select text column",
           choices = c("", names(golem::get_golem_options("corpus"))),
-          selected = dplyr::if_else(is.element(
+          selected = dplyr::if_else(
+            is.element(
+              "text",
+              names(golem::get_golem_options("corpus"))
+            ),
             "text",
-            names(golem::get_golem_options("corpus"))
-          ), "text", "")
+            ""
+          )
         ),
         shiny::selectInput(
           inputId = "group_by_column",
           label = "Select date column or column used for aggregation",
           choices = c("", names(golem::get_golem_options("corpus"))),
-          selected = dplyr::if_else(is.element(
+          selected = dplyr::if_else(
+            is.element(
+              "date",
+              names(golem::get_golem_options("corpus"))
+            ),
             "date",
-            names(golem::get_golem_options("corpus"))
-          ), "date", "")
+            ""
+          )
         ),
         shiny::selectInput(
           inputId = "summarise_by",
           label = "If time/date column selected, aggregate by the following time unit:",
           choices = c("", "year", "quarter", "month", "day", "hour", "minute"),
-          selected = dplyr::if_else(is.element(
-            "date",
-            names(golem::get_golem_options("corpus"))
-          ), "day", "")
+          selected = dplyr::if_else(
+            is.element(
+              "date",
+              names(golem::get_golem_options("corpus"))
+            ),
+            "day",
+            ""
+          )
         ),
         conditionalPanel(condition = "input.summarise_by != ''", {
           shiny::checkboxInput(
@@ -310,7 +340,6 @@ cass_explorer_app_server <- function(input, output, session) {
       )
     })
   }
-
 
   ### Word counting  reactives ####
 
@@ -327,8 +356,8 @@ cass_explorer_app_server <- function(input, output, session) {
       if (input$pattern == "") {
         count_summarised_df <- cas_count_total_words(
           corpus = corpus_active_r()
-        ) %>%
-          dplyr::mutate(pattern = "") %>%
+        ) |>
+          dplyr::mutate(pattern = "") |>
           cas_summarise(
             period = input$summarise_by,
             f = sum,
@@ -338,7 +367,7 @@ cass_explorer_app_server <- function(input, output, session) {
         count_summarised_df <- cas_count(
           corpus = corpus_active_r(),
           pattern = cass_split_string(input$pattern)
-        ) %>%
+        ) |>
           cas_summarise(
             period = input$summarise_by,
             f = sum,
@@ -354,132 +383,147 @@ cass_explorer_app_server <- function(input, output, session) {
 
   mod_cass_regex_info_server("cass_regex_info_1")
 
-
   ### export modules #####
 
-  shiny::observeEvent(eventExpr = list(
-    input$page_navbar,
-    input$go
-  ), handlerExpr = {
-    output$export_cards_UI <- shiny::renderUI({
-      if (input$kwic_switch) {
-        kwic_export_taglist <- shiny::tagList(
+  shiny::observeEvent(
+    eventExpr = list(
+      input$page_navbar,
+      input$go
+    ),
+    handlerExpr = {
+      output$export_cards_UI <- shiny::renderUI({
+        if (input$kwic_switch) {
+          kwic_export_taglist <- shiny::tagList(
+            bslib::layout_column_wrap(
+              # title = "Export keywords in context",
+              bslib::card(
+                bslib::card_header("Export filtered sentences"),
+                bslib::card_body(
+                  shiny::p(
+                    "Export only sentences where there is a match with the current pattern."
+                  ),
+                  castarter:::mod_cass_download_csv_ui(
+                    "mod_download_kwic_sentences"
+                  )
+                )
+              ),
+              bslib::card(
+                bslib::card_header("Export keywords in context"),
+                bslib::card_body(
+                  shiny::p(
+                    "Export keywords in context for the current pattern (the matched pattern is in its own column, with words just before and just after it in separate columns.)"
+                  ),
+                  castarter:::mod_cass_download_csv_ui("mod_download_kwic_df")
+                )
+              )
+            )
+          )
+        } else {
+          kwic_export_taglist <- shiny::tagList(
+            bslib::layout_column_wrap(
+              # title = "Export keywords in context",
+              bslib::card(
+                bslib::card_header("Export keywords in context"),
+                bslib::card_body(
+                  shiny::p(
+                    "In order to export keywords in context or only the setences where the given pattern is matched, enable the 'Show key words in context' switch in the sidebar."
+                  )
+                )
+              )
+            )
+          )
+        }
+
+        shiny::tagList(
           bslib::layout_column_wrap(
-            # title = "Export keywords in context",
+            # title = "Export active corpus",
             bslib::card(
-              bslib::card_header("Export filtered sentences"),
+              bslib::card_header("Export full text"),
               bslib::card_body(
-                shiny::p("Export only sentences where there is a match with the current pattern."),
-                castarter:::mod_cass_download_csv_ui("mod_download_kwic_sentences")
+                shiny::p(
+                  "Export all available columns for the active corpus (i.e. after filtering based on pattern and dates)."
+                ),
+                castarter:::mod_cass_download_csv_ui("mod_download_full_text")
               )
             ),
             bslib::card(
-              bslib::card_header("Export keywords in context"),
+              bslib::card_header("Export aggregated count"),
               bslib::card_body(
-                shiny::p("Export keywords in context for the current pattern (the matched pattern is in its own column, with words just before and just after it in separate columns.)"),
-                castarter:::mod_cass_download_csv_ui("mod_download_kwic_df")
+                shiny::p(
+                  "Export the count of matches, aggregated in the same form as used for the graph on the main tab."
+                ),
+                castarter:::mod_cass_download_csv_ui("mod_download_word_count")
               )
-            )
-          )
-        )
-      } else {
-        kwic_export_taglist <- shiny::tagList(
-          bslib::layout_column_wrap(
-            # title = "Export keywords in context",
-            bslib::card(
-              bslib::card_header("Export keywords in context"),
-              bslib::card_body(
-                shiny::p("In order to export keywords in context or only the setences where the given pattern is matched, enable the 'Show key words in context' switch in the sidebar.")
-              )
-            )
-          )
-        )
-      }
-
-      shiny::tagList(
-        bslib::layout_column_wrap(
-          # title = "Export active corpus",
-          bslib::card(
-            bslib::card_header("Export full text"),
-            bslib::card_body(
-              shiny::p("Export all available columns for the active corpus (i.e. after filtering based on pattern and dates)."),
-              castarter:::mod_cass_download_csv_ui("mod_download_full_text")
             )
           ),
-          bslib::card(
-            bslib::card_header("Export aggregated count"),
-            bslib::card_body(
-              shiny::p("Export the count of matches, aggregated in the same form as used for the graph on the main tab."),
-              castarter:::mod_cass_download_csv_ui("mod_download_word_count")
-            )
-          )
-        ),
-        kwic_export_taglist,
-        bslib::layout_column_wrap(
-          # title = "Export original corpus",
-          bslib::card(
-            bslib::card_header("Export original corpus"),
-            bslib::card_body(
-              shiny::p("Export the corpus in full in its original form."),
-              castarter:::mod_cass_download_csv_ui("mod_download_original_corpus")
+          kwic_export_taglist,
+          bslib::layout_column_wrap(
+            # title = "Export original corpus",
+            bslib::card(
+              bslib::card_header("Export original corpus"),
+              bslib::card_body(
+                shiny::p("Export the corpus in full in its original form."),
+                castarter:::mod_cass_download_csv_ui(
+                  "mod_download_original_corpus"
+                )
+              )
             )
           )
         )
+      })
+
+      castarter:::mod_cass_download_csv_server(
+        id = "mod_download_original_corpus",
+        df = golem::get_golem_options("corpus"),
+        type = "original_corpus",
+        corpus = golem::get_golem_options("title")
       )
-    })
 
+      castarter:::mod_cass_download_csv_server(
+        id = "mod_download_full_text",
+        df = corpus_active_r(),
+        type = stringr::str_c(
+          "full_text",
+          ifelse(input$pattern != "", stringr::str_c("_", input$pattern), "")
+        ),
+        corpus = golem::get_golem_options("title")
+      )
 
-    castarter:::mod_cass_download_csv_server(
-      id = "mod_download_original_corpus",
-      df = golem::get_golem_options("corpus"),
-      type = "original_corpus",
-      corpus = golem::get_golem_options("title")
-    )
+      castarter:::mod_cass_download_csv_server(
+        id = "mod_download_word_count",
+        df = word_count_summarised_df_r(),
+        type = stringr::str_c(
+          "count",
+          ifelse(input$pattern != "", stringr::str_c("_", input$pattern), "")
+        ),
+        corpus = golem::get_golem_options("title")
+      )
 
-    castarter:::mod_cass_download_csv_server(
-      id = "mod_download_full_text",
-      df = corpus_active_r(),
-      type = stringr::str_c("full_text", ifelse(input$pattern != "",
-        stringr::str_c("_", input$pattern),
-        ""
-      )),
-      corpus = golem::get_golem_options("title")
-    )
+      castarter:::mod_cass_download_csv_server(
+        id = "mod_download_kwic_sentences",
+        df = kwic_sentences_df_r(),
+        type = stringr::str_c(
+          "kwic",
+          ifelse(input$pattern != "", stringr::str_c("_", input$pattern), "")
+        ),
+        corpus = golem::get_golem_options("title")
+      )
 
-    castarter:::mod_cass_download_csv_server(
-      id = "mod_download_word_count",
-      df = word_count_summarised_df_r(),
-      type = stringr::str_c("count", ifelse(input$pattern != "",
-        stringr::str_c("_", input$pattern),
-        ""
-      )),
-      corpus = golem::get_golem_options("title")
-    )
-
-    castarter:::mod_cass_download_csv_server(
-      id = "mod_download_kwic_sentences",
-      df = kwic_sentences_df_r(),
-      type = stringr::str_c("kwic", ifelse(input$pattern != "",
-        stringr::str_c("_", input$pattern),
-        ""
-      )),
-      corpus = golem::get_golem_options("title")
-    )
-
-    castarter:::mod_cass_download_csv_server(
-      id = "mod_download_kwic_df",
-      df = kwic_df_r(),
-      type = stringr::str_c("kwic", ifelse(input$pattern != "",
-        stringr::str_c("_", input$pattern),
-        ""
-      )),
-      corpus = golem::get_golem_options("title")
-    )
-  })
-
+      castarter:::mod_cass_download_csv_server(
+        id = "mod_download_kwic_df",
+        df = kwic_df_r(),
+        type = stringr::str_c(
+          "kwic",
+          ifelse(input$pattern != "", stringr::str_c("_", input$pattern), "")
+        ),
+        corpus = golem::get_golem_options("title")
+      )
+    }
+  )
 
   ##### graph modules #####
-  shiny::observeEvent(input$go,
+  shiny::observeEvent(
+    input$go,
     mod_cass_show_barchart_ggiraph_server(
       id = "cass_show_barchart_ggiraph_ui_1",
       count_df = word_count_summarised_df_r()
@@ -487,7 +531,6 @@ cass_explorer_app_server <- function(input, output, session) {
     ignoreInit = TRUE,
     ignoreNULL = FALSE
   )
-
 
   shiny::observeEvent(
     eventExpr = list(
@@ -500,7 +543,8 @@ cass_explorer_app_server <- function(input, output, session) {
         return(NULL)
       }
 
-      mod_cass_show_barchart_wordcount_server("cass_show_barchart_wordcount_ui_1",
+      mod_cass_show_barchart_wordcount_server(
+        "cass_show_barchart_wordcount_ui_1",
         count_df = word_count_summarised_df_r(),
         period = input$summarise_by,
         position = input$barchart_position
