@@ -23,6 +23,7 @@ cas_check_response <- function(
   wait = 1,
   output_only_newly_checked = FALSE,
   output_only_cached = FALSE,
+  cache_invalidate = NULL,
   index = FALSE,
   index_group = NULL,
   db_connection = NULL,
