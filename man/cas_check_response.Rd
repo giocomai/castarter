@@ -8,6 +8,7 @@ cas_check_response(
   url = NULL,
   wait = 1,
   output_only_newly_checked = FALSE,
+  output_only_cached = FALSE,
   index = FALSE,
   index_group = NULL,
   db_connection = NULL,
@@ -19,11 +20,14 @@ cas_check_response(
 }
 \arguments{
 \item{url}{A character vector of urls, or a data frame with a \code{url} column,
-typically retrieved with \code{cas_get_urls_df()}.}
+typically retrieved with \code{\link[=cas_get_urls_df]{cas_get_urls_df()}}.}
 
 \item{wait}{Defaults to 1. Number of seconds to wait between downloading one
 page and the next. Can be increased to reduce server load, or can be set to
 0 when this is not an issue.}
+
+\item{output_only_cached}{Defaults to FALSE. If TRUE, only previously cached
+responses are kept.}
 
 \item{check_db}{Defaults to TRUE. If TRUE, checks if given URL has already
 been checked in local database, and queries APIs only for URLs that have
@@ -32,6 +36,12 @@ not been previously checked.}
 \item{write_db}{Defaults to TRUE. If TRUE, writes result to a local database.}
 
 \item{...}{Passed to \code{cas_get_db_file()}.}
+
+\item{cache_invalidate}{Defaults to NULL. If given, it can be either a date
+or date time object, or a character vector than can be coerced with
+\code{as.POSIXct()}; only responses cached since that date will be kept. If
+numeric, it is understood as number of days: only cached responses more
+recent than the given number of days will be kept.}
 }
 \value{
 A data frame with response status for each given url.

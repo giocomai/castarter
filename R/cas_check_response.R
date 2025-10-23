@@ -1,7 +1,14 @@
 #' Check httr response code and cache locally results
 #'
 #' @param url A character vector of urls, or a data frame with a `url` column,
-#'   typically retrieved with `cas_get_urls_df()`.
+#'   typically retrieved with [cas_get_urls_df()].
+#' @param output_only_cached Defaults to FALSE. If TRUE, only previously cached
+#'   responses are kept.
+#' @param cache_invalidate Defaults to NULL. If given, it can be either a date
+#'   or date time object, or a character vector than can be coerced with
+#'   `as.POSIXct()`; only responses cached since that date will be kept. If
+#'   numeric, it is understood as number of days: only cached responses more
+#'   recent than the given number of days will be kept.
 #' @inheritParams cas_ia_check
 #'
 #' @returns A data frame with response status for each given url.
@@ -15,6 +22,7 @@ cas_check_response <- function(
   url = NULL,
   wait = 1,
   output_only_newly_checked = FALSE,
+  output_only_cached = FALSE,
   index = FALSE,
   index_group = NULL,
   db_connection = NULL,
@@ -41,6 +49,9 @@ cas_check_response <- function(
       message = "{.arg url} must either be a charcater vector or a data frame with a {.var url} column."
     )
   }
+
+  url_v <- urls_df |>
+    dplyr::pull(url)
 
   if (!check_db & !write_db) {
     # do nothing, as connection won't be needed
@@ -71,12 +82,30 @@ cas_check_response <- function(
       if (length(db_result |> dplyr::pull(url)) == 0) {
         previous_df <- casdb_empty_response_check
       } else {
-        previous_df <- db_result
+        previous_df <- db_result |>
+          dplyr::collect() |>
+          dplyr::mutate(checked_at = as.POSIXct(checked_at))
+
+        if (!is.null(cache_invalidate)) {
+          if (is.numeric(cache_invalidate)) {
+            cache_invalidate <- Sys.Date() - cache_invalidate
+          }
+          previous_df <- previous_df |>
+            dplyr::filter(checked_at > as.POSIXct(cache_invalidate))
+        }
       }
     }
 
-    url_v <- urls_df |>
-      dplyr::pull(url)
+    if (output_only_cached) {
+      cas_disconnect_from_db(
+        db_connection = db,
+        disconnect_db = disconnect_db
+      )
+      return(
+        tibble::tibble(url = url_v) |>
+          dplyr::left_join(y = previous_df)
+      )
+    }
 
     urls_to_process_df <- tibble::tibble(url = unique(url_v)) |>
       dplyr::anti_join(
@@ -167,11 +196,16 @@ cas_check_response <- function(
       return(output_df)
     }
 
-    cas_read_db_response() |>
-      dplyr::filter(url %in% {{ url_v }}) |>
-      dplyr::group_by(url) |>
-      dplyr::slice_max(checked_at) |>
-      dplyr::ungroup()
+    tibble::tibble(url = url_v) |>
+      dplyr::left_join(
+        cas_read_db_response() |>
+          dplyr::filter(url %in% {{ url_v }}) |>
+          dplyr::group_by(url) |>
+          dplyr::slice_max(checked_at) |>
+          dplyr::ungroup() |>
+          dplyr::collect() |>
+          dplyr::mutate(checked_at = as.POSIXct(checked_at))
+      )
   }
 }
 
