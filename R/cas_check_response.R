@@ -84,6 +84,9 @@ cas_check_response <- function(
         previous_df <- casdb_empty_response_check
       } else {
         previous_df <- db_result |>
+          dplyr::group_by(url) |>
+          dplyr::slice_max(checked_at) |>
+          dplyr::ungroup() |>
           dplyr::collect() |>
           dplyr::mutate(checked_at = as.POSIXct(checked_at))
 
