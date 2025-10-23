@@ -104,7 +104,7 @@ cas_check_response <- function(
       )
       return(
         tibble::tibble(url = url_v) |>
-          dplyr::left_join(y = previous_df)
+          dplyr::left_join(y = previous_df, by = "url")
       )
     }
 
@@ -205,7 +205,8 @@ cas_check_response <- function(
           dplyr::slice_max(checked_at) |>
           dplyr::ungroup() |>
           dplyr::collect() |>
-          dplyr::mutate(checked_at = as.POSIXct(checked_at))
+          dplyr::mutate(checked_at = as.POSIXct(checked_at)),
+        by = "url"
       )
   }
 }
