@@ -53,11 +53,11 @@ cas_get_path_to_files <- function(
         db_connection = db,
         index_group = index_group,
         ...
-      ) %>%
-        dplyr::filter(index_group %in% {{ index_group }}) %>%
+      ) |>
+        dplyr::filter(index_group %in% {{ index_group }}) |>
         dplyr::pull(id)
 
-      available_files_df <- available_files_df %>%
+      available_files_df <- available_files_df |>
         dplyr::filter(id %in% {{ index_group_id_v }})
     }
   }
@@ -71,11 +71,11 @@ cas_get_path_to_files <- function(
     return(invisible(NULL))
   }
 
-  if (is.numeric(sample) == TRUE) {
-    available_files_df <- available_files_df %>%
+  if (is.numeric(sample)) {
+    available_files_df <- available_files_df |>
       dplyr::slice_sample(n = sample)
   } else if (isTRUE(sample)) {
-    available_files_df <- available_files_df %>%
+    available_files_df <- available_files_df |>
       dplyr::slice_sample(p = 1)
   }
 
@@ -96,14 +96,14 @@ cas_get_path_to_files <- function(
       )
     }
   }
-  available_files_df %>%
-    dplyr::select("id", "batch") %>%
+  available_files_df |>
+    dplyr::select("id", "batch") |>
     dplyr::mutate(
       path = fs::path(
         path,
         batch,
         stringr::str_c(id, "_", batch, ".", file_format)
       )
-    ) %>%
+    ) |>
     dplyr::mutate(available = fs::file_exists(path = path))
 }
