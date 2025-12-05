@@ -3,6 +3,11 @@
 #' @param domain Defaults to "". Web domain of the website. It is added at the
 #'   beginning of each link found. If links in the page already include the full
 #'   web address this should be ignored.
+#' @param index Logical, defaults to FALSE. If TRUE, downloaded files will be
+#'   considered `index` files. If not, they will be considered `contents` files.
+#'   See Readme for a more extensive explanation.
+#' @param index_group Defaults to NULL. If TRUE, only items in the given index
+#'   group will be parsed.
 #' @param id Defaults to NULL. If provided, it should be a vector of integers.
 #'   Only html files corresponding to given id will be processed.
 #' @param include_when Part of URL found only in links of individual articles to

@@ -133,7 +133,8 @@ cas_build_urls(
   write_to_db = TRUE
 )
 
-cas_download_index(file_format = "xml") # as html is default, you must explicitly set xml as file_format
+cas_download_index(file_format = "xml",
+                   index_group = "base_sitemap") # as html is default, you must explicitly set xml as file_format
 
 cas_extract_links(
   index = TRUE,

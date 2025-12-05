@@ -46,6 +46,13 @@ Only html files corresponding to given id will be processed.}
 beginning of each link found. If links in the page already include the full
 web address this should be ignored.}
 
+\item{index}{Logical, defaults to FALSE. If TRUE, downloaded files will be
+considered \code{index} files. If not, they will be considered \code{contents} files.
+See Readme for a more extensive explanation.}
+
+\item{index_group}{Defaults to NULL. If TRUE, only items in the given index
+group will be parsed.}
+
 \item{output_index}{Defaults to FALSE. If FALSE, new links are added to the
 contents table. If TRUE, the links extracted will be stored again as
 index, using \code{output_index_group} as \code{index_group}.}
