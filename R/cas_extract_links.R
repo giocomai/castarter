@@ -183,7 +183,7 @@ cas_extract_links <- function(
     # do nothing, as source is not kept for index urls
   } else {
     if (check_again) {
-      # do nothing, as all index files should be read
+      # do nothing, as all index files should be read again
     } else {
       local_files_df <- local_files_df |>
         dplyr::anti_join(
@@ -450,7 +450,7 @@ cas_extract_links <- function(
             y = new_links_df,
             by = "url"
           ) |>
-          dplyr::distinct(url, .keep_all = TRUE)
+          dplyr::distinct(.data[["url"]], .keep_all = TRUE)
       }
 
       if (nrow(links_df) > 0) {
