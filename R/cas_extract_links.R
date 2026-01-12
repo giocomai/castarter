@@ -1,6 +1,6 @@
 #' Extract direct links to individual content pages from index pages
 #'
-#' @param domain Defaults to "". Web domain of the website. It is added at the
+#' @param domain Defaults to NULL. Web domain of the website. It is added at the
 #'   beginning of each link found. If links in the page already include the full
 #'   web address this should be ignored.
 #' @param index Logical, defaults to FALSE. If TRUE, downloaded files will be

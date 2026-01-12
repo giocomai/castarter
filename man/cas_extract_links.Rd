@@ -42,7 +42,7 @@ cas_extract_links(
 \item{id}{Defaults to NULL. If provided, it should be a vector of integers.
 Only html files corresponding to given id will be processed.}
 
-\item{domain}{Defaults to "". Web domain of the website. It is added at the
+\item{domain}{Defaults to NULL. Web domain of the website. It is added at the
 beginning of each link found. If links in the page already include the full
 web address this should be ignored.}
 

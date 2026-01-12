@@ -1,6 +1,6 @@
 Package: castarter
 Title: Content Analysis Starter Toolkit
-Version: 0.3.0.9008
+Version: 0.3.0.9009
 Authors@R: 
     c(person(given = "Giorgio",
              family = "Comai",
@@ -69,8 +69,6 @@ Suggests:
     arrow,
     duckdb
 Config/testthat/edition: 3
-Depends: 
-    R (>= 3.5)
 URL: https://castarter.tadadit.xyz, https://github.com/giocomai/castarter
 BugReports: https://github.com/giocomai/castarter/issues
 Language: en-US
