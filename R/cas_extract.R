@@ -93,13 +93,13 @@ cas_extract <- function(
     return(invisible(NULL))
   }
 
-  if (write_to_db == FALSE) {
+  if (!write_to_db) {
     cas_disconnect_from_db(
       db_connection = db,
       disconnect_db = TRUE
     )
 
-    db <- duckdb::dbConnect(duckdb::duckdb(), ":memory:")
+    db <- DBI::dbConnect(RSQLite::SQLite(), ":memory:")
   }
 
   purrr::walk(

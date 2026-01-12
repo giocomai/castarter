@@ -15,6 +15,8 @@ Encoding: UTF-8
 LazyData: true
 Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.3.3
+Depends:
+    R (>= 4.1.0)
 Imports: 
     magrittr,
     dplyr,
@@ -64,7 +66,8 @@ Suggests:
     spelling,
     knitr,
     rmarkdown,
-    arrow
+    arrow,
+    duckdb
 Config/testthat/edition: 3
 Depends: 
     R (>= 3.5)
