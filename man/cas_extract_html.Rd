@@ -13,6 +13,7 @@ cas_extract_html(
   container_property = NULL,
   container_itemprop = NULL,
   container_instance = NULL,
+  collapse = "\\n",
   attribute = NULL,
   sub_element = NULL,
   no_children = NULL,
@@ -29,36 +30,40 @@ cas_extract_html(
 )
 }
 \arguments{
-\item{html_document}{An html document parsed with \code{xml2::read_html()} or
-\code{rvest::read_html()}.}
+\item{html_document}{An html document parsed with \code{\link[xml2:read_xml]{xml2::read_html()}} or
+\code{\link[rvest:read_html]{rvest::read_html()}}.}
 
-\item{container}{Defaults to NULL. Type of html container from where links
+\item{container}{Defaults to \code{NULL}. Type of html container from where links
 are to be extracted, such as "div", "ul", and others. Either
 \code{container_class} or \code{container_id} must also be provided.}
 
-\item{container_class}{Defaults to NULL. If provided, also \code{container} must
-be given (and \code{container_id} must be NULL). Only text found inside the
+\item{container_class}{Defaults to \code{NULL}. If provided, also \code{container} must
+be given (and \code{container_id} must be \code{NULL}). Only text found inside the
 provided combination of container/class will be extracted.}
 
-\item{container_id}{Defaults to NULL. If provided, also \code{container} must be
-given (and \code{container_id} must be NULL). Only text found inside the
+\item{container_id}{Defaults to \code{NULL}. If provided, also \code{container} must be
+given (and \code{container_id} must be \code{NULL}). Only text found inside the
 provided combination of container/class will be extracted.}
 
-\item{container_itemprop}{Defaults to NULL. If provided, also \code{container}
-must be given (and \code{container_id} and \code{container_class} must be NULL or
+\item{container_itemprop}{Defaults to \code{NULL}. If provided, also \code{container}
+must be given (and \code{container_id} and \code{container_class} must be \code{NULL} or
 will be silently ignored). Only text found inside the provided combination
 of container/itemprop will be extracted.}
 
-\item{container_instance}{Defaults to NULL. If given, it must be an integer.
+\item{container_instance}{Defaults to \code{NULL}. If given, it must be an integer.
 If a given combination is found more than once in the same page, the
 relevant occurrence is kept. Use with caution, as not all pages always
 include the same number of elements of the same class/with the same id.}
 
-\item{attribute}{Defaults to NULL. If given, type of attribute to extract.
+\item{collapse}{Defaults to \verb{\\n}. If given, and more than one instance of the
+given selector is found, they are collapsed in a single string with this
+character.}
+
+\item{attribute}{Defaults to \code{NULL}. If given, type of attribute to extract.
 Typically used in combination with container, as in
 \code{cas_extract_html(container = "time", attribute = "datetime")}.}
 
-\item{sub_element}{Defaults to NULL. If provided, also \code{container} must be
+\item{sub_element}{Defaults to \code{NULL}. If provided, also \code{container} must be
 given. Only text within elements of given type under the chosen combination
 of container/containerClass will be extracted. When given, it will
 tipically be "p", to extract all p elements inside the selected div.}
@@ -68,21 +73,21 @@ selected combination (e.g. div with given class) are extracted. If TRUE,
 only text found under the given combination (but not its subelements) will
 be extracted. Corresponds to the xpath string \verb{/node()[not(self::div)]}.}
 
-\item{trim}{Defaults to TRUE. If TRUE, applies \code{stringr::str_trim()} to
+\item{trim}{Defaults to \code{TRUE}. If \code{TRUE}, applies \code{stringr::str_trim()} to
 output, removing whitespace from start and end of string.}
 
-\item{squish}{Defaults to FALSE. If TRUE, applies \code{stringr::str_squish()} to
+\item{squish}{Defaults to \code{FALSE}. If \code{TRUE}, applies \code{stringr::str_squish()} to
 output, removing whitespace from start and end of string, and replacing
 any whitespace (including new lines) with a single space.}
 
-\item{no_match}{Defaults to "". A common alternative would be NA. Value to
+\item{no_match}{Defaults to "". A common alternative would be \code{NA}. Value to
 return when the given container, selector or element is not found.}
 
-\item{exclude_css_path}{Defaults to NULL. To remove script, for example, use
+\item{exclude_css_path}{Defaults to \code{NULL}. To remove script, for example, use
 \code{script}, which is transformed to \verb{:not(script)}. May cause issues, use
 with caution.}
 
-\item{exclude_xpath}{Defaults to NULL. A common pattern when extracting text
+\item{exclude_xpath}{Defaults to \code{NULL}. A common pattern when extracting text
 would be \verb{//script|//iframe|//img|//style}, as it is assumed that these
 containers (javascript contents, iframes, css blocks, and images) are most
 likely undesirable when extracting text. Customise as needed. For example,
@@ -90,22 +95,22 @@ if besides the above you also want to remove a \code{div} of class
 \code{related-articles}, you may use
 \verb{//script|//iframe|//img|//div[@class='related-articles']}Be careful when
 using \code{exclude_xpath} as the relevant Xpath is removed from the original
-objext passed to \code{cas_extract_html()}. To be clear, the input object is
+objext passed to \code{\link[=cas_extract_html]{cas_extract_html()}}. To be clear, the input object is
 changed, and, for example, if used once in one of the extractors these
 containers won't be available to other extractors.}
 
-\item{custom_xpath}{Defaults to NULL. If given, all other parameters are
+\item{custom_xpath}{Defaults to \code{NULL}. If given, all other parameters are
 ignored and given Xpath used instead.}
 
-\item{custom_css_path}{Defaults to NULL. If given, all other parameters are
+\item{custom_css_path}{Defaults to \code{NULL}. If given, all other parameters are
 ignored and given CSSpath used instead.}
 
-\item{keep_everything}{Defaults to FALSE. If TRUE, all text included in the
+\item{keep_everything}{Defaults to \code{FALSE}. If \code{TRUE}, all text included in the
 page is returned as a single string.}
 
-\item{extract_text}{Defaults to TRUE. If TRUE, text is extracted.}
+\item{extract_text}{Defaults to \code{TRUE}. If \code{TRUE}, text is extracted.}
 
-\item{as_character}{Defaults to TRUE. If FALSE, and if \code{extract_text} is set
+\item{as_character}{Defaults to \code{TRUE}. If \code{FALSE}, and if \code{extract_text} is set
 to FALSE, then an \code{xml_nodeset} object is returned.}
 }
 \value{

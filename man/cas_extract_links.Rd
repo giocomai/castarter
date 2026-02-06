@@ -68,19 +68,19 @@ contains either of the strings provided.}
 \item{exclude_when}{If an URL includes this string, it is excluded from the
 output. One or more strings may be provided.}
 
-\item{container}{Defaults to NULL. Type of html container from where links
+\item{container}{Defaults to \code{NULL}. Type of html container from where links
 are to be extracted, such as "div", "ul", and others. Either
 \code{container_class} or \code{container_id} must also be provided.}
 
-\item{container_class}{Defaults to NULL. If provided, also \code{container} must
-be given (and \code{container_id} must be NULL). Only text found inside the
+\item{container_class}{Defaults to \code{NULL}. If provided, also \code{container} must
+be given (and \code{container_id} must be \code{NULL}). Only text found inside the
 provided combination of container/class will be extracted.}
 
-\item{container_id}{Defaults to NULL. If provided, also \code{container} must be
-given (and \code{container_id} must be NULL). Only text found inside the
+\item{container_id}{Defaults to \code{NULL}. If provided, also \code{container} must be
+given (and \code{container_id} must be \code{NULL}). Only text found inside the
 provided combination of container/class will be extracted.}
 
-\item{custom_xpath}{Defaults to NULL. If given, all other parameters are
+\item{custom_xpath}{Defaults to \code{NULL}. If given, all other parameters are
 ignored and given Xpath used instead.}
 
 \item{match}{Defaults to NULL. Used when extracting json files. Name of

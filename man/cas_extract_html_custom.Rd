@@ -14,20 +14,20 @@ cas_extract_html_custom(
 )
 }
 \arguments{
-\item{html_document}{An html document parsed with \code{xml2::read_html()} or
-\code{rvest::read_html()}.}
+\item{html_document}{An html document parsed with \code{\link[xml2:read_xml]{xml2::read_html()}} or
+\code{\link[rvest:read_html]{rvest::read_html()}}.}
 
-\item{container}{Defaults to NULL. Type of html container from where links
+\item{container}{Defaults to \code{NULL}. Type of html container from where links
 are to be extracted, such as "div", "ul", and others. Either
 \code{container_class} or \code{container_id} must also be provided.}
 
 \item{container_match}{String to be used for filtering nodes in combination with \code{container_type}.}
 
-\item{attribute}{Defaults to NULL. If given, type of attribute to extract.
+\item{attribute}{Defaults to \code{NULL}. If given, type of attribute to extract.
 Typically used in combination with container, as in
 \code{cas_extract_html(container = "time", attribute = "datetime")}.}
 
-\item{sub_element}{Defaults to NULL. If provided, also \code{container} must be
+\item{sub_element}{Defaults to \code{NULL}. If provided, also \code{container} must be
 given. Only text within elements of given type under the chosen combination
 of container/containerClass will be extracted. When given, it will
 tipically be "p", to extract all p elements inside the selected div.}

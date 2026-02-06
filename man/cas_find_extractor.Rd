@@ -13,8 +13,8 @@ cas_find_extractor(
 )
 }
 \arguments{
-\item{html_document}{An html document parsed with \code{xml2::read_html()} or
-\code{rvest::read_html()}.}
+\item{html_document}{An html document parsed with \code{\link[xml2:read_xml]{xml2::read_html()}} or
+\code{\link[rvest:read_html]{rvest::read_html()}}.}
 
 \item{pattern}{A text string to be matched.}
 
@@ -23,7 +23,7 @@ cas_find_extractor(
 as results are returned in this order (e.g. if a match of the same length
 is found both in a "h1" and in a "div", "h1" is returned first).}
 
-\item{exclude_css_path}{Defaults to NULL. To remove script, for example, use
+\item{exclude_css_path}{Defaults to \code{NULL}. To remove script, for example, use
 \code{script}, which is transformed to \verb{:not(script)}. May cause issues, use
 with caution.}
 }
