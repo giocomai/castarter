@@ -29,7 +29,7 @@ library(castarter)
 
 ```{r eval = FALSE}
 count_df <- castarter::cas_count(
-  corpus = tifkremlinen::kremlin_en,
+  corpus = castarter::cas_demo_corpus,
   string = c("syria", "ukraine")
 ) %>%
   cas_summarise(before = 45, after = 45)
@@ -41,7 +41,7 @@ cass_show_ts_dygraph_app(count_df)
 
 ```{r}
 count_df <- castarter::cas_count(
-  corpus = tifkremlinen::kremlin_en,
+  corpus = castarter::cas_demo_corpus,
   string = c("putin", "medvedev")
 ) %>%
   cas_summarise(period = "year", auto_convert = TRUE)

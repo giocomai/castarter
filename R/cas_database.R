@@ -1,6 +1,8 @@
 #' Creates the base folder where `castarter` stores the project database.
 #'
-#' @param ask Logical, defaults to TRUE. If FALSE, and database folder does not exist, it just creates it without asking (useful for non-interactive sessions).
+#' @param ask Logical, defaults to `TRUE`. If `FALSE`, and database folder does
+#'   not exist, it just creates it without asking (useful for non-interactive
+#'   sessions).
 #'
 #' @family database functions
 #'
@@ -19,18 +21,18 @@ cas_create_db_folder <- function(path = NULL, ask = TRUE, ...) {
     if (ask == FALSE) {
       fs::dir_create(path = db_path, recurse = TRUE)
     } else {
-      usethis::ui_info(glue::glue(
-        "The database folder {{usethis::ui_path(cas_get_db_folder())}} does not exist. If you prefer to store database files elsewhere, reply negatively and set your preferred database folder with `cas_set_db_folder()`"
-      ))
+      cli::cli_inform(
+        "The database folder {.path {cas_get_db_folder()}} does not exist. If you prefer to store database files elsewhere, reply negatively and set your preferred database folder with {.fun cas_set_db_folder}."
+      )
       check <- usethis::ui_yeah(glue::glue(
         "Do you want to create {{usethis::ui_path(cas_get_db_folder())}} for storing data in a local database?"
       ))
-      if (check == TRUE) {
+      if (check) {
         fs::dir_create(path = db_path, recurse = TRUE)
       }
     }
-    if (fs::file_exists(db_path) == FALSE) {
-      usethis::ui_stop("This function requires a valid database folder.")
+    if (!fs::file_exists(db_path)) {
+      cli::cli_abort("This function requires a valid database folder.")
     }
   }
 }
@@ -137,12 +139,24 @@ cas_set_db <- function(
   pwd
 ) {
   if (is.null(db_settings) == TRUE) {
-    if (is.null(driver) == FALSE) Sys.setenv(castarter_db_driver = driver)
-    if (is.null(host) == FALSE) Sys.setenv(castarter_db_host = host)
-    if (is.null(port) == FALSE) Sys.setenv(castarter_db_port = port)
-    if (is.null(database) == FALSE) Sys.setenv(castarter_db_database = database)
-    if (is.null(user) == FALSE) Sys.setenv(castarter_db_user = user)
-    if (is.null(pwd) == FALSE) Sys.setenv(castarter_db_pwd = pwd)
+    if (is.null(driver) == FALSE) {
+      Sys.setenv(castarter_db_driver = driver)
+    }
+    if (is.null(host) == FALSE) {
+      Sys.setenv(castarter_db_host = host)
+    }
+    if (is.null(port) == FALSE) {
+      Sys.setenv(castarter_db_port = port)
+    }
+    if (is.null(database) == FALSE) {
+      Sys.setenv(castarter_db_database = database)
+    }
+    if (is.null(user) == FALSE) {
+      Sys.setenv(castarter_db_user = user)
+    }
+    if (is.null(pwd) == FALSE) {
+      Sys.setenv(castarter_db_pwd = pwd)
+    }
     return(invisible(
       list(
         driver = driver,
@@ -395,7 +409,7 @@ cas_connect_to_db <- function(
       db_type = db_type,
       ...
     )
-    if (fs::file_exists(db_file) == FALSE) {
+    if (!fs::file_exists(db_file)) {
       cas_create_db_folder(
         path = fs::dir_create(
           path = fs::path_dir(db_file),
@@ -411,7 +425,7 @@ cas_connect_to_db <- function(
     }
 
     if (stringr::str_to_lower(db_type) == "duckdb") {
-      if (requireNamespace("duckdb", quietly = TRUE) == FALSE) {
+      if (!requireNamespace("duckdb", quietly = TRUE)) {
         cli::cli_abort(
           message = "To use DuckDB databases you need to install the package {.pkg duckdb}."
         )
@@ -423,7 +437,7 @@ cas_connect_to_db <- function(
       )
       return(db)
     } else if (stringr::str_to_lower(db_type) == "sqlite") {
-      if (requireNamespace("RSQLite", quietly = TRUE) == FALSE) {
+      if (!requireNamespace("RSQLite", quietly = TRUE)) {
         cli::cli_abort(
           message = "To use SQLite databases you need to install the package {.pkg RSQLite}."
         )

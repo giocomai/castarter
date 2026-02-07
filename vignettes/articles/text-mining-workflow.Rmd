@@ -83,8 +83,7 @@ In text mining a common scenario involves first downloading web pages containing
 These URLs look something like this:
 
 ```{r eval = TRUE, echo=FALSE}
-tibble::tibble(index_urls = paste0("https://ec.europa.eu/commission/presscorner/home/en?pagenumber=", 1:10)) |>
-  knitr::kable()
+tibble::tibble(index_urls = paste0("https://ec.europa.eu/commission/presscorner/home/en?pagenumber=", 1:10)) 
 ```
 
 Sometimes such urls can be derived from the archive section, as is the case for example for EEAS:
@@ -97,8 +96,7 @@ index_df <- cas_build_urls(
   index_group = "Statements"
 )
 
-index_df |>
-  knitr::kable()
+index_df 
 ```
 
 
@@ -132,8 +130,7 @@ index_df <- cas_build_urls(
   index_group = "news"
 )
 
-index_df |> 
-  knitr::kable()
+index_df
 ```
 
 Store them in the local database:
@@ -184,10 +181,8 @@ links_df <- cas_read_db_contents_id()
 It's usually a good idea to give a quick look at results and then check if a consistent number of links has been extracted from each index page. 
 
 ```{r links_df}
-
-
 links_df |> 
-  knitr::kable()
+  head()
 ```
 
 You will notice that this table includes information about where each link has been found, i.e., the id of the relevant index page. This allows us to always be able to answer the question "where did I find this link?": the source page, and the time when it was downloaded, are all stored in the local database by default. 
@@ -219,9 +214,9 @@ cas_download(create_folder_if_missing = TRUE)
 
 Keeping in mind that information about the time of download is stored locally for reference:
 
-```{r}
+```{r cas_read_db_download}
 cas_read_db_download() |> 
-  knitr::kable()
+  head() 
 ```
 
 ## Extracting contents
@@ -313,7 +308,7 @@ extractors_l <- list(
 ```
 
 
-```{r}
+```{r testing extraction}
 set.seed(10)
 current_file <- cas_get_path_to_files(sample = 1)
 # current_file <- cas_get_path_to_files(id = 1)
@@ -344,7 +339,7 @@ cas_extract(extractors = extractors_l,
 
 ## Output
 
-```{r}
+```{r read corpus after extraction}
 corpus_df <- cas_read_db_contents_data()
 ```
 
@@ -353,7 +348,7 @@ corpus_df <- cas_read_db_contents_data()
 
 All of the above can be achieved with the following script:
 
-```{r eval = TRUE}
+```{r castarter EU parliament setup, eval = TRUE}
 library("castarter")
 cas_set_options(
   base_folder = fs::path_home(
@@ -384,14 +379,26 @@ cas_download()
 cas_extract(extractors = extractors_l,
             write_to_db = TRUE)
 
+
 ```
 
 Extracted contents are stored in a local database and can be retrieved with:
 
-```{r}
+```{r corpus_actual_reading, eval =TRUE, include=FALSE}
+#saveRDS(object = corpus_df, file = "eu_p_corpus.rds")
+corpus_df <- readRDS(file = "eu_p_corpus.rds")
+```
+
+
+
+```{r corpus_df EU parliament, eval = FALSE}
 corpus_df <- cas_read_db_contents_data() |> 
   dplyr::collect()
+```
 
+
+
+```{r str corpus_df EU parliament}
 str(corpus_df)
 ```
 
@@ -400,7 +407,7 @@ str(corpus_df)
 
 The easiest way to explore results is probably by using the interactive web interface provided by `castarter`, which facilitates basic word frequency operations and exporting subset based on pattern matching:
 
-```{r eval = FALSE}
+```{r cas_explorer, eval = FALSE}
 cas_explorer()
 ```
 
@@ -411,7 +418,7 @@ You can also explore the corpus with some of the convenience functions provided 
 
 Total word count per year:
 
-```{r}
+```{r cas_count_total_words per year}
 cas_count_total_words(corpus = corpus_df |>
                         dplyr::mutate(year = lubridate::year(date)),
                       group_by = year) |> 
@@ -420,7 +427,7 @@ cas_count_total_words(corpus = corpus_df |>
 
 Basic graph with number of mentions of "crisis" per year:
 
-```{r}
+```{r cas_count stack crisis}
 cas_count(
   corpus = corpus_df,
   pattern = c("crisis")
@@ -432,7 +439,7 @@ cas_count(
 
 The keyword "crisis" in context:
 
-```{r}
+```{r cas_kwic crisis}
 cas_kwic(corpus = corpus_df |> head(100),
          pattern = "crisis") |> 
   dplyr::select(before, pattern, after)
@@ -441,7 +448,7 @@ cas_kwic(corpus = corpus_df |> head(100),
 
 We should also keep in mind that by extracting more information, besides the text, we may use them to filter contents or to derive additional information, e.g. which committees have been tagged in most posts:
 
-```{r}
+```{r count_committees}
 corpus_df |> 
   dplyr::filter(is.na(committee)==FALSE) |> 
   dplyr::mutate(committee = stringr::str_split(string = committee, pattern = "; ")) |> 
@@ -470,7 +477,7 @@ Here is a quick example based on the website of the Italian Space Agency. `casta
 
 `readability` automatically finds title, byline, date published, and full text of the article. 
 
-```{r Italian Space Agency}
+```{r Italian Space Agency,eval=FALSE}
 library("castarter")
 cas_set_options(
   base_folder = fs::path_home(

@@ -36,9 +36,11 @@ pak::pak("giocomai/castarter.readability")
 
 
 ```{r extract with readability}
-cas_extract(extractors = NULL,
-            readability = TRUE,
-            write_to_db = FALSE,
-            sample = 10)
+cas_extract(
+  extractors = NULL,
+  readability = TRUE,
+  write_to_db = FALSE,
+  sample = 10
+)
 ```
 

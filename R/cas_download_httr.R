@@ -1,9 +1,9 @@
 #' Downloads one file at a time with httr
 #'
-#' Mostly used internally by `cas_download`.
+#' Mostly used internally by [cas_download()].
 #'
 #' @param download_df A data frame with four columns: `id`, `url`, `path`, `type`.
-#' @param overwrite_file Logical, defaults to FALSE.
+#' @param overwrite_file Logical, defaults to `FALSE`.
 #'
 #' @return Invisibly returns the full `httr` response.
 #' @inheritParams cas_download
@@ -64,7 +64,7 @@ cas_download_httr <- function(
   } else {
     current_batch_folder <- fs::path_dir(path = download_df[["path"]][1])
     current_base_download_path <- fs::path_dir(current_batch_folder)
-    if (fs::file_exists(current_batch_folder) == FALSE) {
+    if (!fs::file_exists(current_batch_folder)) {
       if (
         isTRUE(create_folder_if_missing) |
           fs::file_exists(current_base_download_path)

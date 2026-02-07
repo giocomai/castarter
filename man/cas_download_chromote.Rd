@@ -29,7 +29,7 @@ cas_download_chromote(
 considered \code{index} files. If not, they will be considered \code{contents} files.
 See Readme for a more extensive explanation.}
 
-\item{overwrite_file}{Logical, defaults to FALSE.}
+\item{overwrite_file}{Logical, defaults to \code{FALSE}.}
 
 \item{wait}{Defaults to 1. Number of seconds to wait between downloading one
 page and the next. Can be increased to reduce server load, or can be set to

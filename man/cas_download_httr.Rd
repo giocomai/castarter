@@ -34,7 +34,7 @@ cas_download_httr(
 considered \code{index} files. If not, they will be considered \code{contents} files.
 See Readme for a more extensive explanation.}
 
-\item{overwrite_file}{Logical, defaults to FALSE.}
+\item{overwrite_file}{Logical, defaults to \code{FALSE}.}
 
 \item{wait}{Defaults to 1. Number of seconds to wait between downloading one
 page and the next. Can be increased to reduce server load, or can be set to
@@ -67,5 +67,5 @@ decompressed for correct processing.}
 Invisibly returns the full \code{httr} response.
 }
 \description{
-Mostly used internally by \code{cas_download}.
+Mostly used internally by \code{\link[=cas_download]{cas_download()}}.
 }

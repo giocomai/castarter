@@ -7,7 +7,9 @@
 cas_create_db_folder(path = NULL, ask = TRUE, ...)
 }
 \arguments{
-\item{ask}{Logical, defaults to TRUE. If FALSE, and database folder does not exist, it just creates it without asking (useful for non-interactive sessions).}
+\item{ask}{Logical, defaults to \code{TRUE}. If \code{FALSE}, and database folder does
+not exist, it just creates it without asking (useful for non-interactive
+sessions).}
 }
 \value{
 Nothing, used for its side effects.
