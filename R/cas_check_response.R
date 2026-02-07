@@ -2,11 +2,21 @@
 #'
 #' @param url A character vector of urls, or a data frame with a `url` column,
 #'   typically retrieved with [cas_get_urls_df()].
-#' @param output_only_cached Defaults to FALSE. If TRUE, only previously cached
-#'   responses are kept.
-#' @param cache_invalidate Defaults to NULL. If given, it can be either a date
+#' @param followlocation Logical, defaults to `TRUE`, passed to
+#'   [httr2::req_options()]. If `TRUE`, follows all redirects and reports data
+#'   about the final response url is reached. If `FALSE`, it reports the status
+#'   message of the original server even if a redirect was set; the code of the
+#'   original redirect is reported, and the destination of the redirect is
+#'   returned in the `response_url` column. Data with and without
+#'   `followlocation` enabled are stored in separate databases.
+#' @param url_encode Logical, defaults to `TRUE`. If `TRUE`, it parses the urls
+#'   with `URLencode(repeated=FALSE)` in order to process correctly URLs
+#'   including e.g. spaces or other special characters.
+#' @param output_only_cached Defaults to `FALSE`. If `TRUE`, only previously
+#'   cached responses are kept.
+#' @param cache_invalidate Defaults to `NULL`. If given, it can be either a date
 #'   or date time object, or a character vector than can be coerced with
-#'   `as.POSIXct()`; only responses cached since that date will be kept. If
+#'   [as.POSIXct()]; only responses cached since that date will be kept. If
 #'   numeric, it is understood as number of days: only cached responses more
 #'   recent than the given number of days will be kept.
 #' @inheritParams cas_ia_check
@@ -20,6 +30,8 @@
 #' }
 cas_check_response <- function(
   url = NULL,
+  followlocation = TRUE,
+  url_encode = TRUE,
   wait = 1,
   output_only_newly_checked = FALSE,
   output_only_cached = FALSE,
@@ -32,13 +44,20 @@ cas_check_response <- function(
   write_db = TRUE,
   ...
 ) {
+  if (followlocation) {
+    response_table <- "response_check"
+  } else {
+    response_table <- "response_check_no_followlocation"
+  }
+
   if (is.null(url)) {
     url <- cas_get_urls_df(
       urls = NULL,
       index = index,
       index_group = index_group,
       ...
-    )
+    ) |>
+      dplyr::collect()
   }
 
   if (is.character(url)) {
@@ -68,6 +87,7 @@ cas_check_response <- function(
       cas_read_db_response(
         db_connection = db,
         disconnect_db = FALSE,
+        followlocation = followlocation,
         ...
       ),
       error = function(e) {
@@ -142,7 +162,19 @@ cas_check_response <- function(
           checked_at = lubridate::as_datetime(Sys.time())
         )
       } else {
-        req <- httr2::request(x[["url"]]) |>
+        if (url_encode) {
+          url_to_process_v <- utils::URLencode(
+            URL = x[["url"]],
+            repeated = FALSE
+          )
+        } else {
+          url_to_process_v <- x[["url"]]
+        }
+        req <- httr2::request(
+          base_url = url_to_process_v
+        ) |>
+          httr2::req_method("HEAD") |>
+          httr2::req_options(followlocation = followlocation) |>
           httr2::req_error(is_error = \(resp) FALSE)
 
         resp <- tryCatch(req |> httr2::req_perform(), error = \(e) FALSE)
@@ -160,9 +192,18 @@ cas_check_response <- function(
             checked_at = lubridate::as_datetime(Sys.time())
           )
         } else {
+          if (followlocation) {
+            resp_url_v <- as.character(httr2::resp_url(resp = resp))
+          } else {
+            resp_url_v <- as.character(httr2::resp_header(resp, "Location"))
+            if (length(resp_url_v) == 0) {
+              resp_url_v <- as.character(httr2::resp_url(resp = resp))
+            }
+          }
+
           resp_df <- tibble::tibble(
             url = as.character(x[["url"]]),
-            response_url = as.character(httr2::resp_url(resp = resp)),
+            response_url = resp_url_v,
             status = as.numeric(httr2::resp_status(resp)),
             status_description = as.character(httr2::resp_status_desc(resp)),
             type = as.character(httr2::resp_content_type(resp)),
@@ -177,7 +218,7 @@ cas_check_response <- function(
       if (write_db) {
         cas_write_to_db(
           df = resp_df,
-          table = "response_check",
+          table = response_table,
           db_connection = db,
           disconnect_db = FALSE,
           ...
@@ -202,7 +243,12 @@ cas_check_response <- function(
 
     tibble::tibble(url = url_v) |>
       dplyr::left_join(
-        cas_read_db_response() |>
+        cas_read_db_response(
+          db_connection = db,
+          disconnect_db = FALSE,
+          followlocation = followlocation,
+          ...
+        ) |>
           dplyr::filter(url %in% {{ url_v }}) |>
           dplyr::group_by(url) |>
           dplyr::slice_max(checked_at) |>
@@ -225,10 +271,21 @@ cas_check_response <- function(
 #' @export
 #'
 #' @examples
-cas_read_db_response <- function(db_connection = NULL, db_folder = NULL, ...) {
+cas_read_db_response <- function(
+  db_connection = NULL,
+  db_folder = NULL,
+  followlocation = TRUE,
+  ...
+) {
+  if (followlocation) {
+    response_table <- "response_check"
+  } else {
+    response_table <- "response_check_no_followlocation"
+  }
+
   db_result <- tryCatch(
     cas_read_from_db(
-      table = "response_check",
+      table = response_table,
       db_folder = db_folder,
       db_connection = db_connection,
       ...

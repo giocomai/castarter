@@ -53,6 +53,11 @@ reference:
 - contents:
   - has_concept("database functions")
   - starts_with("casdb_")
+- title: Check status of responses
+- description: Check response url and status
+- contents:
+  - cas_check_response
+  - cas_read_db_response
 - title: Shiny modules
 - description: These are shiny modules used in the main Shiny app. Some of them can be used for illustrative purposes elsewhere, or integrated in other Shiny apps
 - contents:

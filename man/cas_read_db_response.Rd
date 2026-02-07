@@ -4,7 +4,12 @@
 \alias{cas_read_db_response}
 \title{Check response type of URLs as stored in the local database.}
 \usage{
-cas_read_db_response(db_connection = NULL, db_folder = NULL, ...)
+cas_read_db_response(
+  db_connection = NULL,
+  db_folder = NULL,
+  followlocation = TRUE,
+  ...
+)
 }
 \arguments{
 \item{db_connection}{Defaults to NULL. If NULL, uses local SQLite database.

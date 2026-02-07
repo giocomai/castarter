@@ -6,6 +6,8 @@
 \usage{
 cas_check_response(
   url = NULL,
+  followlocation = TRUE,
+  url_encode = TRUE,
   wait = 1,
   output_only_newly_checked = FALSE,
   output_only_cached = FALSE,
@@ -23,16 +25,28 @@ cas_check_response(
 \item{url}{A character vector of urls, or a data frame with a \code{url} column,
 typically retrieved with \code{\link[=cas_get_urls_df]{cas_get_urls_df()}}.}
 
+\item{followlocation}{Logical, defaults to \code{TRUE}, passed to
+\code{\link[httr2:req_options]{httr2::req_options()}}. If \code{TRUE}, follows all redirects and reports data
+about the final response url is reached. If \code{FALSE}, it reports the status
+message of the original server even if a redirect was set; the code of the
+original redirect is reported, and the destination of the redirect is
+returned in the \code{response_url} column. Data with and without
+\code{followlocation} enabled are stored in separate databases.}
+
+\item{url_encode}{Logical, defaults to \code{TRUE}. If \code{TRUE}, it parses the urls
+with \code{URLencode(repeated=FALSE)} in order to process correctly URLs
+including e.g. spaces or other special characters.}
+
 \item{wait}{Defaults to 1. Number of seconds to wait between downloading one
 page and the next. Can be increased to reduce server load, or can be set to
 0 when this is not an issue.}
 
-\item{output_only_cached}{Defaults to FALSE. If TRUE, only previously cached
-responses are kept.}
+\item{output_only_cached}{Defaults to \code{FALSE}. If \code{TRUE}, only previously
+cached responses are kept.}
 
-\item{cache_invalidate}{Defaults to NULL. If given, it can be either a date
+\item{cache_invalidate}{Defaults to \code{NULL}. If given, it can be either a date
 or date time object, or a character vector than can be coerced with
-\code{as.POSIXct()}; only responses cached since that date will be kept. If
+\code{\link[=as.POSIXct]{as.POSIXct()}}; only responses cached since that date will be kept. If
 numeric, it is understood as number of days: only cached responses more
 recent than the given number of days will be kept.}
 
