@@ -116,7 +116,16 @@ cas_extract <- function(
         return(NULL)
       }
 
-      if (isTRUE(readability)) {
+      if (readability) {
+        if (!requireNamespace("castarter.readability", quietly = TRUE)) {
+          cli::cli_abort(
+            message = c(
+              x = "To use DuckDB databases you need to install the package {.pkg castarter.readability}.",
+              i = "You can do so with {.code pak::pak('giocomai/castarter.readability')}"
+            )
+          )
+        }
+
         readability_list <- castarter.readability::cas_extract_readability(
           html = as.character(current_html_document),
           url = x$url
