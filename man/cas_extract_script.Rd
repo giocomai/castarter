@@ -16,23 +16,24 @@ cas_extract_script(
 \item{html_document}{An html document parsed with \code{\link[xml2:read_xml]{xml2::read_html()}} or
 \code{\link[rvest:read_html]{rvest::read_html()}}.}
 
-\item{script_type}{Defaults to NULL. Type of script. Common script types
+\item{script_type}{Defaults to \code{NULL}. Type of script. Common script types
 include \code{application/ld+json}, \code{text/template}, etc.}
 
-\item{match}{Default to NULL. If given, used to filter extracted scripts.
+\item{match}{Default to \code{NULL}. If given, used to filter extracted scripts.
 Must be a named vector in the format \verb{c(}@type\verb{ = "NewsArticle")} for a
 script of type "NewsArticle".}
 
-\item{accessors}{Defaults to NULL. If given, a vector of accessors passed to
-\code{purrr::pluck} in order to extract sub-components of the list resulting
+\item{accessors}{Defaults to \code{NULL}. If given, a vector of accessors passed to
+\code{\link[purrr:pluck]{purrr::pluck()}} in order to extract sub-components of the list resulting
 from reading the with \code{jsonlite} the result of the previous steps and
 filter.}
 
-\item{remove_from_script}{Defaults to NULL. If given, removed after the
+\item{remove_from_script}{Defaults to \code{NULL}. If given, removed after the
 script has been extracted but before processing the json.}
 }
 \value{
-May return a list or a character vector. If no match is found, returns \code{NA_character_}
+May return a list or a character vector. If no match is found,
+returns \code{NA_character_}.
 }
 \description{
 Extracts scripts from an html page

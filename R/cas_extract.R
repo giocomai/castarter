@@ -112,7 +112,8 @@ cas_extract <- function(
         encoding = encoding
       )
 
-      if (inherits(x = current_html_document, what = "xml_node") == FALSE) {
+      if (!inherits(x = current_html_document, what = "xml_node")) {
+        current_html_document <- NA_character_
         return(NULL)
       }
 
@@ -151,23 +152,31 @@ cas_extract <- function(
           dplyr::relocate(title, text) |>
           dplyr::select("id", "url", dplyr::everything())
       } else {
-        current_df <- names(extractors) %>%
-          purrr::set_names() %>%
+        current_l <- names(extractors) |>
+          purrr::set_names() |>
           purrr::map(.f = function(current_function) {
-            current_function <- extractors[[current_function]](
+            current_result <- extractors[[current_function]](
               current_html_document
             )
-          }) %>%
-          tibble::as_tibble() %>%
+
+            if (length(current_result) == 0) {
+              vctrs::vec_init(current_result, n = 1)
+            } else {
+              current_result
+            }
+          })
+
+        current_df <- current_l |>
+          tibble::as_tibble() |>
           dplyr::mutate(
             id = as.numeric(x[["id"]]),
             url = as.character(x[["url"]])
-          ) %>%
+          ) |>
           dplyr::select("id", "url", dplyr::everything())
       }
 
-      if (is.null(post_processing) == FALSE) {
-        if (is.function(post_processing) == FALSE) {
+      if (!is.null(post_processing)) {
+        if (!is.function(post_processing)) {
           cli::cli_abort(
             "When given, {.val post_processing} must be a function."
           )
@@ -175,8 +184,8 @@ cas_extract <- function(
         current_df <- post_processing(current_df)
       }
 
-      if (store_as_character == TRUE) {
-        current_df <- current_df %>%
+      if (store_as_character) {
+        current_df <- current_df |>
           dplyr::mutate(dplyr::across(
             .cols = dplyr::everything(),
             .fns = as.character
@@ -193,7 +202,7 @@ cas_extract <- function(
     }
   )
 
-  if (write_to_db == FALSE) {
+  if (!write_to_db) {
     output_df <- cas_read_db_contents_data(
       db_connection = db,
       ...
@@ -205,21 +214,22 @@ cas_extract <- function(
 
 #' Extracts scripts from an html page
 #'
-#' @param script_type Defaults to NULL. Type of script. Common script types
+#' @param script_type Defaults to `NULL`. Type of script. Common script types
 #'   include `application/ld+json`, `text/template`, etc.
-#' @param match Default to NULL. If given, used to filter extracted scripts.
+#' @param match Default to `NULL`. If given, used to filter extracted scripts.
 #'   Must be a named vector in the format `c(`@type` = "NewsArticle")` for a
 #'   script of type "NewsArticle".
-#' @param accessors Defaults to NULL. If given, a vector of accessors passed to
-#'   `purrr::pluck` in order to extract sub-components of the list resulting
+#' @param accessors Defaults to `NULL`. If given, a vector of accessors passed to
+#'   [purrr::pluck()] in order to extract sub-components of the list resulting
 #'   from reading the with `jsonlite` the result of the previous steps and
 #'   filter.
-#' @param remove_from_script Defaults to NULL. If given, removed after the
+#' @param remove_from_script Defaults to `NULL`. If given, removed after the
 #'   script has been extracted but before processing the json.
 #'
 #' @inheritParams cas_extract_html
 #'
-#' @return May return a list or a character vector. If no match is found, returns `NA_character_`
+#' @return May return a list or a character vector. If no match is found,
+#'   returns `NA_character_`.
 #' @export
 #'
 #' @examples
@@ -267,7 +277,7 @@ cas_extract_script <- function(
   accessors = NULL,
   remove_from_script = NULL
 ) {
-  if (is.null(script_type) == TRUE) {
+  if (is.null(script_type)) {
     script_pre <- html_document |>
       rvest::html_elements("script")
   } else {
@@ -285,19 +295,19 @@ cas_extract_script <- function(
           stringr::str_remove_all(stringr::fixed("\\")) |>
           jsonlite::parse_json()
       } else {
-        x %>%
-          rvest::html_text2() %>%
+        x |>
+          rvest::html_text2() |>
           stringr::str_remove_all(pattern = remove_from_script) |>
           jsonlite::parse_json()
       }
     }
   )
 
-  if (is.null(match) == FALSE) {
+  if (!is.null(match)) {
     matched_pre <- purrr::map_chr(
       .x = script_l,
       .f = function(x) {
-        x %>%
+        x |>
           purrr::pluck(names(match))
       }
     )
@@ -311,8 +321,8 @@ cas_extract_script <- function(
     }
   }
 
-  if (is.null(accessors) == FALSE) {
-    script_l %>%
+  if (!is.null(accessors)) {
+    script_l |>
       purrr::pluck(!!!accessors)
   } else {
     script_l

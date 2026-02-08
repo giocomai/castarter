@@ -1,6 +1,6 @@
 Package: castarter
 Title: Content Analysis Starter Toolkit
-Version: 0.3.0.9012
+Version: 0.3.0.9013
 Authors@R: 
     c(person(given = "Giorgio",
              family = "Comai",
@@ -59,7 +59,8 @@ Imports:
     ggplot2,
     scales,
     stringi,
-    readr
+    readr,
+    vctrs
 Suggests: 
     testthat (>= 3.0.0),
     roxygen2,
