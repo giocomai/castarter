@@ -6,13 +6,13 @@
 #'
 #' @param download_df A data frame with four columns: `id`, `url`, `path`,
 #'   `type`.
-#' @param overwrite_file Logical, defaults to FALSE.
-#' @param ignore_ssl_certificates Logical, defaults to FALSE. If TRUE it uses
+#' @param overwrite_file Logical, defaults to `FALSE`.
+#' @param ignore_ssl_certificates Logical, defaults to `FALSE`. If `TRUE` it uses
 #'   `wget` to download the page, and does not check if the SSL certificate is
 #'   valid. Useful, for example, for https pages with expired or mis-configured
 #'   SSL certificate.
 #'
-#' @return Invisibly returns the full `httr` response.
+#' @return Nothing, used for its side effects.
 #' @inheritParams cas_download
 #' @inheritParams cas_write_to_db
 #' @export
