@@ -20,33 +20,33 @@ cas_get_files_to_extract(
 )
 }
 \arguments{
-\item{id}{Defaults to NULL, identifiers to process when extracting. If given,
+\item{id}{Defaults to \code{NULL}, identifiers to process when extracting. If given,
 must be a numeric vector, logically corresponding to the identifiers in the
-\code{id} column, e.g. as returned by \code{ cas_read_db_contents_id()}}
+\code{id} column, e.g. as returned by \code{\link[=cas_read_db_contents_id]{cas_read_db_contents_id()}}.}
 
-\item{ignore_id}{Defaults to TRUE. If TRUE, it checks if identifiers have
-been added to the local ignore list, typically with \code{cas_ignore_id()}, and
-as retrieved with \code{cas_read_db_ignore_id()}. It can also be a numeric
+\item{ignore_id}{Defaults to \code{TRUE}. If \code{TRUE}, it checks if identifiers have
+been added to the local ignore list, typically with \code{\link[=cas_ignore_id]{cas_ignore_id()}}, and
+as retrieved with \code{\link[=cas_read_db_ignore_id]{cas_read_db_ignore_id()}}. It can also be a numeric
 vector of identifiers: the given identifiers will not be processed. If
-FALSE, items will be processed normally.}
+\code{FALSE}, items will be processed normally.}
 
 \item{index}{Logical, defaults to FALSE. If TRUE, downloaded files will be
 considered \code{index} files. If not, they will be considered \code{contents} files.
 See Readme for a more extensive explanation.}
 
-\item{store_as_character}{Logical, defaults to TRUE. If TRUE, it converts to
+\item{store_as_character}{Logical, defaults to \code{TRUE}. If \code{TRUE}, it converts to
 character all extracted contents before writing them to database. This
 reduces issues of type conversions with the default database backend (for
 example, SQLite automatically converts dates to numeric) or using different
 backends. This implies you will need to set data types when you read the
 database, but it also means that you can consistently expect all columns to
 be character vectors, which in one form or another are consistently
-implemented across database backends. Set to FALSE if you want to remain in
+implemented across database backends. Set to \code{FALSE} if you want to remain in
 control of column types.}
 
-\item{check_previous}{Logical, defaults to TRUE. If FALSE, no check will be
+\item{check_previous}{Logical, defaults to \code{TRUE}. If \code{FALSE}, no check will be
 conducted to verify if the same content had been previously extracted. If
-FALSE, \code{write_to_db} must be set (or will be set) to FALSE, to prevent
+FALSE, \code{write_to_db} must be set (or will be set) to \code{FALSE}, to prevent
 duplication of data.}
 
 \item{file_format}{Defaults to \code{html}. Used for storing files in dedicated

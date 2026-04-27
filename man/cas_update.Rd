@@ -21,9 +21,9 @@ originally used by \code{cas_extract_links()}. See examples.}
 
 \item{extractors}{A named list of functions. See examples for details.}
 
-\item{post_processing}{Defaults to NULL. If given, it must be a function that
-takes a data frame as input (logically, a row of the dataset) and returns
-it with additional or modified columns.}
+\item{post_processing}{Defaults to \code{NULL}. If given, it must be a function
+that takes a data frame as input (logically, a row of the dataset) and
+returns it with additional or modified columns.}
 
 \item{wait}{Defaults to 1. Number of seconds to wait between downloading one
 page and the next. Can be increased to reduce server load, or can be set to

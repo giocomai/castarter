@@ -1,29 +1,29 @@
 #' Extract fields and contents from downloaded files
 #'
 #' @param extractors A named list of functions. See examples for details.
-#' @param post_processing Defaults to NULL. If given, it must be a function that
-#'   takes a data frame as input (logically, a row of the dataset) and returns
-#'   it with additional or modified columns.
-#' @param id Defaults to NULL, identifiers to process when extracting. If given,
+#' @param post_processing Defaults to `NULL`. If given, it must be a function
+#'   that takes a data frame as input (logically, a row of the dataset) and
+#'   returns it with additional or modified columns.
+#' @param id Defaults to `NULL`, identifiers to process when extracting. If given,
 #'   must be a numeric vector, logically corresponding to the identifiers in the
-#'   `id` column, e.g. as returned by ` cas_read_db_contents_id()`
-#' @param ignore_id Defaults to TRUE. If TRUE, it checks if identifiers have
-#'   been added to the local ignore list, typically with `cas_ignore_id()`, and
-#'   as retrieved with `cas_read_db_ignore_id()`. It can also be a numeric
+#'   `id` column, e.g. as returned by [cas_read_db_contents_id()].
+#' @param ignore_id Defaults to `TRUE`. If `TRUE`, it checks if identifiers have
+#'   been added to the local ignore list, typically with [cas_ignore_id()], and
+#'   as retrieved with [cas_read_db_ignore_id()]. It can also be a numeric
 #'   vector of identifiers: the given identifiers will not be processed. If
-#'   FALSE, items will be processed normally.
-#' @param store_as_character Logical, defaults to TRUE. If TRUE, it converts to
+#'   `FALSE`, items will be processed normally.
+#' @param store_as_character Logical, defaults to `TRUE`. If `TRUE`, it converts to
 #'   character all extracted contents before writing them to database. This
 #'   reduces issues of type conversions with the default database backend (for
 #'   example, SQLite automatically converts dates to numeric) or using different
 #'   backends. This implies you will need to set data types when you read the
 #'   database, but it also means that you can consistently expect all columns to
 #'   be character vectors, which in one form or another are consistently
-#'   implemented across database backends. Set to FALSE if you want to remain in
+#'   implemented across database backends. Set to `FALSE` if you want to remain in
 #'   control of column types.
-#' @param check_previous Logical, defaults to TRUE. If FALSE, no check will be
+#' @param check_previous Logical, defaults to `TRUE`. If `FALSE`, no check will be
 #'   conducted to verify if the same content had been previously extracted. If
-#'   FALSE, `write_to_db` must be set (or will be set) to FALSE, to prevent
+#'   FALSE, `write_to_db` must be set (or will be set) to `FALSE`, to prevent
 #'   duplication of data.
 #' @param keep_if_status Defaults to 200. Keep only if recorded download status
 #'   matches the given status.
@@ -106,15 +106,51 @@ cas_extract <- function(
     .progress = "Extracting",
     .x = purrr::transpose(available_files_to_extract_df),
     function(x) {
-      current_html_document <- xml2::read_html(
-        x = x$path,
-        options = c("RECOVER", "NOERROR", "NOBLANKS", "HUGE"),
-        encoding = encoding
+      current_html_document <- tryCatch(
+        xml2::read_html(
+          x = x$path,
+          options = c("RECOVER", "NOERROR", "NOBLANKS", "HUGE"),
+          encoding = encoding
+        ),
+        error = function(e) {
+          logical(1L)
+        }
       )
 
       if (!inherits(x = current_html_document, what = "xml_node")) {
-        current_html_document <- NA_character_
-        return(NULL)
+        current_html_document <- xml2::xml_new_root(.value = "node")
+      }
+
+      if (is.null(extractors) & !readability) {
+        cli::cli_abort(
+          "{.arg extractor} cannot be {.code NULL}, or {.arg readability} must be set to {.code TRUE}."
+        )
+      }
+
+      if (!is.null(extractors)) {
+        current_l <- names(extractors) |>
+          purrr::set_names() |>
+          purrr::map(.f = function(current_function) {
+            current_result <- extractors[[current_function]](
+              current_html_document
+            )
+
+            if (length(current_result) == 0) {
+              vctrs::vec_init(current_result, n = 1)
+            } else {
+              current_result
+            }
+          })
+
+        current_extractors_df <- current_l |>
+          tibble::as_tibble() |>
+          dplyr::mutate(
+            id = as.numeric(x[["id"]]),
+            url = as.character(x[["url"]])
+          ) |>
+          dplyr::select("id", "url", dplyr::everything())
+      } else {
+        current_extractors_df <- NULL
       }
 
       if (readability) {
@@ -142,7 +178,7 @@ cas_extract <- function(
           .x = readability_list,
           .f = \(x) is.null(x)
         )] <- NA_character_
-        current_df <- readability_list |>
+        current_readability_df <- readability_list |>
           tibble::as_tibble() |>
           dplyr::rename(text = textContent) |>
           dplyr::mutate(
@@ -151,29 +187,19 @@ cas_extract <- function(
           ) |>
           dplyr::relocate(title, text) |>
           dplyr::select("id", "url", dplyr::everything())
+
+        if (!is.null(extractors)) {
+          current_readability_df <- current_readability_df |>
+            dplyr::select(!dplyr::all_of(c("id", "url")))
+        }
       } else {
-        current_l <- names(extractors) |>
-          purrr::set_names() |>
-          purrr::map(.f = function(current_function) {
-            current_result <- extractors[[current_function]](
-              current_html_document
-            )
-
-            if (length(current_result) == 0) {
-              vctrs::vec_init(current_result, n = 1)
-            } else {
-              current_result
-            }
-          })
-
-        current_df <- current_l |>
-          tibble::as_tibble() |>
-          dplyr::mutate(
-            id = as.numeric(x[["id"]]),
-            url = as.character(x[["url"]])
-          ) |>
-          dplyr::select("id", "url", dplyr::everything())
+        current_readability_df <- NULL
       }
+
+      current_df <- dplyr::bind_cols(
+        current_extractors_df,
+        current_readability_df
+      )
 
       if (!is.null(post_processing)) {
         if (!is.function(post_processing)) {
