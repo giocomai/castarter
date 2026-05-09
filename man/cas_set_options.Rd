@@ -53,7 +53,7 @@ cas_options_list <- cas_get_options()
 cas_options_list
 }
 \seealso{
-Other settings: 
-\code{\link{cas_get_options}()}
+Other settings:
+\code{\link[=cas_get_options]{cas_get_options()}}
 }
 \concept{settings}

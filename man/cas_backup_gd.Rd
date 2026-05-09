@@ -25,8 +25,6 @@ folders on your Google Drive is ever given to this session.}
 \item{client}{Google app client, defaults to \code{castarter}'s own. Passed to
 \code{googledrive::drive_auth_configure}. Set to NULL to use \code{googledrive}'s
 defaults.}
-
-\item{...}{}
 }
 \description{
 Backup files to Google Drive

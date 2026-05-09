@@ -67,7 +67,7 @@ cas_options_list4
 
 }
 \seealso{
-Other settings: 
-\code{\link{cas_set_options}()}
+Other settings:
+\code{\link[=cas_set_options]{cas_set_options()}}
 }
 \concept{settings}

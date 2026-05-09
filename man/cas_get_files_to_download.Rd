@@ -22,7 +22,7 @@ cas_get_files_to_download(
 )
 }
 \arguments{
-\item{urls}{Defaults to NULL. If given, it should correspond with a data
+\item{urls}{Defaults to \code{NULL}. If given, it should correspond with a data
 frame with at least two columns named \code{id} and \code{url}. If not given, an
 attempt will be made to load it from the local database.}
 
@@ -30,10 +30,10 @@ attempt will be made to load it from the local database.}
 considered \code{index} files. If not, they will be considered \code{contents} files.
 See Readme for a more extensive explanation.}
 
-\item{desc_id}{Logical, defaults to FALSE. If TRUE, results are returned with
+\item{desc_id}{Logical, defaults to \code{FALSE}. If \code{TRUE}, results are returned with
 highest id first.}
 
-\item{batch}{An integer, defaults to NULL. If not given, a check is performed
+\item{batch}{An integer, defaults to \code{NULL}. If not given, a check is performed
 in the database to find if previous downloads have taken place. If so, by
 default, the current batch will be one unit higher than the highest batch
 number found in the database.}
@@ -44,11 +44,11 @@ sitemap is downloaded as an index with \code{file_format} set to xml, it will be
 processed accordingly. If it is stored as xml.gz, it will be automatically
 decompressed for correct processing.}
 
-\item{download_again_if_status_is_not}{Defaults to NULL. If given, it must a
+\item{download_again_if_status_is_not}{Defaults to \code{NULL}. If given, it must a
 status code as integer, typically \code{200L}, or \code{c(200L, 404L)}.}
 
 \item{...}{
-  Arguments passed on to \code{\link[=cas_get_urls_df]{cas_get_urls_df}}, \code{\link[=cas_get_base_folder]{cas_get_base_folder}}
+  Arguments passed on to \code{\link{cas_get_base_folder}}
   \describe{
     \item{\code{custom_path}}{Defaults to NULL. If given, all other parameters and
 settings are ignored, and this value is returned.}

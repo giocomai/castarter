@@ -13,7 +13,7 @@ cas_extract_script(
 )
 }
 \arguments{
-\item{html_document}{An html document parsed with \code{\link[xml2:read_xml]{xml2::read_html()}} or
+\item{html_document}{An html document parsed with \code{\link[xml2:read_html]{xml2::read_html()}} or
 \code{\link[rvest:read_html]{rvest::read_html()}}.}
 
 \item{script_type}{Defaults to \code{NULL}. Type of script. Common script types

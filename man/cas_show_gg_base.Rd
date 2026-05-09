@@ -14,13 +14,21 @@ cas_show_gg_base(
 )
 }
 \arguments{
-\item{group_by}{Defaults to NULL. If given, the unquoted name of the column to be used for grouping (e.g. date, or doc_id, or source, etc.)}
+\item{count_df}{A data frame with count of strings, typically generated with
+\code{\link[=cas_count]{cas_count()}}.}
 
-\item{n_column_name}{Defaults to 'n'. The unquoted name of the column to be used for the count in the output.}
+\item{group_by}{Defaults to \code{NULL}. If given, the unquoted name of the column
+to be used for grouping (e.g. date, or doc_id, or source, etc.)}
 
-\item{pattern_column_name}{Defaults to 'pattern'. The unquoted name of the column to be used for the word in the output.}
+\item{n_column_name}{Defaults to \code{n}. The unquoted name of the column to be
+used for the count in the output.}
 
-\item{group_as_factor}{Defaults to FALSE. If TRUE, the grouping column is forced into a factor, otherwise it is kept in its current format (e.g. date, or numeric).}
+\item{pattern_column_name}{Defaults to \code{pattern}. The unquoted name of the
+column to be used for the word in the output.}
+
+\item{group_as_factor}{Defaults to \code{FALSE}. If \code{TRUE}, the grouping column is
+forced into a factor, otherwise it is kept in its current format (e.g.
+date, or numeric).}
 }
 \value{
 A ggplot2 object with aesthetics set, but no geometry.

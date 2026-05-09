@@ -1,10 +1,16 @@
 #' Creates base ggplot2 object to be used by ggplot or ggiraph
 #'
-#' @param count_df
-#' @param group_by Defaults to NULL. If given, the unquoted name of the column to be used for grouping (e.g. date, or doc_id, or source, etc.)
-#' @param n_column_name Defaults to 'n'. The unquoted name of the column to be used for the count in the output.
-#' @param pattern_column_name Defaults to 'pattern'. The unquoted name of the column to be used for the word in the output.
-#' @param group_as_factor Defaults to FALSE. If TRUE, the grouping column is forced into a factor, otherwise it is kept in its current format (e.g. date, or numeric).
+#' @param count_df A data frame with count of strings, typically generated with
+#'   [cas_count()].
+#' @param group_by Defaults to `NULL`. If given, the unquoted name of the column
+#'   to be used for grouping (e.g. date, or doc_id, or source, etc.)
+#' @param n_column_name Defaults to `n`. The unquoted name of the column to be
+#'   used for the count in the output.
+#' @param pattern_column_name Defaults to `pattern`. The unquoted name of the
+#'   column to be used for the word in the output.
+#' @param group_as_factor Defaults to `FALSE`. If `TRUE`, the grouping column is
+#'   forced into a factor, otherwise it is kept in its current format (e.g.
+#'   date, or numeric).
 #'
 #' @return A ggplot2 object with aesthetics set, but no geometry.
 #' @export
@@ -17,22 +23,26 @@
 #'   cas_summarise(period = "year") |>
 #'   cas_show_gg_base() |>
 #'   cas_show_barchart_ggplot2(position = "dodge")
-cas_show_gg_base <- function(count_df,
-                             group_by = date,
-                             n_column_name = n,
-                             pattern_column_name = pattern,
-                             group_as_factor = FALSE,
-                             font_base_size = 14) {
-  if (isTRUE(group_as_factor)) {
-    count_df <- count_df %>%
+cas_show_gg_base <- function(
+  count_df,
+  group_by = date,
+  n_column_name = n,
+  pattern_column_name = pattern,
+  group_as_factor = FALSE,
+  font_base_size = 14
+) {
+  if (group_as_factor) {
+    count_df <- count_df |>
       dplyr::mutate({{ group_by }} := factor({{ group_by }}))
   }
-  count_df %>%
-    ggplot2::ggplot(mapping = ggplot2::aes(
-      x = {{ group_by }},
-      y = {{ n_column_name }},
-      fill = {{ pattern_column_name }}
-    )) +
+  count_df |>
+    ggplot2::ggplot(
+      mapping = ggplot2::aes(
+        x = {{ group_by }},
+        y = {{ n_column_name }},
+        fill = {{ pattern_column_name }}
+      )
+    ) +
     ggplot2::scale_y_continuous(name = NULL, labels = scales::number) +
     PrettyCols::scale_fill_pretty_d(palette = "Lively") +
     ggplot2::theme_minimal(base_size = font_base_size) +
@@ -56,31 +66,36 @@ cas_show_gg_base <- function(count_df,
 #' @export
 #'
 #' @examples
-cas_show_barchart_ggiraph <- function(ggobj,
-                                      data_id = NULL,
-                                      tooltip = NULL,
-                                      position = "stack") {
+cas_show_barchart_ggiraph <- function(
+  ggobj,
+  data_id = NULL,
+  tooltip = NULL,
+  position = "stack"
+) {
   if (position == "stack") {
-    ggiraph::girafe(ggobj = ggobj +
-      ggiraph::geom_col_interactive(
-        mapping = ggplot2::aes(
-          data_id = data_id,
-          tooltip = tooltip
-        ),
-        position = ggplot2::position_stack()
-      ))
+    ggiraph::girafe(
+      ggobj = ggobj +
+        ggiraph::geom_col_interactive(
+          mapping = ggplot2::aes(
+            data_id = data_id,
+            tooltip = tooltip
+          ),
+          position = ggplot2::position_stack()
+        )
+    )
   } else if (position == "dodge") {
-    ggiraph::girafe(ggobj = ggobj +
-      ggiraph::geom_col_interactive(
-        mapping = ggplot2::aes(
-          data_id = data_id,
-          tooltip = tooltip
-        ),
-        position = ggplot2::position_dodge()
-      ))
+    ggiraph::girafe(
+      ggobj = ggobj +
+        ggiraph::geom_col_interactive(
+          mapping = ggplot2::aes(
+            data_id = data_id,
+            tooltip = tooltip
+          ),
+          position = ggplot2::position_dodge()
+        )
+    )
   }
 }
-
 
 
 #' Creates barchart with ggplot2
@@ -99,8 +114,7 @@ cas_show_barchart_ggiraph <- function(ggobj,
 #'   cas_summarise(period = "year") |>
 #'   cas_show_gg_base() |>
 #'   cas_show_barchart_ggplot2(position = "stack")
-cas_show_barchart_ggplot2 <- function(ggobj,
-                                      position = "stack") {
+cas_show_barchart_ggplot2 <- function(ggobj, position = "stack") {
   if (position == "stack") {
     ggobj +
       ggplot2::geom_col(position = ggplot2::position_stack())

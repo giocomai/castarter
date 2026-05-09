@@ -178,20 +178,19 @@ cas_get_urls_df <- function(
 
 #' Create a data frame with not yet downloaded files
 #'
-#' @param urls Defaults to NULL. If given, it should correspond with a data
+#' @param urls Defaults to `NULL`. If given, it should correspond with a data
 #'   frame with at least two columns named `id` and `url`. If not given, an
 #'   attempt will be made to load it from the local database.
-#' @param desc_id Logical, defaults to FALSE. If TRUE, results are returned with
+#' @param desc_id Logical, defaults to `FALSE`. If `TRUE`, results are returned with
 #'   highest id first.
-#' @param batch An integer, defaults to NULL. If not given, a check is performed
+#' @param batch An integer, defaults to `NULL`. If not given, a check is performed
 #'   in the database to find if previous downloads have taken place. If so, by
 #'   default, the current batch will be one unit higher than the highest batch
 #'   number found in the database.
-#' @param download_again_if_status_is_not Defaults to NULL. If given, it must a
+#' @param download_again_if_status_is_not Defaults to `NULL`. If given, it must a
 #'   status code as integer, typically `200L`, or `c(200L, 404L)`.
 #'
 #' @inheritParams cas_download
-#' @inheritDotParams cas_get_urls_df -urls -index
 #' @inheritDotParams cas_get_base_folder -level
 #'
 #' @return A data frame with four columns: `id`, `url`, `path` and `type`

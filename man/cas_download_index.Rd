@@ -24,9 +24,6 @@ cas_download_index(
   ...
 )
 }
-\arguments{
-\item{index}{}
-}
 \description{
 Downloads index files systematically, and stores details about the download
 in a local database

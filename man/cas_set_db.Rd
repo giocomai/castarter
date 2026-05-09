@@ -64,17 +64,17 @@ if (interactive()) {
 }
 }
 \seealso{
-Other database functions: 
-\code{\link{cas_check_db_folder}()},
-\code{\link{cas_check_use_db}()},
-\code{\link{cas_connect_to_db}()},
-\code{\link{cas_create_db_folder}()},
-\code{\link{cas_disable_db}()},
-\code{\link{cas_disconnect_from_db}()},
-\code{\link{cas_enable_db}()},
-\code{\link{cas_get_db_settings}()},
-\code{\link{cas_read_from_db}()},
-\code{\link{cas_set_db_folder}()},
-\code{\link{cas_write_to_db}()}
+Other database functions:
+\code{\link[=cas_check_db_folder]{cas_check_db_folder()}},
+\code{\link[=cas_check_use_db]{cas_check_use_db()}},
+\code{\link[=cas_connect_to_db]{cas_connect_to_db()}},
+\code{\link[=cas_create_db_folder]{cas_create_db_folder()}},
+\code{\link[=cas_disable_db]{cas_disable_db()}},
+\code{\link[=cas_disconnect_from_db]{cas_disconnect_from_db()}},
+\code{\link[=cas_enable_db]{cas_enable_db()}},
+\code{\link[=cas_get_db_settings]{cas_get_db_settings()}},
+\code{\link[=cas_read_from_db]{cas_read_from_db()}},
+\code{\link[=cas_set_db_folder]{cas_set_db_folder()}},
+\code{\link[=cas_write_to_db]{cas_write_to_db()}}
 }
 \concept{database functions}
