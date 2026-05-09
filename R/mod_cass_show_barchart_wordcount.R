@@ -56,7 +56,6 @@ mod_cass_show_barchart_wordcount_server <- function(id,
         dplyr::mutate(date = factor(date)) |>
         cas_show_gg_base() +
         ggplot2::scale_x_discrete(name = NULL) +
-        ggplot2::scale_fill_manual(values = NA) +
         ggplot2::guides(fill = "none") +
         ggplot2::labs(title = stringr::str_c("Total number of words per ", period))
     } else {
