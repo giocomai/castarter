@@ -9,12 +9,14 @@
 #'
 #' @return
 #' @export
-#' 
+#'
 #' @examples
 cas_download_chromote <- function(
   download_df = NULL,
   index = FALSE,
   index_group = NULL,
+  batch = NULL,
+  create_folder_if_missing = NULL,
   overwrite_file = FALSE,
   ignore_id = TRUE,
   wait = 1,
@@ -45,6 +47,8 @@ cas_download_chromote <- function(
     download_df <- cas_get_files_to_download(
       index = index,
       index_group = index_group,
+      batch = batch,
+      create_folder_if_missing = create_folder_if_missing,
       db_connection = db,
       disconnect_db = FALSE,
       file_format = file_format,
@@ -87,11 +91,9 @@ cas_download_chromote <- function(
         raw <- tryCatch(
           expr = {
             b <- chromote::ChromoteSession$new()
-            
-            b$go_to(url = x$url,
-                    delay = delay, 
-                    timeout_ = timeout)
-            
+
+            b$go_to(url = x$url, delay = delay, timeout_ = timeout)
+
             result <- b$Runtime$evaluate(
               expression = "document.documentElement.outerHTML"
             )

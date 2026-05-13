@@ -8,6 +8,8 @@ cas_download_chromote(
   download_df = NULL,
   index = FALSE,
   index_group = NULL,
+  batch = NULL,
+  create_folder_if_missing = NULL,
   overwrite_file = FALSE,
   ignore_id = TRUE,
   wait = 1,
@@ -28,6 +30,11 @@ cas_download_chromote(
 \item{index}{Logical, defaults to FALSE. If TRUE, downloaded files will be
 considered \code{index} files. If not, they will be considered \code{contents} files.
 See Readme for a more extensive explanation.}
+
+\item{batch}{An integer, defaults to \code{NULL}. If not given, a check is performed
+in the database to find if previous downloads have taken place. If so, by
+default, the current batch will be one unit higher than the highest batch
+number found in the database.}
 
 \item{overwrite_file}{Logical, defaults to \code{FALSE}.}
 
