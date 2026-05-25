@@ -46,7 +46,8 @@ SSL certificate.}
 If given, must be a connection object or a list with relevant connection
 settings (see example).}
 
-\item{disconnect_db}{Defaults to TRUE. If FALSE, leaves the connection to database open.}
+\item{disconnect_db}{Defaults to \code{FALSE}. If \code{FALSE}, leaves the connection
+to database open.}
 
 \item{sample}{Defaults to FALSE. If TRUE, the download order is randomised.
 If a numeric is given, the download order is randomised and at most the

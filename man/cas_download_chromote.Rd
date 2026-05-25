@@ -65,7 +65,8 @@ decompressed for correct processing.}
 \item{download_again_if_status_is_not}{Defaults to \code{NULL}. If given, it must a
 status code as integer, typically \code{200L}, or \code{c(200L, 404L)}.}
 
-\item{disconnect_db}{Defaults to TRUE. If FALSE, leaves the connection to database open.}
+\item{disconnect_db}{Defaults to \code{FALSE}. If \code{FALSE}, leaves the connection
+to database open.}
 
 \item{...}{Passed to \code{cas_get_db_file()}.}
 }

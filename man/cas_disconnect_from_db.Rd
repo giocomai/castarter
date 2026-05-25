@@ -12,11 +12,16 @@ cas_disconnect_from_db(
 )
 }
 \arguments{
-\item{db_connection}{Defaults to NULL. If NULL, and database is enabled, \code{castarter} will use a local sqlite database. A custom connection to other databases can be given (see vignette \code{castarter_db_management} for details).}
+\item{db_connection}{Defaults to \code{NULL}. If \code{NULL}, and database is enabled,
+\code{castarter} will use a local sqlite database. A custom connection to other
+databases can be given (see vignette \code{castarter_db_management} for
+details).}
 
-\item{use_db}{Defaults to NULL. If given, it should be given either TRUE or FALSE. Typically set with \code{cas_enable_db()} or \code{cas_disable_db()}.}
+\item{use_db}{Defaults to \code{NULL}. If given, it should be given either \code{TRUE}
+or \code{FALSE.} Typically set with \code{cas_enable_db()} or \code{cas_disable_db()}.}
 
-\item{disconnect_db}{Defaults to TRUE. If FALSE, leaves the connection to database open.}
+\item{disconnect_db}{Defaults to \code{FALSE}. If \code{FALSE}, leaves the connection
+to database open.}
 }
 \value{
 Nothing, used for its side effects.

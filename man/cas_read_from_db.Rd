@@ -19,7 +19,8 @@ cas_read_from_db(
 If given, must be a connection object or a list with relevant connection
 settings (see example).}
 
-\item{disconnect_db}{Defaults to TRUE. If FALSE, leaves the connection to database open.}
+\item{disconnect_db}{Defaults to \code{FALSE}. If \code{FALSE}, leaves the connection
+to database open.}
 
 \item{...}{Passed to \code{cas_get_db_file()}.}
 }

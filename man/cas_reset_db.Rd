@@ -23,7 +23,8 @@ contents and structure of each table.}
 If given, must be a connection object or a list with relevant connection
 settings (see example).}
 
-\item{disconnect_db}{Defaults to TRUE. If FALSE, leaves the connection to database open.}
+\item{disconnect_db}{Defaults to \code{FALSE}. If \code{FALSE}, leaves the connection
+to database open.}
 
 \item{ask}{Logical, defaults to TRUE. If set to FALSE, the relevant table
 will be deleted without asking for confirmation from the user.}

@@ -19,7 +19,7 @@ each table.}
 
 \item{table}{Name of the table. See readme for details.}
 
-\item{overwrite}{Logical, defaults to FALSE. If TRUE, checks if matching data
+\item{overwrite}{Logical, defaults to \code{FALSE}. If \code{TRUE}, checks if matching data
 are previously held in the table and overwrites them. This should be used
 with caution, as it may overwrite completely the selected table.}
 
@@ -27,14 +27,15 @@ with caution, as it may overwrite completely the selected table.}
 If given, must be a connection object or a list with relevant connection
 settings (see example).}
 
-\item{disconnect_db}{Defaults to TRUE. If FALSE, leaves the connection to database open.}
+\item{disconnect_db}{Defaults to \code{FALSE}. If \code{FALSE}, leaves the connection
+to database open.}
 
 \item{...}{Passed to \code{cas_get_db_file()}.}
 }
 \value{
 If successful, returns invisibly the same data frame provided as
-input and written to the database. Returns silently NULL, if nothing is
-added, e.g. because \code{use_db} is set to FALSE.
+input and written to the database. Returns silently \code{NULL}, if nothing is
+added, e.g. because \code{use_db} is set to \code{FALSE}.
 }
 \description{
 Generic function for writing to database

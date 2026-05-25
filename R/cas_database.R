@@ -510,9 +510,14 @@ cas_connect_to_db <- function(
 
 #' Ensure that connection to database is disconnected consistently
 #'
-#' @param use_db Defaults to NULL. If given, it should be given either TRUE or FALSE. Typically set with `cas_enable_db()` or `cas_disable_db()`.
-#' @param db_connection Defaults to NULL. If NULL, and database is enabled, `castarter` will use a local sqlite database. A custom connection to other databases can be given (see vignette `castarter_db_management` for details).
-#' @param disconnect_db Defaults to TRUE. If FALSE, leaves the connection to database open.
+#' @param use_db Defaults to `NULL`. If given, it should be given either `TRUE`
+#'   or `FALSE.` Typically set with `cas_enable_db()` or `cas_disable_db()`.
+#' @param db_connection Defaults to `NULL`. If `NULL`, and database is enabled,
+#'   `castarter` will use a local sqlite database. A custom connection to other
+#'   databases can be given (see vignette `castarter_db_management` for
+#'   details).
+#' @param disconnect_db Defaults to `FALSE`. If `FALSE`, leaves the connection
+#'   to database open.
 #'
 #' @family database functions
 #'
@@ -566,7 +571,7 @@ cas_disconnect_from_db <- function(
 #' @param df A data frame. Must correspond with the type of data expected for
 #'   each table.
 #' @param table Name of the table. See readme for details.
-#' @param overwrite Logical, defaults to FALSE. If TRUE, checks if matching data
+#' @param overwrite Logical, defaults to `FALSE`. If `TRUE`, checks if matching data
 #'   are previously held in the table and overwrites them. This should be used
 #'   with caution, as it may overwrite completely the selected table.
 #'
@@ -576,8 +581,8 @@ cas_disconnect_from_db <- function(
 #' @inheritParams cas_disconnect_from_db
 #'
 #' @return If successful, returns invisibly the same data frame provided as
-#'   input and written to the database. Returns silently NULL, if nothing is
-#'   added, e.g. because `use_db` is set to FALSE.
+#'   input and written to the database. Returns silently `NULL`, if nothing is
+#'   added, e.g. because `use_db` is set to `FALSE`.
 #' @export
 #'
 #' @examples
