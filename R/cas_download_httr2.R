@@ -134,8 +134,8 @@ cas_download_httr2 <- function(
                 return(FALSE)
               }
             }
-          )
-        httr2::req_error(is_error = \(resp) FALSE)
+          ) |>
+          httr2::req_error(is_error = \(resp) FALSE)
 
         resp <- tryCatch(
           req |> httr2::req_perform(path = x$path),
