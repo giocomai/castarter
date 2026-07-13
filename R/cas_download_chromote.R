@@ -101,10 +101,13 @@ cas_download_chromote <- function(
           },
           error = function(e) {
             e
+          },
+          finally = {
+            b$close()
           }
         )
 
-        if (inherits(raw, "error") == FALSE) {
+        if (!inherits(raw, "error")) {
           writeLines(
             text = result$result$value,
             con = x$path,
