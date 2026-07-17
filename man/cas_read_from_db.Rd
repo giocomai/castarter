@@ -2,9 +2,18 @@
 % Please edit documentation in R/cas_database.R
 \name{cas_read_from_db}
 \alias{cas_read_from_db}
+\alias{cas_read_db}
 \title{Reads data from local database}
 \usage{
 cas_read_from_db(
+  table,
+  db_folder = NULL,
+  db_connection = NULL,
+  disconnect_db = FALSE,
+  ...
+)
+
+cas_read_db(
   table,
   db_folder = NULL,
   db_connection = NULL,
@@ -55,6 +64,7 @@ Other database functions:
 \code{\link[=cas_check_use_db]{cas_check_use_db()}},
 \code{\link[=cas_connect_to_db]{cas_connect_to_db()}},
 \code{\link[=cas_create_db_folder]{cas_create_db_folder()}},
+\code{\link[=cas_delete_from_db]{cas_delete_from_db()}},
 \code{\link[=cas_disable_db]{cas_disable_db()}},
 \code{\link[=cas_disconnect_from_db]{cas_disconnect_from_db()}},
 \code{\link[=cas_enable_db]{cas_enable_db()}},

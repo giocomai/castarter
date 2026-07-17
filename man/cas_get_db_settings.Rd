@@ -22,6 +22,7 @@ Other database functions:
 \code{\link[=cas_check_use_db]{cas_check_use_db()}},
 \code{\link[=cas_connect_to_db]{cas_connect_to_db()}},
 \code{\link[=cas_create_db_folder]{cas_create_db_folder()}},
+\code{\link[=cas_delete_from_db]{cas_delete_from_db()}},
 \code{\link[=cas_disable_db]{cas_disable_db()}},
 \code{\link[=cas_disconnect_from_db]{cas_disconnect_from_db()}},
 \code{\link[=cas_enable_db]{cas_enable_db()}},

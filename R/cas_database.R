@@ -732,3 +732,7 @@ cas_read_from_db <- function(
 
   output_df
 }
+
+#' @rdname cas_read_from_db
+#' @export
+cas_read_db <- cas_read_from_db
