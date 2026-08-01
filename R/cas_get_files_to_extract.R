@@ -41,7 +41,11 @@ cas_get_files_to_extract <- function(
   type <- dplyr::if_else(condition = index, true = "index", false = "contents")
 
   if (is.null(custom_path)) {
-    path <- cas_get_base_path(...)
+    path <- cas_get_base_path(
+      index = index,
+      file_format = file_format,
+      ...
+    )
   } else {
     path_ending <- stringr::str_c(file_format, type, sep = "_")
 
