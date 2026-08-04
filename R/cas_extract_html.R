@@ -281,7 +281,7 @@ cas_extract_html <- function(
     if (!is.null(container_instance)) {
       output <- output[container_instance]
     } else {
-      output <- stringr::str_c(output, collapse = collapse)
+      output <- stringr::str_flatten(output, collapse = collapse)
     }
   } else if (length(output) == 0) {
     output <- as.character(no_match)
