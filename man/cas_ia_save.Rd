@@ -49,11 +49,11 @@ it and keeps record in the local database.}
 \item{ia_check_wait}{Defaults to 2, passed to \code{cas_ia_check()}. Can generally
 be kept low, as this is a light API.}
 
-\item{check_db}{Defaults to TRUE. If TRUE, checks if given URL has already
+\item{check_db}{Defaults to \code{TRUE}. If \code{TRUE}, checks if given URL has already
 been checked in local database, and queries APIs only for URLs that have
 not been previously checked.}
 
-\item{write_db}{Defaults to TRUE. If TRUE, writes result to a local database.}
+\item{write_db}{Defaults to \code{TRUE}. If \code{TRUE}, writes result to a local database.}
 
 \item{...}{Passed to \code{cas_get_db_file()}.}
 }

@@ -29,16 +29,16 @@ page and the next. Can be increased to reduce server load, or can be set to
 \item{retry_times}{Defaults to 3. Number of times to retry download in case
 of errors.}
 
-\item{check_db}{Defaults to TRUE. If TRUE, checks if given URL has already
+\item{check_db}{Defaults to \code{TRUE}. If \code{TRUE}, checks if given URL has already
 been checked in local database, and queries APIs only for URLs that have
 not been previously checked.}
 
-\item{write_db}{Defaults to TRUE. If TRUE, writes result to a local database.}
+\item{write_db}{Defaults to \code{TRUE}. If \code{TRUE}, writes result to a local database.}
 
 \item{...}{Passed to \code{cas_get_db_file()}.}
 }
 \value{
-A url linking to the version on the Internet Archive
+A url linking to the version on the Internet Archive.
 }
 \description{
 For details on API access to the Wayback Machine see:

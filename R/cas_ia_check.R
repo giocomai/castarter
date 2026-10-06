@@ -9,13 +9,13 @@
 #' Integration with Wayback CDX Server API to be considered.
 #'
 #' @param url A charachter vector of length one, a url.
-#' @param check_db Defaults to TRUE. If TRUE, checks if given URL has already
+#' @param check_db Defaults to `TRUE`. If `TRUE`, checks if given URL has already
 #'   been checked in local database, and queries APIs only for URLs that have
 #'   not been previously checked.
-#' @param write_db Defaults to TRUE. If TRUE, writes result to a local database.
+#' @param write_db Defaults to `TRUE`. If `TRUE`, writes result to a local database.
 #' @inheritParams cas_download
 #'
-#' @return A url linking to the version on the Internet Archive
+#' @return A url linking to the version on the Internet Archive.
 #' @export
 #'
 #' @examples
