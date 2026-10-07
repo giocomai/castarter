@@ -10,7 +10,6 @@ cas_wp_api(
   per_page = 10,
   order_by = c("id", "date", "relevance", "include", "title", "slug"),
   order = c("desc", "asc"),
-  output_only_newly_checked = FALSE,
   output_only_cached = FALSE,
   db_connection = NULL,
   disconnect_db = FALSE,

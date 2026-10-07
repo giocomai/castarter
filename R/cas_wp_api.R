@@ -29,15 +29,11 @@ cas_wp_api <- function(
   per_page = 10,
   order_by = c("id", "date", "relevance", "include", "title", "slug"),
   order = c("desc", "asc"),
-
-  output_only_newly_checked = FALSE,
   output_only_cached = FALSE,
-
   db_connection = NULL,
   disconnect_db = FALSE,
   check_db = TRUE,
   write_db = TRUE,
-
   ignore_ssl_certificates = FALSE,
   user_agent = NULL,
   wait = 1,
@@ -68,6 +64,15 @@ cas_wp_api <- function(
       conn = db,
       name = current_table
     )
+
+    if (output_only_cached) {
+      return(
+        previous_data_df |>
+          dplyr::collect() |>
+          tibble::as_tibble()
+      )
+    }
+
     previous_id_v <- previous_data_df |>
       dplyr::pull("id")
   }
