@@ -50,11 +50,11 @@ or date time object, or a character vector than can be coerced with
 numeric, it is understood as number of days: only cached responses more
 recent than the given number of days will be kept.}
 
-\item{check_db}{Defaults to TRUE. If TRUE, checks if given URL has already
+\item{check_db}{Defaults to \code{TRUE}. If \code{TRUE}, checks if given URL has already
 been checked in local database, and queries APIs only for URLs that have
 not been previously checked.}
 
-\item{write_db}{Defaults to TRUE. If TRUE, writes result to a local database.}
+\item{write_db}{Defaults to \code{TRUE}. If \code{TRUE}, writes result to a local database.}
 
 \item{...}{Passed to \code{cas_get_db_file()}.}
 }

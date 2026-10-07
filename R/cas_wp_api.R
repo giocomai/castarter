@@ -97,6 +97,8 @@ cas_wp_api <- function(
     )
   }
 
+  cli::cli_progress_bar(name = "Retrieving from the API", total = total_pages)
+
   for (current_page in 1:total_pages) {
     req <- httr2::request(base_url = api_base_url) |>
       httr2::req_url_path_append(api_endpoint) |>
@@ -139,6 +141,7 @@ cas_wp_api <- function(
       dplyr::filter_out(id %in% previous_id_v)
 
     if (nrow(new_df) == 0) {
+      cli::cli_progress_done()
       break
     }
 
@@ -156,7 +159,9 @@ cas_wp_api <- function(
       )
       exists_table <- TRUE
     }
+    cli::cli_progress_update()
   }
+  cli::cli_progress_done()
 
   all_data_df <- DBI::dbReadTable(
     conn = db,
