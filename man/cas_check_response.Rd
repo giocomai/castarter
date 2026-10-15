@@ -11,6 +11,7 @@ cas_check_response(
   wait = 1,
   output_only_newly_checked = FALSE,
   output_only_cached = FALSE,
+  output_vector = FALSE,
   cache_invalidate = NULL,
   index = FALSE,
   index_group = NULL,
@@ -43,6 +44,10 @@ page and the next. Can be increased to reduce server load, or can be set to
 
 \item{output_only_cached}{Defaults to \code{FALSE}. If \code{TRUE}, only previously
 cached responses are kept.}
+
+\item{output_vector}{Defaults to \code{FALSE}. If \code{TRUE}, returns a vector of the
+same length and in the same order as the input, with the url normally
+included in \code{response_url}.}
 
 \item{cache_invalidate}{Defaults to \code{NULL}. If given, it can be either a date
 or date time object, or a character vector than can be coerced with

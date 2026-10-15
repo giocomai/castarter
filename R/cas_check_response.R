@@ -19,6 +19,9 @@
 #'   [as.POSIXct()]; only responses cached since that date will be kept. If
 #'   numeric, it is understood as number of days: only cached responses more
 #'   recent than the given number of days will be kept.
+#' @param output_vector Defaults to `FALSE`. If `TRUE`, returns a vector of the
+#'   same length and in the same order as the input, with the url normally
+#'   included in `response_url`.
 #' @inheritParams cas_ia_check
 #'
 #' @returns A data frame with response status for each given url.
@@ -35,6 +38,7 @@ cas_check_response <- function(
   wait = 1,
   output_only_newly_checked = FALSE,
   output_only_cached = FALSE,
+  output_vector = FALSE,
   cache_invalidate = NULL,
   index = FALSE,
   index_group = NULL,
@@ -63,7 +67,7 @@ cas_check_response <- function(
   if (is.character(url)) {
     urls_df <- tibble::tibble(url = url)
   } else if (is.data.frame(url) & "url" %in% colnames(url)) {
-    urls_df <- dplyr::distinct(url)
+    urls_df <- url |> dplyr::select(dplyr::all_of("url"))
   } else {
     cli::cli_abort(
       message = "{.arg url} must either be a charcater vector or a data frame with a {.var url} column."
@@ -241,7 +245,7 @@ cas_check_response <- function(
       return(output_df)
     }
 
-    tibble::tibble(url = url_v) |>
+    output_df <- tibble::tibble(url = url_v) |>
       dplyr::left_join(
         cas_read_db_response(
           db_connection = db,
@@ -257,6 +261,12 @@ cas_check_response <- function(
           dplyr::mutate(checked_at = as.POSIXct(checked_at)),
         by = "url"
       )
+
+    if (output_vector) {
+      return(output_df[["response_url"]])
+    } else {
+      return(output_df)
+    }
   }
 }
 
