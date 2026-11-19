@@ -22,7 +22,8 @@ cas_extract_links(
   match = NULL,
   min_length = NULL,
   max_length = NULL,
-  attribute_type = "href",
+  html_attribute_type = "href",
+  xml_attribute_type = NULL,
   append_string = NULL,
   remove_string = NULL,
   write_to_db = FALSE,
@@ -93,8 +94,11 @@ min_length, it is excluded from the output.}
 \item{max_length}{If a link is longer than the number of characters given in
 max_length, it is excluded from the output.}
 
-\item{attribute_type}{Defaults to "href". Type of attribute to extract from
-links.}
+\item{html_attribute_type}{Defaults to "href". Type of attribute to extract
+from links. Ignored when \code{file_format} is set to "xml"}
+
+\item{xml_attribute_type}{Defaults to \code{NULL}. If given, used to extract when
+\code{file_format} is set to "xml", otherwise ignored.}
 
 \item{append_string}{If provided, appends given string to the extracted
 articles. Typically used to create links for print or mobile versions of

@@ -27,9 +27,11 @@
 #'   index, using `output_index_group` as `index_group`.
 #' @param output_index_group Defaults to NULL. Relevant only when `output_index`
 #'   is set to TRUE. Used to store new index urls in the database with reference
-#'   to the appropriate group.
-#' @param attribute_type Defaults to "href". Type of attribute to extract from
-#'   links.
+#' to the appropriate group.
+#' @param html_attribute_type Defaults to "href". Type of attribute to extract
+#'   from links. Ignored when `file_format` is set to "xml"
+#' @param xml_attribute_type Defaults to `NULL`. If given, used to extract when
+#'   `file_format` is set to "xml", otherwise ignored.
 #' @param min_length If a link is shorter than the number of characters given in
 #'   min_length, it is excluded from the output.
 #' @param max_length If a link is longer than the number of characters given in
@@ -80,7 +82,8 @@ cas_extract_links <- function(
   match = NULL,
   min_length = NULL,
   max_length = NULL,
-  attribute_type = "href",
+  html_attribute_type = "href",
+  xml_attribute_type = NULL,
   append_string = NULL,
   remove_string = NULL,
   write_to_db = FALSE,
@@ -295,11 +298,19 @@ cas_extract_links <- function(
         }
       } else {
         # effectively, expect html or xml
-        temp <- xml2::read_html(
-          x = x$path,
-          options = c("RECOVER", "NOERROR", "NOBLANKS", "HUGE"),
-          encoding = encoding
-        )
+        if (file_format == "xml" | file_format == "xml.gz") {
+          temp <- xml2::read_xml(
+            x = x$path,
+            options = c("RECOVER", "NOERROR", "NOBLANKS", "HUGE"),
+            encoding = encoding
+          )
+        } else {
+          temp <- xml2::read_html(
+            x = x$path,
+            options = c("RECOVER", "NOERROR", "NOBLANKS", "HUGE"),
+            encoding = encoding
+          )
+        }
 
         if (!inherits(x = temp, what = "xml_node")) {
           return(NULL)
@@ -338,17 +349,27 @@ cas_extract_links <- function(
         }
 
         if (file_format == "xml" | file_format == "xml.gz") {
-          links_df <- tibble::tibble(
-            url = a_xml_nodeset |>
-              rvest::html_text() |>
-              stringr::str_squish(),
-            link_text = NA_character_
-          )
+          if (is.null(xml_attribute_type)) {
+            links_df <- tibble::tibble(
+              url = a_xml_nodeset |>
+                rvest::html_text() |>
+                stringr::str_squish(),
+              link_text = NA_character_
+            )
+          } else {
+            links_df <- tibble::tibble(
+              url = a_xml_nodeset |>
+                xml2::xml_attr(xml_attribute_type),
+              link_text = a_xml_nodeset |>
+                rvest::html_text() |>
+                stringr::str_squish()
+            )
+          }
         } else {
           # effectively, expect html
           links_df <- tibble::tibble(
             url = a_xml_nodeset |>
-              xml2::xml_attr(attribute_type),
+              xml2::xml_attr(html_attribute_type),
             link_text = a_xml_nodeset |>
               rvest::html_text() |>
               stringr::str_squish()
