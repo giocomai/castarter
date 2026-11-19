@@ -9,6 +9,7 @@ cas_extract_script(
   script_type = NULL,
   match = NULL,
   accessors = NULL,
+  remove_escape = FALSE,
   remove_from_script = NULL
 )
 }
@@ -27,6 +28,10 @@ script of type "NewsArticle".}
 \code{\link[purrr:pluck]{purrr::pluck()}} in order to extract sub-components of the list resulting
 from reading the with \code{jsonlite} the result of the previous steps and
 filter.}
+
+\item{remove_escape}{Defaults to \code{FALSE}. If \code{TRUE}, removes escape
+characters  \verb{\\\\}, sometimes needed for parsing when they are introduced
+redundantly in the source.}
 
 \item{remove_from_script}{Defaults to \code{NULL}. If given, removed after the
 script has been extracted but before processing the json.}

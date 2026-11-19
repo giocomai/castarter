@@ -248,7 +248,10 @@ cas_extract <- function(
 #' @param accessors Defaults to `NULL`. If given, a vector of accessors passed to
 #'   [purrr::pluck()] in order to extract sub-components of the list resulting
 #'   from reading the with `jsonlite` the result of the previous steps and
-#'   filter.
+#' filter.
+#' @param remove_escape Defaults to `FALSE`. If `TRUE`, removes escape
+#'   characters  `\\`, sometimes needed for parsing when they are introduced
+#'   redundantly in the source.
 #' @param remove_from_script Defaults to `NULL`. If given, removed after the
 #'   script has been extracted but before processing the json.
 #'
@@ -301,6 +304,7 @@ cas_extract_script <- function(
   script_type = NULL,
   match = NULL,
   accessors = NULL,
+  remove_escape = FALSE,
   remove_from_script = NULL
 ) {
   if (is.null(script_type)) {
@@ -314,15 +318,21 @@ cas_extract_script <- function(
   script_l <- purrr::map(
     .x = script_pre,
     .f = function(x) {
-      if (is.null(remove_from_script)) {
-        x |>
+      if (remove_escape) {
+        pre <- x |>
           rvest::html_text2() |>
           stringr::str_conv(encoding = "UTF-8") |>
-          stringr::str_remove_all(stringr::fixed("\\")) |>
+          stringr::str_remove_all(stringr::fixed("\\"))
+      } else {
+        pre <- x |>
+          rvest::html_text2() |>
+          stringr::str_conv(encoding = "UTF-8")
+      }
+      if (is.null(remove_from_script)) {
+        pre |>
           jsonlite::parse_json()
       } else {
-        x |>
-          rvest::html_text2() |>
+        pre |>
           stringr::str_remove_all(pattern = remove_from_script) |>
           jsonlite::parse_json()
       }
