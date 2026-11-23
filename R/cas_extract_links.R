@@ -32,6 +32,9 @@
 #'   from links. Ignored when `file_format` is set to "xml"
 #' @param xml_attribute_type Defaults to `NULL`. If given, used to extract when
 #'   `file_format` is set to "xml", otherwise ignored.
+#' @param xml_strip_namespace Defaults to `TRUE`. If `TRUE`, it runs
+#'   `xml_ns_strip()` on the extracted xml element, which usually facilitates
+#'   parsing.
 #' @param min_length If a link is shorter than the number of characters given in
 #'   min_length, it is excluded from the output.
 #' @param max_length If a link is longer than the number of characters given in
@@ -84,6 +87,7 @@ cas_extract_links <- function(
   max_length = NULL,
   html_attribute_type = "href",
   xml_attribute_type = NULL,
+  xml_strip_namespace = TRUE,
   append_string = NULL,
   remove_string = NULL,
   write_to_db = FALSE,
@@ -304,6 +308,10 @@ cas_extract_links <- function(
             options = c("RECOVER", "NOERROR", "NOBLANKS", "HUGE"),
             encoding = encoding
           )
+
+          if (xml_strip_namespace) {
+            temp <- xml2::xml_ns_strip(x = temp)
+          }
         } else {
           temp <- xml2::read_html(
             x = x$path,

@@ -24,6 +24,7 @@ cas_extract_links(
   max_length = NULL,
   html_attribute_type = "href",
   xml_attribute_type = NULL,
+  xml_strip_namespace = TRUE,
   append_string = NULL,
   remove_string = NULL,
   write_to_db = FALSE,
@@ -99,6 +100,10 @@ from links. Ignored when \code{file_format} is set to "xml"}
 
 \item{xml_attribute_type}{Defaults to \code{NULL}. If given, used to extract when
 \code{file_format} is set to "xml", otherwise ignored.}
+
+\item{xml_strip_namespace}{Defaults to \code{TRUE}. If \code{TRUE}, it runs
+\code{xml_ns_strip()} on the extracted xml element, which usually facilitates
+parsing.}
 
 \item{append_string}{If provided, appends given string to the extracted
 articles. Typically used to create links for print or mobile versions of
