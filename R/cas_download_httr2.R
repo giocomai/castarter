@@ -23,6 +23,9 @@ cas_download_httr2 <- function(
   ignore_id = TRUE,
   wait = 1,
   url_encode = TRUE,
+  flaresolverr = FALSE,
+  flaresolverr_url = "http://localhost:8191/v1",
+  flaresolverr_max_timeout = 60,
   create_folder_if_missing = NULL,
   pause_base = 4,
   pause_cap = 256,
@@ -115,32 +118,58 @@ cas_download_httr2 <- function(
           url_to_process_v <- x[["url"]]
         }
 
-        req <- httr2::request(
-          base_url = url_to_process_v
-        ) |>
-          httr2::req_options(ssl_verifypeer = ssl_verifypeer_digit) |>
-          httr2::req_user_agent(string = user_agent) |>
-          httr2::req_retry(
-            max_tries = retry_times,
-            backoff = \(resp_n) {
-              max(pause_min, min(pause_base * 2^(resp_n - 1), pause_cap))
-            },
-            is_transient = \(resp) {
-              if (is.null(terminate_on)) {
-                return(TRUE)
-              }
-
-              if (httr2::resp_status(resp) %in% terminate_on) {
-                return(FALSE)
-              }
-            }
+        if (!flaresolverr) {
+          req <- httr2::request(
+            base_url = url_to_process_v
           ) |>
-          httr2::req_error(is_error = \(resp) FALSE)
+            httr2::req_options(ssl_verifypeer = ssl_verifypeer_digit) |>
+            httr2::req_user_agent(string = user_agent) |>
+            httr2::req_retry(
+              max_tries = retry_times,
+              backoff = \(resp_n) {
+                max(pause_min, min(pause_base * 2^(resp_n - 1), pause_cap))
+              },
+              is_transient = \(resp) {
+                if (is.null(terminate_on)) {
+                  return(TRUE)
+                }
 
-        resp <- tryCatch(
-          req |> httr2::req_perform(path = x$path),
-          error = \(e) FALSE
-        )
+                if (httr2::resp_status(resp) %in% terminate_on) {
+                  return(FALSE)
+                }
+              }
+            ) |>
+            httr2::req_error(is_error = \(resp) FALSE)
+
+          resp <- tryCatch(
+            req |> httr2::req_perform(path = x$path),
+            error = \(e) FALSE
+          )
+        } else {
+          req <- httr2::request(
+            base_url = flaresolverr_url
+          ) |>
+            httr2::req_options(ssl_verifypeer = ssl_verifypeer_digit) |>
+            httr2::req_user_agent(string = user_agent) |>
+            httr2::req_error(is_error = \(resp) FALSE) |>
+            httr2::req_headers("Content-Type" = "application/json") |>
+            httr2::req_body_json(list(
+              cmd = "request.get",
+              url = url_to_process_v,
+              maxTimeout = flaresolverr_max_timeout * 1000
+            ))
+
+          resp <- tryCatch(
+            req |> httr2::req_perform(),
+            error = \(e) FALSE
+          )
+
+          resp_data <- httr2::resp_body_json(resp)
+
+          html_content <- resp_data$solution$response
+
+          readr::write_lines(x = html_content, file = x$path)
+        }
 
         info_df <- tibble::tibble(
           id = x$id,
