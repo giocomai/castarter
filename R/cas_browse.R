@@ -13,22 +13,20 @@
 #' @export
 #'
 #' @examples
-cas_browse <- function(index = FALSE,
-                       remote = TRUE,
-                       id = NULL,
-                       batch = NULL,
-                       index_group = NULL,
-                       file_format = "html",
-                       sample = 1,
-                       disconnect_db = TRUE,
-                       ...) {
-  type <- dplyr::if_else(condition = index,
-    true = "index",
-    false = "contents"
-  )
+cas_browse <- function(
+  index = FALSE,
+  remote = TRUE,
+  id = NULL,
+  batch = NULL,
+  index_group = NULL,
+  file_format = "html",
+  sample = 1,
+  disconnect_db = TRUE,
+  ...
+) {
+  type <- dplyr::if_else(condition = index, true = "index", false = "contents")
 
   db <- cas_connect_to_db(
-    read_only = TRUE,
     ...
   )
 

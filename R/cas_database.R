@@ -714,7 +714,6 @@ cas_read_from_db <- function(
 
   db <- cas_connect_to_db(
     db_connection = db_connection,
-    read_only = TRUE,
     ...
   )
 
