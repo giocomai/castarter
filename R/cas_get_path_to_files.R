@@ -29,7 +29,6 @@ cas_get_path_to_files <- function(
   type <- dplyr::if_else(condition = index, true = "index", false = "contents")
 
   db <- cas_connect_to_db(
-    read_only = TRUE,
     ...
   )
 
