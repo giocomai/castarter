@@ -13,6 +13,8 @@ cas_download_httr2(
   wait = 1,
   url_encode = TRUE,
   flaresolverr = FALSE,
+  flaresolverr_live = FALSE,
+  flaresolverr_live_scroll_length = 6,
   flaresolverr_url = "http://localhost:8191/v1",
   flaresolverr_max_timeout = 60,
   create_folder_if_missing = NULL,

@@ -24,6 +24,8 @@ cas_download_httr2 <- function(
   wait = 1,
   url_encode = TRUE,
   flaresolverr = FALSE,
+  flaresolverr_live = FALSE,
+  flaresolverr_live_scroll_length = 6,
   flaresolverr_url = "http://localhost:8191/v1",
   flaresolverr_max_timeout = 60,
   create_folder_if_missing = NULL,
@@ -164,9 +166,41 @@ cas_download_httr2 <- function(
             error = \(e) FALSE
           )
 
-          resp_data <- httr2::resp_body_json(resp)
+          resp_json <- resp |>
+            httr2::resp_body_json()
 
-          html_content <- resp_data$solution$response
+          if (flaresolverr_live) {
+            b <- chromote::ChromoteSession$new()
+            b$Network$setUserAgentOverride(
+              userAgent = resp_json$solution$userAgent
+            )
+
+            for (current_cookie in resp_json$solution$cookies) {
+              b$Network$setCookie(
+                name = current_cookie$name,
+                value = current_cookie$value,
+                domain = current_cookie$domain,
+                path = current_cookie$path %||% "/"
+              )
+            }
+
+            b$Page$navigate(url_to_process_v)
+            #b$Page$loadEventFired()
+            Sys.sleep(5)
+
+            for (i in 1:flaresolverr_live_scroll_length) {
+              b$Runtime$evaluate("window.scrollBy(0, 1500);")
+              Sys.sleep(2)
+            }
+
+            html_content <- b$Runtime$evaluate(
+              "document.documentElement.outerHTML"
+            )$result$value
+          } else {
+            resp_data <- httr2::resp_body_json(resp)
+
+            html_content <- resp_data$solution$response
+          }
 
           readr::write_lines(x = html_content, file = x$path)
         }
